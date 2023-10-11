@@ -1,0 +1,10 @@
+﻿@model SMO.Service.BU.ContractService
+
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+    var lstPeriodTime = SelectListUtilities.GetAllUser();
+}
+
+@Html.MyDropDownListFor(m => m.ObjListUser, SelectListUtilities.GetAllUser(),
+                                             new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })

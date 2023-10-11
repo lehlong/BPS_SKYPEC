@@ -1,0 +1,58 @@
+﻿@model SMO.Service.BU.FileUploadService
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+}
+<div id='@Model.ViewId'>
+    <div class="title-header" style=" margin-top: 14px; margin-bottom: 14px; display: flex; flex-direction: row; align-items: center;"> <i class="material-icons" style="margin-right: 6px;">attachment</i>FILE/LINK ĐÍNH KÈM</div>
+    <hr>
+   
+    <script type="text/template" id="templateLink">
+        <div class="input-group form-group">
+            <div>
+                <input type="text" name="lstLink" class="form-control" style="border: 1px solid #ddd; padding: 10px" placeholder="Hãy điền đường dẫn URL">
+            </div>
+            <span class="input-group-addon" onclick="RemoveLink(this);">
+                <i class="material-icons" style="color: red; margin-left: 10px; cursor: pointer; font-weight: bold;">close</i>
+            </span>
+        </div>
+    </script>
+    @{
+        Html.RenderAction("GetListFiles", "FileUpload", new { @area = "BU", id = Model.ObjDetail.PARENT,version =Model.ObjDetail.VERSION });
+    }
+    <script>
+    Forms.CompleteUI();
+    function RemoveLink(obj) {
+        if (confirm("Bạn có chắc chắn xóa link này?")) {
+            $(obj).parent().remove()
+        }
+    }
+    function InsertLink() {
+        var template = $("#templateLink").html();
+        $("#divPreviewLink").append(template);
+    }
+      function Create() {
+                var headers = {
+                    'RequestVerificationToken': $('#antiForgeryToken').val(),
+                };
+                var form = document.getElementById("@Model.FormId");
+                var formData = new FormData(form);
+                for (var i = 0; i < UploadFile.ListFile.length; i++) {
+                    formData.append("files", UploadFile.ListFile[i].DataFile);
+                    }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("UpdateFiles", "FileUpload")",
+                    data: formData,
+                    headers: headers,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        Message.execute(response);
+                        Forms.HideLoading();
+                    },
+                    error: Forms.AjaxErrorHandler
+                    });
+        }
+    </script>
+</div>

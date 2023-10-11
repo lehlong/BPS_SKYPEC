@@ -1,0 +1,451 @@
+﻿@model SMO.Service.BU.ContractService
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+    var lstPeriodTime = SelectListUtilities.GetAllUser();
+    bool checkTrinhDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.CREATE_BY) && Model.ObjDetail.STATUS == SMO.Core.Entities.BU.ConstContract.KhoiTao);
+    bool checkPheDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.APPROVER) && Model.ObjDetail.STATUS == SMO.Core.Entities.BU.ConstContract.TrinhDuyet);
+    bool checkChinhSua = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.CREATE_BY) && (Model.ObjDetail.STATUS == SMO.Core.Entities.BU.ConstContract.KhoiTao || Model.ObjDetail.STATUS == SMO.Core.Entities.BU.ConstContract.TrinhDuyet));
+}
+<style>
+    .DIVcomponent {
+        border: 1px solid #DDDDDD;
+    }
+</style>
+<div id='@Model.ViewId' class="container-fluid child-content">
+    @using (Ajax.BeginForm("UpdateContract", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.FormId)
+        @Html.HiddenFor(m => m.ObjDetail.ID)
+        <div class="row clearfix">
+            <div class="col-xs-12 col-sm-12">
+                <div class="card border-grey">
+                    <div class="body" style="padding-top: 0px;">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> HỢP ĐỒNG: @Model.ObjDetail.NAME.ToUpper()</a>
+                            </li>
+                            <li class="title-close" style="float: right; margin: 10px 10px 0 0; cursor: pointer; " title="Đóng màn hình" onclick="@string.Format("Forms.Close('{0}');", @Model.ViewId)">
+                                <i class="material-icons">close</i>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active">
+                                        <a style="padding-left:0px">THÔNG TIN HỢP ĐỒNG</a>
+                                    </li>
+                                    <li role="presentation" style="margin-left:30px;" class="">
+                                        <a style="padding-left:0px">ĐỢT THANH TOÁN</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content">
+                                <div class="page-function" style="margin-top:15px;">
+                                    <div class="page-function-button m-r-20">
+
+                                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
+                                        <div class="btn-default btn" onclick='EditContract();' title=""> <i class="material-icons col-fecon">done</i> Lưu lại</div>
+                                        <div class="btn-default btn" onclick="CreateVersion();" title=""> <i class="material-icons col-fecon">add</i> Tạo Version mới</div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-7 col-xs-7" style="padding-right: 0;">
+                                        <div class="DIVcomponent">
+                                            <div style="margin:10px">
+                                                <div style="display: flex; align-items: center; margin: 12px 0px;" class="col-fecon"><i class="material-icons">info</i> THÔNG TIN CHÍNH</div>
+
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <label>Số hợp đồng</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_NUMBER)
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_NUMBER)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <label>Tên hợp đồng</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.NAME)
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.NAME)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Loại hợp đồng</label>
+                                                        @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_TYPE, SelectListUtilities.GetContractType(),
+                                                               new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_TYPE)
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label>Khách hàng</label>
+                                                        @Html.MyDropDownListFor(m => m.ObjDetail.CUSTOMER, SelectListUtilities.GetCustomer(),
+                                                                        new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.CUSTOMER)
+
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label>Phòng ban phụ trách</label>
+                                                        @Html.MyDropDownListFor(m => m.ObjDetail.DEPARTMENT, SelectListUtilities.GetCostCenter(),
+                                                                 new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.DEPARTMENT)
+
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Ngày ký kết</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.SIGN_DAY, new { @class = "datepicker", @autocomplete = "off", @id = "txtStartDate" })
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.SIGN_DAY)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Ngày bắt đầu</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.START_DATE, new { @class = "datepicker", @autocomplete = "off", @id = "txtStartDate" })
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.START_DATE)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Ngày kết thúc</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.FINISH_DATE, new { @class = "datepicker", @autocomplete = "off", @id = "txtFinishDate" })
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.FINISH_DATE)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <label>Giá trị hợp đồng (trước thuế)</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_VALUE, new { @type = "number", @id = "contractValue" })
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_VALUE)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <label>VAT %</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.VAT, new { @type = "number", id = "VAT" })
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.VAT)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <label>Giá trị hợp đồng (sau thuế)</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_VALUE_VAT, new { @type = "number", @id = "contractValueVat" })
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_VALUE_VAT)
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label>Đại diện bên A</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.REPRESENT_A)
+
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.REPRESENT_A)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label>Đại diện bên B</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.REPRESENT_B)
+
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.REPRESENT_B)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label>Giai đoạn hợp đồng</label>
+                                                        @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_PHASE, SelectListUtilities.GetContractPhase(),
+                                                                  new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_PHASE)
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label>Mô tả</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextAreaFor(m => m.ObjDetail.NOTES)
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.NOTES)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-5 col-xs-5">
+                                        <div class="DIVcomponent">
+                                            <div style="margin:10px">
+                                                <div>
+                                                    <div class="title-header col-fecon" style=" margin: 12px 0; margin-bottom: 14px; display: flex; flex-direction: row; align-items: center;"> <i class="material-icons" style="margin-right: 6px;">attachment</i>FILE/LINK ĐÍNH KÈM</div>
+
+                                                    <div class="form-group" style="display:flex; flex-flow: row; gap: 10px;margin-top:20px">
+                                                        <div style="flex: 1">
+                                                            <span class="waves-effect btn-default btn btn-border" onclick="UploadFile.InsertFile();"
+                                                                  style="width: 100%; padding: 6px 10px 15px 10px !important;">
+                                                                <i class="material-icons col-orange" style="font-size: 24px; top: 6px;">attach_file</i><span>Bấm để chọn file</span>
+                                                            </span>
+                                                        </div>
+                                                        <div style="flex: 1">
+                                                            <span class="waves-effect btn-default btn btn-border" onclick="InsertLink();"
+                                                                  style="width: 100%; padding: 6px 10px 15px 10px !important;">
+                                                                <i class="material-icons col-orange" style="font-size: 24px; top: 6px;">link</i><span>Bấm để thêm link</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="divPreviewLink" class="m-t-10">
+
+                                                    </div>
+                                                    <div id="divPreviewFile" class="m-t-10">
+
+                                                    </div>
+                                                    @{
+                                                        Html.RenderAction("UpdateViewContract", "FileUpload", new { @area = "BU", id = Model.ObjDetail.FILE_CHILD, isRemoveFile = "true", version = Model.ObjDetail.VERSION });
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="DIVcomponent" style="margin-top:12px">
+                                            <div style="margin:10px">
+                                                <div class="title-header col-fecon" style=" margin-top: 14px; margin-bottom: 14px; display: flex; flex-direction: row; align-items: center;"> <i class="material-icons" style="margin-right: 6px;">person</i> NHÂN SỰ HỢP ĐỒNG</div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>Người phê duyệt</label>
+                                                        @Html.MyDropDownListFor(m => m.ObjDetail.APPROVER, SelectListUtilities.GetAllUser(),
+                       new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.APPROVER)
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label>Quản lý hợp đồng</label>
+                                                        @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_MANAGER, SelectListUtilities.GetAllUser(),
+                        new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label>Người theo dõi</label>
+                                                        @Html.MyDropDownListFor(m => m.ObjListUser, SelectListUtilities.GetAllUser(),
+                        new { @data_live_search = "true", @class = "selectpicker form-control selectFollowers ", @data_val = false, @multiple = "multiple" })
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    <script type="text/template" id="templateLink">
+        <div class="input-group form-group">
+            <div>
+                <input type="text" name="listLink" class="form-control" style="border: 1px solid #ddd; padding: 10px" placeholder="Hãy điền đường dẫn URL">
+            </div>
+            <span class="input-group-addon" onclick="RemoveLinkADD(this);">
+                <i class="material-icons" style="color: red; margin-left: 10px; cursor: pointer; font-weight: bold;">close</i>
+            </span>
+        </div>
+    </script>
+    <script src="~/Scripts/D2SCoreJS/UploadFile.js"></script>
+    <script>
+    var listLinkRemove = [];
+    var listFileRemove = [];
+    function RemoveLink(obj,id) {
+        if (confirm("Bạn có chắc chắn xóa link này?")) {
+            listLinkRemove.push(id);
+            $(obj).parent().remove()
+        }
+    }
+    function RemoveLinkADD(obj) {
+        if (confirm("Bạn có chắc chắn xóa link này?")) {
+            $(obj).parent().remove()
+        }
+    }
+    function InsertLink() {
+        var template = $("#templateLink").html();
+        $("#divPreviewLink").append(template);
+    }
+    function RemoveFile(obj, id) {
+        if (confirm("Bạn có chắc chắn xóa file này?")) {
+            listFileRemove.push(id);
+            $(obj).parent().parent().parent().parent().remove();
+        }
+    }
+    function Update() {
+            var headers = {
+                    'RequestVerificationToken': $('#antiForgeryToken').val(),
+            };
+
+            var form = document.getElementById("@Model.FormId");
+            var formData = new FormData(form);
+
+            for (var i = 0; i < UploadFile.ListFile.length; i++) {
+                   formData.append("files", UploadFile.ListFile[i].DataFile);
+            }
+            if (listLinkRemove.length > 0) {
+                formData.append("listFileRemove", listLinkRemove);
+            }
+            if (listFileRemove.length > 0) {
+                formData.append("listFileRemove", listFileRemove);
+            }
+            $.ajax({
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                percentComplete = parseInt(percentComplete * 100);
+                                console.log(percentComplete);
+                                if (percentComplete === 100) {
+                                    //alert("kakalot");
+                                }
+                            }
+                        }, false);
+
+                        return xhr;
+                    },
+                    type: "POST",
+                    url: "@Url.Action("UpdateContract")",
+                    data: formData,
+                    headers: headers,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        Message.execute(response);
+                        Forms.HideLoading();
+                    },
+                    error: Forms.AjaxErrorHandler
+            });
+
+    }
+    function Create() {
+            var headers = {
+                    'RequestVerificationToken': $('#antiForgeryToken').val(),
+            };
+
+            var form = document.getElementById("@Model.FormId");
+            var formData = new FormData(form);
+
+            for (var i = 0; i < UploadFile.ListFile.length; i++) {
+                   formData.append("files", UploadFile.ListFile[i].DataFile);
+            }
+            if (listLinkRemove.length > 0) {
+                formData.append("listFileRemove", listLinkRemove);
+            }
+            if (listFileRemove.length > 0) {
+                formData.append("listFileRemove", listFileRemove);
+            }
+            $.ajax({
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = evt.loaded / evt.total;
+                                percentComplete = parseInt(percentComplete * 100);
+                                console.log(percentComplete);
+                                if (percentComplete === 100) {
+                                    //alert("kakalot");
+                                }
+                            }
+                        }, false);
+
+                        return xhr;
+                    },
+                    type: "POST",
+                    url: "@Url.Action("CreateVersion")",
+                    data: formData,
+                    headers: headers,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                    version++;
+                        Message.execute(response);
+                        Forms.HideLoading();
+                    },
+                    error: Forms.AjaxErrorHandler
+            });
+
+    }
+        function EditContract() {
+            Swal.fire({
+                title: 'Lưu dữ liệu?',
+                text: "Bạn có chắc chắn lưu dữ liệu này!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Huỷ',
+                confirmButtonText: 'Lưu!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Update();
+                    reload();
+                    Forms.Close('@Model.ViewId');
+                }
+            })
+        }
+        function CreateVersion() {
+            Swal.fire({
+                title: 'Lưu version?',
+                text: "Bạn có chắc chắn muốn tạo version mới?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Huỷ',
+                confirmButtonText: 'Lưu!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Create();
+                    Forms.Close('@Model.ViewId');
+                }
+            })
+        }
+    </script>
+
+    <script type="text/javascript">
+        var selectedValues = @Html.Raw(Json.Encode(Model.ObjListUser));
+        $.each(selectedValues, function (index, value) {
+            $(".selectFollowers").find("option[value='" + value + "']").prop("selected", true);
+        });
+        $(function () {
+            Forms.CompleteUI();
+        });
+    </script>
+
+</div>
+
+

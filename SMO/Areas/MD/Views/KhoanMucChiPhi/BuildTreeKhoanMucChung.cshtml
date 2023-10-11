@@ -1,0 +1,13 @@
+﻿
+<ul id="treeKhoanMucChung" class="ztree" style="height: 100%"></ul>
+
+
+<script type="text/javascript">
+    var zNodesSap = jQuery.parseJSON('@Html.Raw(ViewBag.zNodeSap)');
+    $(function () {
+        $.fn.zTree.init($("#treeKhoanMucChung"), settingSap, zNodesSap);
+        var zTree = $.fn.zTree.getZTreeObj("treeKhoanMucChung");
+    });
+</script>
+
+

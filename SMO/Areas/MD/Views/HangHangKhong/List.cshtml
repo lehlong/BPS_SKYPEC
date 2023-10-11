@@ -1,0 +1,55 @@
+﻿@model SMO.Service.MD.HangHangKhongService
+@{
+    var frmFormCode = "frmHangHangKhongIndex";
+    var number = 1;
+}
+
+@{ Html.RenderPartial("Paging", Model); }
+
+<div class="table-responsive">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th style="max-width: 120px;">Mã hãng hàng không</th>
+                <th>Tên hãng hàng không</th>
+                <th>Nội địa | Quốc tế</th>
+                <th>Thuộc VNA</th>
+                <th>Mã PM hệ thống khác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList)
+            {
+                var nameType = "";
+                var isVna = "";
+                if (item.TYPE == "ND")
+                {
+                    nameType = "Nội địa";
+                }
+                else
+                {
+                    nameType = "Quốc tế";
+                }
+
+                if (item.IS_VNA)
+                {
+                    isVna = "checked";
+                }
+                number++;
+                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.CODE }));
+                <tr>
+                    <td ondblclick="@vdbclickAction">
+                        <a href="#" onclick="@vdbclickAction">@item.CODE</a>
+                    </td>
+                    <td ondblclick="@vdbclickAction">@item.NAME</td>
+                    <td ondblclick="@vdbclickAction">@nameType</td>
+                    <td ondblclick="@vdbclickAction"><input type="checkbox" class="form-control" @isVna style="position:unset; opacity: 1" /></td>
+                    <td ondblclick="@vdbclickAction">@item.OTHER_PM_CODE</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{ Html.RenderPartial("Paging", Model); }
+
+

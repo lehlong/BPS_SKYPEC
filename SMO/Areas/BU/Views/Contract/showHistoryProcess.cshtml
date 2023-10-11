@@ -1,0 +1,32 @@
+﻿@model SMO.Service.BU.ContractProcessServices
+@{ 
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+}
+<div id='@Model.ViewId'>
+    <table class="table table-bordered font-13">
+        <thead>
+            <tr>
+                <th>Version</th>
+                <th>Người dùng</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList.OrderByDescending(i => i.CREATE_DATE))
+            {
+                <tr>
+                    <td>@item.VERSION</td>
+                    <td>@item.CREATE_BY</td>
+                    <td>@SMO.Core.Entities.BU.ConstContract.convertActionToString(item.ACTION) <br> @item.CREATE_DATE</td>
+                </tr>
+            }
+
+            <tr>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        Forms.CompleteUI();
+    </script>
+</div>

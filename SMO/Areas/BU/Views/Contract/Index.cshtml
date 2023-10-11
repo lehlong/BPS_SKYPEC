@@ -1,0 +1,259 @@
+﻿@model SMO.Service.BU.ContractService
+@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+    Model.ObjDetail.START_DATE = DateTime.MinValue;
+    Model.ObjDetail.FINISH_DATE = DateTime.Now;
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var dataDashboard = ViewBag.DataDashboard as SMO.Models.ViewDashboardContractModel;
+}
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        //PieChart
+        var rawDataPieChart = @Html.Raw(JsonConvert.SerializeObject(dataDashboard.dataDashboard1, jsonSerializeSettings));
+        var convertDataPieChart = [
+            ["Trạng thái", "Số lượng"]
+        ];
+        for (i = 0; i < rawDataPieChart.length; i++) {
+            convertDataPieChart.push([`${rawDataPieChart[i].text}`, Number(rawDataPieChart[i].value)])
+        }
+        var dataPieChart = google.visualization.arrayToDataTable(convertDataPieChart);
+        var optionsPieChart = {
+            title: 'Số HĐ theo trạng thái',
+            pieHole: 0,
+            chartArea: { width: '60%' },
+            animation: {
+                duration: 2000,
+                easing: 'inAndOut',
+                startup: true
+            },
+        };
+        var pieChart = new google.visualization.PieChart(document.getElementById('dashboard-1'));
+        pieChart.draw(dataPieChart, optionsPieChart);
+
+        //BarChart
+        var rawDataBarChart = @Html.Raw(JsonConvert.SerializeObject(dataDashboard.dataDashboard2, jsonSerializeSettings));
+        var convertDataBarChart = [
+            ["Phòng ban", "Số lượng"]
+        ];
+        for (i = 0; i < rawDataBarChart.length; i++) {
+            convertDataBarChart.push([`${rawDataBarChart[i].text}`, Number(rawDataBarChart[i].value)])
+        }
+        var dataBarChart = google.visualization.arrayToDataTable(convertDataBarChart);
+        var optionsBarChart = {
+            title: 'Số HĐ theo phòng ban',
+            chartArea: { width: '30%' },
+            hAxis: {
+                title: 'Số lượng',
+                minValue: 0
+            },
+        };
+        var barChart = new google.visualization.BarChart(document.getElementById('dashboard-2'));
+        barChart.draw(dataBarChart, optionsBarChart);
+    }
+</script>
+<div id='@Model.ViewId' class="container-fluid child-content">
+    @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.FormId)
+        <div class="card border-grey">
+            <div class="body" style="padding-top: 0px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> DANH SÁCH HỢP ĐỒNG</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="page-function" style="width:100%">
+                        <div class="page-function-button m-r-20" style="float:left">
+                            @Html.MyButton("cmdAdd", "Tạo mới", string.Format("Forms.LoadAjax('{0}');", @Url.Action("Create")), "Alt+N", "add")
+                            @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
+                            <span class="btn btn-default" title="Tìm theo các chỉ tiêu khác" style="display:none;" id="spShowMoreDashboard" onclick="$('#@Model.FormId #spHideMoreDashboard').toggle(); $(this).toggle(); $('#@Model.FormId .page-dashboard-contract').toggle();">
+                                <i class="col-fecon material-icons">dashboard</i> Biểu đồ <i class="material-icons">expand_more</i>
+                            </span>
+                            <span class="btn btn-default" title="Ẩn các chỉ tiêu tìm kiếm khác" id="spHideMoreDashboard" onclick="$('#@Model.FormId #spShowMoreDashboard').toggle(); $(this).toggle(); $('#@Model.FormId .page-dashboard-contract').toggle();">
+                                <i class="col-fecon material-icons">dashboard</i> Đóng <i class="material-icons">expand_less</i>
+                            </span>
+                        </div>
+
+                        <div class="input-group page-function-search">
+                            <div class="form-line">
+                                @Html.MyTextBoxFor(m => m.ObjDetail.NAME, new { placeholder = "Tìm kiếm", @class = "align-center", @data_val = false })
+                            </div>
+                            <span class="input-group-addon" title="Tìm kiếm" onclick="Forms.SubmitForm('@Model.FormId')">
+                                <i class="material-icons">search</i>
+                            </span>
+                            <span class="input-group-addon" title="Tìm theo các chỉ tiêu khác" id="spShowMore" onclick="$('#@Model.FormId #spHideMore').toggle(); $(this).toggle(); $('#@Model.FormId .page-search-advance').toggle();">
+                                <i class="material-icons">expand_more</i>
+                            </span>
+                            <span class="input-group-addon" title="Ẩn các chỉ tiêu tìm kiếm khác" style="display:none;" id="spHideMore" onclick="$('#@Model.FormId #spShowMore').toggle(); $(this).toggle(); $('#@Model.FormId .page-search-advance').toggle();">
+                                <i class="material-icons">expand_less</i>
+                            </span>
+                            <span class="input-group-addon" title="Làm mới ô tìm kiếm" onclick="Forms.ResetForm('@Model.FormId')">
+                                <i class="material-icons">refresh</i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="page-search-advance row m-l-0 m-r-0 m-b-10" style="display:none;">
+                        <div class="col-md-2 col-xs-12">
+                            <label>Tên hợp đồng</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.NAME, new { @class = "form-control-inline", @autocomplete = "off", @id = "txtName" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-xs-12">
+                            <label>Số hợp đồng</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_NUMBER, new { @class = "form-control-inline", @autocomplete = "off", @id = "txtContractNumber" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-xs-12">
+                            <label>Loại hợp đồng</label>
+                            @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_TYPE, SelectListUtilities.GetContractType(),
+                            new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                        </div>
+                        <div class="col-md-2 col-xs-12">
+                            <label>Phòng ban</label>
+                                    @Html.MyDropDownListFor(m => m.ObjDetail.DEPARTMENT, SelectListUtilities.GetCostCenter(),
+                                    new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+                                
+                        </div>
+
+                        <div class="col-md-2 col-xs-12">
+                            <label>Tên khách hàng</label>
+                            @Html.MyDropDownListFor(m => m.ObjDetail.CUSTOMER, SelectListUtilities.GetCustomer(),
+                            new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                        </div>
+                        <div class="col-md-2 col-xs-12">
+                            <label>Quản lý hợp đồng</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_MANAGER, new { @class = "form-control-inline", @autocomplete = "off", @id = "txtContractManager" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xs-12">
+                            <label>Từ ngày</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.START_DATE, new { @class = "datepicker form-control-inline", @autocomplete = "off", @id = "txtStartDate" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-xs-12">
+                            <label>Đến ngày</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.FINISH_DATE, new { @class = "datepicker form-control-inline", @autocomplete = "off", @id = "txtFinishDate" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-xs-12">
+                            <label>Trạng thái</label>
+                            @Html.MyDropDownListFor(m => m.ObjDetail.STATUS, SelectListUtilities.GetContractStatus(),
+                                                                                         new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                        </div>
+
+                        <div class="col-md-2 col-xs-12">
+                            <label>Giai đoạn</label>
+                            @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_PHASE, SelectListUtilities.GetContractPhase(),
+                             new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                        </div>
+                    </div>
+
+                    <div class="page-dashboard-contract row m-l-0 m-r-0 m-b-10" style="display: block; margin-bottom: 0; padding: 0 12px;">
+                        <div class="row">
+                            <div class="col-md-2" style="border-right: solid 1px #f6753c; padding: 34px 12px;">
+                                <p style="text-align: center; font-size: 14px; font-weight: bold;">Tổng số hợp đồng</p>
+                                <p style="color: #207ce5; font-size: 40px; font-weight: bold; text-align: center;">@dataDashboard.TotalContract</p>
+                            </div>
+                            <div class="col-md-2" style="border-right: solid 1px #f6753c; padding: 34px 12px;">
+                                <p style="text-align: center; font-size: 14px; font-weight: bold;">Tổng GT hợp đồng</p>
+                                <p style="color: #207ce5; font-size: 40px; font-weight: bold; text-align: center;">@dataDashboard.SumValueTotalContract <span style="font-size:24px">Tỷ</span></p>
+                            </div>
+                            <div class="col-md-2" style="border-right: solid 1px #f6753c; padding: 34px 12px;">
+                                <p style="text-align: center; font-size: 14px; font-weight: bold;">Đã thanh toán</p>
+                                <p style="color: #207ce5; font-size: 40px; font-weight: bold; text-align: center;">@dataDashboard.SumContractPayment <span style="font-size:24px">Tỷ</span></p>
+                            </div>
+                            <div class="col-md-2" style="padding:0">
+                                <div id="dashboard-1" style="width: 100%;"></div>
+                            </div>
+                            <div class="col-md-4" style="padding: 0; height: 180px; overflow: auto; overflow-y: scroll; overflow-x: hidden; border-left: solid 1px #f6753c; ">
+                                <div id="dashboard-2" style="width: 100%; padding:4px"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divResult">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script type="text/javascript">
+    var idFormindex = '@Model.FormId';
+        function SubmitIndex() {
+            Forms.SubmitForm('@Model.FormId');
+        }
+
+        $(function () {
+            Forms.SubmitForm('@Model.FormId');
+            Forms.CompleteUI();
+            Forms.SubmitByEnter("@Model.FormId");
+            
+            setTimeout(function () {
+                $("#txtFinishDate").val(new Date());
+            }, 1000);
+        });
+        $(document).on('click', '.resetForm', function () {
+
+            // Reset giá trị của các ô input
+            $('.tab-content input').val('');
+
+            // Reset giá trị của các ô select
+            $('.tab-content select').prop('selectedIndex', 0);
+        });
+    function reloadListAjax() {
+        // Lấy URL mà form gọi Ajax đến
+       $.ajax({
+            url: "@Url.Action("List")", // Đường dẫn đến action "List" của controller
+            type: "POST",
+            data: $("#" + "@Model.FormId").serialize(), // Lấy dữ liệu từ form
+            success: function(result) {
+                // Khi Ajax thành công, cập nhật kết quả vào phần tử có ID "divResult"
+                $("#divResult").html(result);
+            },
+            error: function(xhr, status, error) {
+                // Xử lý lỗi nếu cần thiết
+            }
+        });
+        }
+        function ExportData() {
+            window.location.href = '/BU/Contract/ExportExcelTemplate';
+        }
+    </script>
+</div>
+
+
+

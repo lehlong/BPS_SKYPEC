@@ -1,0 +1,259 @@
+﻿@model SMO.Service.BU.ContractService
+@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
+
+@{
+    var gridId = Guid.NewGuid().ToString("N");
+
+}
+@{
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var jsonData = Model.ObjList.Where(x => x.PARENT == null).Select((x, index) =>
+    {
+        bool haveChild = false;
+        if(x.ChildContracts.Count()>0)
+        {
+            haveChild = true;
+        }
+        return new
+        {
+            isChild = haveChild,
+            idContract = x.NAME_CONTRACT,
+            stt = index + 1,
+            nameContract = x.NAME,
+            numberContract = x.CONTRACT_NUMBER,
+            typeContract = x.ContractType.TEXT,
+            nameCustomer = x.CustomerContract.TEXT,
+            manager = x.ContractManager.FULL_NAME,
+            department = x.CostCenter.NAME,
+            valueOriginal = x.CONTRACT_VALUE.ToStringVN(),
+            signDay = x.SIGN_DAY.ToString("dd/MM/yyyy"),
+            startDate = x.START_DATE.ToString("dd/MM/yyyy"),
+            finishDate = x.FINISH_DATE.ToString("dd/MM/yyyy"),
+            status = SMO.Core.Entities.BU.ConstContract.convertStatusToString(x.STATUS),
+            phase = SMO.Core.Entities.BU.ConstContract.convertPhaseToString(x.CONTRACT_PHASE),
+            version = x.VERSION,
+            progress = x.PHANTRAM,
+            createContract = x.ID,
+            file = x.FILE_CHILD,
+        };
+    });
+}
+<link href="~/Scripts/GanttChart/grid.css" rel="stylesheet" />
+<script src="~/Scripts/GanttChart/grid.js"></script>
+
+<div style="height: calc(100vh - 180px)" id="@gridId"></div>
+<style>
+    .myCustomClass {
+        background-color: #EEEEEE;
+    }
+
+    .progress-container {
+        width: 120px;
+        height: 18px;
+        background: #EEEEEE;
+        display: flex;
+    }
+    .progress {
+        height: 18px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        border-radius: unset;
+        align-items: center;
+    }
+    .progress-text {
+        font-size: 12px;
+        color: white;
+    }
+</style>
+<script>
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+    var ObjFilter = {
+        ObjDetail: {
+            NAME: "",
+            CONTRACT_NUMBER: "",
+            CONTRACT_TYPE: "",
+            CUSTOMER: "",
+            CONTRACT_MANAGER: "",
+            DEPARTMENT: "",
+            STATUS: "",
+            CONTRACT_PHASE: "",
+            START_DATE: "",
+            FINISH_DATE:""
+        },
+        Page: 1,
+        NumerRecordPerPage: 50
+    }
+    var grid = new dhx.Grid("@gridId", {
+            columns: [
+                {
+                    id: "idContract", header: [{ text: "" }], adjust: true,
+                    width   :50,
+                    template: (value, row) => {
+                        const { id, isChild, createContract } = row;
+                        if (isChild !== true) {
+                            return "";
+                        }
+                        return `<i class="material-icons swap-icon-drill-down" href="#" data-action="open" data-row-id="${id}" data-id="${createContract}" onclick="addDataToRows(this)">unfold_more</i>`;
+                    },
+                    htmlEnable: true,
+                    adjust : false
+                },
+                {
+                    id: "stt", header: [{
+                        text: "STT",
+                        css: "custom-header",
+                    }], width: 50 },
+                {
+                    id: "nameContract", width: 200,
+                    header: [{ text: "Tên hợp đồng" }, { content: "inputFilter" }],
+                    template: (value, row) => {
+                        const { id, idContract } = row;
+                        return `<a class="" href="" onclick="DetailContract(event,'${idContract}')">${value}</a>`;
+                    },
+                    htmlEnable: true,
+                    adjust: false
+                },
+                { id: "numberContract", header: [{ text: "Số hợp đồng" }, { content: "inputFilter" }], adjust: true, },
+            { id: "typeContract", header: [{ text: "Loại hợp đồng" }, { content: "selectFilter" }], adjust: true, },
+            { id: "nameCustomer", header: [{ text: "Tên khách hàng" }, { content: "inputFilter" }], adjust: true, },
+            { id: "manager", header: [{ text: "Quản lý hợp đồng" }, { content: "inputFilter" }], adjust: true, },
+            { id: "department", header: [{ text: "Phòng ban" }, { content: "inputFilter" }], adjust: true, },
+            { id: "valueOriginal", header: ["Giá trị (chưa VAT)"], adjust: true, },
+            { id: "startDate", header: ["Ngày bắt đầu"], adjust: true, },
+            { id: "finishDate", header: ["Ngày kết thúc"], adjust: true, },
+            { id: "signDay", header: ["Ngày ký kết"], adjust: true, },
+            { id: "status", header: [{ text: "Trạng thái" }, { content: "selectFilter" }], adjust: true, },
+            { id: "phase", header: [{ text: "Giai đoạn" }, { content: "selectFilter" }], adjust: true, },
+            { id: "version", header: ["Version"], adjust: true, },
+                {
+                    id: "progress",
+                    header: ["Tiến độ thanh toán"],
+                    width: 150,
+                    template: (value, row) => {
+                        const { progress } = row;
+                        const percentage = parseInt(progress); // Lấy phần trăm tiến độ
+                        return `
+                        <div class="progress-container">
+                                <div class="progress" style="width: ${percentage > 100 ? 100 : percentage}%; background: ${percentage >= 100 ? 'green' : '#337ab7'};">
+                                    <div class="progress-text">${percentage > 100 ? 100 : percentage}%</div>
+                                </div>
+                            </div>
+                    `;
+                    },
+                    htmlEnable: true,
+                    adjust: false
+                },
+            {
+                id: "createContract", width: 160,
+                header: [{ text: "" }],
+                template: (value, row) => {
+                    const { id } = row;
+                    if (value != "") {
+                        return `<a class="btn btn-default" style="margin: 2px;" href="" onclick="CreateChildContract(event,'${value}')"><i class="col-fecon material-icons">add_circle</i> Tạo phụ lục HĐ</a>`;
+                    }
+                    else {
+                        return '';
+                    }
+                },
+                htmlEnable: true,
+                adjust: false
+                },
+                {
+                    id: "file", header: ["File"], width: 50,
+                    template: (value, row) => {
+                        const { version } = row;
+                        return `<i class="col-fecon material-icons" href="#" onclick="CallFIle('${value}','${version}')">attach_file</i>`;
+                    },
+                    htmlEnable: true,
+                }
+            ],
+            data: rawData,
+            leftSplit: 3,
+            autoFilter: false,
+            resizable: true,
+            keyNavigation: true,
+            autoWidth: true,
+    });
+    grid.events.on("beforeFilter", (value, id) => {
+
+    });
+    function addDataToRows(element) {
+        var action = element.getAttribute("data-action");
+        var rowId = element.getAttribute("data-row-id");
+        var id = element.getAttribute("data-id");
+        var indexRowAction = parseInt(grid._getRowIndex(rowId) + 1);
+        if (action == "open") {
+            element.setAttribute("data-action", "close");
+            var headers = {
+                'RequestVerificationToken': $('#antiForgeryToken').val(),
+            };
+            $.ajax({
+                url:  "@Url.Action("showContractChild")",
+                type: "GET",
+                headers: headers,
+                data: { id: id },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    var dataAdd = calculateSTT(data, indexRowAction);
+                    grid.data.add(dataAdd, indexRowAction);
+                    element.setAttribute("data-number", dataAdd.length);
+                    for (var i = 0; i < dataAdd.length; i++) {
+                        var rowId = dataAdd[i].id;
+                        grid.addRowCss(rowId, "myCustomClass");
+                    }
+                },
+                error: function () {
+                    console.error("Error occurred.");
+                }
+            });
+        }
+        else {
+            element.setAttribute("data-action", "open");
+            var numberRemove = parseInt(element.getAttribute("data-number"));
+            while (numberRemove>0) {
+                var idRemove = grid.data.getId(indexRowAction);
+                grid.data.remove(idRemove);
+                numberRemove = numberRemove - 1;
+            }
+        }
+
+    }
+    function calculateSTT(data,rowIndex) {
+        var result = [];
+
+        data.forEach(function (row, index) {
+            row.stt = rowIndex + "." + (index + 1);
+            result.push(row);
+        });
+
+        return result;
+    }
+    function CallFIle(id,version) {
+        Forms.LoadAjaxModal("/BU/Contract/ShowListFile?id=" + id + "&version=" + version);
+
+    }
+    function DetailContract(event,id) {
+        event.preventDefault();
+        Forms.LoadAjax('@Url.Action("Detail")' + '?id=' + id +'&version=0');
+    }
+    function CreateChildContract(event,id) {
+        event.preventDefault();
+        Forms.LoadAjax('@Url.Action("CreateContractChild")' + '?id=' + id);
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+        var currentDate = new Date();
+        $('.startDate').val('01-01-2000'); // Năm 2000-01-01
+        var currentYear = currentDate.getFullYear();
+        var currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+        var currentDay = currentDate.getDate().toString().padStart(2, '0');
+        $('.finishDate').val(currentDay + '-' + currentMonth + '-' + currentYear); // Ngày hiện tại
+    });
+</script>
+
+@{ Html.RenderPartial("Paging", Model); }

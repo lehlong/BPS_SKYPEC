@@ -1,0 +1,156 @@
+﻿@model SMO.Service.BU.PaymentService
+
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+    var phanTramThanhToan = Math.Floor((Model.amount/ Model.contract.CONTRACT_VALUE_VAT ) * 100);
+}
+<div id='@Model.ViewId' class="container-fluid child-content">
+    <style>
+        .iconCss {
+            vertical-align: middle;
+        }
+    </style>
+    @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.FormId)
+        @Html.HiddenFor(m => m.ObjDetail.NAME_CONTRACT)
+        @Html.HiddenFor(m => m.ObjDetail.VERSION)
+        <div class="card border-grey">
+            <div class="body" style="padding-top: 0px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> HỢP ĐỒNG: @Model.contract.NAME.ToUpper()</a>
+                    </li>
+                    <li class="title-close" style="float: right; margin: 10px 10px 0 0; cursor: pointer; " title="Đóng màn hình" onclick="@string.Format("Forms.Close('{0}');", @Model.ViewId)">
+                        <i class="material-icons">close</i>
+                    </li>
+                </ul>
+                <div class="" style="margin-top:20px">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation">
+                            <a onclick="ThongTinHopDong()" style="padding-left: 0px; cursor: pointer">THÔNG TIN HỢP ĐỒNG</a>
+                        </li>
+                        <li role="presentation" style="margin-left:30px;" class="active">
+                            <a onclick="DotThanhToan()" style="padding-left: 0px; cursor: pointer">ĐỢT THANH TOÁN</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row" style="margin-top:20px">
+                    <div style="padding-left:12px">
+                        <div onclick="CreatePayment()" class="btn btn-default"><i class="material-icons col-fecon">credit_card</i> Tạo mới đợt thanh toán</div>
+                        <div onclick="DeletePayment()" class="btn btn-default"> <i class="material-icons col-fecon">delete</i> Xóa đợt thanh toán</div>
+                    </div>
+                        
+                </div>
+                <hr>
+                <div class="row" style="margin-top:20px">
+
+                    <div class="col-lg-2">
+                        <lable>Giá trị hợp đồng sau thuế</lable>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input class="form-control valid" type="text" disabled value="@Model.contract.CONTRACT_VALUE_VAT.ToStringVN() VNĐ">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-2">
+                        <lable>Tiến độ thanh toán</lable>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input class="form-control valid" type="text" disabled value="@phanTramThanhToan%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="divResult">
+
+                </div>
+            </div>
+        </div>
+    }
+
+<script type="text/javascript">
+    var idFormindex = '@Model.FormId';
+        function SubmitIndex() {
+            Forms.SubmitForm('@Model.FormId');
+        }
+
+        $(function () {
+            Forms.SubmitForm('@Model.FormId');
+            Forms.CompleteUI();
+        });
+        function ThongTinHopDong() {
+            Forms.LoadAjax("Bu/Contract/Detail?id=" + '@Model.contract.NAME_CONTRACT' + "&version=" + '@Model.contract.VERSION');
+            Forms.Close('@Model.ViewId');
+
+        }
+        function DotThanhToan() {
+            Forms.LoadAjax("Bu/Payment/Index?nameContract=" + '@Model.contract.NAME_CONTRACT' + "&version=" + '@Model.contract.VERSION');
+            Forms.Close('@Model.ViewId');
+        }
+        function CreatePayment() {
+            Forms.LoadAjax('@Url.Action("Create")' + '?nameContract=' + '@Model.contract.NAME_CONTRACT' +'&version='+'@Model.contract.VERSION');
+    }
+
+
+
+    function DeletePayment() {
+        Swal.fire({
+            title: 'Xoá đợt thanh toán?',
+            text: "Bạn có chắc chắn muốn các đợt thanh toán này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Huỷ',
+            confirmButtonText: 'Xoá!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                ConfirmDeletePayment();
+            }
+        })
+    }
+         function ConfirmDeletePayment() {
+            var selectedValues = [];
+            var checkboxes = document.querySelectorAll('input[type="checkbox"][name="chkItem"]');
+            // Lặp qua tất cả các ô checkbox
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    // Nếu ô checkbox được chọn, thêm giá trị của nó vào mảng
+                    selectedValues.push(checkboxes[i].value);
+                }
+            }
+            if (selectedValues.length == 0) {
+                Swal.fire({
+                    text: "Vui lòng chọn đợt thanh toán cần xoá!",
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK!'
+                })
+                return;
+            }
+            var ObjDetail = {
+                NAME_CONTRACT:'@Model.ObjDetail.NAME_CONTRACT' ,
+                VERSION:'@Model.ObjDetail.VERSION'
+            }
+            $.ajax({
+                url: "/BU/Payment/DeletePayment", // Điều chỉnh URL và tên của controller/action của bạn
+                type: "POST",
+                data: {
+                    deletePayment: selectedValues,
+                    ObjDetail: ObjDetail,
+
+                },
+                success: function (response) {
+                    Message.execute(response);
+                    Forms.HideLoading();
+                },
+                error: Forms.AjaxErrorHandler
+            });
+         }
+</script>
+</div>

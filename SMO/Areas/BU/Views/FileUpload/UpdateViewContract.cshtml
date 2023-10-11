@@ -1,0 +1,140 @@
+﻿@model SMO.Service.BU.FileUploadService
+@using SMO.Core.Entities
+@using SMO.Core.Entities.MD
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+
+    var strTaiVe = "Tải về";
+    var strXemOnline = "Xem online";
+    var strMoBang = "Mở bằng ";
+    var strXoa = "Xóa";
+    var isRemoveFile = false;
+    if (ViewBag.IsRemoveFile != null)
+    {
+        isRemoveFile = Convert.ToBoolean(ViewBag.IsRemoveFile);
+    }
+}
+<div>
+    @if (!isRemoveFile)
+    {
+        foreach (var link in Model.lstLink)
+        {
+            <div class="preview-file">
+                <img src="\Content\IconFileType\cloud-link-48.png">
+                <div class="file-info">
+                    <div class="file-name p-t-10"><a href="@link" target="_blank">@link</a></div>
+                </div>
+            </div>
+        }
+    }
+
+    @foreach (var file in Model.ObjList.OrderByDescending(x => x.CREATE_DATE).ToList())
+    {
+        file.FILE_EXT = file.FILE_EXT.ToLower();
+
+        <div class="preview-file">
+            <img src="\Content\IconFileType\@SMOUtilities.GetIconOfFile(file.FILE_EXT)">
+            <div class="file-info">
+                <div class="file-name">@file.FILE_OLD_NAME</div>
+                <div class="file-size">@SMOUtilities.BytesToSize((double)file.FILE_SIZE)</div>
+            </div>
+            <div class="file-function">
+                <a href="javascript:void(0);" class="file-function-a" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                    <i class="material-icons">more_vert</i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    @if (isRemoveFile)
+                    {
+                        <li>
+                            <a href="javascript:void(0);" onclick="RemoveFile(this,'@file.ID')" class="waves-effect waves-block">
+                                <i class="material-icons col-fecon">close</i> @strXoa
+                            </a>
+                        </li>
+                    }
+                    <li>
+                        <a href="javascript:void(0);" onclick="DownloadFile('@file.ID')" class="waves-effect waves-block">
+                            <i class="material-icons col-fecon">cloud_download</i> @strTaiVe
+                        </a>
+                    </li>
+                    @if (file.FILE_EXT == ".xlsx" || file.FILE_EXT == ".xls" || file.FILE_EXT == ".csv")
+                    {
+                        <li>
+                            <a href="javascript:void(0);" onclick="PreviewFile('@file.ID')" class="waves-effect waves-block">
+                                <i class="material-icons col-fecon">search</i> @strXemOnline
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0);" onclick="OpenApplication('@file.ID', '@file.FILE_EXT')" class="waves-effect waves-block">
+                                <img style="width: 22px" src="\Content\IconFileType\@SMOUtilities.GetIconOfFile(file.FILE_EXT)"> @strMoBang EXCEL
+                            </a>
+                        </li>
+                    }
+
+                    @if (file.FILE_EXT == ".docx" || file.FILE_EXT == ".doc")
+                    {
+                        <li>
+                            <a href="javascript:void(0);" onclick="PreviewFile('@file.ID')" class="waves-effect waves-block">
+                                <i class="material-icons col-fecon">search</i> @strXemOnline
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0);" onclick="OpenApplication('@file.ID', '@file.FILE_EXT')" class="waves-effect waves-block">
+                                <img style="width: 22px" src="\Content\IconFileType\@SMOUtilities.GetIconOfFile(file.FILE_EXT)"> @strMoBang WORD
+                            </a>
+                        </li>
+                    }
+
+                    @if (file.FILE_EXT == ".ppt" || file.FILE_EXT == ".pptx")
+                    {
+                        <li>
+                            <a href="javascript:void(0);" onclick="PreviewFile('@file.ID')" class="waves-effect waves-block">
+                                <i class="material-icons col-fecon">search</i> @strXemOnline
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0);" onclick="OpenApplication('@file.ID', '@file.FILE_EXT')" class="waves-effect waves-block">
+                                <img style="width: 22px" src="\Content\IconFileType\@SMOUtilities.GetIconOfFile(file.FILE_EXT)"> @strMoBang POWERPOINT
+                            </a>
+                        </li>
+                    }
+
+                    @if (file.FILE_EXT == ".pdf")
+                    {
+                        <li>
+                            <a href="javascript:void(0);" onclick="PreviewFile('@file.ID')" class="waves-effect waves-block">
+                                <i class="material-icons col-fecon">search</i> @strXemOnline
+                            </a>
+                        </li>
+                    }
+
+                    @if (file.FILE_EXT == ".jpg" || file.FILE_EXT == ".png" || file.FILE_EXT == ".bmp" || file.FILE_EXT == ".jpeg")
+                    {
+                        <li>
+                            <a href="javascript:void(0);" onclick="PreviewFile('@file.ID')" class="waves-effect waves-block">
+                                <i class="material-icons col-fecon">search</i> @strXemOnline
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+    @foreach (var link in Model.listLink.ToList())
+    {
+        <div class="input-group form-group">
+            <div>
+                <input disabled type="text" value="@link.LINK" name="lstLink" class="form-control" style="border: 1px solid #ddd; padding: 10px" placeholder="Hãy điền đường dẫn URL">
+            </div>
+            <span class="input-group-addon" onclick="RemoveLink(this,'@link.ID');">
+                <i class="material-icons" style="color: red; margin-left: 10px; cursor: pointer; font-weight: bold;">close</i>
+            </span>
+        </div>
+    }
+</div>
+<script>
+    Forms.CompleteUI();
+</script>

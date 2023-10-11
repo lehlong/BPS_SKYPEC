@@ -1,0 +1,66 @@
+﻿@model SMO.Service.Class.ViewDataCenterModel
+@{
+    var isShowDecimals = false;
+    if (Model.EXCHANGE_RATE.HasValue && Model.EXCHANGE_RATE != 1)
+    {
+        isShowDecimals = true;
+    }
+}
+<div style="display: flex; position: absolute; top: 0; width: 500px;">
+    <div class="input-group" style="width: 250px; margin-bottom: 0; margin-left: 10px; float: left">
+        <div class="form-line">
+            <input class="form-control" id="text-search-table" placeholder="Tìm kiếm" />
+        </div>
+        <span class="input-group-addon" style="cursor: pointer" title="Làm mới ô tìm kiếm" onclick="$('#text-search-table').val(''); $('#text-search-table').focus(); $('#text-search-table').trigger('keyup');">
+            <i class="material-icons">refresh</i>
+        </span>
+    </div>
+    @*<div class="p-t-10">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Đơn vị: </b>@Model.EXCHANGE_TYPE | <b>Tỷ giá: </b>@Model.EXCHANGE_RATE.Value.ToStringVN()
+        </div>*@
+</div>
+
+<div style="position: absolute; right: 10px; top: 0; display: flex; align-items: center; justify-content: end; }">
+    <span class="waves-effect btn-default btn" style="width: 50%; padding: 10px 6px; margin-right: 2px;">
+        <input type="range" min="8" max="20" value="13" onmousemove="Zoom(this.value)">
+    </span>
+
+    <span class="waves-effect btn-default btn" onclick="$('.export-right').toggleClass('full-screen');$('.table').toggleClass('full-screen-table');$('.table').toggleClass('table-screen');" title="Xem toàn màn hình">
+        <i class="material-icons" style="color: #0d6efd">fullscreen</i>
+    </span>
+</div>
+
+<script>
+    var fontSize = 13;
+    function ZoomIn() {
+        fontSize--;
+        if (fontSize < 6) {
+            fontSize = 6;
+        }
+        Zoom(fontSize);
+    }
+
+    function ZoomOut() {
+        fontSize++;
+        if (fontSize > 20) {
+            fontSize = 20;
+        }
+        Zoom(fontSize);
+    }
+
+    function Zoom(fontSize) {
+        try {
+            var $table_month = $('#table_month');
+            var $table_year = $('#table_year');
+
+            $('#table_month').attr('class', $table_month.get(0).className.replace(/\bfont-\S+/g, ''));
+            $("#table_month").addClass("font-" + fontSize);
+
+            $('#table_year').attr('class', $table_year.get(0).className.replace(/\bfont-\S+/g, ''));
+            $("#table_year").addClass("font-" + fontSize);
+        } catch (ex) {
+            console.log("Can't zoom table!")
+        }
+
+    }
+</script>

@@ -1,0 +1,39 @@
+﻿@model SMO.Service.MD.SanBayService
+@{
+    var frmFormCode = "frmSanBayIndex";
+    var number = 1;
+}
+
+@{ Html.RenderPartial("Paging", Model); }
+
+<div class="table-responsive">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th style="max-width: 120px;">Mã sân bay</th>
+                <th>Tên sân bay</th>
+                <th>CN địa phương</th>
+                <th>CN khu vực</th>
+                <th>Mã PM hệ thống khác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList)
+            {
+                number++;
+                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.CODE }));
+                <tr>
+                    <td ondblclick="@vdbclickAction">
+                        <a href="#" onclick="@vdbclickAction">@item.CODE</a>
+                    </td>
+                    <td ondblclick="@vdbclickAction">@item.NAME</td>
+                    <td ondblclick="@vdbclickAction">@item.Province.TEXT</td>
+                    <td ondblclick="@vdbclickAction">@item.Area.TEXT</td>
+                    <td ondblclick="@vdbclickAction">@item.OTHER_PM_CODE</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{ Html.RenderPartial("Paging", Model); }
+

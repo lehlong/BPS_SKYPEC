@@ -1,0 +1,36 @@
+﻿
+@model SMO.Service.MD.RouteService
+@{
+    var frmFormCode = "frmRouteIndex";
+    var number = 1;
+}
+
+@{ Html.RenderPartial("Paging", Model); }
+
+<div class="table-responsive">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th style="max-width: 120px;">Mã tuyến đường</th>
+                <th>Tên tuyến đường</th>
+                <th>Khu vực</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList)
+            {
+                number++;
+                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.CODE }));
+                <tr>
+                    <td ondblclick="@vdbclickAction">
+                        <a href="#" onclick="@vdbclickAction">@item.CODE</a>
+                    </td>
+                    <td ondblclick="@vdbclickAction">@item.NAME</td>
+                    <td ondblclick="@vdbclickAction">@item.Area.TEXT</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{ Html.RenderPartial("Paging", Model); }
+

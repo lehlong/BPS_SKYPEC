@@ -1,0 +1,47 @@
+﻿@model SMO.Service.BU.ContractHistoryService
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+}
+<div id='@Model.ViewId' style="padding:14px;" class="container-fluid">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a style="padding-left:0px">
+                <i class="material-icons col-fecon">history</i>LỊCH SỬ LỊCH SỬ CẬP NHẬT
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <table class="table font-13 table-nowrap">
+            <thead>
+                <tr>
+                    <th class="align-center">Người cập nhập</th>
+                    <th class="align-center">Ngày nhập</th>
+                    <th class="align-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ObjList.OrderByDescending(o=>o.CREATE_DATE))
+                {
+                    <tr>
+                        <td class="align-center">
+                            @item.CREATE_BY
+                            <div>@item.USER_CREATE.FULL_NAME</div>
+                        </td>
+                        <td class="align-center">
+                            <span>@((item.UPDATE_DATE??item.CREATE_DATE).Value.ToString(Global.DateTimeToStringFormat))</span>
+                        </td>
+                        <td>
+    
+                            @SMO.Core.Entities.BU.ConstContract.getTextHistory(item.ACTION,item.OLD_VALUE,item.NEW_VALUE)
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <script>
+    Forms.CompleteUI();
+    </script>
+</div>

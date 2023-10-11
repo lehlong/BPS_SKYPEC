@@ -1,0 +1,66 @@
+﻿@model SMO.Service.BU.PaymentService
+@{
+    var number = 0;
+}
+<div class="table-responsive">
+    <table class="table table-condensed table-striped table-bordered">
+        <thead>
+            <tr>
+                <th width="20px" class="align-center">
+                    <label for="chkAll">#</label>
+                </th>
+                <th>STT</th>
+                <th>DIỄN GIẢI</th>
+                <th>SỐ HÓA ĐƠN</th>
+                <th>NGÀY</th>
+                <th>GIÁ TRỊ HÓA ĐƠN</th>
+                <th>SỐ TIỀN THANH TOÁN</th>
+                <th>SỐ TIỀN TẠM ỨNG</th>
+                <th>TỔNG TIỀN THANH TOÁN</th>
+                <th>TRẠNG THÁI</th>
+                <th>NGƯỜI CẬP NHẬT</th>
+                <th>THỜI GIAN CẬP NHẬT</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <TR>
+            <TR>
+                @foreach (var item in Model.ObjList)
+                {
+                    number++;
+                    var chkActive = "chkActive" + number.ToString();
+                    var chkInActive = "chkInActive" + number.ToString();
+                    var vdbclickAction = string.Format("Forms.LoadAjaxModal('{0}', this);", Url.Action("Update", new { id = item.ID }));
+                <tr>
+                    <td>
+                        <input type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.ID)" value="@item.ID" modelId="@item.ID" style="margin:0;" />
+                        <label for="@("chkItem" + item.ID)"></label>
+                    </td>
+                    <td>@number</td>
+                    <td>@item.NOTE</td>
+                    <td ondblclick="@vdbclickAction">
+                        <a href="#" onclick="@vdbclickAction">@item.NUMBER_INVOICE</a>
+                    </td>
+                    <td>@item.DATE.ToString("dd/MM/yyyy")</td>
+                    <td>@item.VALUE_INVOICE VNĐ</td>
+                    <td>@item.AMOUNT VNĐ</td>
+                    <td>@item.ADVANCE_PAYMENT VNĐ</td>
+                    <td>@item.TOTAL VNĐ</td>
+                    <td>@item.ACTION</td>
+                    <td>@item.UPDATE_HUMAN </td>
+                    <td>@item.UPDATE_TIME </td>
+                    <td ondblclick="@vdbclickAction"><i class="col-fecon material-icons" href="#" onclick="CallFIle('@item.FILE_CHILD','@item.VERSION')">attach_file</i></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+<script>
+    $(function () {
+        Forms.CompleteUI();
+    })
+    function CallFIle(id,version) {
+        Forms.LoadAjaxModal("/BU/FileUpload/GetListFiles?id=" + id + "&version=" + version);
+    }
+</script>

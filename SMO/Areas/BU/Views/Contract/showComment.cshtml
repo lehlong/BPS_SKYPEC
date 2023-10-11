@@ -1,0 +1,17 @@
+﻿@model SMO.Service.BU.ContractCommentService
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+}
+<div id='@Model.ViewId' style="padding:14px">
+    <div class="row">
+        @foreach (var item in Model.ObjList.OrderByDescending(x=>x.CREATE_DATE))
+        {
+            <div style="margin-right:10px" class="col-lg-7">@item.COMMENT</div>
+            <div class="col-lg-3">@item.CREATE_BY <br /> @item.CREATE_DATE</div>
+        }
+    </div>
+    <script>
+        Forms.CompleteUI();
+    </script>
+</div>
