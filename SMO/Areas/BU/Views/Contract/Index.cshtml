@@ -221,10 +221,6 @@
             Forms.SubmitForm('@Model.FormId');
             Forms.CompleteUI();
             Forms.SubmitByEnter("@Model.FormId");
-            
-            setTimeout(function () {
-                $("#txtFinishDate").val(new Date());
-            }, 1000);
         });
         $(document).on('click', '.resetForm', function () {
 

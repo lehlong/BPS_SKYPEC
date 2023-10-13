@@ -3,235 +3,94 @@
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
     var lstPeriodTime = SelectListUtilities.GetAllUser();
+    Model.ObjDetail.SIGN_DAY = DateTime.Now;
+    Model.ObjDetail.START_DATE = DateTime.Now;
+    Model.ObjDetail.FINISH_DATE = DateTime.Now;
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
-    @using (Ajax.BeginForm("CreateContract", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
-    {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(m => m.FormId)
-    <div class="row clearfix">
-        <div class="col-xs-12 col-sm-7" style="padding-right: 0;">
-            <div class="card border-grey">
-                <div class="body" style="padding-top: 0px;">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> TẠO MỚI HỢP ĐỒNG</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="page-function">
+    <div class="modal fade view-info-customer" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="container-fluid" style="padding: 0px 20px 20px 20px">
+                    <div class="row clearfix">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> CHỈNH SỬA ĐỢT THANH TOÁN</a>
+                            </li>
+                        </ul>
+                        <div class="page-function" style="margin-top:10px">
                             <div class="page-function-button m-r-20">
-                                @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
-                                @Html.MyButton("cmdSave", "Tạo mới", string.Format("Create();"), "Alt+N", "done_all")
+                                <button class="btn btn-default close-modal" data-dismiss="modal"><i class="col-fecon material-icons">close</i> Đóng</button>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-xs-1"></div>
-                            <div class="col-lg-12 col-xs-12">
-                                <div id="divDetail">
-                                    <div style="margin:10px">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="body">
+                                    <div class="tab-content">
                                         <div class="row">
-                                            <div class="col-md-3">
-                                                <label>Số hợp đồng</label>
-                                                <div class="form-group">
-                                                    <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_NUMBER)
-                                                    </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_NUMBER)
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-5">
-                                                <label>Tên hợp đồng</label>
-                                                <div class="form-group">
-                                                    <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.NAME)
-                                                    </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.NAME)
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <label>Loại hợp đồng</label>
-                                                @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_TYPE, SelectListUtilities.GetContractType(),
-               new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_TYPE)
-
-                                            </div>
-
                                             <div class="col-md-6">
-                                                <label>Khách hàng</label>
-                                                @Html.MyDropDownListFor(m => m.ObjDetail.CUSTOMER, SelectListUtilities.GetCustomer(),
-               new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.CUSTOMER)
-
+                                                <label>Mã khách hàng</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <input class="form-control" readonly id="CODE" />
+                                                    </div>
+                                                </div>
                                             </div>
-
                                             <div class="col-md-6">
-                                                <label>Phòng ban phụ trách</label>
-                                                @Html.MyDropDownListFor(m => m.ObjDetail.DEPARTMENT, SelectListUtilities.GetCostCenter(),
-         new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.DEPARTMENT)
-
-
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <label>Ngày ký kết</label>
+                                                <label>Mã cũ</label>
                                                 <div class="form-group">
                                                     <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.SIGN_DAY, new { @class = "datepicker", @autocomplete = "off", @id = "txtSignDate" })
+                                                        <input class="form-control" readonly id="OLD_CODE" />
                                                     </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.SIGN_DAY)
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Ngày bắt đầu</label>
-                                                <div class="form-group">
-                                                    <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.START_DATE, new { @class = "datepicker", @autocomplete = "off", @id = "txtStartDate" })
-                                                    </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.START_DATE)
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label>Ngày kết thúc</label>
-                                                <div class="form-group">
-                                                    <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.FINISH_DATE, new { @class = "datepicker", @autocomplete = "off", @id = "txtFinishDate" })
-                                                    </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.FINISH_DATE)
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
-                                                <label>Giai đoạn hợp đồng</label>
-                                                @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_PHASE, SelectListUtilities.GetContractPhase(),
-                                                          new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_PHASE)
-
-                                            </div>
-                                            <div class="col-md-5">
-                                                <label>Giá trị hợp đồng (trước thuế)</label>
+                                                <label>Tên khách hàng</label>
                                                 <div class="form-group">
                                                     <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_VALUE, new { @type = "number", @id = "contractValue" })
+                                                        <input class="form-control" readonly id="TEXT" />
                                                     </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_VALUE)
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <label>VAT %</label>
+                                            <div class="col-md-12">
+                                                <label>Địa chỉ</label>
                                                 <div class="form-group">
                                                     <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.VAT, new { @type = "number", id = "VAT" })
+                                                        <input class="form-control" readonly id="ADDRESS" />
                                                     </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.VAT)
-                                                </div>
-                                            </div>
-                                            <div class="col-md-5">
-                                                <label>Giá trị hợp đồng (sau thuế)</label>
-                                                <div class="form-group">
-                                                    <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_VALUE_VAT, new { @type = "number", @id = "contractValueVat", @readonly = "" })
-                                                    </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_VALUE_VAT)
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <label>Đại diện bên A</label>
+                                                <label>Mã số thuế</label>
                                                 <div class="form-group">
                                                     <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.REPRESENT_A)
+                                                        <input class="form-control" readonly id="MST" />
                                                     </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.REPRESENT_A)
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <label>Đại diện bên B</label>
+                                                <label>Số điện thoại</label>
                                                 <div class="form-group">
                                                     <div class="form-line">
-                                                        @Html.MyTextBoxFor(m => m.ObjDetail.REPRESENT_B)
+                                                        <input class="form-control" readonly id="PHONE" />
                                                     </div>
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.REPRESENT_B)
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-5">
-            <div class="card border-grey">
-                <div class="body" style="padding-top: 0px;">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> FILE ĐÍNH KÈM</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="page-function">
-                            <div class="page-function-button m-r-20">
-                                    <div>
-                                        @Html.MyButton("cmdFileHoSo", "Chọn file", "UploadFile.InsertFile();", "Chọn file hồ sơ", "attach_file")
-                                    </div>
-                                    <div id="divPreviewFile">
-
-                                    </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card border-grey" style="margin-top: 12px;">
-                <div class="body" style="padding-top: 0px;">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> NHÂN SỰ HỢP ĐỒNG</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="row">
-                            <div class="col-xs-1"></div>
-                            <div class="col-lg-12 col-xs-10">
-                                <div class="tab-content">
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Người phê duyệt</label>
-                                            @Html.MyDropDownListFor(m => m.ObjDetail.APPROVER, SelectListUtilities.GetAllUser(),
-         new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-                                        </div>
-                                        @Html.ValidationMessageFor(m => m.ObjDetail.APPROVER)
-
-                                        <div class="col-md-6">
-                                            <label>Quản lý hợp đồng</label>
-                                            @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_MANAGER, SelectListUtilities.GetAllUser(),
-            new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label>Người theo dõi</label>
-                                            @Html.MyDropDownListFor(m => m.ObjListUser, SelectListUtilities.GetAllUser(),
-            new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false, @multiple = "multiple" })
-
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label>Mô tả</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    @Html.MyTextAreaFor(m => m.ObjDetail.NOTES)
+                                            <div class="col-md-12">
+                                                <label>Ngân hàng</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <input class="form-control" readonly id="BANK" />
+                                                    </div>
                                                 </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.NOTES)
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Thông tin khác</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        <input class="form-control" readonly id="OTHER_INFO" />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -243,6 +102,244 @@
             </div>
         </div>
     </div>
+    @using (Ajax.BeginForm("CreateContract", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.FormId)
+        <div class="row clearfix">
+            <div class="col-xs-12 col-sm-7" style="padding-right: 0;">
+                <div class="card border-grey">
+                    <div class="body" style="padding-top: 0px;">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> TẠO MỚI HỢP ĐỒNG</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="page-function">
+                                <div class="page-function-button m-r-20">
+                                    @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
+                                    @Html.MyButton("cmdSave", "Tạo mới", string.Format("Create();"), "Alt+N", "done_all")
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-1"></div>
+                                <div class="col-lg-12 col-xs-12">
+                                    <div id="divDetail">
+                                        <div style="margin:10px">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label>Số hợp đồng</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_NUMBER)
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_NUMBER)
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                    <label>Tên hợp đồng</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.NAME)
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.NAME)
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label>Loại hợp đồng</label>
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_TYPE, SelectListUtilities.GetContractType(),
+                   new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                                    @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_TYPE)
+
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label class="badge" style="cursor:pointer" data-toggle="modal" data-target=".view-info-customer">Khách hàng</label>
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.CUSTOMER, SelectListUtilities.GetCustomer(),
+                   new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false, @onchange = "onChangeCustomer(this.value)" })
+
+                                                    @Html.ValidationMessageFor(m => m.ObjDetail.CUSTOMER)
+
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label>Phòng ban phụ trách</label>
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.DEPARTMENT, SelectListUtilities.GetCostCenter(),
+             new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                                    @Html.ValidationMessageFor(m => m.ObjDetail.DEPARTMENT)
+
+
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label>Ngày ký kết</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.SIGN_DAY, new { @class = "datepicker", @autocomplete = "off", @id = "txtSignDate" })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.SIGN_DAY)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label>Ngày bắt đầu</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.START_DATE, new { @class = "datepicker", @autocomplete = "off", @id = "txtStartDate" })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.START_DATE)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label>Ngày kết thúc</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.FINISH_DATE, new { @class = "datepicker", @autocomplete = "off", @id = "txtFinishDate" })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.FINISH_DATE)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label>Giai đoạn hợp đồng</label>
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_PHASE, SelectListUtilities.GetContractPhase(),
+                                                              new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                                    @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_PHASE)
+
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label>Giá trị hợp đồng (trước thuế)</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_VALUE, new { @type = "number", @id = "contractValue" })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_VALUE)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label>VAT %</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.VAT, new { @type = "number", id = "VAT" })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.VAT)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label>Giá trị hợp đồng (sau thuế)</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_VALUE_VAT, new { @type = "number", @id = "contractValueVat", @readonly = "" })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_VALUE_VAT)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Đại diện bên A</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.REPRESENT_A)
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.REPRESENT_A)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Đại diện bên B</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.REPRESENT_B)
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.REPRESENT_B)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-5">
+                <div class="card border-grey">
+                    <div class="body" style="padding-top: 0px;">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> FILE ĐÍNH KÈM</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="page-function">
+                                <div class="page-function-button m-r-20">
+                                    <div>
+                                        @Html.MyButton("cmdFileHoSo", "Chọn file", "UploadFile.InsertFile();", "Chọn file hồ sơ", "attach_file")
+                                    </div>
+                                    <div id="divPreviewFile">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-grey" style="margin-top: 12px;">
+                    <div class="body" style="padding-top: 0px;">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> NHÂN SỰ HỢP ĐỒNG</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="row">
+                                <div class="col-xs-1"></div>
+                                <div class="col-lg-12 col-xs-10">
+                                    <div class="tab-content">
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Người phê duyệt</label>
+                                                @Html.MyDropDownListFor(m => m.ObjDetail.APPROVER, SelectListUtilities.GetAllUser(),
+             new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+                                            </div>
+                                            @Html.ValidationMessageFor(m => m.ObjDetail.APPROVER)
+
+                                            <div class="col-md-6">
+                                                <label>Quản lý hợp đồng</label>
+                                                @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_MANAGER, SelectListUtilities.GetAllUser(),
+                new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Người theo dõi</label>
+                                                @Html.MyDropDownListFor(m => m.ObjListUser, SelectListUtilities.GetAllUser(),
+                new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false, @multiple = "multiple" })
+
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Mô tả</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextAreaFor(m => m.ObjDetail.NOTES)
+                                                    </div>
+                                                    @Html.ValidationMessageFor(m => m.ObjDetail.NOTES)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 
     <script src="~/Scripts/D2SCoreJS/UploadFile.js"></script>
@@ -282,21 +379,20 @@
                     contentType: false,
                     processData: false,
                     success: function (response) {
-                        //callApiSearch('Reload');
                         Message.execute(response);
                         Forms.HideLoading();
-                        Forms.Close('@Model.ViewId');
-                        Forms.LoadAjax('@Url.Action("Detail")' + '?id=' + response.Data + '&version=0');
-                        SubmitIndex();
+                        if (response.State) {
+                            SubmitIndex();
+                            Forms.Close('@Model.ViewId');
+                            Forms.LoadAjax('@Url.Action("Detail")' + '?id=' + response.Data + '&version=0');
+                        }
                     },
                     error: Forms.AjaxErrorHandler
                 });
         }
         $(function () {
             Forms.CompleteUI();
-            $("#txtStartDate").val(new Date());
-            $("#txtFinishDate").val("");
-            //
+
             var inputValue = document.getElementById('contractValue');
             var inputVAT = document.getElementById('VAT');
             var outputValue = document.getElementById('contractValueVat');
@@ -310,6 +406,22 @@
                 outputValue.value = valueAfterVAT;
             }
         });
+        function onChangeCustomer(value){
+            $.ajax({
+                url: "@Url.Action("GetCustomer")",
+                data: { code : value },
+                success: function(response){
+                    $('#CODE').val(response.Data.CODE);
+                    $('#OLD_CODE').val(response.Data.OLD_CODE);
+                    $('#TEXT').val(response.Data.TEXT);
+                    $('#ADDRESS').val(response.Data.ADDRESS);
+                    $('#MST').val(response.Data.MST);
+                    $('#PHONE').val(response.Data.PHONE);
+                    $('#BANK').val(response.Data.BANK);
+                    $('#OTHER_INFO').val(response.Data.OTHER_INFO);
+                }
+            });
+        }
 
     </script>
 </div>

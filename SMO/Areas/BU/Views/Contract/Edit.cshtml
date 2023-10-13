@@ -296,22 +296,22 @@
         var template = $("#templateLink").html();
         $("#divPreviewLink").append(template);
     }
-    function RemoveFile(obj, id) {
-        if (confirm("Bạn có chắc chắn xóa file này?")) {
-            listFileRemove.push(id);
-            $(obj).parent().parent().parent().parent().remove();
+        function RemoveFile(obj, id) {
+            if (confirm("Bạn có chắc chắn xóa file này?")) {
+                listFileRemove.push(id);
+                $(obj).parent().parent().parent().parent().remove();
+            }
         }
-    }
-    function Update() {
+        function Update() {
             var headers = {
-                    'RequestVerificationToken': $('#antiForgeryToken').val(),
+                'RequestVerificationToken': $('#antiForgeryToken').val(),
             };
 
             var form = document.getElementById("@Model.FormId");
             var formData = new FormData(form);
 
             for (var i = 0; i < UploadFile.ListFile.length; i++) {
-                   formData.append("files", UploadFile.ListFile[i].DataFile);
+                formData.append("files", UploadFile.ListFile[i].DataFile);
             }
             if (listLinkRemove.length > 0) {
                 formData.append("listFileRemove", listLinkRemove);
@@ -320,46 +320,46 @@
                 formData.append("listFileRemove", listFileRemove);
             }
             $.ajax({
-                    xhr: function () {
-                        var xhr = new window.XMLHttpRequest();
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
 
-                        xhr.upload.addEventListener("progress", function (evt) {
-                            if (evt.lengthComputable) {
-                                var percentComplete = evt.loaded / evt.total;
-                                percentComplete = parseInt(percentComplete * 100);
-                                console.log(percentComplete);
-                                if (percentComplete === 100) {
-                                    //alert("kakalot");
-                                }
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+                            console.log(percentComplete);
+                            if (percentComplete === 100) {
+                                //alert("kakalot");
                             }
-                        }, false);
+                        }
+                    }, false);
 
-                        return xhr;
-                    },
-                    type: "POST",
-                    url: "@Url.Action("UpdateContract")",
-                    data: formData,
-                    headers: headers,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        Message.execute(response);
-                        Forms.HideLoading();
-                    },
-                    error: Forms.AjaxErrorHandler
+                    return xhr;
+                },
+                type: "POST",
+                url: "@Url.Action("UpdateContract")",
+                data: formData,
+                headers: headers,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    Message.execute(response);
+                    Forms.HideLoading();
+                },
+                error: Forms.AjaxErrorHandler
             });
 
-    }
-    function Create() {
+        }
+        function Create() {
             var headers = {
-                    'RequestVerificationToken': $('#antiForgeryToken').val(),
+                'RequestVerificationToken': $('#antiForgeryToken').val(),
             };
 
             var form = document.getElementById("@Model.FormId");
             var formData = new FormData(form);
 
             for (var i = 0; i < UploadFile.ListFile.length; i++) {
-                   formData.append("files", UploadFile.ListFile[i].DataFile);
+                formData.append("files", UploadFile.ListFile[i].DataFile);
             }
             if (listLinkRemove.length > 0) {
                 formData.append("listFileRemove", listLinkRemove);
@@ -368,37 +368,38 @@
                 formData.append("listFileRemove", listFileRemove);
             }
             $.ajax({
-                    xhr: function () {
-                        var xhr = new window.XMLHttpRequest();
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
 
-                        xhr.upload.addEventListener("progress", function (evt) {
-                            if (evt.lengthComputable) {
-                                var percentComplete = evt.loaded / evt.total;
-                                percentComplete = parseInt(percentComplete * 100);
-                                console.log(percentComplete);
-                                if (percentComplete === 100) {
-                                    //alert("kakalot");
-                                }
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+                            console.log(percentComplete);
+                            if (percentComplete === 100) {
+                                //alert("kakalot");
                             }
-                        }, false);
+                        }
+                    }, false);
 
-                        return xhr;
-                    },
-                    type: "POST",
-                    url: "@Url.Action("CreateVersion")",
-                    data: formData,
-                    headers: headers,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
+                    return xhr;
+                },
+                type: "POST",
+                url: "@Url.Action("CreateVersion")",
+                data: formData,
+                headers: headers,
+                contentType: false,
+                processData: false,
+                success: function (response) {
                     version++;
-                        Message.execute(response);
-                        Forms.HideLoading();
-                    },
-                    error: Forms.AjaxErrorHandler
+                    Message.execute(response);
+                    Forms.HideLoading();
+                    SubmitIndex();
+                },
+                error: Forms.AjaxErrorHandler
             });
 
-    }
+        }
         function EditContract() {
             Swal.fire({
                 title: 'Lưu dữ liệu?',

@@ -11,5 +11,10 @@ namespace SMO.Core.Entities
         [Required(ErrorMessage = "Trường này bắt buộc nhập", AllowEmptyStrings = false)]
         public virtual string TEXT { get; set; }
         public virtual string OLD_CODE { get; set; }
+        public virtual string ADDRESS { get; set; }
+        public virtual string MST { get; set; }
+        public virtual string PHONE { get; set; }
+        public virtual string BANK { get; set; }
+        public virtual string OTHER_INFO { get; set; }
     }
 }

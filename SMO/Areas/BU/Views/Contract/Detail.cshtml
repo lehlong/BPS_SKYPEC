@@ -165,7 +165,7 @@
                                                     <label>Giá trị hợp đồng (trước thuế)</label>
                                                     <div class="form-group">
                                                         <div class="form-line">
-                                                            @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_VALUE, new { @type = "number", @id = "contractValue", @readonly = "readonly" })
+                                                            <input type="text" class="form-control" value="@Model.ObjDetail.CONTRACT_VALUE.ToStringVN()" readonly />
                                                         </div>
                                                         @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_VALUE)
                                                     </div>
@@ -183,7 +183,7 @@
                                                     <label>Giá trị hợp đồng (sau thuế)</label>
                                                     <div class="form-group">
                                                         <div class="form-line">
-                                                            @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_VALUE_VAT, new { @type = "number", @id = "contractValueVat", @readonly = "" })
+                                                            <input type="text" class="form-control" value="@Model.ObjDetail.CONTRACT_VALUE_VAT.ToStringVN()" readonly />
                                                         </div>
                                                         @Html.ValidationMessageFor(m => m.ObjDetail.CONTRACT_VALUE_VAT)
                                                     </div>
@@ -309,130 +309,132 @@
 <script src="~/Scripts/D2SCoreJS/UploadFile.js"></script>
 
 <script type="text/javascript">
-        var version = "@Model.ObjDetail.VERSION";
-        var nameContract = "@Model.ObjDetail.NAME_CONTRACT";
+    var version = "@Model.ObjDetail.VERSION";
+    var nameContract = "@Model.ObjDetail.NAME_CONTRACT";
+    var isShown = true;
+    var selectedValues = @Html.Raw(Json.Encode(Model.ObjListUser));
+    $.each(selectedValues, function (index, value) {
+        $(".selectFollowers").find("option[value='" + value + "']").prop("selected", true);
+    });
+    $(function () {
+        Forms.CompleteUI();
+    });
+    function reload() {
+        Forms.LoadAjax("Bu/Contract/Detail?id=" + nameContract + "&version=" + version);
+        Forms.Close('@Model.ViewId');
 
-        var isShown = true;
-        var selectedValues = @Html.Raw(Json.Encode(Model.ObjListUser));
-        $.each(selectedValues, function (index, value) {
-            $(".selectFollowers").find("option[value='" + value + "']").prop("selected", true);
+    }
+    function DotThanhToan() {
+        Forms.LoadAjax("Bu/Payment/Index?nameContract=" + nameContract + "&version=" + version);
+        Forms.Close('@Model.ViewId');
+
+    }
+    function ThongTinHopDong() {
+        Forms.LoadAjax("Bu/Contract/Detail?id=" + nameContract + "&version=" + version);
+        Forms.Close('@Model.ViewId');
+
+    }
+    function TrinhDuyet(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("TrinhDuyet")" + "?id=" + id,
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+                SubmitIndex();
+                reload();
+            },
+            error: Forms.AjaxErrorHandler
         });
-        $(function () {
-            Forms.CompleteUI();
 
+    };
+    function HuyTrinhDuyet(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("HuyTrinhDuyet")" + "?id=" + id,
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+                SubmitIndex();
+                reload();
+            },
+            error: Forms.AjaxErrorHandler
         });
-        function reload() {
-            Forms.LoadAjax("Bu/Contract/Detail?id=" + nameContract + "&version=" + version);
-            Forms.Close('@Model.ViewId');
 
+    };
+    function PheDuyet(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("PheDuyet")" + "?id=" + id,
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+                SubmitIndex();
+                reload();
+            },
+            error: Forms.AjaxErrorHandler
+        });
+
+    };
+    function TuChoi(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("TuChoi")" + "?id=" + id,
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+                SubmitIndex();
+                reload();
+            },
+            error: Forms.AjaxErrorHandler
+        });
+    };
+
+    function SendComment(id, version) {
+        var comment = $("#txtContent").val().trim();
+        if (comment == "") {
+            return;
         }
-        function DotThanhToan() {
-            Forms.LoadAjax("Bu/Payment/Index?nameContract=" + nameContract + "&version=" + version);
-            Forms.Close('@Model.ViewId');
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SendComment")" + "?id=" + id,
+            data: {
+                "comment": comment,
+                "version": version
+            },
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+                reload();
+            },
+            error: Forms.AjaxErrorHandler
+        });
+    }
+    function OpenSelectVersion() {
+        var divVersion = $(".DivVersion");
+        var buttonVersion = $(".buttonVersion").position(); // Lấy vị trí của nút bấm
 
+        // Đặt vị trí của DivVersion để nó hiển thị phía dưới nút bấm
+        divVersion.css({
+            "position": "absolute",
+            "left": buttonVersion.left + "px",
+            "top": (buttonVersion.top + 10 + $(".buttonVersion").outerHeight()) + "px",
+            "z-index": "9999"
+        });
+        if (isShown == true) {
+            $(".DivVersion").css("display", "block");
+            isShown = false;
         }
-        function ThongTinHopDong() {
-            Forms.LoadAjax("Bu/Contract/Detail?id=" + nameContract + "&version=" + version);
-            Forms.Close('@Model.ViewId');
-
+        else {
+            $(".DivVersion").css("display", "none");
+            isShown = true;
         }
-        function TrinhDuyet(id) {
-            $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("TrinhDuyet")"+"?id="+id,
-                    success: function (response) {
-                        Message.execute(response);
-                        Forms.HideLoading();
-                        reload();
-                    },
-                    error: Forms.AjaxErrorHandler
-                });
 
-        };
-        function HuyTrinhDuyet(id) {
-            $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("HuyTrinhDuyet")"+"?id="+id,
-                    success: function (response) {
-                        Message.execute(response);
-                        Forms.HideLoading();
-                        reload();
-                    },
-                    error: Forms.AjaxErrorHandler
-                });
-
-        };
-        function PheDuyet(id) {
-            $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("PheDuyet")"+"?id="+id,
-                    success: function (response) {
-                        Message.execute(response);
-                        Forms.HideLoading();
-                        reload();
-                    },
-                    error: Forms.AjaxErrorHandler
-                });
-
-        };
-        function TuChoi(id) {
-            $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("TuChoi")"+"?id="+id,
-                    success: function (response) {
-                        Message.execute(response);
-                        Forms.HideLoading();
-                        reload();
-                    },
-                    error: Forms.AjaxErrorHandler
-            });
-        };
-
-        function SendComment(id, version) {
-            var comment = $("#txtContent").val().trim();
-            if (comment == "") {
-                return;
-            }
-             $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("SendComment")"+"?id="+id,
-                     data: {
-                         "comment": comment,
-                         "version" : version
-                     },
-                        success: function (response) {
-                        Message.execute(response);
-                        Forms.HideLoading();
-                        reload();
-                    },
-                    error: Forms.AjaxErrorHandler
-            });
-        }
-        function OpenSelectVersion() {
-            var divVersion = $(".DivVersion");
-            var buttonVersion = $(".buttonVersion").position(); // Lấy vị trí của nút bấm
-
-            // Đặt vị trí của DivVersion để nó hiển thị phía dưới nút bấm
-            divVersion.css({
-                "position": "absolute",
-                "left": buttonVersion.left  + "px",
-                "top": (buttonVersion.top + 10 + $(".buttonVersion").outerHeight()) + "px",
-                "z-index": "9999"
-            });
-            if (isShown == true) {
-                $(".DivVersion").css("display", "block");
-                isShown = false;
-            }
-            else {
-                $(".DivVersion").css("display", "none");
-                isShown = true;
-            }
-
-        }
-        function selectVersion(id,version) {
-            Forms.Close('@Model.ViewId');
-            Forms.LoadAjax("Bu/Contract/Detail?id=" + id+"&version="+version);
-        }
+    }
+    function selectVersion(id, version) {
+        Forms.Close('@Model.ViewId');
+        Forms.LoadAjax("Bu/Contract/Detail?id=" + id + "&version=" + version);
+    }
 </script>
 
 

@@ -56,51 +56,60 @@ namespace SMO.Service.BU
             {
                 State = true;
                 ErrorMessage = "";
-                if (string.IsNullOrEmpty(this.ObjDetail.NAME))
-                {
-                    ErrorMessage += "Vui lòng nhập tên hợp đồng!,";
-                    State = false;
-                }
                 if (string.IsNullOrEmpty(this.ObjDetail.CONTRACT_NUMBER))
                 {
-                    ErrorMessage += "Vui lòng nhập số hợp đồng!,";
+                    ErrorMessage = "Vui lòng nhập số hợp đồng!";
                     State = false;
+                    return;
+                }
+                if (string.IsNullOrEmpty(this.ObjDetail.NAME))
+                {
+                    ErrorMessage = "Vui lòng nhập tên hợp đồng!";
+                    State = false;
+                    return;
                 }
                 if (this.ObjDetail.CONTRACT_VALUE_VAT <= 0)
                 {
-                    ErrorMessage += "Vui lòng nhập nhập giá trị hợp đồng!,";
+                    ErrorMessage = "Vui lòng nhập nhập giá trị hợp đồng!";
                     State = false;
+                    return;
                 }
                 if (string.IsNullOrEmpty(this.ObjDetail.APPROVER))
                 {
-                    ErrorMessage += "Vui lòng chọn người trình duyệt hợp đồng!,";
+                    ErrorMessage = "Vui lòng chọn người trình duyệt hợp đồng!";
                     State = false;
+                    return;
                 }
                 if (string.IsNullOrEmpty(this.ObjDetail.CONTRACT_MANAGER))
                 {
-                    ErrorMessage += "Vui lòng chọn người quản lý hợp đồng!,";
+                    ErrorMessage += "Vui lòng chọn người quản lý hợp đồng!";
                     State = false;
+                    return;
                 }
                 if (string.IsNullOrEmpty(this.ObjDetail.CUSTOMER))
                 {
-                    ErrorMessage += "Vui nhập tên khách hàng!,";
+                    ErrorMessage = "Vui nhập tên khách hàng!";
                     State = false;
+                    return;
                 }
                 if (string.IsNullOrEmpty(this.ObjDetail.REPRESENT_A))
                 {
-                    ErrorMessage += "Vui lòng nhập bên A của hợp đồng!,";
+                    ErrorMessage = "Vui lòng nhập bên A của hợp đồng!";
                     State = false;
+                    return;
                 }
                 if (string.IsNullOrEmpty(this.ObjDetail.REPRESENT_B))
                 {
-                    ErrorMessage += "Vui lòng nhập bên B của hợp đồng!,";
+                    ErrorMessage = "Vui lòng nhập bên B của hợp đồng!";
                     State = false;
-                }
-                if (State == false)
-                {
                     return;
                 }
-
+                if(this.ObjDetail.FINISH_DATE < this.ObjDetail.START_DATE)
+                {
+                    ErrorMessage = "Ngày kết thúc hợp đồng phải lớn hơn ngày bắt đầu hợp đồng!";
+                    State = false;
+                    return;
+                }
                 // lưu file
                 var lstFileStream = new List<FILE_STREAM>();
                 for (int i = 0; i < Request.Files.AllKeys.Length; i++)
@@ -512,10 +521,12 @@ namespace SMO.Service.BU
                 return null;
             }
         }
-        public static string converListContract(List<T_BU_CONTRACT> listContract)
+        public string converListContract(List<T_BU_CONTRACT> listContract)
         {
-            var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            var alertRed = UnitOfWork.Repository<ContractAlertRepo>().Queryable().FirstOrDefault(x => x.CODE == "RED").NUMBER;
+            var alertYellow = UnitOfWork.Repository<ContractAlertRepo>().Queryable().FirstOrDefault(x => x.CODE == "YELLOW").NUMBER;
 
+            var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
             var jsonData = listContract.Select((x, index) =>
             {
                 bool isChild = (x.PARENT == null);
@@ -526,20 +537,23 @@ namespace SMO.Service.BU
                     stt = index + 1,
                     nameContract = x.NAME,
                     numberContract = x.CONTRACT_NUMBER,
-                    typeContract = x.CONTRACT_TYPE,
-                    nameCustomer = x.CUSTOMER,
-                    manager = x.CONTRACT_MANAGER,
-                    department = x.DEPARTMENT,
-                    valueOriginal = x.CONTRACT_VALUE,
+                    typeContract = x.ContractType?.TEXT,
+                    nameCustomer = x.CustomerContract?.TEXT,
+                    manager = x.ContractManager?.FULL_NAME,
+                    department = x.CostCenter?.NAME,
+                    valueOriginal = x.CONTRACT_VALUE.ToStringVN(),
                     signDay = x.SIGN_DAY.ToString("dd/MM/yyyy"),
                     startDate = x.START_DATE.ToString("dd/MM/yyyy"),
                     finishDate = x.FINISH_DATE.ToString("dd/MM/yyyy"),
-                    status = SMO.Core.Entities.BU.ConstContract.convertStatusToString(x.STATUS),
-                    phase = SMO.Core.Entities.BU.ConstContract.convertPhaseToString(x.CONTRACT_PHASE),
+                    statusCode = x.STATUS,
+                    status = ConstContract.convertStatusToString(x.STATUS),
+                    phase = ConstContract.convertPhaseToString(x.CONTRACT_PHASE),
                     version = x.VERSION,
                     progress = x.PHANTRAM,
-                    createContract = "",
-                    file = x.FILE_CHILD
+                    file = x.FILE_CHILD,
+                    alert = (x.FINISH_DATE - DateTime.Now).Days + 1 <= alertYellow && (x.FINISH_DATE - DateTime.Now).Days + 1 > alertRed ? "warning" : (x.FINISH_DATE - DateTime.Now).Days + 1 <= alertRed ? "danger" : "normal",
+                    remainingDays = (x.FINISH_DATE - DateTime.Now).Days + 1,
+                    createContract = ""
                 };
             }).ToList();
             return JsonConvert.SerializeObject(jsonData, jsonSerializeSettings);
@@ -655,24 +669,28 @@ namespace SMO.Service.BU
 
                     UnitOfWork.Repository<ContractHistoryRepo>().Create(history);
                 }
-                if (!contractOld.CONTRACT_TYPE.Equals(this.ObjDetail.CONTRACT_TYPE))
+                if (contractOld.CONTRACT_TYPE != null)
                 {
-                    // tạo lịch sử
-                    var history = new T_BU_CONTRACT_HISTORY()
+                    if (!contractOld.CONTRACT_TYPE.Equals(this.ObjDetail.CONTRACT_TYPE))
                     {
-                        ID = Guid.NewGuid().ToString(),
-                        ACTION = ConstContract.SuaLoaiHopDong,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        OLD_VALUE = contractOld.CONTRACT_TYPE,
-                        NEW_VALUE = this.ObjDetail.CONTRACT_TYPE,
-                        VERSION = contractOld.VERSION,
-                        NAME_CONTRACT = contractOld.NAME_CONTRACT,
+                        // tạo lịch sử
+                        var history = new T_BU_CONTRACT_HISTORY()
+                        {
+                            ID = Guid.NewGuid().ToString(),
+                            ACTION = ConstContract.SuaLoaiHopDong,
+                            CREATE_BY = ProfileUtilities.User.USER_NAME,
+                            OLD_VALUE = contractOld.CONTRACT_TYPE,
+                            NEW_VALUE = this.ObjDetail.CONTRACT_TYPE,
+                            VERSION = contractOld.VERSION,
+                            NAME_CONTRACT = contractOld.NAME_CONTRACT,
 
-                    };
-                    contractOld.CONTRACT_TYPE = this.ObjDetail.CONTRACT_TYPE;
+                        };
+                        contractOld.CONTRACT_TYPE = this.ObjDetail.CONTRACT_TYPE;
 
-                    UnitOfWork.Repository<ContractHistoryRepo>().Create(history);
+                        UnitOfWork.Repository<ContractHistoryRepo>().Create(history);
+                    }
                 }
+                
                 if (!contractOld.CUSTOMER.Equals(this.ObjDetail.CUSTOMER))
                 {
                     // tạo lịch sử
@@ -1422,10 +1440,17 @@ namespace SMO.Service.BU
         {
             var parent = this.CurrentRepository.Get(this.ObjDetail.PARENT);
             this.ObjDetail.NAME_PARENT = parent.NAME;
-            this.ObjDetail.CUSTOMER = parent.CUSTOMER;
+            this.ObjDetail.NAME = parent.NAME;
+            this.ObjDetail.CONTRACT_TYPE = parent.CONTRACT_TYPE;
+            this.ObjDetail.SIGN_DAY = parent.SIGN_DAY;
+            this.ObjDetail.START_DATE = parent.START_DATE;
+            this.ObjDetail.FINISH_DATE = parent.FINISH_DATE;
+            this.ObjDetail.CONTRACT_PHASE = parent.CONTRACT_PHASE;
+            this.ObjDetail.REPRESENT_A = parent.REPRESENT_A;
+            this.ObjDetail.REPRESENT_B = parent.REPRESENT_B;
             this.ObjDetail.DEPARTMENT = parent.DEPARTMENT;
-
-
+            this.ObjDetail.CONTRACT_MANAGER = parent.CONTRACT_MANAGER;
+            this.ObjDetail.APPROVER = parent.APPROVER;
         }
         public decimal getAmount(string nameContact, int version)
         {
@@ -1517,6 +1542,18 @@ namespace SMO.Service.BU
                 this.State = false;
                 this.ErrorMessage = "Có lỗi xẩy ra trong quá trình tạo file excel!";
                 this.Exception = ex;
+            }
+        }
+
+        public T_MD_CUSTOMER GetCustomer(string code)
+        {
+            if (!string.IsNullOrEmpty(code))
+            {
+                return UnitOfWork.Repository<CustomerRepo>().Queryable().FirstOrDefault(x => x.CODE == code);
+            }
+            else
+            {
+                return new T_MD_CUSTOMER();
             }
         }
     }

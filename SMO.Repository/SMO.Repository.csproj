@@ -242,6 +242,7 @@
     <Compile Include="Implement\MD\AreaRepo.cs" />
     <Compile Include="Implement\MD\BidTypeRepo.cs" />
     <Compile Include="Implement\MD\CompanyRepo.cs" />
+    <Compile Include="Implement\MD\ContractAlertRepo.cs" />
     <Compile Include="Implement\MD\ContractPhaseRepo.cs" />
     <Compile Include="Implement\MD\ContractTypeRepo.cs" />
     <Compile Include="Implement\MD\CostCenterRepo.cs" />
@@ -463,6 +464,7 @@
     <Compile Include="Interface\MD\IAreaRepo.cs" />
     <Compile Include="Interface\MD\IBidTypeRepo.cs" />
     <Compile Include="Interface\MD\ICompanyRepo.cs" />
+    <Compile Include="Interface\MD\IContractAlertRepo.cs" />
     <Compile Include="Interface\MD\IContractPhaseRepo.cs" />
     <Compile Include="Interface\MD\IContractTypeRepo.cs" />
     <Compile Include="Interface\MD\ICostCenterRepo.cs" />
@@ -697,6 +699,7 @@
     <Compile Include="Mapping\MD\T_MD_BID_SPEC_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_BID_TYPE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_COMPANY_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_CONTRACT_ALERT_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_CONTRACT_PHASE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_CONTRACT_TYPE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_COST_CENTER_Map.cs" />

@@ -562,6 +562,7 @@
     <Compile Include="Areas\CM\Controllers\EmailNotifyController.cs" />
     <Compile Include="Areas\MD\Controllers\AreaController.cs" />
     <Compile Include="Areas\MD\Controllers\CompanyController.cs" />
+    <Compile Include="Areas\MD\Controllers\ContractAlertController.cs" />
     <Compile Include="Areas\MD\Controllers\ContractPhaseController.cs" />
     <Compile Include="Areas\MD\Controllers\ContractTypeController.cs" />
     <Compile Include="Areas\MD\Controllers\CostCenterController.cs" />
@@ -803,6 +804,7 @@
     <Compile Include="Service\Common\IGenericService.cs" />
     <Compile Include="Service\DynamicSqlService.cs" />
     <Compile Include="Service\MD\AreaService.cs" />
+    <Compile Include="Service\MD\ContractAlertService.cs" />
     <Compile Include="Service\MD\ContractPhaseService.cs" />
     <Compile Include="Service\MD\ContractTypeService.cs" />
     <Compile Include="Service\MD\CustomerService.cs" />
@@ -1843,6 +1845,9 @@
     <Content Include="Areas\BU\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\BU\Views\web.config" />
     <Content Include="Areas\BU\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\MD\Views\ContractAlert\Index.cshtml" />
+    <Content Include="Areas\MD\Views\ContractAlert\List.cshtml" />
+    <Content Include="Areas\MD\Views\ContractAlert\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

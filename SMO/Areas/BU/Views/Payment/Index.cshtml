@@ -3,7 +3,7 @@
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
-    var phanTramThanhToan = Math.Floor((Model.amount/ Model.contract.CONTRACT_VALUE_VAT ) * 100);
+    var phanTramThanhToan = (Model.ObjList.Sum(x => x.AMOUNT)/ Model.contract.CONTRACT_VALUE_VAT ) * 100;
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
     <style>
@@ -60,7 +60,7 @@
                         <lable>Tiến độ thanh toán</lable>
                         <div class="form-group">
                             <div class="form-line">
-                                <input class="form-control valid" type="text" disabled value="@phanTramThanhToan%">
+                                <input class="form-control valid" type="text" disabled value="@phanTramThanhToan.ToString("0.0")%">
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
             Forms.Close('@Model.ViewId');
         }
         function CreatePayment() {
-            Forms.LoadAjax('@Url.Action("Create")' + '?nameContract=' + '@Model.contract.NAME_CONTRACT' +'&version='+'@Model.contract.VERSION');
+            Forms.LoadAjaxModal('@Url.Action("Create")' + '?nameContract=' + '@Model.contract.NAME_CONTRACT' +'&version='+'@Model.contract.VERSION');
     }
 
 

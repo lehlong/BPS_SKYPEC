@@ -10,7 +10,7 @@
 
 }
 
-<div id='@Model.ViewId' class="container-fluid" style="padding:20px">
+<div id='@Model.ViewId' class="container-fluid" style="padding: 0px 20px 20px 20px">
     @using (Ajax.BeginForm("CreateContract", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
     {
         @Html.AntiForgeryToken()
@@ -19,135 +19,110 @@
         @Html.HiddenFor(m => m.ObjDetail.NAME_CONTRACT)
         @Html.HiddenFor(m => m.ObjDetail.VERSION)
         @Html.HiddenFor(m => m.ObjDetail.FILE_CHILD)
-        <div class="row clearfix">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> CHỈNH SỬA ĐỢT THANH TOÁN</a>
-                </li>
-            </ul>
-            <div class="page-function" style="margin-top:10px">
-                <div class="page-function-button m-r-20">
-                    @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
-                    @Html.MyButton("cmdSave", "Cập nhật thông tin", string.Format("Update();"), "Alt+N", "done_all")
-                </div>
+    <div class="row clearfix">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> CHỈNH SỬA ĐỢT THANH TOÁN</a>
+            </li>
+        </ul>
+        <div class="page-function" style="margin-top:10px">
+            <div class="page-function-button m-r-20">
+                <button class="btn btn-default close-modal" data-dismiss="modal"><i class="col-fecon material-icons">close</i> Đóng</button>
+                @Html.MyButton("cmdSave", "Cập nhật thông tin", string.Format("Update();"), "Alt+N", "done_all")
             </div>
-            <div class="col-xs-12 col-sm-7">
-                <div class="card border-grey">
-                    <div class="body" style="padding-top: 0px;">
-                        <div class="tab-content">
-                            <div class="row">
-                                <div class="col-xs-1"></div>
-                                <div class="col-lg-12 col-xs-12">
-                                    <div id="divDetail">
-                                        <div style="margin:10px">
-                                            <label>Số hóa đơn</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    @Html.MyTextBoxFor(m => m.ObjDetail.NUMBER_INVOICE)
-                                                </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.NUMBER_INVOICE)
-                                            </div>
-                                            <label>Giá trị hóa đơn</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    @Html.MyTextBoxFor(m => m.ObjDetail.VALUE_INVOICE, new { @type = "number", @id = "valueInvoice" })
-                                                </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.VALUE_INVOICE)
-                                            </div>
-                                            <label>Số tiền thanh toán</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    @Html.MyTextBoxFor(m => m.ObjDetail.AMOUNT, new { @type = "number", @id = "amount" })
-                                                </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.AMOUNT)
-                                            </div>
-                                            <label>Số tiền tạm ứng</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    @Html.MyTextBoxFor(m => m.ObjDetail.ADVANCE_PAYMENT, new { @type = "number", @id = "advancePayment" })
-                                                </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.ADVANCE_PAYMENT)
-                                            </div>
-                                            <label>Tổng số tiền thanh toán</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    @Html.MyTextBoxFor(m => m.ObjDetail.TOTAL, new { @type = "number", @id = "total", @readonly = "" })
-                                                </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.TOTAL)
-                                            </div>
-                                            <label>Trạng thái thanh toán</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    @Html.MyDropDownListFor(m => m.ObjDetail.ACTION, SelectListUtilities.GetActionPayment(),
-                                                    new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-                                                </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.ACTION)
-                                            </div>
-                                        </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card border-grey">
+                <div class="body">
+                    <div class="tab-content">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Số hóa đơn</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        @Html.MyTextBoxFor(m => m.ObjDetail.NUMBER_INVOICE)
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.ObjDetail.NUMBER_INVOICE)
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Giá trị hóa đơn</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        @Html.MyTextBoxFor(m => m.ObjDetail.VALUE_INVOICE, new {})
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.ObjDetail.VALUE_INVOICE)
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label>Số tiền thanh toán</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        @Html.MyTextBoxFor(m => m.ObjDetail.AMOUNT, new { @onchange = "CalValue()" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.ObjDetail.AMOUNT)
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Số tiền tạm ứng</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        @Html.MyTextBoxFor(m => m.ObjDetail.ADVANCE_PAYMENT, new { @onchange= "CalValue()"})
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-5">
-                <div class="card border-grey">
-                    <div class="body" style="padding-top: 0px;">
-                        <div class="tab-content">
-                            <div class="row">
-                                <div class="col-xs-1"></div>
-                                <div class="col-lg-12 col-xs-10">
-                                    <div class="tab-content">
-                                        <label>Diễn giải</label>
-                                        <div class="form-group">
-                                            <div class="form-line">
-                                                @Html.MyTextBoxFor(m => m.ObjDetail.NOTE)
-                                            </div>
-                                            @Html.ValidationMessageFor(m => m.ObjDetail.NOTE)
-                                        </div>
-                                        <label>Ngày </label>
-                                        <div class="form-group">
-                                            <div class="form-line">
-                                                @Html.MyTextBoxFor(m => m.ObjDetail.DATE, new { @class = "datepicker", @autocomplete = "on" })
-                                            </div>
-                                            @Html.ValidationMessageFor(m => m.ObjDetail.DATE)
-                                        </div>
-                                        <label>Ngày cập nhât </label>
-                                        <div class="form-group">
-                                            <div class="form-line">
-                                                <input class="form-control" type="text" value="@formattedDate" readonly>
-                                            </div>
-                                            @Html.ValidationMessageFor(m => m.ObjDetail.DATE)
-                                        </div>
-                                        <label>Người cập nhật </label>
-                                        <div class="form-group">
-                                            <div class="form-line">
-                                                <input class="form-control" type="text" value="@ProfileUtilities.User.USER_NAME" readonly>
-                                            </div>
-                                            @Html.ValidationMessageFor(m => m.ObjDetail.DATE)
-                                        </div>
-                                        <label>Nội Dung</label>
-                                        <div class="form-group">
-                                            <div class="form-line">
-                                                @Html.MyTextAreaFor(m => m.ObjDetail.CONTENT_PAYMENT)
-                                            </div>
-                                            @Html.ValidationMessageFor(m => m.ObjDetail.CONTENT_PAYMENT)
-                                        </div>
-                                        <div>
-                                            <label>File đính kèm</label>
-                                            <div>
-                                                <span class="waves-effect btn-default btn btn-border" onclick="UploadFile.InsertFile();" style="width: 100%; padding: 6px 10px 15px 10px !important;">
-                                                    <i class="material-icons col-orange" style="font-size: 24px; top: 6px;">cloud_upload</i><span>Thêm file đính kèm</span>
-                                                </span>
-
-                                            </div>
-                                            <div id="divPreviewFile" class="m-t-10">
-
-                                            </div>
-                                        </div>
-
+                            <div class="col-md-4">
+                                <label>Tổng số tiền thanh toán</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        @Html.MyTextBoxFor(m => m.ObjDetail.TOTAL, new {@readonly = "" })
                                     </div>
+                                    @Html.ValidationMessageFor(m => m.ObjDetail.TOTAL)
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Trạng thái thanh toán</label>
+                                @Html.MyDropDownListFor(m => m.ObjDetail.ACTION, SelectListUtilities.GetActionPayment(),
+                                new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+                            </div>
+                            <div class="col-md-8">
+                                <label>Diễn giải</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        @Html.MyTextBoxFor(m => m.ObjDetail.NOTE)
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.ObjDetail.NOTE)
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Ngày thanh toán </label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        @Html.MyTextBoxFor(m => m.ObjDetail.DATE, new { @class = "datepicker", @autocomplete = "on", @value = formattedDate })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.ObjDetail.DATE)
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Nội Dung</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        @Html.MyTextAreaFor(m => m.ObjDetail.CONTENT_PAYMENT)
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.ObjDetail.CONTENT_PAYMENT)
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label>File đính kèm</label>
+                                <div>
+                                    <span class="waves-effect btn-default btn btn-border" onclick="UploadFile.InsertFile();" style="width: 100%; padding: 6px 10px 15px 10px !important;">
+                                        <i class="material-icons col-orange" style="font-size: 24px; top: 6px;">cloud_upload</i><span>Thêm file đính kèm</span>
+                                    </span>
+
+                                </div>
+                                <div id="divPreviewFile" class="m-t-10">
+
                                 </div>
                             </div>
                         </div>
@@ -155,46 +130,51 @@
                 </div>
             </div>
         </div>
+    </div>
     }
 
     <script src="~/Scripts/D2SCoreJS/UploadFile.js"></script>
 
     <script type="text/javascript">
         function Update() {
-                var headers = {
-                    'RequestVerificationToken': $('#antiForgeryToken').val(),
-                };
-                var form = document.getElementById("@Model.FormId");
-                var formData = new FormData(form);
-                for (var i = 0; i < UploadFile.ListFile.length; i++) {
-                    formData.append("files", UploadFile.ListFile[i].DataFile);
-                }
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("UpdatePayment")",
-                    data: formData,
-                    headers: headers,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        Message.execute(response);
-                        Forms.HideLoading();
-                    },
-                    error: Forms.AjaxErrorHandler
-                });
+            var headers = {
+                'RequestVerificationToken': $('#antiForgeryToken').val(),
+            };
+            var form = document.getElementById("@Model.FormId");
+            var formData = new FormData(form);
+            for (var i = 0; i < UploadFile.ListFile.length; i++) {
+                formData.append("files", UploadFile.ListFile[i].DataFile);
+            }
+            console.log(form)
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("UpdatePayment")",
+                data: formData,
+                headers: headers,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    Message.execute(response);
+                    Forms.HideLoading();
+                    $(".close-modal").click();
+                },
+                error: Forms.AjaxErrorHandler
+            });
+        }
+        function CalValue() {
+            var amount = Inputmask.unmask($("#ObjDetail_AMOUNT").val(), { alias: 'decimal', groupSeparator: ',', autoGroup: true });
+            var amountAdvance = Inputmask.unmask($("#ObjDetail_ADVANCE_PAYMENT").val(), { alias: 'decimal', groupSeparator: ',', autoGroup: true });
+            var totalPayment = Number(amount) + Number(amountAdvance);
+            if (!isNaN(totalPayment)) {
+                $("#ObjDetail_TOTAL").val(totalPayment);
+            }
         }
         $(function () {
+            $(".mask-number").inputmask({ "removeMaskOnSubmit": true });
+            $(".mask-number").focus(function () {
+                $(this).select();
+            });
             Forms.CompleteUI();
-            var amount = document.getElementById('amount');
-            var advancePayment = document.getElementById('advancePayment');
-
-            function calculateValueAfterVAT() {
-                var value = parseFloat(amount.value) || 0;
-                var vat = parseFloat(advancePayment.value) || 0;
-                var valueAfterVAT = value + vat;
-                $("total").val(valueAfterVAT);
-            }
-            calculateValueAfterVAT()
         });
 
     </script>

@@ -1,12 +1,11 @@
 ﻿@model SMO.Service.BU.ContractService
 @using Newtonsoft.Json.Serialization;
 @using Newtonsoft.Json;
-
+@using SMO.Repository.Implement.MD;
 @{
     var gridId = Guid.NewGuid().ToString("N");
-
-}
-@{
+    var alertRed = Model.UnitOfWork.Repository<ContractAlertRepo>().Queryable().FirstOrDefault(x => x.CODE == "RED").NUMBER;
+    var alertYellow = Model.UnitOfWork.Repository<ContractAlertRepo>().Queryable().FirstOrDefault(x => x.CODE == "YELLOW").NUMBER;
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var jsonData = Model.ObjList.Where(x => x.PARENT == null).Select((x, index) =>
     {
@@ -30,12 +29,15 @@
             signDay = x.SIGN_DAY.ToString("dd/MM/yyyy"),
             startDate = x.START_DATE.ToString("dd/MM/yyyy"),
             finishDate = x.FINISH_DATE.ToString("dd/MM/yyyy"),
+            statusCode = x.STATUS,
             status = SMO.Core.Entities.BU.ConstContract.convertStatusToString(x.STATUS),
             phase = SMO.Core.Entities.BU.ConstContract.convertPhaseToString(x.CONTRACT_PHASE),
             version = x.VERSION,
             progress = x.PHANTRAM,
             createContract = x.ID,
             file = x.FILE_CHILD,
+            alert = (x.FINISH_DATE - DateTime.Now).Days + 1 <= alertYellow && (x.FINISH_DATE - DateTime.Now).Days + 1 > alertRed ? "warning" : (x.FINISH_DATE - DateTime.Now).Days + 1 <= alertRed ? "danger" : "normal",
+            remainingDays = (x.FINISH_DATE - DateTime.Now).Days + 1
         };
     });
 }
@@ -66,6 +68,14 @@
         font-size: 12px;
         color: white;
     }
+    .alert-danger-contract {
+        --dhx-font-color-primary: #B22222;
+        color: #B22222;
+    }
+    .alert-warning-contract {
+        --dhx-font-color-primary: #CDAD00;
+        color: #CDAD00;
+    }
 </style>
 <script>
     const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
@@ -86,37 +96,53 @@
         NumerRecordPerPage: 50
     }
     var grid = new dhx.Grid("@gridId", {
-            columns: [
-                {
-                    id: "idContract", header: [{ text: "" }], adjust: true,
-                    width   :50,
-                    template: (value, row) => {
-                        const { id, isChild, createContract } = row;
-                        if (isChild !== true) {
-                            return "";
-                        }
-                        return `<i class="material-icons swap-icon-drill-down" href="#" data-action="open" data-row-id="${id}" data-id="${createContract}" onclick="addDataToRows(this)">unfold_more</i>`;
-                    },
-                    htmlEnable: true,
-                    adjust : false
+        columns: [
+            {
+                id: "idContract", header: [{ text: "" }], adjust: true,
+                width: 50,
+                template: (value, row) => {
+                    const { id, isChild, createContract } = row;
+                    if (isChild !== true) {
+                        return "";
+                    }
+                    return `<i class="material-icons swap-icon-drill-down" href="#" data-action="open" data-row-id="${id}" data-id="${createContract}" onclick="addDataToRows(this)">unfold_more</i>`;
                 },
-                {
-                    id: "stt", header: [{
-                        text: "STT",
-                        css: "custom-header",
-                    }], width: 50 },
-                {
-                    id: "nameContract", width: 200,
-                    header: [{ text: "Tên hợp đồng" }, { content: "inputFilter" }],
-                    template: (value, row) => {
-                        const { id, idContract } = row;
-                        return `<a class="" href="" onclick="DetailContract(event,'${idContract}')">${value}</a>`;
-                    },
-                    htmlEnable: true,
-                    adjust: false
+                htmlEnable: true,
+                adjust: false
+            },
+            {
+                id: "stt", header: [{
+                    text: "STT",
+                    css: "custom-header",
+                }], width: 50
+            },
+            {
+                id: "nameContract", width: 200,
+                header: [{ text: "Tên hợp đồng" }, { content: "inputFilter" }],
+                template: (value, row) => {
+                    const { id, idContract } = row;
+                    return `<a class="" href="" onclick="DetailContract(event,'${idContract}')">${value}</a>`;
                 },
-                { id: "numberContract", header: [{ text: "Số hợp đồng" }, { content: "inputFilter" }], adjust: true, },
+                htmlEnable: true,
+                adjust: false
+            },
+            { id: "numberContract", header: [{ text: "Số hợp đồng" }, { content: "inputFilter" }], adjust: true, },
             { id: "typeContract", header: [{ text: "Loại hợp đồng" }, { content: "selectFilter" }], adjust: true, },
+            {
+                id: "remainingDays", header: [{ text: "Ngày còn lại" }, { content: "inputFilter" }],
+                template: (value, task) => {
+                    if (task.alert == "warning") {
+                        return `<span class="badge bg-yellow">Còn ${value} ngày</span>`
+                    } else if (task.alert == "danger") {
+                        return `<span class="badge bg-red">Còn ${value} ngày</span>`
+                    } else {
+                        return `<span class="badge">Còn ${value} ngày</span>`
+                    }
+                },
+                htmlEnable: true,
+                align: 'center',
+                width: 133
+            },
             { id: "nameCustomer", header: [{ text: "Tên khách hàng" }, { content: "inputFilter" }], adjust: true, },
             { id: "manager", header: [{ text: "Quản lý hợp đồng" }, { content: "inputFilter" }], adjust: true, },
             { id: "department", header: [{ text: "Phòng ban" }, { content: "inputFilter" }], adjust: true, },
@@ -124,27 +150,43 @@
             { id: "startDate", header: ["Ngày bắt đầu"], adjust: true, },
             { id: "finishDate", header: ["Ngày kết thúc"], adjust: true, },
             { id: "signDay", header: ["Ngày ký kết"], adjust: true, },
-            { id: "status", header: [{ text: "Trạng thái" }, { content: "selectFilter" }], adjust: true, },
+            {
+                id: "status", header: [{ text: "Trạng thái" }, { content: "selectFilter" }],
+                template: (value, task) => {
+                    if (task.statusCode == "01") {
+                        return `<span class="badge bg-blue-grey">${task.status}</span>`
+                    } else if (task.statusCode == "02") {
+                        return `<span class="badge bg-brown">${task.status}</span>`
+                    } else if (task.statusCode == "03") {
+                        return `<span class="badge bg-green">${task.status}</span>`
+                    } else if (task.statusCode == "04") {
+                        return `<span class="badge bg-black">${task.status}</span>`
+                    }
+                },
+                htmlEnable: true,
+                align: 'center',
+                width: 133
+            },
             { id: "phase", header: [{ text: "Giai đoạn" }, { content: "selectFilter" }], adjust: true, },
             { id: "version", header: ["Version"], adjust: true, },
-                {
-                    id: "progress",
-                    header: ["Tiến độ thanh toán"],
-                    width: 150,
-                    template: (value, row) => {
-                        const { progress } = row;
-                        const percentage = parseInt(progress); // Lấy phần trăm tiến độ
-                        return `
+            {
+                id: "progress",
+                header: ["Tiến độ thanh toán"],
+                width: 150,
+                template: (value, row) => {
+                    const { progress } = row;
+                    const percentage = parseInt(progress); // Lấy phần trăm tiến độ
+                    return `
                         <div class="progress-container">
                                 <div class="progress" style="width: ${percentage > 100 ? 100 : percentage}%; background: ${percentage >= 100 ? 'green' : '#337ab7'};">
                                     <div class="progress-text">${percentage > 100 ? 100 : percentage}%</div>
                                 </div>
                             </div>
                     `;
-                    },
-                    htmlEnable: true,
-                    adjust: false
                 },
+                htmlEnable: true,
+                adjust: false
+            },
             {
                 id: "createContract", width: 160,
                 header: [{ text: "" }],
@@ -159,23 +201,24 @@
                 },
                 htmlEnable: true,
                 adjust: false
+            },
+            {
+                id: "file", header: ["File"], width: 50,
+                template: (value, row) => {
+                    const { version } = row;
+                    return `<i class="col-fecon material-icons" href="#" onclick="CallFIle('${value}','${version}')">attach_file</i>`;
                 },
-                {
-                    id: "file", header: ["File"], width: 50,
-                    template: (value, row) => {
-                        const { version } = row;
-                        return `<i class="col-fecon material-icons" href="#" onclick="CallFIle('${value}','${version}')">attach_file</i>`;
-                    },
-                    htmlEnable: true,
-                }
-            ],
-            data: rawData,
-            leftSplit: 3,
-            autoFilter: false,
-            resizable: true,
-            keyNavigation: true,
-            autoWidth: true,
-    });
+                htmlEnable: true,
+            }
+        ],
+        data: rawData,
+        leftSplit: 3,
+        autoFilter: false,
+        resizable: true,
+        keyNavigation: true,
+        autoWidth: true,
+   });
+
     grid.events.on("beforeFilter", (value, id) => {
 
     });
@@ -197,6 +240,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
+                    console.log(data)
                     var dataAdd = calculateSTT(data, indexRowAction);
                     grid.data.add(dataAdd, indexRowAction);
                     element.setAttribute("data-number", dataAdd.length);

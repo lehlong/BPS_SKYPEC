@@ -43,10 +43,10 @@
                         <a href="#" onclick="@vdbclickAction">@item.NUMBER_INVOICE</a>
                     </td>
                     <td>@item.DATE.ToString("dd/MM/yyyy")</td>
-                    <td>@item.VALUE_INVOICE VNĐ</td>
-                    <td>@item.AMOUNT VNĐ</td>
-                    <td>@item.ADVANCE_PAYMENT VNĐ</td>
-                    <td>@item.TOTAL VNĐ</td>
+                    <td>@item.VALUE_INVOICE.ToStringVN() VNĐ</td>
+                    <td>@item.AMOUNT.ToStringVN() VNĐ</td>
+                    <td>@item.ADVANCE_PAYMENT.ToStringVN() VNĐ</td>
+                    <td>@item.TOTAL.ToStringVN() VNĐ</td>
                     <td>@item.ACTION</td>
                     <td>@item.UPDATE_HUMAN </td>
                     <td>@item.UPDATE_TIME </td>

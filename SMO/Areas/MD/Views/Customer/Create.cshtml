@@ -49,6 +49,41 @@
                                 </div>
                                 @Html.ValidationMessageFor(m => m.ObjDetail.OLD_CODE)
                             </div>
+                            <label>Địa chỉ</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.ADDRESS)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.ADDRESS)
+                            </div>
+                            <label>Mã số thuế</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.MST)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.MST)
+                            </div>
+                            <label>Số điện thoại</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.PHONE)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.PHONE)
+                            </div>
+                            <label>Ngân hàng</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.BANK)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.BANK)
+                            </div>
+                            <label>Thông tin khác</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.OTHER_INFO)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.OTHER_INFO)
+                            </div>
                         </div>
                     </div>
                 </div>

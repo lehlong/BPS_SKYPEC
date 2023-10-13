@@ -13,6 +13,11 @@
                 <th style="max-width: 120px;">Mã</th>
                 <th>Tên</th>
                 <th>Mã cũ</th>
+                <th>Địa chỉ</th>
+                <th>Mã số thuế</th>
+                <th>Số điện thoại</th>
+                <th>Ngân hàng</th>
+                <th>Thông tin khác</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +31,11 @@
                     </td>
                     <td ondblclick="@vdbclickAction">@item.TEXT</td>
                     <td ondblclick="@vdbclickAction">@item.OLD_CODE</td>
+                    <td ondblclick="@vdbclickAction">@item.ADDRESS</td>
+                    <td ondblclick="@vdbclickAction">@item.MST</td>
+                    <td ondblclick="@vdbclickAction">@item.PHONE</td>
+                    <td ondblclick="@vdbclickAction">@item.BANK</td>
+                    <td ondblclick="@vdbclickAction">@item.OTHER_INFO</td>
                 </tr>
             }
         </tbody>

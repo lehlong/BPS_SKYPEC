@@ -12,6 +12,11 @@ namespace SMO.Repository.Mapping.MD
             Id(x => x.CODE);
             Map(x => x.TEXT).Nullable();
             Map(x => x.OLD_CODE).Nullable();
+            Map(x => x.ADDRESS).Nullable();
+            Map(x => x.MST).Nullable();
+            Map(x => x.PHONE).Nullable();
+            Map(x => x.BANK).Nullable();
+            Map(x => x.OTHER_INFO).Nullable();
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
         }
     }

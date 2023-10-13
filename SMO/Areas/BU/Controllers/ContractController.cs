@@ -48,7 +48,7 @@ namespace SMO.Areas.BU.Controllers
                     item.PHANTRAM = 0;
                 }
             }
-            var jsonData = ContractService.converListContract(service.ObjList);
+            var jsonData = _service.converListContract(service.ObjList);
             return Content(jsonData, "application/json");
         }
         public ActionResult ShowListFile(string id, int version)
@@ -297,6 +297,13 @@ namespace SMO.Areas.BU.Controllers
                 return Content(_service.ErrorMessage);
             }
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "HangMucDuAn.xlsx");
+        }
+        public ActionResult GetCustomer(string code)
+        {
+            var result = new TransferObject();
+            result.Type = TransferType.AlertSuccessAndJsCommand;
+            result.Data = _service.GetCustomer(code);      
+            return result.ToJsonResult();
         }
 
     }
