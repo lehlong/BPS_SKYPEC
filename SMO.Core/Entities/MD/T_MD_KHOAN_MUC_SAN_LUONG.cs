@@ -1,6 +1,4 @@
 ﻿using SMO.Core.Common;
-using SMO.Core.Entities.BP.CONTRUCT_COST_CF.CONTRUCT_COST_CF_DATA_BASE;
-using SMO.Core.Entities.BP.COST_CF.COST_CF_DATA_BASE;
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG.KE_HOACH_SAN_LUONG_DATA_BASE;
 

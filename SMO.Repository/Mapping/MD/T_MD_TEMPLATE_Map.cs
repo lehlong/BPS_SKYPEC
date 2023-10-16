@@ -28,30 +28,6 @@ namespace SMO.Repository.Mapping.MD
                 .Not.Update()
                 .LazyLoad();
 
-            HasMany(x => x.DetailCosts)
-                .KeyColumn("TEMPLATE_CODE")
-                .LazyLoad().Inverse().Cascade.Delete();
-            HasMany(x => x.DetailCostsCF)
-                .KeyColumn("TEMPLATE_CODE")
-                .LazyLoad().Inverse().Cascade.Delete();
-            HasMany(x => x.DetailRevenuesCF)
-                .KeyColumn("TEMPLATE_CODE")
-                .LazyLoad().Inverse().Cascade.Delete();
-            HasMany(x => x.DetailRevenues)
-                .KeyColumn("TEMPLATE_CODE")
-                .LazyLoad().Inverse().Cascade.Delete();
-            HasMany(x => x.DetailContructCostPL)
-                .KeyColumn("TEMPLATE_CODE")
-                .LazyLoad().Inverse().Cascade.Delete();
-            HasMany(x => x.DetailContructCostCF)
-                .KeyColumn("TEMPLATE_CODE")
-                .LazyLoad().Inverse().Cascade.Delete();
-            HasMany(x => x.DetailOtherCostPL)
-                .KeyColumn("TEMPLATE_CODE")
-                .LazyLoad().Inverse().Cascade.Delete();
-            HasMany(x => x.DetailOtherCostCF)
-                        .KeyColumn("TEMPLATE_CODE")
-                        .LazyLoad().Inverse().Cascade.Delete();
             HasMany(x => x.DetailKeHoachSanLuong)
                         .KeyColumn("TEMPLATE_CODE")
                         .LazyLoad().Inverse().Cascade.Delete();

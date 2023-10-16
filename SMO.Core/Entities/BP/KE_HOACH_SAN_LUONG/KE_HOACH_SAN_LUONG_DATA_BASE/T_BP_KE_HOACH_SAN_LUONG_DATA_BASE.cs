@@ -1,5 +1,4 @@
-﻿using SMO.Core.Entities.BP.COST_CF.COST_CF_DATA_BASE;
-using SMO.Core.Entities.MD;
+﻿using SMO.Core.Entities.MD;
 using System.Collections.Generic;
 
 namespace SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG.KE_HOACH_SAN_LUONG_DATA_BASE

@@ -36,6 +36,7 @@
     public enum Budget
     {
         SAN_LUONG,
+        DOANH_THU,
         COST_CENTER,
         COST_ELEMENT,
         PROFIT_CENTER,

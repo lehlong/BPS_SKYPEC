@@ -22,7 +22,7 @@ namespace SMO.Areas.BP.Controllers
         ActionResult DataFlowIndex(string centerCode, int year, int version);
         ActionResult DataFlowTree(TService service);
         FileContentResult DownloadTemplate(string templateId, int year);
-        ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan);
+        ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan);
         ActionResult ExportDataButtonsFunction(string orgCode, string templateId, int year, int? version, string viewId);
         ActionResult ExportDataFlowIndex(string centerCode, int year, int version);
         ActionResult ExportDataFlowTree(TService service);
@@ -39,7 +39,7 @@ namespace SMO.Areas.BP.Controllers
         JsonResult GetRealOrgCode(string templateCode, string orgCode);
         JsonResult GetTemplate(string orgCode);
         JsonResult GetTemplateVersion(string templateId, string centerCode, int year);
-        JsonResult GetVersions(string orgCode, string templateId, int year, string kichBan);
+        JsonResult GetVersions(string orgCode, string templateId, int year, string kichBan, string phienBan);
         JsonResult GetYear(string orgCode, string templateId);
         ActionResult HuyNop(string code);
         ActionResult HuyPheDuyet(string code);

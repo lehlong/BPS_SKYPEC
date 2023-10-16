@@ -13,7 +13,7 @@ namespace SMO.Service.BU
         {
 
         }
-        public void CreateComment(string id,string comment,int version)
+        public void CreateComment(string id, string comment, int version)
         {
             try
             {
@@ -42,10 +42,10 @@ namespace SMO.Service.BU
             }
 
         }
-    
-        public void GetListComment(string contracName ,int version)
+
+        public void GetListComment(string contracName, int version)
         {
-            this.ObjList = this.CurrentRepository.Queryable().Where(x => x.CONTRACT_NAME == contracName&&x.VERSION<=version).ToList();
+            this.ObjList = this.CurrentRepository.Queryable().Where(x => x.CONTRACT_NAME == contracName && x.VERSION == version).ToList();
         }
     }
 }

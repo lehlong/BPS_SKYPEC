@@ -37,6 +37,7 @@ namespace SMO.Repository.Mapping.BU
             Map(x => x.SIGN_DAY);
             HasMany(x => x.ChildContracts).KeyColumn("PARENT").LazyLoad();
             References(x => x.ContractType).Column("CONTRACT_TYPE").Not.Insert().Not.Update().LazyLoad();
+            References(x => x.ParentContract).Column("PARENT").Not.Insert().Not.Update().LazyLoad();
             References(x => x.CostCenter).Column("DEPARTMENT").Not.Insert().Not.Update().LazyLoad();
             References(x => x.CustomerContract).Column("CUSTOMER").Not.Insert().Not.Update().LazyLoad();
             References(x => x.ContractManager).Column("CONTRACT_MANAGER").Not.Insert().Not.Update().LazyLoad();

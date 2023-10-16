@@ -20,25 +20,25 @@ namespace SMO.Service.MD
             var lstCostCenter = UnitOfWork.Repository<CostCenterRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
 
             var lstDetails = new List<string>();
-            if (template != null)
-            {
-                if (template.BUDGET_TYPE == BudgetType.KinhDoanh)
-                {
-                    // get all cost center selected in template
-                    lstDetails = template.DetailCosts
-                        .Where(x => x.TIME_YEAR == year)
-                        .GroupBy(x => x.CENTER_CODE)
-                        .Select(x => x.First().CENTER_CODE).ToList();
-                }
-                else
-                {
-                    // get all cost center selected in template
-                    lstDetails = template.DetailCostsCF
-                        .Where(x => x.TIME_YEAR == year)
-                        .GroupBy(x => x.CENTER_CODE)
-                        .Select(x => x.First().CENTER_CODE).ToList();
-                }
-            }
+            //if (template != null)
+            //{
+            //    if (template.BUDGET_TYPE == BudgetType.KinhDoanh)
+            //    {
+            //        // get all cost center selected in template
+            //        lstDetails = template.DetailCosts
+            //            .Where(x => x.TIME_YEAR == year)
+            //            .GroupBy(x => x.CENTER_CODE)
+            //            .Select(x => x.First().CENTER_CODE).ToList();
+            //    }
+            //    else
+            //    {
+            //        // get all cost center selected in template
+            //        lstDetails = template.DetailCostsCF
+            //            .Where(x => x.TIME_YEAR == year)
+            //            .GroupBy(x => x.CENTER_CODE)
+            //            .Select(x => x.First().CENTER_CODE).ToList();
+            //    }
+            //}
             if (lstDetails == null || lstDetails.Count == 0)
             {
                 lstDetails = new List<string> { ProfileUtilities.User.ORGANIZE_CODE };

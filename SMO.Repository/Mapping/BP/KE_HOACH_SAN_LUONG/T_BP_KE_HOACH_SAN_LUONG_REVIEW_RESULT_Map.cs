@@ -1,5 +1,5 @@
 ﻿using NHibernate.Type;
-using SMO.Core.Entities.BP.COST_CF;
+
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using System;
 using System.Collections.Generic;

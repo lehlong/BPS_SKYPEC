@@ -135,7 +135,7 @@ else
             @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
             @if (headerData != null && SMOUtilities.CheckRight("R301"))
             {
-                @Html.MyButton("cmdXemDuLieu", "Xem dữ liệu", $"Forms.LoadAjax('{Url.Action("ExportData", new { year = headerData.TIME_YEAR, version = headerData.VERSION, kichBan = headerData.KICH_BAN })}');", "", "search")
+                @Html.MyButton("cmdXemDuLieu", "Xem dữ liệu", $"Forms.LoadAjax('{Url.Action("ExportData", new { year = headerData.TIME_YEAR, version = headerData.VERSION, kichBan = headerData.KICH_BAN, phienBan = headerData.PHIEN_BAN })}');", "", "search")
             }
         </div>
         <div id="btn-function">

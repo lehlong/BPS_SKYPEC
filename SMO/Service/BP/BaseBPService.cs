@@ -270,7 +270,7 @@ namespace SMO.Service.BP
         public abstract void GetHistoryVersion(string orgCode, string templateId, int year);
         abstract public IEnumerable<TElement> GetDetailSumUpTemplate(string elementCode, int year, int version, string templateCode, string centerCode);
         public abstract TVersion GetHeader(string templateId, string orgCode, int year, int? version);
-        public abstract IList<int> GetVersionsNumber(string orgCode, string templateId, int year, string kichBan);
+        public abstract IList<int> GetVersionsNumber(string orgCode, string templateId, int year, string kichBan, string phienBan);
         public abstract void GenerateExportExcel(ref MemoryStream outFileStream, string htmlMonth,string htmlYear, string path, int exportExcelYear, string exportExcelCenterCode, int? exportExcelVersion, string exportExcelTemplate, string exportExcelUnit, decimal exportExcelExchangeRate);
         public abstract IList<TElement> GetDetailPreviewSumUp(string centerCode, string elementCode, int year);
         public abstract IEnumerable<TElement> GetDetailSumUp(string centerCode, string elementCode, int year, int version, int? sumUpVersion, bool isCountComments, bool? isShowFile = null);

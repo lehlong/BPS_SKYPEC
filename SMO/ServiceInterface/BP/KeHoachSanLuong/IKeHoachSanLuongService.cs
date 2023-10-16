@@ -37,5 +37,6 @@ namespace SMO.ServiceInterface.BP.KeHoachSanLuong
            string templateId = "");
         IList<T_MD_KHOAN_MUC_SAN_LUONG> SummaryCenterOut(out IList<T_BP_KE_HOACH_SAN_LUONG_DATA> plDataCostElements, string centerCode, int year, int? version, bool? isHasValue = null);
         IList<T_MD_KHOAN_MUC_SAN_LUONG> SummaryCenterVersion(out IList<T_BP_KE_HOACH_SAN_LUONG_DATA> plDataCostElements, string centerCode, int year, int? version, bool isDrillDown = false);
+        //public T_BP_KE_HOACH_SAN_LUONG CheckTemplate(string template, int year, string orgCode) { }
     }
 }

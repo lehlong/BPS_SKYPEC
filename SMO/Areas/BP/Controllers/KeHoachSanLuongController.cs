@@ -161,5 +161,25 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
+
+        public ActionResult CheckTemplate(string template, int year, string orgCode)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            var check = _service.CheckTemplate(template, year, orgCode);
+            if (_service.State)
+            {
+                result.Data = check;
+                SMOUtilities.GetMessage("1002", _service, result);
+            }
+            else
+            {
+                result.Type = TransferType.AlertDangerAndJsCommand;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
     }
 }

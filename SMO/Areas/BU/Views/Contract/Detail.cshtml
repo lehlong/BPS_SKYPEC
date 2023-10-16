@@ -1,12 +1,14 @@
 ﻿@model SMO.Service.BU.ContractService
+@using SMO.Core.Entities.BU;
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
     int maxVersion = Model.version;
     var lstPeriodTime = SelectListUtilities.GetAllUser();
-    bool checkTrinhDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.CREATE_BY) && Model.ObjDetail.STATUS == SMO.Core.Entities.BU.ConstContract.KhoiTao && maxVersion == Model.ObjDetail.VERSION || AuthorizeUtilities.CheckUserRight("R100"));
-    bool checkHuyPheDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.CREATE_BY) && Model.ObjDetail.STATUS == SMO.Core.Entities.BU.ConstContract.TrinhDuyet && maxVersion == Model.ObjDetail.VERSION || AuthorizeUtilities.CheckUserRight("R100"));
-    bool checkPheDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.APPROVER) && Model.ObjDetail.STATUS == SMO.Core.Entities.BU.ConstContract.TrinhDuyet && maxVersion == Model.ObjDetail.VERSION || AuthorizeUtilities.CheckUserRight("R100"));
+    bool checkTrinhDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.CREATE_BY) && (Model.ObjDetail.STATUS == ConstContract.KhoiTao || Model.ObjDetail.STATUS == ConstContract.TuChoi) && maxVersion == Model.ObjDetail.VERSION /*|| AuthorizeUtilities.CheckUserRight("R100")*/);
+    bool checkHuyPheDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.APPROVER) && Model.ObjDetail.STATUS == ConstContract.PheDuyet && maxVersion == Model.ObjDetail.VERSION /*|| AuthorizeUtilities.CheckUserRight("R100")*/);
+    bool checkPheDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.APPROVER) && Model.ObjDetail.STATUS == ConstContract.TrinhDuyet && maxVersion == Model.ObjDetail.VERSION /*|| AuthorizeUtilities.CheckUserRight("R100")*/);
+    bool checkHuyTrinhDuyet = (ProfileUtilities.User.USER_NAME.Equals(Model.ObjDetail.CREATE_BY) && Model.ObjDetail.STATUS == ConstContract.TrinhDuyet && maxVersion == Model.ObjDetail.VERSION /*|| AuthorizeUtilities.CheckUserRight("R100")*/);
 }
 <style>
     .DIVcomponent {
@@ -25,6 +27,100 @@
     }
 </style>
 <div id='@Model.ViewId' class="container-fluid child-content">
+    <div class="modal fade view-info-customer-detail" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="container-fluid" style="padding: 0px 20px 20px 20px">
+                    <div class="row clearfix">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a style="padding-left:0px"><i class="material-icons col-fecon">info</i> THÔNG TIN KHÁCH HÀNG</a>
+                            </li>
+                        </ul>
+                        <div class="page-function" style="margin-top:10px">
+                            <div class="page-function-button m-r-20">
+                                <button class="btn btn-default close-modal" data-dismiss="modal"><i class="col-fecon material-icons">close</i> Đóng</button>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="body">
+                                    <div class="tab-content">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Mã khách hàng</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CustomerContract.CODE, new { @readonly = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Mã cũ</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CustomerContract.OLD_CODE, new { @readonly = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Tên khách hàng</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CustomerContract.TEXT, new { @readonly = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Địa chỉ</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CustomerContract.ADDRESS, new { @readonly = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Mã số thuế</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CustomerContract.MST, new { @readonly = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Số điện thoại</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CustomerContract.PHONE, new { @readonly = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Ngân hàng</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CustomerContract.BANK, new { @readonly = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>Thông tin khác</label>
+                                                <div class="form-group">
+                                                    <div class="form-line">
+                                                        @Html.MyTextBoxFor(m => m.ObjDetail.CustomerContract.OTHER_INFO, new { @readonly = "" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.FormId)
     <div class="row clearfix">
@@ -59,14 +155,19 @@
                                     }
                                     @if (checkHuyPheDuyet)
                                     {
-                                        <div class="btn-default btn" onclick='HuyTrinhDuyet("@Model.ObjDetail.ID");' title=""> <i class="material-icons col-fecon">send</i><span>Hủy trình duyệt</span></div>
+                                        <div class="btn-default btn" onclick='TuChoi("@Model.ObjDetail.ID");' title=""> <i class="material-icons col-fecon">close</i><span>Hủy phê duyệt</span></div>
                                     }
                                     @if (checkPheDuyet)
                                     {
-                                        <div class="btn-default btn" onclick='PheDuyet("@Model.ObjDetail.ID");' title=""> <i class="material-icons col-fecon">done</i><span>Phê duyệt</span></div>
-                                        <div class="btn-default btn" onclick='TuChoi("@Model.ObjDetail.ID");' title=""> <i class="material-icons col-fecon">close</i><span>Từ chối duyệt</span></div>
+                                        <div class="btn-default btn" onclick='PheDuyet("@Model.ObjDetail.ID");' title=""> <i class="material-icons col-fecon">done_all</i><span>Phê duyệt</span></div>
                                     }
-                                    @if (checkTrinhDuyet)
+
+                                    @if (checkHuyTrinhDuyet)
+                                    {
+                                        <div class="btn-default btn" onclick='HuyPheDuyet("@Model.ObjDetail.ID");' title=""> <i class="material-icons col-fecon">close</i><span>Huỷ trình duyệt</span></div>
+                                    }
+
+                                    @if (checkTrinhDuyet || checkPheDuyet)
                                     {
                                         <div class="btn-default btn" onclick="Forms.LoadAjax('@Url.Action("Edit")'+'/'+'@Model.ObjDetail.NAME_CONTRACT');" title=""><i class="material-icons col-fecon">edit</i><span>Chỉnh sửa</span></div>
                                     }
@@ -92,6 +193,28 @@
                                             <div style="display: flex; align-items: center; margin: 12px 0px;" class="col-fecon"><i class="material-icons">info</i> THÔNG TIN CHÍNH</div>
 
                                             <div class="row">
+                                                @if (Model.ObjDetail.PARENT != null)
+                                                {
+                                                    <div class="col-md-4">
+                                                        <label>Số hợp đồng gốc</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.ParentContract.CONTRACT_NUMBER, new { @readonly = "readonly" })
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.ParentContract.CONTRACT_NUMBER)
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <label>Tên hợp đồng gốc</label>
+                                                        <div class="form-group">
+                                                            <div class="form-line">
+                                                                @Html.MyTextBoxFor(m => m.ObjDetail.ParentContract.NAME, new { @readonly = "readonly" })
+                                                            </div>
+                                                            @Html.ValidationMessageFor(m => m.ObjDetail.ParentContract.NAME)
+                                                        </div>
+                                                    </div>
+                                                }
+
                                                 <div class="col-md-3">
                                                     <label>Số hợp đồng</label>
                                                     <div class="form-group">
@@ -119,7 +242,7 @@
                                                 </div>
 
                                                 <div class="col-md-6">
-                                                    <label>Khách hàng</label>
+                                                    <label class="badge" style="cursor:pointer" data-toggle="modal" data-target=".view-info-customer-detail">Khách hàng</label>
                                                     @Html.MyDropDownListFor(m => m.ObjDetail.CUSTOMER, SelectListUtilities.GetCustomer(),
                                                                     new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false, @disabled = "disabled" })
 

@@ -233,4 +233,14 @@
 
         RefreshData();
     }
+    function OnChangePhienBan(obj) {
+        $(".lblAlert").hide();
+        if ($(obj).find(':selected').attr("isClosed") == "True") {
+            $(".lblAlert").show();
+        }
+        var year = $(obj).val();
+        $(".hddPhienBan").val(year);
+
+        RefreshData();
+    }
 </script>

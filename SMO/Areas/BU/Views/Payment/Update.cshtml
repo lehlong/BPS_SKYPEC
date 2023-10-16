@@ -156,6 +156,7 @@
                 success: function (response) {
                     Message.execute(response);
                     Forms.HideLoading();
+                    DotThanhToan()
                     $(".close-modal").click();
                 },
                 error: Forms.AjaxErrorHandler

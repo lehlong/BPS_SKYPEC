@@ -20,6 +20,7 @@
                         <th></th>
                         <th class="align-center">Version</th>
                         <th class="align-center">Kịch bản</th>
+                        <th class="align-center">Phiên bản</th>
                         <th class="align-center">Người nhập</th>
                         <th style="width: 150px">File</th>
                     </tr>
@@ -32,7 +33,8 @@
                                 @Html.MyButton("cmdBack", "", $"ViewData({item.VERSION}, '{item.ORG_CODE}', '{item.TIME_YEAR}');", "Alt+N", "search")
                             </td>
                             <td class="align-center">@item.VERSION</td>
-                            <td class="align-center">@(item.KichBan.TEXT)</td>
+                            <td class="align-center">@(item.KichBan?.TEXT)</td>
+                            <td class="align-center">@(item.PhienBan?.TEXT)</td>
                             <td class="align-center">
                                 @item.CREATE_BY
                                 <div>@(item.CREATE_DATE?.ToString(Global.DateTimeToStringFormat))</div>

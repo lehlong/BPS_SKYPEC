@@ -92,6 +92,7 @@
                     @Html.Hidden("exportExcelUnit", Model.EXCHANGE_TYPE)
                     @Html.Hidden("exportExcelExchangeRate", Model.EXCHANGE_RATE)
                     @Html.Hidden("kichBan", Model.KICH_BAN)
+                    @Html.Hidden("phienBan", Model.PHIEN_BAN)
                     @Html.Hidden("moduleType")
                 </form>
             </div>
@@ -129,6 +130,7 @@
             $('#@formIdExportExcel #exportExcelIsDrillDown').val($('#@formId #IS_DRILL_DOWN').val() == undefined ? false : $('#@formId #IS_DRILL_DOWN').val());
             $('#@formIdExportExcel #exportExcelExchangeRate').val($('#@formId #EXCHANGE_RATE').val());
             $('#@formIdExportExcel #kichBan').val($('#@formId #KICH_BAN').val());
+            $('#@formIdExportExcel #phienBan').val($('#@formId #PHIEN_BAN').val());
             $('#@formIdExportExcel #moduleType').val("KeHoachSanLuong");
             $('#@formIdExportExcel #htmlMonth').val(htmlMonth);
             $('#@formIdExportExcel #htmlYear').val(htmlYear);

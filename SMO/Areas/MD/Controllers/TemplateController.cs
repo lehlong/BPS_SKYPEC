@@ -462,7 +462,6 @@ namespace SMO.Areas.MD.Controllers
             _service.ObjDetail.BUDGET_TYPE = budgetType;
             _service.ObjDetail.ELEMENT_TYPE = elementType;
             _service.ObjDetail.CODE = "BM" + _service.GetSequence("TEMPLATE");
-            _service.ObjDetail.NAME = $"{_service.GetBPTypeAcronymName(objectType, budgetType, elementType)} - {ProfileUtilities.User.Organize.NAME} - {_service.ObjDetail.CODE}";
 
             return PartialView(_service);
         }

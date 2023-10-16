@@ -685,12 +685,11 @@ namespace SMO.Service.BU
                             NAME_CONTRACT = contractOld.NAME_CONTRACT,
 
                         };
-                        contractOld.CONTRACT_TYPE = this.ObjDetail.CONTRACT_TYPE;
-
                         UnitOfWork.Repository<ContractHistoryRepo>().Create(history);
                     }
                 }
-                
+                contractOld.CONTRACT_TYPE = this.ObjDetail.CONTRACT_TYPE;
+
                 if (!contractOld.CUSTOMER.Equals(this.ObjDetail.CUSTOMER))
                 {
                     // tạo lịch sử
@@ -1451,6 +1450,8 @@ namespace SMO.Service.BU
             this.ObjDetail.DEPARTMENT = parent.DEPARTMENT;
             this.ObjDetail.CONTRACT_MANAGER = parent.CONTRACT_MANAGER;
             this.ObjDetail.APPROVER = parent.APPROVER;
+            this.ObjDetail.ParentContract.CONTRACT_NUMBER = parent.CONTRACT_NUMBER;
+            this.ObjDetail.ParentContract.NAME = parent.NAME;
         }
         public decimal getAmount(string nameContact, int version)
         {

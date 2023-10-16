@@ -13,6 +13,7 @@
                 <th class="align-center"></th>
                 <th class="align-center">Version</th>
                 <th class="align-center">Kịch bản</th>
+                <th class="align-center">Phiên bản</th>
                 <th class="align-center">Người dùng</th>
                 <th>Hành động</th>
             </tr>
@@ -29,6 +30,9 @@
                     </td>
                     <td class="align-center">
                         <b>@(item.KichBan?.TEXT)</b>
+                    </td>
+                    <td class="align-center">
+                        <b>@(item.PhienBan?.TEXT)</b>
                     </td>
                     <td class="align-center">
                         @item.ACTION_USER

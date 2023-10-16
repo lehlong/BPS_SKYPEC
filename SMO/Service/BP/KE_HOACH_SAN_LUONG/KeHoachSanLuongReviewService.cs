@@ -1,11 +1,11 @@
 ﻿using NHibernate.Linq;
 
 using SMO.Core.Entities;
-using SMO.Core.Entities.BP.COST_CF;
+
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Core.Entities.MD;
 using SMO.Repository.Implement.BP;
-using SMO.Repository.Implement.BP.COST_CF;
+
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Class;

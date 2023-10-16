@@ -29,30 +29,27 @@
                         <div class="col-lg-7 col-xs-10">
                             <label>Chọn kiểu template</label>
                             <div class="form-group">
-                                <div class="form-line">
-                                    @Html.MyDropDownListFor(x => x.ObjDetail.TYPE_UPLOAD,
-                                    SelectListUtilities.GetTypeUpload(),
-                                        new
-                                        {
-                                            @class = "selectpicker show-tick",
-                                            @data_live_search = "true",
-                                            @data_container = "body"
-                                        })
-                                </div>
+                                @Html.MyDropDownListFor(x => x.ObjDetail.TYPE_UPLOAD,
+                                SelectListUtilities.GetTypeUpload(),
+                                    new
+                                    {
+                                        @class = "selectpicker show-tick",
+                                        @data_live_search = "true",
+                                        @data_container = "body"
+                                    })
                             </div>
 
                             <label>Chọn mẫu khai báo</label>
                             <div class="form-group">
-                                <div class="form-line">
-                                    @Html.MyDropDownListFor(x => x.ObjDetail.TEMPLATE_CODE,
-                                    SelectListUtilities.GetTemplateOfOrg(ProfileUtilities.User.ORGANIZE_CODE, BudgetType.SanLuong, ElementType.SanLuong, TemplateObjectType.SanLuong),
-                                        new
-                                        {
-                                            @class = "selectpicker show-tick",
-                                            @data_live_search = "true",
-                                            @data_container = "body"
-                                        })
-                                </div>
+                                @Html.MyDropDownListFor(x => x.ObjDetail.TEMPLATE_CODE,
+                                SelectListUtilities.GetTemplateOfOrg(ProfileUtilities.User.ORGANIZE_CODE, BudgetType.SanLuong, ElementType.SanLuong, TemplateObjectType.SanLuong),
+                                    new
+                                    {
+                                        @class = "selectpicker show-tick",
+                                        @data_live_search = "true",
+                                        @data_container = "body",
+                                        @onchange = "onChangeTemplate(this.value)"
+                                    })
                             </div>
 
                             <label>Chọn file</label>
@@ -64,16 +61,26 @@
 
                             <label>Chọn kịch bản kế hoạch</label>
                             <div class="form-group">
-                                <div class="form-line">
-                                    @Html.MyDropDownListFor(x => x.ObjDetail.KICH_BAN,
-                                    SelectListUtilities.GetAllKichBan(),
-                                        new
-                                        {
-                                            @class = "selectpicker show-tick",
-                                            @data_live_search = "true",
-                                            @data_container = "body"
-                                        })
-                                </div>
+                                @Html.MyDropDownListFor(x => x.ObjDetail.KICH_BAN,
+                                SelectListUtilities.GetAllKichBan(),
+                                    new
+                                    {
+                                        @class = "selectpicker show-tick",
+                                        @data_live_search = "true",
+                                        @data_container = "body"
+                                    })
+                            </div>
+
+                            <label>Chọn phiên bản kế hoạch</label>
+                            <div class="form-group">
+                                @Html.MyDropDownListFor(x => x.ObjDetail.PHIEN_BAN,
+                                SelectListUtilities.GetAllPhienBan(),
+                                    new
+                                    {
+                                        @class = "selectpicker show-tick",
+                                        @data_live_search = "true",
+                                        @data_container = "body"
+                                    })
                             </div>
                         </div>
                     </div>
@@ -86,28 +93,52 @@
             Forms.CompleteUI();
         });
 
-        function SubmitImportExcel() {
-            if (document.getElementById("files").files.length == 0) {
-                alert("Vui lòng chọn file upload!");
-                return;
-            }
-            var formData = new FormData($('#@Model.FormId')[0]);
-            Forms.ShowLoading();
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("ImportExcel")',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    Message.execute(response);
-                    Forms.HideLoading();
-                },
-                error: Forms.AjaxErrorHandler
-            });
+    function SubmitImportExcel() {
+        if (document.getElementById("files").files.length == 0) {
+            alert("Vui lòng chọn file upload!");
+            return;
         }
-
-
+        var formData = new FormData($('#@Model.FormId')[0]);
+        Forms.ShowLoading();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ImportExcel")',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+            },
+            error: Forms.AjaxErrorHandler
+        });
+    }
+    function onChangeTemplate(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckTemplate")',
+            data: {
+                template: value,
+                year: '@Model.ObjDetail.TIME_YEAR',
+                orgCode: '@ProfileUtilities.User.Organize.CODE'
+            },
+            success: function (response) {
+                if (response.State) {
+                    $('#@Model.ViewId #ObjDetail_PHIEN_BAN').val(response.Data.PHIEN_BAN).trigger('change');
+                    $('#@Model.ViewId #ObjDetail_KICH_BAN').val(response.Data.KICH_BAN).trigger('change');
+                    if (response.Data.KICH_BAN != null && response.Data.PHIEN_BAN != null) {
+                        $("#@Model.ViewId #ObjDetail_KICH_BAN").prop('disabled', 'disabled');
+                        $("#@Model.ViewId #ObjDetail_PHIEN_BAN").prop('disabled', 'disabled');
+                    } else {
+                        $("#@Model.ViewId #ObjDetail_KICH_BAN").removeAttr("disabled");
+                        $("#@Model.ViewId #ObjDetail_PHIEN_BAN").removeAttr("disabled");
+                    }
+                }
+            },
+            error: Forms.AjaxErrorHandler
+        });
+    }
+    onChangeTemplate($("#@Model.ViewId #ObjDetail_TEMPLATE_CODE").val());
     </script>
 </div>
 

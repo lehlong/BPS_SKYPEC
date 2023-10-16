@@ -5,6 +5,7 @@
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
     Model.ObjDetail.IS_BASE = true;
+    var lstTemplate = SelectListUtilities.GetTemplateOfOrg(ProfileUtilities.User.ORGANIZE_CODE, BudgetType.SanLuong, ElementType.SanLuong, TemplateObjectType.SanLuong);
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
     @using (Ajax.BeginForm("Create", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
@@ -38,37 +39,26 @@
                             @Html.HiddenFor(x => x.ObjDetail.IS_BASE)
 
                             @*<div class="form-group">
-                                    <input name="cbxIsBase"
-                                           class="filled-in"
-                                           id="cbxIsBase"
-                                           @(Model.ObjDetail.IS_BASE ? "checked" : "")
-                                           review-temp-name="checkOne"
-                                           type="checkbox"
-                                           value="@Model.ObjDetail.IS_BASE"
-                                           data-val="true"
-                                           onchange="$('#ObjDetail_IS_BASE').val($(this).is(':checked') ? 'True' : 'False');">
-                                    <label for="cbxIsBase" class="p-r-5"></label>
-                                    Là mẫu cơ sở
-                                </div>*@
+            <input name="cbxIsBase"
+                   class="filled-in"
+                   id="cbxIsBase"
+                   @(Model.ObjDetail.IS_BASE ? "checked" : "")
+                   review-temp-name="checkOne"
+                   type="checkbox"
+                   value="@Model.ObjDetail.IS_BASE"
+                   data-val="true"
+                   onchange="$('#ObjDetail_IS_BASE').val($(this).is(':checked') ? 'True' : 'False');">
+            <label for="cbxIsBase" class="p-r-5"></label>
+            Là mẫu cơ sở
+        </div>*@
 
-                            @*<label>Đơn vị khai báo dữ liệu</label>
-                                <div class="form-group">
-                                    @Html.MyDropDownListFor(x => x.ObjDetail.ORG_CODE,
-                                        SelectListUtilities.GetChildOrg<T_MD_COST_CENTER, CostCenterRepo>(),
-                                            new
-                                            {
-                                                @class = "selectpicker show-tick",
-                                                @data_live_search = "true",
-                                                @data_container = "body"
-                                            })
-                                    @Html.ValidationMessageFor(m => m.ObjDetail.ORG_CODE)
-                                </div>*@
+
                             <label>Mã mẫu Kế hoạch</label>
                             <div class="form-group">
                                 <div class="form-line">
                                     @Html.MyTextBoxFor(m => m.ObjDetail.CODE, new { @disabled = "" })
                                 </div>
-                            @Html.ValidationMessageFor(m => m.ObjDetail.CODE)
+                                @Html.ValidationMessageFor(m => m.ObjDetail.CODE)
 
                             </div>
                             <label>Tiêu đề</label>
@@ -85,6 +75,21 @@
                                     @Html.MyTextBoxFor(m => m.ObjDetail.NAME)
                                 </div>
                                 @Html.ValidationMessageFor(m => m.ObjDetail.NAME)
+                            </div>
+
+                            <label>Copy từ biểu mẫu khác</label>
+                            <div class="form-group">
+                                <select name="@Html.NameFor(m => m.TEMPLATE_REFERENCE)" class="form-control selectpicker show-tick" data_live_search="true" data_container="body">
+                                    <option value="-">-</option>
+                                    @foreach (var temp in lstTemplate)
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            <label>Copy từ năm theo biểu mẫu</label>
+                            <div class="form-group">
+                                @Html.MyDropDownListFor(m => m.TIME_YEAR, SelectListUtilities.GetTimeYear(), new { @class = "selectpicker show-tick", @data_live_search = "true", @data_container = "body" })
                             </div>
 
                             <label>Ghi chú</label>

@@ -33,13 +33,22 @@
                                     <div id="divDetail">
                                         <div style="margin:10px">
                                             <div class="row">
-                                                <div class="col-md-12">
-                                                    <label>Hợp đồng gốc</label>
+                                                <div class="col-md-4">
+                                                    <label>Số hợp đồng gốc</label>
                                                     <div class="form-group">
                                                         <div class="form-line">
-                                                            @Html.MyTextBoxFor(m => m.ObjDetail.NAME_PARENT, new { @readonly = "" })
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.ParentContract.CONTRACT_NUMBER, new { @readonly = "" })
                                                         </div>
-                                                        @Html.ValidationMessageFor(m => m.ObjDetail.NAME_PARENT)
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.ParentContract.CONTRACT_NUMBER)
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <label>Tên hợp đồng gốc</label>
+                                                    <div class="form-group">
+                                                        <div class="form-line">
+                                                            @Html.MyTextBoxFor(m => m.ObjDetail.ParentContract.NAME, new { @readonly = "" })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.ParentContract.NAME)
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">

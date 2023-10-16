@@ -19,12 +19,26 @@ namespace SMO.Service.MD
     public class TemplateService : GenericService<T_MD_TEMPLATE, TemplateRepo>
     {
         public int TIME_YEAR { get; set; }
+        public string TEMPLATE_REFERENCE { get; set; }
         public override void Create()
         {
+            if (string.IsNullOrEmpty(ObjDetail.NAME))
+            {
+                State = false;
+                ErrorMessage = "Vui lòng nhập tên biểu mẫu!";
+                return;
+            }
             if (string.IsNullOrEmpty(ObjDetail.CODE))
             {
                 State = false;
                 MesseageCode = "1101";
+                return;
+            }
+            var lstDetail = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+            if (lstDetail.Count() == 0)
+            {
+                State = false;
+                ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
                 return;
             }
             try
@@ -39,6 +53,23 @@ namespace SMO.Service.MD
                     State = false;
                     MesseageCode = "1101";
                 }
+                if (this.TEMPLATE_REFERENCE != "-")
+                {
+                    UnitOfWork.BeginTransaction();
+                    foreach (var item in lstDetail)
+                    {
+                        UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
+                        {
+                            PKID = Guid.NewGuid().ToString(),
+                            CENTER_CODE = item.CENTER_CODE,
+                            ELEMENT_CODE = item.ELEMENT_CODE,
+                            TEMPLATE_CODE = this.ObjDetail.CODE,
+                            TIME_YEAR = this.TIME_YEAR,
+                        });
+                    }
+                    UnitOfWork.Commit();
+                }
+
             }
             catch (Exception ex)
             {
@@ -62,117 +93,27 @@ namespace SMO.Service.MD
             Get(template);
             switch (ObjDetail.OBJECT_TYPE.Trim())
             {
-                case TemplateObjectType.Department:
-                    switch (budget)
-                    {
-                        case Budget.COST_CENTER:
-                            if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                            {
-                                UpdateDetail<T_MD_TEMPLATE_DETAIL_COST_PL, TemplateDetailCostPLRepo, T_MD_COST_PL_ELEMENT, T_MD_COST_CENTER, CostPLRepo, T_BP_COST_PL>(centerCode, template, detailCodes, year);
-                            }
-                            else
-                            {
-                                UpdateDetail<T_MD_TEMPLATE_DETAIL_COST_CF, TemplateDetailCostCFRepo, T_MD_COST_CF_ELEMENT, T_MD_COST_CENTER, CostCFRepo, T_BP_COST_CF>(centerCode, template, detailCodes, year);
-                            }
-                            break;
-                        case Budget.PROFIT_CENTER:
-                            if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                            {
-                                UpdateDetail<T_MD_TEMPLATE_DETAIL_REVENUE_PL, TemplateDetailRevenuePLRepo, T_MD_REVENUE_PL_ELEMENT, T_MD_PROFIT_CENTER, RevenuePLRepo, T_BP_REVENUE_PL>(centerCode, template, detailCodes, year);
-                            }
-                            else
-                            {
-                                UpdateDetail<T_MD_TEMPLATE_DETAIL_REVENUE_CF, TemplateDetailRevenueCFRepo, T_MD_REVENUE_CF_ELEMENT, T_MD_PROFIT_CENTER, RevenueCFRepo, T_BP_REVENUE_CF>(centerCode, template, detailCodes, year);
-                            }
-                            break;
-                        case Budget.COST_ELEMENT:
-                        case Budget.REVENUE_ELEMENT:
-                        default:
-                            Exception = new FormatException("Type of center not support");
-                            State = false;
-                            ErrorMessage = "Type of center not support";
-                            break;
-                    }
-                    break;
-                case TemplateObjectType.Project:
-                    switch (budget)
-                    {
-                        case Budget.OTHER_PROFIT_CENTER:
-                            if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                            {
-                                if (ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
-                                {
-                                    UpdateDetail<T_MD_TEMPLATE_DETAIL_OTHER_COST_PL, TemplateDetailOtherCostPLRepo, T_MD_COST_PL_ELEMENT, T_MD_OTHER_PROFIT_CENTER, OtherCostPLRepo, T_BP_OTHER_COST_PL>(centerCode, template, detailCodes, year);
-                                }
-                                else
-                                {
-                                    UpdateDetail<T_MD_TEMPLATE_DETAIL_REVENUE_PL, TemplateDetailRevenuePLRepo, T_MD_REVENUE_PL_ELEMENT, T_MD_PROFIT_CENTER, RevenuePLRepo, T_BP_REVENUE_PL>(centerCode, template, detailCodes, year);
-                                }
-                            }
-                            else
-                            {
-                                if (ObjDetail.ELEMENT_TYPE == ElementType.DoanhThu)
-                                {
-                                    UpdateDetail<T_MD_TEMPLATE_DETAIL_REVENUE_CF, TemplateDetailRevenueCFRepo, T_MD_REVENUE_CF_ELEMENT, T_MD_PROFIT_CENTER, RevenueCFRepo, T_BP_REVENUE_CF>(centerCode, template, detailCodes, year);
-                                }
-                                else
-                                {
-                                    UpdateDetail<T_MD_TEMPLATE_DETAIL_OTHER_COST_CF, TemplateDetailOtherCostCFRepo, T_MD_COST_CF_ELEMENT, T_MD_OTHER_PROFIT_CENTER, OtherCostCFRepo, T_BP_OTHER_COST_CF>(centerCode, template, detailCodes, year);
-                                }
-                            }
-                            break;
-                        case Budget.COST_CENTER:
-                        case Budget.PROFIT_CENTER:
-                            if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                            {
-                                UpdateDetail<T_MD_TEMPLATE_DETAIL_REVENUE_PL, TemplateDetailRevenuePLRepo, T_MD_REVENUE_PL_ELEMENT, T_MD_PROFIT_CENTER, RevenuePLRepo, T_BP_REVENUE_PL>(centerCode, template, detailCodes, year);
-                            }
-                            else
-                            {
-                                UpdateDetail<T_MD_TEMPLATE_DETAIL_REVENUE_CF, TemplateDetailRevenueCFRepo, T_MD_REVENUE_CF_ELEMENT, T_MD_PROFIT_CENTER, RevenueCFRepo, T_BP_REVENUE_CF>(centerCode, template, detailCodes, year);
-                            }
-                            break;
-                        case Budget.COST_ELEMENT:
-                        case Budget.REVENUE_ELEMENT:
-                        default:
-                            Exception = new FormatException("Type of center not support");
-                            State = false;
-                            ErrorMessage = "Type of center not support";
-                            break;
-                    }
-                    break;
-                case TemplateObjectType.DevelopProject:
-                    switch (budget)
-                    {
-                        case Budget.COST_CENTER:
-                            if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                            {
-                                UpdateDetail<T_MD_TEMPLATE_DETAIL_CONTRUCT_COST_PL, TemplateDetailContructCostPLRepo, T_MD_COST_PL_ELEMENT, T_MD_INTERNAL_ORDER, ContructCostPLRepo, T_BP_CONTRUCT_COST_PL>(centerCode, template, detailCodes, year);
-                            }
-                            else
-                            {
-                                UpdateDetail<T_MD_TEMPLATE_DETAIL_CONTRUCT_COST_CF, TemplateDetailContructCostCFRepo, T_MD_COST_CF_ELEMENT, T_MD_INTERNAL_ORDER, ContructCostCFRepo, T_BP_CONTRUCT_COST_CF>(centerCode, template, detailCodes, year);
-                            }
-                            break;
-                        case Budget.PROFIT_CENTER:
-                        case Budget.COST_ELEMENT:
-                        case Budget.REVENUE_ELEMENT:
-                        default:
-                            Exception = new FormatException("Type of center not support");
-                            State = false;
-                            ErrorMessage = "Type of center not support";
-                            break;
-                    }
-                    break;
-
                 case TemplateObjectType.SanLuong:
                     switch (budget)
                     {
                         case Budget.SAN_LUONG:
                             UpdateDetail<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, TemplateDetailKeHoachSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, T_MD_SAN_LUONG_PROFIT_CENTER, KeHoachSanLuongRepo, T_BP_KE_HOACH_SAN_LUONG>(centerCode, template, detailCodes, year);
-
                             break;
-                       
+
+                        default:
+                            Exception = new FormatException("Type of center not support");
+                            State = false;
+                            ErrorMessage = "Type of center not support";
+                            break;
+                    }
+                    break;
+                case TemplateObjectType.DoanhThu:
+                    switch (budget)
+                    {
+                        case Budget.DOANH_THU:
+                            UpdateDetail<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, TemplateDetailKeHoachSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, T_MD_SAN_LUONG_PROFIT_CENTER, KeHoachSanLuongRepo, T_BP_KE_HOACH_SAN_LUONG>(centerCode, template, detailCodes, year);
+                            break;
+
                         default:
                             Exception = new FormatException("Type of center not support");
                             State = false;
@@ -267,39 +208,6 @@ namespace SMO.Service.MD
             }
             switch (ObjDetail.OBJECT_TYPE.Trim())
             {
-                case TemplateObjectType.Project:
-                    if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                    {
-                        if (ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
-                        {
-                            return UnitOfWork.Repository<TemplateDetailOtherCostPLRepo>()
-                                .GetManyWithFetch(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId, x => x.Center)
-                                .Select(x => x.Center)
-                                .Where(x => x.PROJECT_CODE == projectCode)
-                                .Select(x => x.COMPANY_CODE)
-                                .Distinct();
-                        }
-                        else
-                        {
-                            return new List<string>();
-                        }
-                    }
-                    else
-                    {
-                        if (ObjDetail.ELEMENT_TYPE == ElementType.DoanhThu)
-                        {
-                            return new List<string>();
-                        }
-                        else
-                        {
-                            return UnitOfWork.Repository<TemplateDetailOtherCostCFRepo>()
-                                .GetManyWithFetch(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId, x => x.Center)
-                                .Select(x => x.Center)
-                                .Where(x => x.PROJECT_CODE == projectCode)
-                                .Select(x => x.COMPANY_CODE)
-                                .Distinct();
-                        }
-                    }
                 case TemplateObjectType.SanLuong:
 
                     return UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>()
@@ -308,9 +216,14 @@ namespace SMO.Service.MD
                         .Where(x => x.SAN_BAY_CODE == projectCode)
                         .Select(x => x.HANG_HANG_KHONG_CODE)
                         .Distinct();
+                case TemplateObjectType.DoanhThu:
 
-                case TemplateObjectType.Department:
-                case TemplateObjectType.DevelopProject:
+                    return UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>()
+                        .GetManyWithFetch(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId, x => x.Center)
+                        .Select(x => x.Center)
+                        .Where(x => x.SAN_BAY_CODE == projectCode)
+                        .Select(x => x.HANG_HANG_KHONG_CODE)
+                        .Distinct();
                 default:
                     return new List<string>();
             }
@@ -366,76 +279,9 @@ namespace SMO.Service.MD
             Get(templateId);
             switch (ObjDetail.OBJECT_TYPE.Trim())
             {
-                case TemplateObjectType.Department:
-                    switch (budget)
-                    {
-                        case Budget.COST_CENTER:
-                            if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                            {
-                                return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_COST_PL, TemplateDetailCostPLRepo, T_MD_COST_PL_ELEMENT, T_MD_COST_CENTER>(centerCode, year, templateId);
-                            }
-                            else
-                            {
-                                return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_COST_CF, TemplateDetailCostCFRepo, T_MD_COST_CF_ELEMENT, T_MD_COST_CENTER>(centerCode, year, templateId);
-                            }
-                        case Budget.PROFIT_CENTER:
-                            if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                            {
-                                return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_REVENUE_PL, TemplateDetailRevenuePLRepo, T_MD_REVENUE_PL_ELEMENT, T_MD_PROFIT_CENTER>(centerCode, year, templateId);
-                            }
-                            else
-                            {
-                                return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_REVENUE_CF, TemplateDetailRevenueCFRepo, T_MD_REVENUE_CF_ELEMENT, T_MD_PROFIT_CENTER>(centerCode, year, templateId);
-                            }
-                        case Budget.COST_ELEMENT:
-                        case Budget.REVENUE_ELEMENT:
-                        default:
-                            return new List<string>();
-                    }
-                case TemplateObjectType.Project:
-                    if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                    {
-                        if (ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
-                        {
-                            return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_OTHER_COST_PL, TemplateDetailOtherCostPLRepo, T_MD_COST_PL_ELEMENT, T_MD_OTHER_PROFIT_CENTER>(centerCode, year, templateId);
-                        }
-                        else
-                        {
-                            return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_REVENUE_PL, TemplateDetailRevenuePLRepo, T_MD_REVENUE_PL_ELEMENT, T_MD_PROFIT_CENTER>(centerCode, year, templateId);
-                        }
-                    }
-                    else
-                    {
-                        if (ObjDetail.ELEMENT_TYPE == ElementType.DoanhThu)
-                        {
-                            return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_REVENUE_CF, TemplateDetailRevenueCFRepo, T_MD_REVENUE_CF_ELEMENT, T_MD_PROFIT_CENTER>(centerCode, year, templateId);
-                        }
-                        else
-                        {
-                            return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_OTHER_COST_CF, TemplateDetailOtherCostCFRepo, T_MD_COST_CF_ELEMENT, T_MD_OTHER_PROFIT_CENTER>(centerCode, year, templateId);
-                        }
-                    }
-                case TemplateObjectType.DevelopProject:
-                    switch (budget)
-                    {
-                        case Budget.INTERNAL_ORDER:
-                            if (ObjDetail.BUDGET_TYPE == BudgetType.KinhDoanh)
-                            {
-                                return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_CONTRUCT_COST_PL, TemplateDetailContructCostPLRepo, T_MD_COST_PL_ELEMENT, T_MD_INTERNAL_ORDER>(centerCode, year, templateId);
-                            }
-                            else
-                            {
-                                return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_CONTRUCT_COST_CF, TemplateDetailContructCostCFRepo, T_MD_COST_CF_ELEMENT, T_MD_INTERNAL_ORDER>(centerCode, year, templateId);
-                            }
-                        case Budget.COST_CENTER:
-                        case Budget.PROFIT_CENTER:
-                        case Budget.COST_ELEMENT:
-                        case Budget.REVENUE_ELEMENT:
-                        default:
-                            return new List<string>();
-                    }
-
                 case TemplateObjectType.SanLuong:
+                    return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, TemplateDetailKeHoachSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, T_MD_SAN_LUONG_PROFIT_CENTER>(centerCode, year, templateId);
+                case TemplateObjectType.DoanhThu:
                     return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, TemplateDetailKeHoachSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, T_MD_SAN_LUONG_PROFIT_CENTER>(centerCode, year, templateId);
                 default:
                     return new List<string>();
@@ -512,49 +358,6 @@ namespace SMO.Service.MD
             {
                 switch (budget)
                 {
-                    case Budget.OTHER_PROFIT_CENTER:
-                        try
-                        {
-                            UnitOfWork.BeginTransaction();
-                            var centerCode = Guid.NewGuid().ToString();
-                            // create other profit center
-                            UnitOfWork.Repository<OtherProfitCenterRepo>().Create(new T_MD_OTHER_PROFIT_CENTER
-                            {
-                                CODE = centerCode,
-                                COMPANY_CODE = companyCode,
-                                PROJECT_CODE = projectCode,
-                            });
-
-                            switch (ObjDetail.BUDGET_TYPE)
-                            {
-                                case BudgetType.KinhDoanh:
-                                    var detailsCostPL = from d in detailCodes
-                                                        select new T_MD_TEMPLATE_DETAIL_OTHER_COST_PL
-                                                        (Guid.NewGuid().ToString(), template, d, centerCode, year);
-
-                                    UnitOfWork.Repository<TemplateDetailOtherCostPLRepo>().Create(detailsCostPL.ToList());
-                                    break;
-                                case BudgetType.DongTien:
-                                    var detailsCostCF = from d in detailCodes
-                                                        select new T_MD_TEMPLATE_DETAIL_OTHER_COST_CF
-                                                        (Guid.NewGuid().ToString(), template, d, centerCode, year);
-
-                                    UnitOfWork.Repository<TemplateDetailOtherCostCFRepo>().Create(detailsCostCF.ToList());
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            UnitOfWork.Commit();
-                        }
-                        catch (Exception e)
-                        {
-                            UnitOfWork.Rollback();
-                            Exception = e;
-                            State = false;
-                            ErrorMessage = e.Message;
-                        }
-                        break;
                     case Budget.SAN_LUONG:
                         try
                         {
@@ -577,7 +380,7 @@ namespace SMO.Service.MD
 
                                     UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(detailsCostPL.ToList());
                                     break;
-                                
+
                                 default:
                                     break;
                             }
@@ -592,11 +395,44 @@ namespace SMO.Service.MD
                             ErrorMessage = e.Message;
                         }
                         break;
-                    case Budget.COST_CENTER:
-                    case Budget.COST_ELEMENT:
-                    case Budget.PROFIT_CENTER:
-                    case Budget.REVENUE_ELEMENT:
-                    case Budget.INTERNAL_ORDER:
+                    case Budget.DOANH_THU:
+                        try
+                        {
+                            UnitOfWork.BeginTransaction();
+                            var centerCode = Guid.NewGuid().ToString();
+                            // create other profit center
+                            UnitOfWork.Repository<SanLuongProfitCenterRepo>().Create(new T_MD_SAN_LUONG_PROFIT_CENTER
+                            {
+                                CODE = centerCode,
+                                HANG_HANG_KHONG_CODE = companyCode,
+                                SAN_BAY_CODE = projectCode,
+                            });
+
+                            switch (ObjDetail.BUDGET_TYPE.Trim())
+                            {
+                                case BudgetType.SanLuong:
+                                    var detailsCostPL = from d in detailCodes
+                                                        select new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
+                                                        (Guid.NewGuid().ToString(), template, d, centerCode, year);
+
+                                    UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(detailsCostPL.ToList());
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                            UnitOfWork.Commit();
+                        }
+                        catch (Exception e)
+                        {
+                            UnitOfWork.Rollback();
+                            Exception = e;
+                            State = false;
+                            ErrorMessage = e.Message;
+                        }
+                        break;
+
                     default:
                         Exception = new FormatException("Type of center not support");
                         State = false;
@@ -645,79 +481,10 @@ namespace SMO.Service.MD
                     var canDeactiveTemplate = false;
                     switch (ObjDetail.OBJECT_TYPE.Trim())
                     {
-                        case TemplateObjectType.Department:
-                            switch (ObjDetail.ELEMENT_TYPE)
-                            {
-                                case ElementType.ChiPhi:
-                                    switch (ObjDetail.BUDGET_TYPE)
-                                    {
-                                        case BudgetType.DongTien:   // CostCF
-                                            canDeactiveTemplate = CheckStatusData<CostCFRepo, T_BP_COST_CF>(templateId);
-                                            break;
-                                        case BudgetType.KinhDoanh:  // CostPL
-                                            canDeactiveTemplate = CheckStatusData<CostPLRepo, T_BP_COST_PL>(templateId);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    break;
-                                case ElementType.DoanhThu:
-                                    switch (ObjDetail.BUDGET_TYPE)
-                                    {
-                                        case BudgetType.DongTien:   // RevenueCF
-                                            canDeactiveTemplate = CheckStatusData<RevenueCFRepo, T_BP_REVENUE_CF>(templateId);
-                                            break;
-                                        case BudgetType.KinhDoanh:  // REvenuePL
-                                            canDeactiveTemplate = CheckStatusData<RevenuePLRepo, T_BP_REVENUE_PL>(templateId);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case TemplateObjectType.Project:
-                            switch (ObjDetail.ELEMENT_TYPE)
-                            {
-                                case ElementType.ChiPhi:
-                                    switch (ObjDetail.BUDGET_TYPE)
-                                    {
-                                        case BudgetType.DongTien:   // OtherCostCF
-                                            canDeactiveTemplate = CheckStatusData<OtherCostCFRepo, T_BP_OTHER_COST_CF>(templateId);
-                                            break;
-                                        case BudgetType.KinhDoanh:  // OtherCostPL
-                                            canDeactiveTemplate = CheckStatusData<OtherCostPLRepo, T_BP_OTHER_COST_PL>(templateId);
-                                            break;
-
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case TemplateObjectType.DevelopProject:
-                            switch (ObjDetail.ELEMENT_TYPE)
-                            {
-                                case ElementType.ChiPhi:
-                                    switch (ObjDetail.BUDGET_TYPE)
-                                    {
-                                        case BudgetType.DongTien:   // ContructCostCF
-                                            canDeactiveTemplate = CheckStatusData<ContructCostCFRepo, T_BP_CONTRUCT_COST_CF>(templateId);
-                                            break;
-                                        case BudgetType.KinhDoanh:  // ContructCostPL
-                                            canDeactiveTemplate = CheckStatusData<ContructCostPLRepo, T_BP_CONTRUCT_COST_PL>(templateId);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
                         case TemplateObjectType.SanLuong:
+                            canDeactiveTemplate = CheckStatusData<KeHoachSanLuongRepo, T_BP_KE_HOACH_SAN_LUONG>(templateId);
+                            break;
+                        case TemplateObjectType.DoanhThu:
                             canDeactiveTemplate = CheckStatusData<KeHoachSanLuongRepo, T_BP_KE_HOACH_SAN_LUONG>(templateId);
                             break;
                         default:
@@ -742,104 +509,24 @@ namespace SMO.Service.MD
 
         internal void CopyTemplate(int sourceYear, int destinationYear, string templateId)
         {
-            if (sourceYear == destinationYear)
+            Get(templateId);
+            if (ObjDetail == null)
             {
                 State = false;
-                ErrorMessage = "Năm kế hoạch đích phải khác với năm nguồn.";
+                ErrorMessage = "Mẫu không khả dụng.";
                 return;
             }
             else
             {
-                Get(templateId);
-                if (ObjDetail == null)
+                switch (ObjDetail.OBJECT_TYPE.Trim())
                 {
-                    State = false;
-                    ErrorMessage = "Mẫu không khả dụng.";
-                    return;
-                }
-                else
-                {
-                    switch (ObjDetail.OBJECT_TYPE)
-                    {
-                        case TemplateObjectType.Department:
-                            switch (ObjDetail.ELEMENT_TYPE)
-                            {
-                                case ElementType.ChiPhi:
-                                    switch (ObjDetail.BUDGET_TYPE)
-                                    {
-                                        case BudgetType.DongTien:   // CostCF
-                                            CopyTemplate<TemplateDetailCostCFRepo, T_MD_TEMPLATE_DETAIL_COST_CF, CostCFElementRepo, T_MD_COST_CF_ELEMENT, CostCenterRepo, T_MD_COST_CENTER>(sourceYear, destinationYear, templateId);
-                                            break;
-                                        case BudgetType.KinhDoanh:  // CostPL
-                                            CopyTemplate<TemplateDetailCostPLRepo, T_MD_TEMPLATE_DETAIL_COST_PL, CostPLElementRepo, T_MD_COST_PL_ELEMENT, CostCenterRepo, T_MD_COST_CENTER>(sourceYear, destinationYear, templateId);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    break;
-                                case ElementType.DoanhThu:
-                                    switch (ObjDetail.BUDGET_TYPE)
-                                    {
-                                        case BudgetType.DongTien:   // RevenueCF
-                                            CopyTemplate<TemplateDetailRevenueCFRepo, T_MD_TEMPLATE_DETAIL_REVENUE_CF, RevenueCFElementRepo, T_MD_REVENUE_CF_ELEMENT, ProfitCenterRepo, T_MD_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
-                                            break;
-                                        case BudgetType.KinhDoanh:  // REvenuePL
-                                            CopyTemplate<TemplateDetailRevenuePLRepo, T_MD_TEMPLATE_DETAIL_REVENUE_PL, RevenuePLElementRepo, T_MD_REVENUE_PL_ELEMENT, ProfitCenterRepo, T_MD_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case TemplateObjectType.Project:
-                            switch (ObjDetail.ELEMENT_TYPE)
-                            {
-                                case ElementType.ChiPhi:
-                                    switch (ObjDetail.BUDGET_TYPE)
-                                    {
-                                        case BudgetType.DongTien:   // OtherCostCF
-                                            CopyTemplate<TemplateDetailOtherCostCFRepo, T_MD_TEMPLATE_DETAIL_OTHER_COST_CF, CostCFElementRepo, T_MD_COST_CF_ELEMENT, OtherProfitCenterRepo, T_MD_OTHER_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
-                                            break;
-                                        case BudgetType.KinhDoanh:  // OtherCostPL
-                                            CopyTemplate<TemplateDetailOtherCostPLRepo, T_MD_TEMPLATE_DETAIL_OTHER_COST_PL, CostPLElementRepo, T_MD_COST_PL_ELEMENT, OtherProfitCenterRepo, T_MD_OTHER_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
-                                            break;
-
-                                        default:
-                                            break;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case TemplateObjectType.DevelopProject:
-                            switch (ObjDetail.ELEMENT_TYPE)
-                            {
-                                case ElementType.ChiPhi:
-                                    switch (ObjDetail.BUDGET_TYPE)
-                                    {
-                                        case BudgetType.DongTien:   // ContructCostCF
-                                            CopyTemplate<TemplateDetailContructCostCFRepo, T_MD_TEMPLATE_DETAIL_CONTRUCT_COST_CF, CostCFElementRepo, T_MD_COST_CF_ELEMENT, InternalOrderRepo, T_MD_INTERNAL_ORDER>(sourceYear, destinationYear, templateId);
-                                            break;
-                                        case BudgetType.KinhDoanh:  // ContructCostPL
-                                            CopyTemplate<TemplateDetailContructCostPLRepo, T_MD_TEMPLATE_DETAIL_CONTRUCT_COST_PL, CostPLElementRepo, T_MD_COST_PL_ELEMENT, InternalOrderRepo, T_MD_INTERNAL_ORDER>(sourceYear, destinationYear, templateId);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        default:
-                            State = false;
-                            ErrorMessage = "Mẫu không khả dụng";
-                            return;
-                    }
+                    case TemplateObjectType.SanLuong:
+                        CopyTemplate<TemplateDetailKeHoachSanLuongRepo, T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, KhoanMucSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, SanLuongProfitCenterRepo, T_MD_SAN_LUONG_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
+                        break;
+                    default:
+                        State = false;
+                        ErrorMessage = "Mẫu không khả dụng";
+                        return;
                 }
             }
         }

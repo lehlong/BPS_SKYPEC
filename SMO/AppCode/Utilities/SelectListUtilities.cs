@@ -4,11 +4,6 @@ using SMO.Core.Entities.BU;
 using SMO.Core.Entities.MD;
 using SMO.Repository.Common;
 using SMO.Repository.Implement.AD;
-using SMO.Repository.Implement.BP;
-using SMO.Repository.Implement.BP.COST_CF;
-using SMO.Repository.Implement.BP.COST_PL;
-using SMO.Repository.Implement.BP.REVENUE_CF;
-using SMO.Repository.Implement.BP.REVENUE_PL;
 using SMO.Repository.Implement.BU;
 using SMO.Repository.Implement.MD;
 using SMO.Repository.Implement.WF;
@@ -95,6 +90,19 @@ namespace SMO
                 lstData.Add(new Data { Value = obj.CODE, Text = obj.TEXT });
             }
             return new SelectList(lstData, "Value", "Text", new Data {});
+        }
+
+        public static SelectList GetAllPhienBan()
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+
+            var lstDomain = UnitOfWork.Repository<PhienBanRepo>().GetAll();
+            foreach (var obj in lstDomain)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.TEXT });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { });
         }
 
         public static SelectList GetTypeUpload()
@@ -824,79 +832,79 @@ namespace SMO
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
 
-        public static SelectList GetYearCompareCostPL(string templateId, string centerCode, bool isAddBlank = false, string selected = "")
-        {
-            IUnitOfWork UnitOfWork = new NHUnitOfWork();
-            var yearsCompare = new List<int>();
-            if (templateId is null)
-            {
-                yearsCompare = UnitOfWork.Repository<CostPLSumUpDetailRepo>()
-                    .GetManyByExpression(x => x.ORG_CODE == centerCode)
-                    .Select(x => x.TIME_YEAR).Distinct().ToList();
-            }
-            else
-            {
-                yearsCompare = UnitOfWork.Repository<CostPLVersionRepo>()
-             .GetManyByExpression(x => x.TEMPLATE_CODE == templateId && x.ORG_CODE == centerCode)
-             .Select(x => x.TIME_YEAR).Distinct().ToList();
-            }
-            return GetYearCompare(yearsCompare, isAddBlank, selected);
-        }
-        public static SelectList GetYearCompareCostCF(string templateId, string centerCode, bool isAddBlank = false, string selected = "")
-        {
-            IUnitOfWork UnitOfWork = new NHUnitOfWork();
-            var yearsCompare = new List<int>();
-            if (templateId is null)
-            {
-                yearsCompare = UnitOfWork.Repository<CostCFSumUpDetailRepo>()
-                    .GetManyByExpression(x => x.ORG_CODE == centerCode)
-                    .Select(x => x.TIME_YEAR).Distinct().ToList();
-            }
-            else
-            {
-                yearsCompare = UnitOfWork.Repository<CostCFVersionRepo>()
-             .GetManyByExpression(x => x.TEMPLATE_CODE == templateId && x.ORG_CODE == centerCode)
-             .Select(x => x.TIME_YEAR).Distinct().ToList();
-            }
-            return GetYearCompare(yearsCompare, isAddBlank, selected);
-        }
+        //public static SelectList GetYearCompareCostPL(string templateId, string centerCode, bool isAddBlank = false, string selected = "")
+        //{
+        //    IUnitOfWork UnitOfWork = new NHUnitOfWork();
+        //    var yearsCompare = new List<int>();
+        //    if (templateId is null)
+        //    {
+        //        yearsCompare = UnitOfWork.Repository<CostPLSumUpDetailRepo>()
+        //            .GetManyByExpression(x => x.ORG_CODE == centerCode)
+        //            .Select(x => x.TIME_YEAR).Distinct().ToList();
+        //    }
+        //    else
+        //    {
+        //        yearsCompare = UnitOfWork.Repository<CostPLVersionRepo>()
+        //     .GetManyByExpression(x => x.TEMPLATE_CODE == templateId && x.ORG_CODE == centerCode)
+        //     .Select(x => x.TIME_YEAR).Distinct().ToList();
+        //    }
+        //    return GetYearCompare(yearsCompare, isAddBlank, selected);
+        //}
+        //public static SelectList GetYearCompareCostCF(string templateId, string centerCode, bool isAddBlank = false, string selected = "")
+        //{
+        //    IUnitOfWork UnitOfWork = new NHUnitOfWork();
+        //    var yearsCompare = new List<int>();
+        //    if (templateId is null)
+        //    {
+        //        yearsCompare = UnitOfWork.Repository<CostCFSumUpDetailRepo>()
+        //            .GetManyByExpression(x => x.ORG_CODE == centerCode)
+        //            .Select(x => x.TIME_YEAR).Distinct().ToList();
+        //    }
+        //    else
+        //    {
+        //        yearsCompare = UnitOfWork.Repository<CostCFVersionRepo>()
+        //     .GetManyByExpression(x => x.TEMPLATE_CODE == templateId && x.ORG_CODE == centerCode)
+        //     .Select(x => x.TIME_YEAR).Distinct().ToList();
+        //    }
+        //    return GetYearCompare(yearsCompare, isAddBlank, selected);
+        //}
 
-        public static SelectList GetYearCompareRevenuePL(string templateId, string centerCode, bool isAddBlank = false, string selected = "")
-        {
-            IUnitOfWork UnitOfWork = new NHUnitOfWork();
-            var yearsCompare = new List<int>();
-            if (templateId is null)
-            {
-                yearsCompare = UnitOfWork.Repository<RevenuePLSumUpDetailRepo>()
-                    .GetManyByExpression(x => x.ORG_CODE == centerCode)
-                    .Select(x => x.TIME_YEAR).Distinct().ToList();
-            }
-            else
-            {
-                yearsCompare = UnitOfWork.Repository<RevenuePLVersionRepo>()
-             .GetManyByExpression(x => x.TEMPLATE_CODE == templateId && x.ORG_CODE == centerCode)
-             .Select(x => x.TIME_YEAR).Distinct().ToList();
-            }
-            return GetYearCompare(yearsCompare, isAddBlank, selected);
-        }
-        public static SelectList GetYearCompareRevenueCF(string templateId, string centerCode, bool isAddBlank = false, string selected = "")
-        {
-            IUnitOfWork UnitOfWork = new NHUnitOfWork();
-            var yearsCompare = new List<int>();
-            if (templateId is null)
-            {
-                yearsCompare = UnitOfWork.Repository<RevenueCFSumUpDetailRepo>()
-                    .GetManyByExpression(x => x.ORG_CODE == centerCode)
-                    .Select(x => x.TIME_YEAR).Distinct().ToList();
-            }
-            else
-            {
-                yearsCompare = UnitOfWork.Repository<RevenueCFVersionRepo>()
-             .GetManyByExpression(x => x.TEMPLATE_CODE == templateId && x.ORG_CODE == centerCode)
-             .Select(x => x.TIME_YEAR).Distinct().ToList();
-            }
-            return GetYearCompare(yearsCompare, isAddBlank, selected);
-        }
+        //public static SelectList GetYearCompareRevenuePL(string templateId, string centerCode, bool isAddBlank = false, string selected = "")
+        //{
+        //    IUnitOfWork UnitOfWork = new NHUnitOfWork();
+        //    var yearsCompare = new List<int>();
+        //    if (templateId is null)
+        //    {
+        //        yearsCompare = UnitOfWork.Repository<RevenuePLSumUpDetailRepo>()
+        //            .GetManyByExpression(x => x.ORG_CODE == centerCode)
+        //            .Select(x => x.TIME_YEAR).Distinct().ToList();
+        //    }
+        //    else
+        //    {
+        //        yearsCompare = UnitOfWork.Repository<RevenuePLVersionRepo>()
+        //     .GetManyByExpression(x => x.TEMPLATE_CODE == templateId && x.ORG_CODE == centerCode)
+        //     .Select(x => x.TIME_YEAR).Distinct().ToList();
+        //    }
+        //    return GetYearCompare(yearsCompare, isAddBlank, selected);
+        //}
+        //public static SelectList GetYearCompareRevenueCF(string templateId, string centerCode, bool isAddBlank = false, string selected = "")
+        //{
+        //    IUnitOfWork UnitOfWork = new NHUnitOfWork();
+        //    var yearsCompare = new List<int>();
+        //    if (templateId is null)
+        //    {
+        //        yearsCompare = UnitOfWork.Repository<RevenueCFSumUpDetailRepo>()
+        //            .GetManyByExpression(x => x.ORG_CODE == centerCode)
+        //            .Select(x => x.TIME_YEAR).Distinct().ToList();
+        //    }
+        //    else
+        //    {
+        //        yearsCompare = UnitOfWork.Repository<RevenueCFVersionRepo>()
+        //     .GetManyByExpression(x => x.TEMPLATE_CODE == templateId && x.ORG_CODE == centerCode)
+        //     .Select(x => x.TIME_YEAR).Distinct().ToList();
+        //    }
+        //    return GetYearCompare(yearsCompare, isAddBlank, selected);
+        //}
 
         private static SelectList GetYearCompare(IList<int> yearsCompare, bool isAddBlank, string selected)
         {
@@ -942,27 +950,27 @@ namespace SMO
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
 
-        public static SelectList GetUserReviewSummary(int year, int version, string orgCode = null, string selected = "")
-        {
-            IUnitOfWork UnitOfWork = new NHUnitOfWork();
-            var lstData = new List<Data>();
+        //public static SelectList GetUserReviewSummary(int year, int version, string orgCode = null, string selected = "")
+        //{
+        //    IUnitOfWork UnitOfWork = new NHUnitOfWork();
+        //    var lstData = new List<Data>();
 
-            if (string.IsNullOrEmpty(orgCode))
-            {
-                orgCode = UnitOfWork.Repository<CostCenterRepo>().GetFirstByExpression(x => x.PARENT_CODE == string.Empty)?.CODE;
-            }
-            if (orgCode != null)
-            {
-                lstData.AddRange(from user in UnitOfWork.Repository<CostPLReviewRepo>()
-                                .GetManyByExpression(x => x.ORG_CODE.Equals(orgCode) && x.TIME_YEAR == year && x.DATA_VERSION == version)
-                                 select new Data
-                                 {
-                                     Text = user.UserReview.FULL_NAME,
-                                     Value = user.REVIEW_USER
-                                 });
-            }
-            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
-        }
+        //    if (string.IsNullOrEmpty(orgCode))
+        //    {
+        //        orgCode = UnitOfWork.Repository<CostCenterRepo>().GetFirstByExpression(x => x.PARENT_CODE == string.Empty)?.CODE;
+        //    }
+        //    if (orgCode != null)
+        //    {
+        //        lstData.AddRange(from user in UnitOfWork.Repository<CostPLReviewRepo>()
+        //                        .GetManyByExpression(x => x.ORG_CODE.Equals(orgCode) && x.TIME_YEAR == year && x.DATA_VERSION == version)
+        //                         select new Data
+        //                         {
+        //                             Text = user.UserReview.FULL_NAME,
+        //                             Value = user.REVIEW_USER
+        //                         });
+        //    }
+        //    return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        //}
 
         public static SelectList GetReviewUsers(int year, string selected = "", bool isAddBlank = false)
         {

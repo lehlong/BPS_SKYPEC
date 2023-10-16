@@ -4,7 +4,7 @@
     {
         public const string SanLuong = "A";
         public const string ChiPhi = "C";
-        public const string DoanhThu = "R";
+        public const string DoanhThu = "B";
 
         public static string GetText(string type)
         {

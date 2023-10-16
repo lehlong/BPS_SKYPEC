@@ -9,6 +9,10 @@
         /// <summary>
         /// Phòng ban
         /// </summary>
+        public const string DoanhThu = "B";
+        /// <summary>
+        /// Phòng ban
+        /// </summary>
         public const string Department = "01";
         /// <summary>
         /// Dự án (Other)
@@ -25,6 +29,8 @@
             {
                 case SanLuong:
                     return "Sản lượng";
+                case DoanhThu:
+                    return "Doanh thu";
                 case Department:
                     return "Phòng ban";
                 case Project:

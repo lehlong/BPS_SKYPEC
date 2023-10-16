@@ -37,6 +37,22 @@ namespace SMO.Core.Entities.BU
         public virtual DateTime SIGN_DAY { get; set; }
         public virtual IList<T_BU_CONTRACT> ChildContracts { get; set; }
 
+        private T_BU_CONTRACT _ParentContract;
+        public virtual T_BU_CONTRACT ParentContract
+        {
+            get
+            {
+                if (_ParentContract == null)
+                {
+                    _ParentContract = new T_BU_CONTRACT();
+                }
+                return _ParentContract;
+            }
+            set
+            {
+                _ParentContract = value;
+            }
+        }
         private T_MD_CONTRACT_TYPE _ContractType;
         public virtual T_MD_CONTRACT_TYPE ContractType
         {

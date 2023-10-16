@@ -3,6 +3,7 @@
     public static class BudgetType
     {
         public const string SanLuong = "A";
+        public const string DoanhThu = "B";
         public const string KinhDoanh = "P";
         public const string DongTien = "C";
 
@@ -16,6 +17,8 @@
                     return "Kinh doanh";
                 case DongTien:
                     return "Dòng tiền";
+                case DoanhThu:
+                    return "Doanh thu";
                 default:
                     return type;
             }

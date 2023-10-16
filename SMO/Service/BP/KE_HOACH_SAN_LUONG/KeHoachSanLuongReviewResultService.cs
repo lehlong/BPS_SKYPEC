@@ -1,6 +1,6 @@
-﻿using SMO.Core.Entities.BP.COST_CF;
+﻿
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
-using SMO.Repository.Implement.BP.COST_CF;
+
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 
 namespace SMO.Service.BP.KE_HOACH_SAN_LUONG

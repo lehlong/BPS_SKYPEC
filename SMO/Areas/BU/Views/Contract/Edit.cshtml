@@ -327,7 +327,6 @@
                         if (evt.lengthComputable) {
                             var percentComplete = evt.loaded / evt.total;
                             percentComplete = parseInt(percentComplete * 100);
-                            console.log(percentComplete);
                             if (percentComplete === 100) {
                                 //alert("kakalot");
                             }
@@ -414,6 +413,7 @@
                 if (result.isConfirmed) {
                     Update();
                     reload();
+                    ThongTinHopDong()
                     Forms.Close('@Model.ViewId');
                 }
             })

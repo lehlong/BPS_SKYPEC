@@ -4,18 +4,15 @@ using NPOI.XSSF.UserModel;
 using SMO.AppCode.Utilities;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
-using SMO.Core.Entities.BP.COST_CF;
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG.KE_HOACH_SAN_LUONG_DATA_BASE;
 using SMO.Core.Entities.MD;
 using SMO.Helper;
 using SMO.Models;
 using SMO.Repository.Implement.BP;
-using SMO.Repository.Implement.BP.COST_CF;
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG.KE_HOACH_SAN_LUONG_DATA_BASE;
 using SMO.Repository.Implement.MD;
-using SMO.Service.BP.COST_CF;
 using SMO.Service.Class;
 using SMO.Service.Common;
 using SMO.ServiceInterface.BP.KeHoachSanLuong;
@@ -1093,7 +1090,11 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             {
                 ObjDetail.KICH_BAN = "TB";
             }
-            this.ObjList = this.ObjList.Where(x=> x.KICH_BAN == this.ObjDetail.KICH_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+            if (string.IsNullOrEmpty(ObjDetail.PHIEN_BAN))
+            {
+                ObjDetail.PHIEN_BAN = "PB1";
+            }
+            this.ObjList = this.ObjList.Where(x=> x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
         }
 
         /// <summary>
@@ -1576,8 +1577,12 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             {
                 ObjDetail.KICH_BAN = "TB";
             }
+            if (ObjDetail.PHIEN_BAN == null)
+            {
+                ObjDetail.PHIEN_BAN = "PB1";
+            }
             var query = this.UnitOfWork.GetSession().QueryOver<T_BP_KE_HOACH_SAN_LUONG_HISTORY>();
-            query = query.Where(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year && x.KICH_BAN == ObjDetail.KICH_BAN)
+            query = query.Where(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year && x.KICH_BAN == ObjDetail.KICH_BAN && x.PHIEN_BAN == ObjDetail.PHIEN_BAN)
                 .Fetch(x => x.Template).Eager
                 .Fetch(x => x.USER_CREATE).Eager;
             this.ObjListHistory = query.List().ToList();
@@ -1988,6 +1993,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     // Cập nhật next version vào bảng chính
                     KeHoachSanLuongCurrent.VERSION = versionNext;
                     KeHoachSanLuongCurrent.KICH_BAN = ObjDetail.KICH_BAN;
+                    KeHoachSanLuongCurrent.PHIEN_BAN = ObjDetail.PHIEN_BAN;
                     KeHoachSanLuongCurrent.IS_DELETED = false;
                     CurrentRepository.Update(KeHoachSanLuongCurrent);
                 }
@@ -2000,6 +2006,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                         ORG_CODE = orgCode,
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                         KICH_BAN = ObjDetail.KICH_BAN,
+                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
                         VERSION = versionNext,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
@@ -2018,6 +2025,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
                     KICH_BAN = ObjDetail.KICH_BAN,
+                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     FILE_ID = fileStream.PKID,
                     CREATE_BY = currentUser
@@ -2030,6 +2038,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     KICH_BAN = ObjDetail.KICH_BAN,
+                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
                     VERSION = versionNext,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     ACTION = Approve_Action.NhapDuLieu,
@@ -2263,6 +2272,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                         ORG_CODE = orgCode,
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                         KICH_BAN = ObjDetail.KICH_BAN,
+                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
                         IS_DELETED = false,
                         VERSION = versionNext,
@@ -2279,6 +2289,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = orgCode,
                     KICH_BAN = ObjDetail.KICH_BAN,
+                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
@@ -2490,7 +2501,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         public override IList<T_BP_KE_HOACH_SAN_LUONG_VERSION> GetVersions(string orgCode, string templateId, int year)
         {
             templateId = templateId ?? string.Empty;
-            var lstVersions = GetVersionsNumber(orgCode, templateId, year,"");
+            var lstVersions = GetVersionsNumber(orgCode, templateId, year,"", "");
             return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
                 .GetManyByExpression(x => x.TEMPLATE_CODE == templateId
                 && x.TIME_YEAR == year
@@ -2665,12 +2676,12 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         #endregion
 
         #region Get template versions
-        public override IList<int> GetVersionsNumber(string orgCode, string templateId, int year, string kichBan)
+        public override IList<int> GetVersionsNumber(string orgCode, string templateId, int year, string kichBan, string phienBan)
         {
             if (!string.IsNullOrEmpty(templateId))
             {
                 return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
-                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.KICH_BAN == kichBan)
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
                     .Select(x => x.VERSION)
                     .OrderByDescending(x => x)
                     .ToList();
@@ -2678,7 +2689,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             else
             {
                 return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
-                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.ORG_CODE == orgCode && x.KICH_BAN == kichBan)
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.ORG_CODE == orgCode && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
                     .Select(x => x.VERSION)
                     .OrderByDescending(x => x)
                     .ToList();
@@ -3478,6 +3489,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     ORG_CODE = centerCode,
                     TEMPLATE_CODE = string.Empty,
                     KICH_BAN = ObjDetail.KICH_BAN,
+                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
                     VERSION = versionPl,
                     TIME_YEAR = year,
                     CREATE_BY = currentUser
@@ -4457,5 +4469,27 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             UnitOfWork.Commit();
 
         }
+        public T_BP_KE_HOACH_SAN_LUONG CheckTemplate(string template, int year, string orgCode) {
+            try
+            {
+                var checkTemplate = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == template && x.TIME_YEAR == year && x.ORG_CODE == orgCode);
+                if (checkTemplate != null)
+                {
+                    return checkTemplate;
+                }
+                else
+                {
+                    return new T_BP_KE_HOACH_SAN_LUONG();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return null;
+            }
+            
+        }
+
     }
 }

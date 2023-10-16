@@ -1,9 +1,7 @@
 ﻿using NHibernate.Linq;
 using SMO.Core.Entities;
-using SMO.Core.Entities.BP.COST_CF;
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Core.Entities.MD;
-using SMO.Repository.Implement.BP.COST_CF;
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.CM;
 using SMO.Repository.Implement.MD;
@@ -126,10 +124,10 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         /// </summary>
         /// <param name="year">Năm của cây khoản mục</param>
         /// <returns></returns>
-        internal SelectList GetElements(int year)
-        {
-            return SelectListUtilities.GetChildElement<T_MD_COST_CF_ELEMENT, CostCFElementRepo>(year);
-        }
+        //internal SelectList GetElements(int year)
+        //{
+        //    return SelectListUtilities.GetChildElement<T_MD_COST_CF_ELEMENT, CostCFElementRepo>(year);
+        //}
 
         /// <summary>
         /// Lấy danh sách những user comment

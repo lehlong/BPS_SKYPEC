@@ -2,8 +2,6 @@
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Models;
 using SMO.Repository.Implement.MD;
-using SMO.Service.BP;
-using SMO.Service.BP.COST_CF;
 using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.Class;
 using SMO.Service.Class.Base;

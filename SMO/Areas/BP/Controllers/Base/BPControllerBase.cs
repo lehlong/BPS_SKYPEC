@@ -118,7 +118,7 @@ namespace SMO.Areas.BP.Controllers
         //[HttpPost]
         public abstract FileContentResult DownloadTemplate(string templateId, int year);
 
-        public ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan)
+        public ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
         {
             orgCode = orgCode ?? ProfileUtilities.User.ORGANIZE_CODE;
             var viewDataCenterModel = new ViewDataCenterModel
@@ -127,6 +127,7 @@ namespace SMO.Areas.BP.Controllers
                 IS_LEAF = _service.IsLeaf(),
                 TEMPLATE_CODE = templateCode ?? string.Empty,
                 KICH_BAN = kichBan,
+                PHIEN_BAN = phienBan,
                 YEAR = year,
                 VERSION = version,
                 IS_HAS_NOT_VALUE = false,
@@ -416,9 +417,9 @@ namespace SMO.Areas.BP.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        public JsonResult GetVersions(string orgCode, string templateId, int year, string kichBan)
+        public JsonResult GetVersions(string orgCode, string templateId, int year, string kichBan, string phienBan)
         {
-            var lstVersions = _service.GetVersionsNumber(orgCode, templateId, year, kichBan);
+            var lstVersions = _service.GetVersionsNumber(orgCode, templateId, year, kichBan, phienBan);
 
             return Json(lstVersions, JsonRequestBehavior.AllowGet);
         }

@@ -162,23 +162,23 @@ namespace SMO.Service.MD
                 switch (template.OBJECT_TYPE)
                 {
                     case TemplateObjectType.DevelopProject:
-                        if (template.BUDGET_TYPE == BudgetType.KinhDoanh)
-                        {
-                            // get all cost center selected in template
-                            lstDetails = template.DetailContructCostPL
-                                .Where(x => x.TIME_YEAR == year)
-                                .GroupBy(x => x.CENTER_CODE)
-                                .Select(x => x.First().CENTER_CODE).ToList();
-                        }
-                        else
-                        {
-                            // get all cost center selected in template
-                            lstDetails = template.DetailContructCostCF
-                                .Where(x => x.TIME_YEAR == year)
-                                .GroupBy(x => x.CENTER_CODE)
-                                .Select(x => x.First().CENTER_CODE).ToList();
-                        }
-                        break;
+                        //if (template.BUDGET_TYPE == BudgetType.KinhDoanh)
+                        //{
+                        //    // get all cost center selected in template
+                        //    lstDetails = template.DetailContructCostPL
+                        //        .Where(x => x.TIME_YEAR == year)
+                        //        .GroupBy(x => x.CENTER_CODE)
+                        //        .Select(x => x.First().CENTER_CODE).ToList();
+                        //}
+                        //else
+                        //{
+                        //    // get all cost center selected in template
+                        //    lstDetails = template.DetailContructCostCF
+                        //        .Where(x => x.TIME_YEAR == year)
+                        //        .GroupBy(x => x.CENTER_CODE)
+                        //        .Select(x => x.First().CENTER_CODE).ToList();
+                        //}
+                        //break;
                     case TemplateObjectType.Department:
                     case TemplateObjectType.Project:
                     default:

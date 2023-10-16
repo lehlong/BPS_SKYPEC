@@ -79,14 +79,14 @@ else
     })
     </div>
     <div class="col-xs-6">
-        @Html.MyDropDownListFor(x => x.KICH_BAN, SelectListUtilities.GetAllKichBan(),
-    new
-    {
-        @class = "selectpicker show-tick dropdown",
-        @data_container = "body",
-        @data_live_search = "true",
-        @onchange = "OnChangeYear()"
-    })
+        @Html.MyDropDownListFor(x => x.PHIEN_BAN, SelectListUtilities.GetAllPhienBan(),
+     new
+     {
+         @class = "selectpicker show-tick dropdown",
+         @data_container = "body",
+         @data_live_search = "true",
+         @onchange = "OnChangeYear()"
+     })
     </div>
 
 </div>
@@ -115,11 +115,14 @@ else
         </div>
 
         <div class="col-xs-4">
-            <div class="form-group">
-                <div class="form-line">
-                    <input type="text" class="form-control" value="Tấn" disabled />
-                </div>
-            </div>
+            @Html.MyDropDownListFor(x => x.KICH_BAN, SelectListUtilities.GetAllKichBan(),
+   new
+   {
+       @class = "selectpicker show-tick dropdown",
+       @data_container = "body",
+       @data_live_search = "true",
+       @onchange = "OnChangeYear()"
+   })
         </div>
             }
 
@@ -132,7 +135,7 @@ else
             </div>
         </div>
 
-        <script>
+<script>
     $(function () {
         $('#EXCHANGE_TYPE').change();
 
@@ -327,6 +330,7 @@ else
             var orgCode = $("#@viewId #ORG_CODE").val();
             var templateId = $("#@viewId #TEMPLATE_CODE").val();
             var kichBan = $("#@viewId #KICH_BAN").val();
+            var phienBan = $("#@viewId #PHIEN_BAN").val();
             if (year === undefined) {
                 return;
             }
@@ -336,7 +340,7 @@ else
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                data: { orgCode, year, templateId, kichBan },
+                data: { orgCode, year, templateId, kichBan, phienBan },
                 success: function (response) {
                     var lstVersion = $('#@viewId #VERSION');
                     lstVersion.html('');
@@ -511,4 +515,4 @@ else
             $(`#@viewId ${href}`).html("");
         }
 
-        </script>
+</script>

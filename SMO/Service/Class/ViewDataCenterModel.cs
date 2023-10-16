@@ -5,6 +5,7 @@
         public string ORG_CODE { get; set; }
         public string TEMPLATE_CODE { get; set; }
         public string KICH_BAN { get; set; }
+        public string PHIEN_BAN { get; set; }
         public int YEAR { get; set; }
         public decimal? EXCHANGE_RATE { get; set; } = 1;
         public string EXCHANGE_TYPE { get; set; } = "VND";  // fix value is VND

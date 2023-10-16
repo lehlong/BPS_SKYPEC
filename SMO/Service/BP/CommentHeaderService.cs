@@ -1,6 +1,7 @@
 ﻿using SMO.Core.Entities;
 using SMO.Core.Entities.CM;
 using SMO.Repository.Implement.CM;
+using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using System;
 
 namespace SMO.Service.BP
@@ -55,7 +56,7 @@ namespace SMO.Service.BP
 
         internal bool IsSelfUploadTemplate(string orgCode, string referenceCode)
         {
-            return new CostPLService().IsSelfUpload(orgCode, referenceCode);
+            return new KeHoachSanLuongService().IsSelfUpload(orgCode, referenceCode);
         }
 
         internal void GetHeader()
