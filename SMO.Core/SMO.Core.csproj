@@ -130,6 +130,18 @@
     <Compile Include="Entities\BP\BaseBPHistoryEntity.cs" />
     <Compile Include="Entities\BP\BaseBPVersionEntity.cs" />
     <Compile Include="Entities\BP\BPBaseReviewEntity.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\KE_HOACH_DOANH_THU_DATA_BASE\T_BP_KE_HOACH_DOANH_THU_DATA_BASE.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\KE_HOACH_DOANH_THU_DATA_BASE\T_BP_KE_HOACH_DOANH_THU_DATA_BASE_HISTORY.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_DATA.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_DATA_HISTORY.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_HISTORY.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_REVIEW.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_REVIEW_COMMENT.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_REVIEW_HISTORY.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_REVIEW_RESULT.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_SUM_UP_DETAIL.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_DOANH_THU\T_BP_KE_HOACH_DOANH_THU_VERSION.cs" />
     <Compile Include="Entities\BP\KE_HOACH_SAN_LUONG\KE_HOACH_SAN_LUONG_DATA_BASE\T_BP_KE_HOACH_SAN_LUONG_DATA_BASE.cs" />
     <Compile Include="Entities\BP\KE_HOACH_SAN_LUONG\KE_HOACH_SAN_LUONG_DATA_BASE\T_BP_KE_HOACH_SAN_LUONG_DATA_BASE_HISTORY.cs" />
     <Compile Include="Entities\BP\KE_HOACH_SAN_LUONG\T_BP_KE_HOACH_SAN_LUONG.cs" />
@@ -209,6 +221,7 @@
     <Compile Include="Entities\MD\T_MD_SAN_BAY.cs" />
     <Compile Include="Entities\MD\T_MD_SAN_LUONG_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE.cs" />
+    <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG.cs" />
     <Compile Include="Entities\MD\T_MD_TRANSPORT_GROUP.cs" />
     <Compile Include="Entities\MD\T_MD_UNIT.cs" />
