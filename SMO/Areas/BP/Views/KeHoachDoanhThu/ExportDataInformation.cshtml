@@ -1,0 +1,132 @@
+﻿
+@using SMO.Core.Entities.BP.KE_HOACH_DOANH_THU;
+
+@{
+    var headerKeHoachDoanhThu = ViewBag.Header as T_BP_KE_HOACH_DOANH_THU;
+    if (headerKeHoachDoanhThu == null)
+    {
+        var headerKeHoachDoanhThuVerion = new T_BP_KE_HOACH_DOANH_THU_VERSION();
+        headerKeHoachDoanhThuVerion = ViewBag.Header;
+        var hasVersion = ViewBag.HasVersion as bool?;
+        var templateName = string.IsNullOrEmpty(headerKeHoachDoanhThuVerion.TEMPLATE_CODE) ? "Dữ liệu tổng hợp" : $"{headerKeHoachDoanhThuVerion.TEMPLATE_CODE} - {headerKeHoachDoanhThuVerion.Template.NAME}";
+        <div class="body">
+            <div class="table-responsive font-13">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <b>Đơn vị</b>
+                            <div>@(headerKeHoachDoanhThuVerion.ORG_CODE) - @(headerKeHoachDoanhThuVerion.Organize?.NAME)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Mẫu khai báo</b>
+                            <div>@templateName</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Năm kế hoạch</b>
+                            <div>@headerKeHoachDoanhThuVerion.TIME_YEAR</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Kịch bản</b>
+                            <div>@(headerKeHoachDoanhThuVerion.KichBan?.TEXT)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Phiên bản</b>
+                            <div>@(headerKeHoachDoanhThuVerion.PhienBan?.TEXT)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Version</b>
+                            <div>@headerKeHoachDoanhThuVerion.VERSION</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Người tạo</b>
+                            <div>@headerKeHoachDoanhThuVerion.CREATE_BY</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Ngày tạo</b>
+                            <div>@(headerKeHoachDoanhThuVerion.CREATE_DATE?.ToString(Global.DateTimeToStringFormat))</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        var templateName = string.IsNullOrEmpty(headerKeHoachDoanhThu.TEMPLATE_CODE) ? "Dữ liệu tổng hợp" : $"{headerKeHoachDoanhThu.TEMPLATE_CODE} - {headerKeHoachDoanhThu.Template.NAME}";
+        <div class="body">
+            <div class="table-responsive font-13">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <b>Đơn vị</b>
+                            <div>@(headerKeHoachDoanhThu.ORG_CODE) - @(headerKeHoachDoanhThu.Organize?.NAME)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Mẫu khai báo</b>
+                            <div>@templateName</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Năm kế hoạch</b>
+                            <div>@headerKeHoachDoanhThu.TIME_YEAR</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Version</b>
+                            <div>@headerKeHoachDoanhThu.VERSION</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Kịch bản</b>
+                            <div>@(headerKeHoachDoanhThu.KichBan?.TEXT)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Phiên bản</b>
+                            <div>@(headerKeHoachDoanhThu.PhienBan?.TEXT)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Trạng thái</b>
+                            <div>@Approve_Status.GetStatusText(headerKeHoachDoanhThu.STATUS)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Người tạo</b>
+                            <div>@headerKeHoachDoanhThu.CREATE_BY</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Ngày tạo</b>
+                            <div>@(headerKeHoachDoanhThu.CREATE_DATE?.ToString(Global.DateTimeToStringFormat))</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+}
+
