@@ -636,6 +636,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="ServiceInterface\BP\KeHoachDoanhThu\IKeHoachDoanhThuService.cs" />
     <Compile Include="ServiceInterface\BP\KeHoachSanLuong\IKeHoachSanLuongService.cs" />
     <Compile Include="Service\AD\ConnectionService.cs" />
     <Compile Include="Service\AD\UserApproveService.cs" />
@@ -656,6 +657,11 @@
     <Compile Include="Service\BP\BudgetPeriodService.cs" />
     <Compile Include="Service\BP\CommentHeaderService.cs" />
     <Compile Include="Service\BP\IBaseBPService.cs" />
+    <Compile Include="Service\BP\KE_HOACH_DOANH_THU\KeHoachDoanhThuReviewCommentService.cs" />
+    <Compile Include="Service\BP\KE_HOACH_DOANH_THU\KeHoachDoanhThuReviewHistoryService.cs" />
+    <Compile Include="Service\BP\KE_HOACH_DOANH_THU\KeHoachDoanhThuReviewResultService.cs" />
+    <Compile Include="Service\BP\KE_HOACH_DOANH_THU\KeHoachDoanhThuReviewService.cs" />
+    <Compile Include="Service\BP\KE_HOACH_DOANH_THU\KeHoachDoanhThuService.cs" />
     <Compile Include="Service\BP\KE_HOACH_SAN_LUONG\KeHoachSanLuongReviewCommentService.cs" />
     <Compile Include="Service\BP\KE_HOACH_SAN_LUONG\KeHoachSanLuongReviewHistoryService.cs" />
     <Compile Include="Service\BP\KE_HOACH_SAN_LUONG\KeHoachSanLuongReviewResultService.cs" />
@@ -681,6 +687,9 @@
     <Compile Include="Service\Class\EGAS_HEADER.cs" />
     <Compile Include="Service\Class\FILE_STREAM.cs" />
     <Compile Include="Service\Class\FilterCommentCenterViewModel.cs" />
+    <Compile Include="Service\Class\KE_HOACH_DOANH_THU\IKeHoachDoanhThuElementReviewCenter.cs" />
+    <Compile Include="Service\Class\KE_HOACH_DOANH_THU\KeHoachDoanhThuElementReviewCenterModel.cs" />
+    <Compile Include="Service\Class\KE_HOACH_DOANH_THU\KeHoachDoanhThuReviewViewModel.cs" />
     <Compile Include="Service\Class\KE_HOACH_SAN_LUONG\IKeHoachSanLuongElementReviewCenter.cs" />
     <Compile Include="Service\Class\KE_HOACH_SAN_LUONG\KeHoachSanLuongElementReviewCenterModel.cs" />
     <Compile Include="Service\Class\KE_HOACH_SAN_LUONG\KeHoachSanLuongReviewViewModel.cs" />
