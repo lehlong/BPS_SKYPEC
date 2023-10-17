@@ -10,9 +10,9 @@ namespace SMO.Core.Entities.BP.KE_HOACH_DOANH_THU.KE_HOACH_DOANH_THU_DATA_BASE
         public virtual string ORG_CODE { get; set; }
         public virtual string HANG_HANG_KHONG_CODE { get; set; }
         public virtual string SAN_BAY_CODE { get; set; }
-        public virtual string SAN_LUONG_PROFIT_CENTER_CODE { get; set; }
+        public virtual string DOANH_THU_PROFIT_CENTER_CODE { get; set; }
         public virtual string TEMPLATE_CODE { get; set; }
-        public virtual string KHOAN_MUC_SAN_LUONG_CODE { get; set; }
+        public virtual string KHOAN_MUC_DOANH_THU_CODE { get; set; }
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
         public virtual string MATERIAL { get; set; }
@@ -87,8 +87,8 @@ namespace SMO.Core.Entities.BP.KE_HOACH_DOANH_THU.KE_HOACH_DOANH_THU_DATA_BASE
         public virtual string DESCRIPTION { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }
-        public virtual T_MD_KHOAN_MUC_SAN_LUONG KhoanMucSanLuong { get; set; }
-        public virtual T_MD_SAN_LUONG_PROFIT_CENTER SanLuongProfitCenter { get; set; }
+        public virtual T_MD_KHOAN_MUC_DOANH_THU KhoanMucDoanhThu { get; set; }
+        public virtual T_MD_DOANH_THU_PROFIT_CENTER DoanhThuProfitCenter { get; set; }
         public virtual T_MD_SAN_BAY SanBay { get; set; }
         public virtual T_MD_HANG_HANG_KHONG HangHangKhong { get; set; }
         public virtual T_MD_COST_CENTER Organize { get; set; }

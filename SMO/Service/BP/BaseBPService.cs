@@ -292,7 +292,7 @@ namespace SMO.Service.BP
         public abstract void GetHistory(string orgCode, string templateId, int? year);
         public abstract void GetHistory();
 
-        public abstract void SumUpDataCenter(out TVersion _, string oRGANIZE_CODE, int year);
+        public abstract void SumUpDataCenter(out TVersion _, string oRGANIZE_CODE, int year, string kichBan, string phienBan);
         public abstract void TGDHuyPheDuyet(string code);
         public abstract void TGDPheDuyet(string code);
         public abstract void TGDTuChoi(string code);

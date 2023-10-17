@@ -88,7 +88,7 @@
             </div>
         </div>
     }
-    <script type="text/javascript">
+<script type="text/javascript">
         $(function () {
             Forms.CompleteUI();
         });
@@ -124,8 +124,8 @@
             },
             success: function (response) {
                 if (response.State) {
-                    $('#@Model.ViewId #ObjDetail_PHIEN_BAN').val(response.Data.PHIEN_BAN).trigger('change');
-                    $('#@Model.ViewId #ObjDetail_KICH_BAN').val(response.Data.KICH_BAN).trigger('change');
+                    $(`#@Model.ViewId #ObjDetail_PHIEN_BAN option[value=${response.Data.PHIEN_BAN}]`).attr('selected', 'selected').trigger('change');
+                    $(`#@Model.ViewId #ObjDetail_KICH_BAN option[value=${response.Data.KICH_BAN}]`).attr('selected', 'selected').trigger('change');
                     if (response.Data.KICH_BAN != null && response.Data.PHIEN_BAN != null) {
                         $("#@Model.ViewId #ObjDetail_KICH_BAN").prop('disabled', 'disabled');
                         $("#@Model.ViewId #ObjDetail_PHIEN_BAN").prop('disabled', 'disabled');
@@ -139,6 +139,6 @@
         });
     }
     onChangeTemplate($("#@Model.ViewId #ObjDetail_TEMPLATE_CODE").val());
-    </script>
+</script>
 </div>
 

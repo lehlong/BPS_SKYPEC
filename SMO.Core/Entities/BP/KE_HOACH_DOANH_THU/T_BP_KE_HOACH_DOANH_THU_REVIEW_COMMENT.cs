@@ -8,7 +8,7 @@ namespace SMO.Core.Entities.BP.KE_HOACH_DOANH_THU
     {
         public virtual string PKID { get; set; }
         public virtual string ORG_CODE { get; set; }
-        public virtual string KHOAN_MUC_SAN_LUONG_CODE { get; set; }
+        public virtual string KHOAN_MUC_DOANH_THU_CODE { get; set; }
         public virtual int TIME_YEAR { get; set; }
         public virtual int DATA_VERSION { get; set; }
         /// <summary>
@@ -21,7 +21,7 @@ namespace SMO.Core.Entities.BP.KE_HOACH_DOANH_THU
 
         public virtual T_MD_COST_CENTER Organize { get; set; }
         public virtual T_MD_COST_CENTER OnCostCenter { get; set; }
-        public virtual T_MD_KHOAN_MUC_SAN_LUONG KhoanMucSanLuong { get; set; }
+        public virtual T_MD_KHOAN_MUC_DOANH_THU KhoanMucDoanhThu { get; set; }
         public virtual IList<T_CM_COMMENT> Comments { get; set; }
 
     }

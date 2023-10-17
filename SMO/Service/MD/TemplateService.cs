@@ -35,7 +35,7 @@ namespace SMO.Service.MD
                 return;
             }
             var lstDetail = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
-            if (lstDetail.Count() == 0)
+            if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
             {
                 State = false;
                 ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
@@ -274,6 +274,19 @@ namespace SMO.Service.MD
             }
         }
 
+        internal IList<string> GetNodeDetailKhoanMucDoanhThu(Budget budget, string projectCode, string companyCode, int year, string templateId)
+        {
+            var otherProfitCenterCode = GetDoanhThuProfitCenter(companyCode, projectCode);
+            if (otherProfitCenterCode == null)
+            {
+                return new List<string>();
+            }
+            else
+            {
+                return GetNodeDetailKhoanMucDoanhThu(budget, otherProfitCenterCode.CODE, year, templateId);
+            }
+        }
+
         internal IList<string> GetNodeDetailElement(Budget budget, string centerCode, int year, string templateId)
         {
             Get(templateId);
@@ -282,7 +295,7 @@ namespace SMO.Service.MD
                 case TemplateObjectType.SanLuong:
                     return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, TemplateDetailKeHoachSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, T_MD_SAN_LUONG_PROFIT_CENTER>(centerCode, year, templateId);
                 case TemplateObjectType.DoanhThu:
-                    return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, TemplateDetailKeHoachSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, T_MD_SAN_LUONG_PROFIT_CENTER>(centerCode, year, templateId);
+                    return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU, TemplateDetailKeHoachDoanhThuRepo, T_MD_KHOAN_MUC_DOANH_THU, T_MD_DOANH_THU_PROFIT_CENTER>(centerCode, year, templateId);
                 default:
                     return new List<string>();
             }
@@ -292,6 +305,11 @@ namespace SMO.Service.MD
         {
             Get(templateId);
             return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, TemplateDetailKeHoachSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, T_MD_SAN_LUONG_PROFIT_CENTER>(centerCode, year, templateId);
+        }
+        internal IList<string> GetNodeDetailKhoanMucDoanhThu(Budget budget, string centerCode, int year, string templateId)
+        {
+            Get(templateId);
+            return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU, TemplateDetailKeHoachDoanhThuRepo, T_MD_KHOAN_MUC_DOANH_THU, T_MD_DOANH_THU_PROFIT_CENTER>(centerCode, year, templateId);
         }
 
         internal string GetBPTypeName(string objectType, string budgetType, string elementType)
@@ -343,6 +361,12 @@ namespace SMO.Service.MD
         private T_MD_SAN_LUONG_PROFIT_CENTER GetSanLuongProfitCenter(string companyCode, string projectCode)
         {
             return UnitOfWork.Repository<SanLuongProfitCenterRepo>()
+                .GetFirstWithFetch(x => x.HANG_HANG_KHONG_CODE == companyCode && x.SAN_BAY_CODE == projectCode);
+        }
+
+        private T_MD_DOANH_THU_PROFIT_CENTER GetDoanhThuProfitCenter(string companyCode, string projectCode)
+        {
+            return UnitOfWork.Repository<DoanhThuProfitCenterRepo>()
                 .GetFirstWithFetch(x => x.HANG_HANG_KHONG_CODE == companyCode && x.SAN_BAY_CODE == projectCode);
         }
 
@@ -401,7 +425,7 @@ namespace SMO.Service.MD
                             UnitOfWork.BeginTransaction();
                             var centerCode = Guid.NewGuid().ToString();
                             // create other profit center
-                            UnitOfWork.Repository<SanLuongProfitCenterRepo>().Create(new T_MD_SAN_LUONG_PROFIT_CENTER
+                            UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Create(new T_MD_DOANH_THU_PROFIT_CENTER
                             {
                                 CODE = centerCode,
                                 HANG_HANG_KHONG_CODE = companyCode,
@@ -410,12 +434,12 @@ namespace SMO.Service.MD
 
                             switch (ObjDetail.BUDGET_TYPE.Trim())
                             {
-                                case BudgetType.SanLuong:
+                                case BudgetType.DoanhThu:
                                     var detailsCostPL = from d in detailCodes
-                                                        select new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
+                                                        select new T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU
                                                         (Guid.NewGuid().ToString(), template, d, centerCode, year);
 
-                                    UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(detailsCostPL.ToList());
+                                    UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Create(detailsCostPL.ToList());
                                     break;
 
                                 default:

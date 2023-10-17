@@ -734,14 +734,14 @@ namespace SMO.Areas.BP.Controllers
         [MyValidateAntiForgeryToken]
         [HttpPost]
         [AuthorizeCustom(Right = "R308")]
-        public ActionResult SumUpData(int year)
+        public ActionResult SumUpData(int year, string kichBan, string phienBan)
         {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
 
-            _service.SumUpDataCenter(out _, ProfileUtilities.User.ORGANIZE_CODE, year);
+            _service.SumUpDataCenter(out _, ProfileUtilities.User.ORGANIZE_CODE, year, kichBan, phienBan);
 
             if (_service.State)
             {

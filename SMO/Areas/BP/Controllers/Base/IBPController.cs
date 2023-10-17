@@ -56,7 +56,7 @@ namespace SMO.Areas.BP.Controllers
         ActionResult SearchIndexOfChild(TService service);
         ActionResult SummaryCenter(string centerCode, int? year, int? version, bool isRenderPartial = false);
         ActionResult SummaryDataCenter(ViewDataCenterModel model);
-        ActionResult SumUpData(int year);
+        ActionResult SumUpData(int year, string kichBan, string phienBan);
         ActionResult TGDHuyPheDuyet(string code);
         ActionResult TGDPheDuyet(string code);
         ActionResult TGDTuChoi(string code);

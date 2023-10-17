@@ -187,12 +187,18 @@
             }
 
             var year = $(".hddTimeYear").val();
+            var kichBan = $(".hddKichBan").val();
+            var phienBan = $(".hddPhienBan").val();
 
             var ajaxParams = {
                 url: '@Url.Action("SumUpData")',
                 type: 'POST',
                 dataType: 'JSON',
-                data: { year: year}
+                data: {
+                    year: year,
+                    phienBan: phienBan,
+                    kichBan: kichBan
+                }
             };
             Forms.Ajax(ajaxParams);
         }

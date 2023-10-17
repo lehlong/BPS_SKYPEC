@@ -543,6 +543,7 @@
     <Compile Include="Areas\MD\Controllers\ContractTypeController.cs" />
     <Compile Include="Areas\MD\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\MD\Controllers\DoanhThuProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\FAQQuestionController.cs" />
     <Compile Include="Areas\MD\Controllers\FrequentlyAskedController.cs" />
     <Compile Include="Areas\MD\Controllers\DictionaryController.cs" />
@@ -576,6 +577,7 @@
     <Compile Include="Areas\MD\Controllers\TemplateController.cs" />
     <Compile Include="Areas\MD\Controllers\TransportGroupController.cs" />
     <Compile Include="Areas\MD\Controllers\UnitController.cs" />
+    <Compile Include="Areas\MD\Controllers\UnitPriceController.cs" />
     <Compile Include="Areas\MD\Controllers\UserReviewController.cs" />
     <Compile Include="Areas\MD\Controllers\VehicleController.cs" />
     <Compile Include="Areas\MD\MDAreaRegistration.cs" />
@@ -707,6 +709,7 @@
     <Compile Include="Service\MD\ContractPhaseService.cs" />
     <Compile Include="Service\MD\ContractTypeService.cs" />
     <Compile Include="Service\MD\CustomerService.cs" />
+    <Compile Include="Service\MD\DoanhThuProfitCenterService.cs" />
     <Compile Include="Service\MD\HangHangKhongService.cs" />
     <Compile Include="Service\MD\KhoanMucChiPhiService.cs" />
     <Compile Include="Service\MD\KhoanMucChungService.cs" />
@@ -741,6 +744,7 @@
     <Compile Include="Service\MD\TemplateBaseService.cs" />
     <Compile Include="Service\MD\TemplateService.cs" />
     <Compile Include="Service\MD\TransportGroupService.cs" />
+    <Compile Include="Service\MD\UnitPriceService.cs" />
     <Compile Include="Service\MD\UnitService.cs" />
     <Compile Include="Service\MD\UserReviewService.cs" />
     <Compile Include="Service\MD\VehicleService.cs" />
@@ -1488,6 +1492,11 @@
     <Content Include="Areas\MD\Views\PhienBan\List.cshtml" />
     <Content Include="Areas\MD\Views\PhienBan\Create.cshtml" />
     <Content Include="Areas\MD\Views\PhienBan\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\UnitPrice\Index.cshtml" />
+    <Content Include="Areas\MD\Views\UnitPrice\List.cshtml" />
+    <Content Include="Areas\MD\Views\UnitPrice\Create.cshtml" />
+    <Content Include="Areas\MD\Views\UnitPrice\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\Template\TemplateKeHoachDoanhThu.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1634,6 +1643,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\MD\Views\DoanhThuProfitCenter\" />
     <Folder Include="Areas\MD\Views\RevenueElement\" />
     <Folder Include="Areas\MD\Views\SanLuongProfitCenter\" />
     <Folder Include="BuildPlus\" />

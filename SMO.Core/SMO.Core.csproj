@@ -199,6 +199,7 @@
     <Compile Include="Entities\MD\T_MD_CURRENCY.cs" />
     <Compile Include="Entities\MD\T_MD_CUSTOMER.cs" />
     <Compile Include="Entities\MD\T_MD_DICTIONARY.cs" />
+    <Compile Include="Entities\MD\T_MD_DOANH_THU_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DOMAIN.cs" />
     <Compile Include="Entities\MD\T_MD_HANG_HANG_KHONG.cs" />
     <Compile Include="Entities\MD\T_MD_INTERNAL_ORDER.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG.cs" />
     <Compile Include="Entities\MD\T_MD_TRANSPORT_GROUP.cs" />
     <Compile Include="Entities\MD\T_MD_UNIT.cs" />
+    <Compile Include="Entities\MD\T_MD_UNIT_PRICE.cs" />
     <Compile Include="Entities\MD\T_MD_USER_REVIEW.cs" />
     <Compile Include="Entities\MD\T_MD_VEHICLE.cs" />
     <Compile Include="Entities\MD\T_MD_VENDOR.cs" />

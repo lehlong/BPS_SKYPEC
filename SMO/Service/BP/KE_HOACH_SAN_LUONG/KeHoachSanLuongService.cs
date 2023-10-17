@@ -1937,7 +1937,6 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 return;
             }
             var orgCode = ProfileUtilities.User.ORGANIZE_CODE;
-
             // Lưu file vào database
             var fileStream = new FILE_STREAM()
             {
@@ -1992,8 +1991,6 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 {
                     // Cập nhật next version vào bảng chính
                     KeHoachSanLuongCurrent.VERSION = versionNext;
-                    KeHoachSanLuongCurrent.KICH_BAN = ObjDetail.KICH_BAN;
-                    KeHoachSanLuongCurrent.PHIEN_BAN = ObjDetail.PHIEN_BAN;
                     KeHoachSanLuongCurrent.IS_DELETED = false;
                     CurrentRepository.Update(KeHoachSanLuongCurrent);
                 }
@@ -3365,7 +3362,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         /// <param name="revenuePL">Output header revenue pl</param>
         /// <param name="centerCode">OtherCost center code want to sum up</param>
         /// <param name="year">Year want to sum up</param>
-        public override void SumUpDataCenter(out T_BP_KE_HOACH_SAN_LUONG_VERSION revenuePL, string centerCode, int year)
+        public override void SumUpDataCenter(out T_BP_KE_HOACH_SAN_LUONG_VERSION revenuePL, string centerCode, int year, string kichBan, string phienBan)
         {
             if (string.IsNullOrEmpty(GetCenter(centerCode).PARENT_CODE))
             {
@@ -3463,6 +3460,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     versionPl = newestCF.VERSION;
                     newestCF.UPDATE_BY = currentUser;
                     newestCF.STATUS = Approve_Status.ChuaTrinhDuyet;
+                    newestCF.KICH_BAN = kichBan;
+                    newestCF.PHIEN_BAN = phienBan;
                     CurrentRepository.Update(newestCF);
                 }
                 else
@@ -3475,6 +3474,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                         ORG_CODE = centerCode,
                         TIME_YEAR = year,
                         VERSION = versionPl,
+                        PHIEN_BAN = phienBan,
+                        KICH_BAN = kichBan,
                         FILE_ID = string.Empty,
                         TEMPLATE_CODE = string.Empty,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
@@ -3488,8 +3489,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = centerCode,
                     TEMPLATE_CODE = string.Empty,
-                    KICH_BAN = ObjDetail.KICH_BAN,
-                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                    KICH_BAN = kichBan,
+                    PHIEN_BAN = phienBan,
                     VERSION = versionPl,
                     TIME_YEAR = year,
                     CREATE_BY = currentUser

@@ -9,9 +9,9 @@ namespace SMO.Core.Entities.BP.KE_HOACH_DOANH_THU.KE_HOACH_DOANH_THU_DATA_BASE
         public virtual string ORG_CODE { get; set; }
         public virtual string SAN_BAY_CODE { get; set; }
         public virtual string HANG_HANG_KHONG_CODE { get; set; }
-        public virtual string SAN_LUONG_PROFIT_CENTER_CODE { get; set; }
+        public virtual string DOANH_THU_PROFIT_CENTER_CODE { get; set; }
         public virtual string TEMPLATE_CODE { get; set; }
-        public virtual string KHOAN_MUC_SAN_LUONG_CODE { get; set; }
+        public virtual string KHOAN_MUC_DOANH_THU_CODE { get; set; }
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
         public virtual string MATERIAL { get; set; }
@@ -86,8 +86,8 @@ namespace SMO.Core.Entities.BP.KE_HOACH_DOANH_THU.KE_HOACH_DOANH_THU_DATA_BASE
         public virtual string DESCRIPTION { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }
-        public virtual T_MD_KHOAN_MUC_SAN_LUONG KhoanMucSanLuong { get; set; }
-        public virtual T_MD_SAN_LUONG_PROFIT_CENTER SanLuongProfitCenter { get; set; }
+        public virtual T_MD_KHOAN_MUC_DOANH_THU KhoanMucDoanhThu { get; set; }
+        public virtual T_MD_DOANH_THU_PROFIT_CENTER DoanhThuProfitCenter { get; set; }
         public virtual T_MD_SAN_BAY SanBay { get; set; }
         public virtual T_MD_HANG_HANG_KHONG HangHangKhong { get; set; }
         public virtual T_MD_COST_CENTER Organize { get; set; }
@@ -100,9 +100,9 @@ namespace SMO.Core.Entities.BP.KE_HOACH_DOANH_THU.KE_HOACH_DOANH_THU_DATA_BASE
                 ORG_CODE = v.ORG_CODE,
                 SAN_BAY_CODE = v.SAN_BAY_CODE,
                 HANG_HANG_KHONG_CODE = v.HANG_HANG_KHONG_CODE,
-                SAN_LUONG_PROFIT_CENTER_CODE = v.SAN_LUONG_PROFIT_CENTER_CODE,
+                DOANH_THU_PROFIT_CENTER_CODE = v.DOANH_THU_PROFIT_CENTER_CODE,
                 TEMPLATE_CODE = v.TEMPLATE_CODE,
-                KHOAN_MUC_SAN_LUONG_CODE = v.KHOAN_MUC_SAN_LUONG_CODE,
+                KHOAN_MUC_DOANH_THU_CODE = v.KHOAN_MUC_DOANH_THU_CODE,
                 VERSION = v.VERSION,
                 TIME_YEAR = v.TIME_YEAR,
                 MATERIAL = v.MATERIAL,

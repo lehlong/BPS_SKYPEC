@@ -1,0 +1,48 @@
+﻿@model SMO.Service.MD.UnitPriceService
+@{
+    var frmFormCode = "frmUnitPriceIndex";
+    var number = 1;
+}
+
+<div class="table-responsive">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>VN</th>
+                <th>0V</th>
+                <th>BL</th>
+                <th>VJ</th>
+                <th>QH</th>
+                <th>VU</th>
+                <th>HKTN#</th>
+                <th>HKNN</th>
+            </tr>
+            <tr>
+                <th>Sân bay</th>
+                <th colspan="8" style="text-align:center;">VND/Tấn</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList)
+            {
+                number++;
+                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.ID }));
+                <tr>
+                    <td ondblclick="@vdbclickAction">
+                        <a href="#" onclick="@vdbclickAction">@(item.SanBay?.NAME)</a>
+                    </td>
+                    <td ondblclick="@vdbclickAction">@item.VN</td>
+                    <td ondblclick="@vdbclickAction">@item.OV</td>
+                    <td ondblclick="@vdbclickAction">@item.BL</td>
+                    <td ondblclick="@vdbclickAction">@item.VJ</td>
+                    <td ondblclick="@vdbclickAction">@item.QH</td>
+                    <td ondblclick="@vdbclickAction">@item.VU</td>
+                    <td ondblclick="@vdbclickAction">@item.OTHER_HKTN</td>
+                    <td ondblclick="@vdbclickAction">@item.HKNN</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{ Html.RenderPartial("Paging", Model); }

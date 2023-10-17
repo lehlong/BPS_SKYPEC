@@ -62,6 +62,27 @@ namespace SMO
             IUnitOfWork UnitOfWork = new NHUnitOfWork();
             return UnitOfWork.Repository<SanBayRepo>().GetAll();
         }
+        public static int GetTimeYearDefault()
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            return UnitOfWork.Repository<PeriodTimeRepo>().Queryable().FirstOrDefault(x => x.IS_DEFAULT == true).TIME_YEAR;
+        }
+
+        public static SelectList GetAllSanBay(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " - " });
+            }
+            var lstSanBay = UnitOfWork.Repository<SanBayRepo>().GetAll();
+            foreach (var obj in lstSanBay)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.CODE + " - " + obj.NAME });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
 
         public static SelectList GetAllArea(bool isAddBlank = true, string selected = "")
         {

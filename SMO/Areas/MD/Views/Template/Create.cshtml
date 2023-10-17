@@ -79,17 +79,19 @@
 
                             <label>Copy từ biểu mẫu khác</label>
                             <div class="form-group">
-                                <select name="@Html.NameFor(m => m.TEMPLATE_REFERENCE)" class="form-control selectpicker show-tick" data_live_search="true" data_container="body">
+                                <select name="@Html.NameFor(m => m.TEMPLATE_REFERENCE)" class="form-control selectpicker show-tick">
                                     <option value="-">-</option>
                                     @foreach (var temp in lstTemplate)
                                     {
                                         <option value="@temp.Value">@temp.Text</option>
                                     }
                                 </select>
+                                @Html.ValidationMessageFor(m => m.TEMPLATE_REFERENCE)
                             </div>
                             <label>Copy từ năm theo biểu mẫu</label>
                             <div class="form-group">
-                                @Html.MyDropDownListFor(m => m.TIME_YEAR, SelectListUtilities.GetTimeYear(), new { @class = "selectpicker show-tick", @data_live_search = "true", @data_container = "body" })
+                                @Html.MyDropDownListFor(m => m.TIME_YEAR, SelectListUtilities.GetTimeYear(false), new { @class = "selectpicker show-tick", @data_live_search = "true" })
+                                @Html.ValidationMessageFor(m => m.TIME_YEAR)
                             </div>
 
                             <label>Ghi chú</label>

@@ -45,9 +45,9 @@ namespace SMO.Areas.MD.Controllers
             {
                 return PartialView("TemplateKeHoachSanLuong", _service);
             }
-            if (_service.ObjDetail.OBJECT_TYPE == TemplateObjectType.Project && _service.ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
+            if (_service.ObjDetail.OBJECT_TYPE.Trim() == TemplateObjectType.DoanhThu && _service.ObjDetail.ELEMENT_TYPE == ElementType.DoanhThu)
             {
-                return PartialView("OtherBudgetProject", _service);
+                return PartialView("TemplateKeHoachDoanhThu", _service);
             }
             else
             {
@@ -96,6 +96,17 @@ namespace SMO.Areas.MD.Controllers
             return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetDetailInformationKhoanMucDoanhThu(string templateId, string projectCode, string type, int year, string companyCode)
+        {
+            var isEnum = Enum.TryParse(type, out Budget budget);
+            if (!isEnum)
+            {
+                return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
+            }
+            var nodeDetailElements = _service.GetNodeDetailKhoanMucDoanhThu(budget, projectCode, companyCode, year, templateId);
+            return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetDetailInformationOtherCompany(string templateId, string type, int year, string projectCode)
         {
             var isEnum = Enum.TryParse(type, out Budget budget);
@@ -123,80 +134,15 @@ namespace SMO.Areas.MD.Controllers
             _service.Get(templateId);
             switch (_service.ObjDetail.OBJECT_TYPE.Trim())
             {
-                case TemplateObjectType.Department:
-                    switch (_service.ObjDetail.ELEMENT_TYPE)
-                    {
-                        // revenue
-                        case ElementType.DoanhThu:
-                            if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                            {
-                                return RedirectToAction("ViewTemplate", "../BP/RevenuePL", new { templateId, version, year });
-                            }
-                            else
-                            {
-                                // budget c
-                                return RedirectToAction("ViewTemplate", "../BP/RevenueCF", new { templateId, version, year });
-                            }
-                        // cost
-                        case ElementType.ChiPhi:
-                            if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                            {
-                                return RedirectToAction("ViewTemplate", "../BP/CostPL", new { templateId, version, year });
-                            }
-                            else
-                            {
-                                // budget c
-                                return RedirectToAction("ViewTemplate", "../BP/CostCF", new { templateId, version, year });
-                            }
-                        
-                        default:
-                            return HttpNotFound();
-                    }
-                case TemplateObjectType.DevelopProject:
-                    if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                    {
-                        return RedirectToAction("ViewTemplate", "../BP/ContructCostPL", new { templateId, version, year });
-                    }
-                    else
-                    {
-                        // budget c
-                        return RedirectToAction("ViewTemplate", "../BP/ContructCostCF", new { templateId, version, year });
-                    }
-                case TemplateObjectType.Project:
-                    if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                    {
-                        if (_service.ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
-                        {
-                            return RedirectToAction("ViewTemplate", "../BP/OtherCostPL", new { templateId, version, year });
-                        }
-                        else
-                        {
-                            return RedirectToAction("ViewTemplate", "../BP/RevenuePL", new { templateId, version, year });
-                        }
-                    }
-                    else
-                    {
-                        if (_service.ObjDetail.ELEMENT_TYPE == ElementType.DoanhThu)
-                        {
-                            return RedirectToAction("ViewTemplate", "../BP/RevenueCF", new { templateId, version, year });
-                        }
-                        else
-                        {
-                            return RedirectToAction("ViewTemplate", "../BP/OtherCostCF", new { templateId, version, year });
-                        }
-                        // budget c
-                    }
-
                 case TemplateObjectType.SanLuong:
-
                     return RedirectToAction("ViewTemplate", "../BP/KeHoachSanLuong", new { templateId, version, year });
-
+                case TemplateObjectType.DoanhThu:
+                    return RedirectToAction("ViewTemplate", "../BP/KeHoachDoanhThu", new { templateId, version, year });
                 default:
                     return HttpNotFound();
             }
         }
 
-        // /MD/Template/DifferentVersion?templateId=CP0001&yearSource=2019&versionSource=2&versionCompare=1&yearCompare=2019
         public ActionResult DifferentVersion(string templateId, int? versionSource, int? versionCompare, int? yearSource, int? yearCompare)
         {
             _service.Get(templateId);
@@ -221,74 +167,13 @@ namespace SMO.Areas.MD.Controllers
             year = year ?? DateTime.Now.Year;
             switch (_service.ObjDetail.OBJECT_TYPE.Trim())
             {
-                case TemplateObjectType.Department:
-                    switch (_service.ObjDetail.ELEMENT_TYPE)
-                    {
-                        // revenue
-                        case ElementType.DoanhThu:
-                            if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                            {
-                                return RedirectToAction("DownloadTemplate", "../BP/RevenuePL", new { templateId, year });
-                            }
-                            else
-                            {
-                                // budget c
-                                return RedirectToAction("DownloadTemplate", "../BP/RevenueCF", new { templateId, year });
-                            }
-                        case ElementType.ChiPhi:
-                            if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                            {
-                                return RedirectToAction("DownloadTemplate", "../BP/CostPL", new { templateId, year });
-                            }
-                            else
-                            {
-                                // budget c
-                                return RedirectToAction("DownloadTemplate", "../BP/CostCF", new { templateId, year });
-                            }
-                        default:
-                            return HttpNotFound();
-                    }
-                case TemplateObjectType.DevelopProject:
-                    if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                    {
-                        return RedirectToAction("DownloadTemplate", "../BP/ContructCostPL", new { templateId, year });
-                    }
-                    else
-                    {
-                        // budget c
-                        return RedirectToAction("DownloadTemplate", "../BP/ContructCostCF", new { templateId, year });
-                    }
-                case TemplateObjectType.Project:
-                    if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                    {
-                        if (_service.ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
-                        {
-                            return RedirectToAction("DownloadTemplate", "../BP/OtherCostPL", new { templateId, year });
-                        }
-                        else
-                        {
-                            return RedirectToAction("DownloadTemplate", "../BP/RevenuePL", new { templateId, year });
-                        }
-                    }
-                    else
-                    {
-                        if (_service.ObjDetail.ELEMENT_TYPE == ElementType.DoanhThu)
-                        {
-                            return RedirectToAction("DownloadTemplate", "../BP/RevenueCF", new { templateId, year });
-                        }
-                        else
-                        {
-                            return RedirectToAction("DownloadTemplate", "../BP/OtherCostCF", new { templateId, year });
-                        }
-                        // budget c
-                    }
-
                 case TemplateObjectType.SanLuong:
                     return RedirectToAction("DownloadTemplate", "../BP/KeHoachSanLuong", new { templateId, year });
+                case TemplateObjectType.DoanhThu:
+                    return RedirectToAction("DownloadTemplate", "../BP/KeHoachDoanhThu", new { templateId, year });
                 default:
                     return HttpNotFound();
             }
-
         }
 
         [MyValidateAntiForgeryToken]
@@ -370,43 +255,17 @@ namespace SMO.Areas.MD.Controllers
                 case TemplateType.CENTER:
                     switch (_service.ObjDetail.OBJECT_TYPE.Trim())
                     {
-                        case TemplateObjectType.Department:
-                            if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.DoanhThu))
-                            {
-                                return RedirectToAction("BuildTreeByTemplate", "ProfitCenter", new { templateId, year });
-                            }
-                            else
-                            {
-                                return RedirectToAction("BuildTreeByTemplate", "CostCenter", new { templateId, year });
-                            }
-                        case TemplateObjectType.DevelopProject:
-                            return RedirectToAction("BuildTreeByTemplate", "InternalOrder", new { templateId, year });
                         case TemplateObjectType.SanLuong:
                             return RedirectToAction("BuildTreeByTemplate", "SanLuongProfitCenter", new { templateId, year });
-                        case TemplateObjectType.Project:
-                            if (_service.ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
-                            {
-                                return RedirectToAction("BuildTreeByTemplate", "OtherProfitCenter", new { templateId, year });
-                            }
-                            else
-                            {
-                                return RedirectToAction("BuildTreeByTemplate", "ProfitCenter", new { templateId, year });
-                            }
+                        case TemplateObjectType.DoanhThu:
+                            return RedirectToAction("BuildTreeByTemplate", "DoanhThuProfitCenter", new { templateId, year });
                         default:
                             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
                 case TemplateType.ELEMENT:
                     if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.DoanhThu))
                     {
-                        if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                        {
-                            return RedirectToAction("BuildTreeByTemplate", "RevenuePLElement", new { year });
-                        }
-                        else
-                        {
-                            // budget c
-                            return RedirectToAction("BuildTreeByTemplate", "RevenueCFElement", new { year });
-                        }
+                        return RedirectToAction("BuildTreeByTemplate", "KhoanMucDoanhThu", new { year });
                     }
                     else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.SanLuong))
                     {
@@ -414,14 +273,7 @@ namespace SMO.Areas.MD.Controllers
                     }
                     else
                     {
-                        if (_service.ObjDetail.BUDGET_TYPE.Equals(BudgetType.KinhDoanh))
-                        {
-                            return RedirectToAction("BuildTreeByTemplate", "CostPLElement", new { year });
-                        }
-                        else
-                        {
-                            return RedirectToAction("BuildTreeByTemplate", "CostCFElement", new { year });
-                        }
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
                 default:
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -446,6 +298,31 @@ namespace SMO.Areas.MD.Controllers
             else if (templateType == TemplateType.ELEMENT)
             {
                 return RedirectToAction("BuildTreeByTemplate", "KhoanMucSanLuong", new { year });
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+        }
+
+        [MyValidateAntiForgeryToken]
+        public ActionResult BuildTreeKeHoachDoanhThu(string templateId, string type, int year)
+        {
+            var isEnum = Enum.TryParse(type, out TemplateType templateType);
+            if (!isEnum)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            _service.Get(templateId);
+
+            if (templateType == TemplateType.CENTER)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "DoanhThuProfitCenter", new { templateId, year });
+
+            }
+            else if (templateType == TemplateType.ELEMENT)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "KhoanMucDoanhThu", new { year });
             }
             else
             {
