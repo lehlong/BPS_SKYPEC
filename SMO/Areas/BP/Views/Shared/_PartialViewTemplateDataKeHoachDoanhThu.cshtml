@@ -1,40 +1,13 @@
 ﻿@model IList<T_MD_KHOAN_MUC_DOANH_THU>
 @using SMO.Core.Entities.BP.KE_HOACH_DOANH_THU;
 @using SMO.Core.Entities.MD;
-@using System.Text;
 @using SMO.Service.Class;
 
 @{
     var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU>;
     var costCFHeader = ViewBag.costCFHeader as T_BP_KE_HOACH_DOANH_THU_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
-
     var lstSanBay = SelectListUtilities.GetListSanBay();
-    var query = from a in lstSanBay
-                join b in detailCostElements on a.CODE equals b.Center.SanBay.CODE
-                select new
-                {
-                    SanBay = a.CODE,
-                    SanBayName = a.NAME,
-                    isVNA = b.Center.HangHangKhong.IS_VNA,
-                    Type = b.Center.HangHangKhong.TYPE,
-                    Value = Model.FirstOrDefault(x => x.CENTER_CODE == b.Center.CODE && x.CODE == b.Element.CODE)?.Values[12]
-                };
-    IList<ViewDataYearModel> dataYear = new List<ViewDataYearModel>();
-    foreach (var item in lstSanBay)
-    {
-        dataYear.Add(new ViewDataYearModel
-        {
-            SAN_BAY_CODE = item.CODE,
-            SAN_BAY_NAME = item.NAME,
-            IS_VNA = query.Where(x => x.SanBay == item.CODE && x.isVNA == true)?.Sum(y => y.Value),
-            NOT_VNA = query.Where(x => x.SanBay == item.CODE && x.isVNA == false && x.Type == "ND")?.Sum(y => y.Value),
-            SUM_VNA = query.Where(x => x.SanBay == item.CODE && x.isVNA == true)?.Sum(y => y.Value) + query.Where(x => x.SanBay == item.CODE && x.isVNA == false && x.Type == "ND")?.Sum(y => y.Value),
-            QUOC_TE = query.Where(x => x.SanBay == item.CODE && x.Type != "ND")?.Sum(y => y.Value),
-            TONG_CONG = query.Where(x => x.SanBay == item.CODE && x.isVNA == true)?.Sum(y => y.Value) + query.Where(x => x.SanBay == item.CODE && x.isVNA == false && x.Type == "ND")?.Sum(y => y.Value) + query.Where(x => x.SanBay == item.CODE && x.Type != "ND")?.Sum(y => y.Value)
-        });
-    }
-
 }
 
 <style>
@@ -52,16 +25,11 @@
         display: block;
     }
 
-    td .input-edit {
-        border: none;
-        background: border-box;
-        width: 100%;
-        text-align: right;
-    }
     .table-screen {
         height: calc(100vh - 212px);
-        margin-bottom:0
+        margin-bottom: 0
     }
+
     .full-screen-table {
         height: calc(100vh -100px) !important;
     }
@@ -78,24 +46,32 @@ else
     <div class="export-left-tab">
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active" style="cursor: pointer; left: 0;">
-                <a href="#month" title="Kế hoạch theo tháng" data-toggle="tab">Kế hoạch theo tháng</a>
+                <a href="#san-luong-tong" data-toggle="tab">Kế hoạch tổng</a>
             </li>
             <li role="presentation" style="cursor: pointer;">
-                <a title="Kế hoạch theo năm" data-toggle="tab" href="#year">Kế hoạch theo năm</a>
+                <a data-toggle="tab" href="#san-luong-noi-dia">Tra nạp nội địa</a>
+            </li>
+            <li role="presentation" style="cursor: pointer;">
+                <a data-toggle="tab" href="#san-luong-quoc-te">Tra nạp quốc tế</a>
+            </li>
+            <li role="presentation" style="cursor: pointer; left: 0;">
+                <a href="#doanh-thu-tong" title="Kế hoạch theo tháng" data-toggle="tab">Doanh thu tổng</a>
+            </li>
+            <li role="presentation" style="cursor: pointer;">
+                <a data-toggle="tab" href="#doanh-thu-noi-dia">Doanh thu nội địa</a>
+            </li>
+            <li role="presentation" style="cursor: pointer;">
+                <a data-toggle="tab" href="#doanh-thu-quoc-te">Doanh thu quốc tế</a>
             </li>
         </ul>
         <div class="tab-content" style="padding-bottom:0">
-            <div role="tabpanel" class="tab-pane fade in active" id="month">
-                @*Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);*@
+            <div role="tabpanel" class="tab-pane fade in active" id="san-luong-tong">
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-                    <table class="table-condensed table-bordered table-striped font-13" id="table_month">
+                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_ke_hoach_tong">
                         <tbody>
                             <tr class="sticky-row strong" data-xls-row="header">
                                 <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ SÂN BAY</td>
-                                <td class="sticky-cell pre-whitespace" style="z-index:11">TÊN SÂN BAY</td>
-                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ HÃNG HÀNG KHÔNG</td>
-                                <td class="sticky-cell pre-whitespace" style="z-index:11">TÊN HÃNG HÀNG KHÔNG</td>
-                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ KHOẢN MỤC</td>
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ HHK</td>
                                 <td class="sticky-cell pre-whitespace" style="z-index:11">TÊN KHOẢN MỤC</td>
                                 <td class="pre-whitespace">THÁNG 1</td>
                                 <td class="pre-whitespace">THÁNG 2</td>
@@ -112,39 +88,8 @@ else
                                 <td class="pre-whitespace">TỔNG NĂM</td>
                                 <td class="pre-whitespace">TỔNG NĂM (DP)</td>
                                 <td class="pre-whitespace">TRUNG BÌNH THÁNG</td>
-                                <td>GHI CHÚ</td>
                             </tr>
 
-                            @{
-                                var sumElement = Model.FirstOrDefault(x => string.IsNullOrEmpty(x.CODE));
-                                if (sumElement != null)
-                                {
-                                    <tr class="strong">
-                                        <td class="sticky-cell pre-whitespace"></td>
-                                        <td class="sticky-cell pre-whitespace"></td>
-                                        <td class="sticky-cell pre-whitespace"></td>
-                                        <td class="sticky-cell pre-whitespace"></td>
-                                        <td level="0" class="sticky-cell"></td>
-                                        <td class="sticky-cell pre-whitespace strong">@(sumElement.NAME)</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[0].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[1].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[2].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[3].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[4].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[5].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[6].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[7].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[8].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[9].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[10].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[11].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[12].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[13].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@((sumElement.Values[12] / 12).ToStringVN())</td>
-                                        <td></td>
-                                    </tr>
-                                }
-                            }
                             @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
                             {
                                 foreach (var item in Model
@@ -153,20 +98,72 @@ else
                                     .GroupBy(x => x.CODE)
                                     .Select(x => x.First()))
                                 {
-                                    var space = new StringBuilder();
-                                    for (int i = 0; i < item.LEVEL; i++)
+                                    if (item.IS_GROUP)
                                     {
-                                        space.Append("\t");
+                                        <tr>
+                                            <td class="sticky-cell pre-whitespace">@detail.Center.SAN_BAY_CODE</td>
+                                            <td class="sticky-cell pre-whitespace">@detail.Center.HANG_HANG_KHONG_CODE</td>
+                                            <td class="pre-whitespace sticky-cell">@(item.NAME)</td>
+                                            <td class="pre-whitespace">@item.Values[0].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[1].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[2].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[3].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[4].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[5].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[6].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[7].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[8].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[9].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[10].ToStringVN()</td>
+                                            <td class="pre-whitespace">@item.Values[11].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@item.Values[12].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@item.Values[13].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@((item.Values[12] / 12).ToStringVN())</td>
+                                        </tr>
                                     }
-                                    var classParent = item.IS_GROUP ? "strong" : string.Empty;
-                                    var isEdit = item.IS_GROUP ? "disabled" : "";
-                                    <tr class="@classParent">
+
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="san-luong-noi-dia">
+                <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_doanh_thu_noi_dia">
+                        <tbody>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ SÂN BAY</td>
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ HHK</td>
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">TÊN KHOẢN MỤC</td>
+                                <td class="pre-whitespace">THÁNG 1</td>
+                                <td class="pre-whitespace">THÁNG 2</td>
+                                <td class="pre-whitespace">THÁNG 3</td>
+                                <td class="pre-whitespace">THÁNG 4</td>
+                                <td class="pre-whitespace">THÁNG 5</td>
+                                <td class="pre-whitespace">THÁNG 6</td>
+                                <td class="pre-whitespace">THÁNG 7</td>
+                                <td class="pre-whitespace">THÁNG 8</td>
+                                <td class="pre-whitespace">THÁNG 9</td>
+                                <td class="pre-whitespace">THÁNG 10</td>
+                                <td class="pre-whitespace">THÁNG 11</td>
+                                <td class="pre-whitespace">THÁNG 12</td>
+                                <td class="pre-whitespace">TỔNG NĂM</td>
+                                <td class="pre-whitespace">TỔNG NĂM (DP)</td>
+                                <td class="pre-whitespace">TRUNG BÌNH THÁNG</td>
+                            </tr>
+                            @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
+                            {
+                                foreach (var item in Model
+                                    .Where(x => x.CENTER_CODE == detail.CENTER_CODE).Where(x => x.CODE == "10010" || x.CODE == "2001")
+                                    .OrderBy(x => x.C_ORDER)
+                                    .GroupBy(x => x.CODE)
+                                    .Select(x => x.First()))
+                                {
+                                    <tr>
                                         <td class="sticky-cell pre-whitespace">@detail.Center.SAN_BAY_CODE</td>
-                                        <td class="sticky-cell pre-whitespace">@detail.Center.SanBay.NAME</td>
                                         <td class="sticky-cell pre-whitespace">@detail.Center.HANG_HANG_KHONG_CODE</td>
-                                        <td class="sticky-cell pre-whitespace">@detail.Center.HangHangKhong.NAME</td>
-                                        <td class="sticky-cell pre-whitespace" level="@item.LEVEL">@item.CODE</td>
-                                        <td class="pre-whitespace sticky-cell @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                        <td class="pre-whitespace sticky-cell">@(item.NAME)</td>
                                         <td class="pre-whitespace">@item.Values[0].ToStringVN()</td>
                                         <td class="pre-whitespace">@item.Values[1].ToStringVN()</td>
                                         <td class="pre-whitespace">@item.Values[2].ToStringVN()</td>
@@ -182,7 +179,6 @@ else
                                         <td class="align-right pre-whitespace">@item.Values[12].ToStringVN()</td>
                                         <td class="align-right pre-whitespace">@item.Values[13].ToStringVN()</td>
                                         <td class="align-right pre-whitespace">@((item.Values[12] / 12).ToStringVN())</td>
-                                        <td>@item.DESCRIPTION</td>
                                     </tr>
                                 }
                             }
@@ -190,45 +186,169 @@ else
                     </table>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="year">
-
-                <div class="sticky-table sticky-headers sticky-ltr-cells">
-                    <table class="table-condensed table-bordered table-striped font-13" id="table_year">
+            <div role="tabpanel" class="tab-pane fade" id="san-luong-quoc-te">
+                <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_doanh_thu_quoc_te">
                         <tbody>
-                            <tr class="sticky-row strong" data-xls-row="header" style="text-align:center">
-                                <td colspan="2" class="pre-whitespace header-year">SÂN BAY</td>
-                                <td colspan="3" class="pre-whitespace header-year">HKVN</td>
-                                <td rowspan="2" class="pre-whitespace header-year">HKQT</td>
-                                <td rowspan="2" class="pre-whitespace header-year">TỔNG CỘNG</td>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ SÂN BAY</td>
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ HHK</td>
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">TÊN KHOẢN MỤC</td>
+                                <td class="pre-whitespace">THÁNG 1</td>
+                                <td class="pre-whitespace">THÁNG 2</td>
+                                <td class="pre-whitespace">THÁNG 3</td>
+                                <td class="pre-whitespace">THÁNG 4</td>
+                                <td class="pre-whitespace">THÁNG 5</td>
+                                <td class="pre-whitespace">THÁNG 6</td>
+                                <td class="pre-whitespace">THÁNG 7</td>
+                                <td class="pre-whitespace">THÁNG 8</td>
+                                <td class="pre-whitespace">THÁNG 9</td>
+                                <td class="pre-whitespace">THÁNG 10</td>
+                                <td class="pre-whitespace">THÁNG 11</td>
+                                <td class="pre-whitespace">THÁNG 12</td>
+                                <td class="pre-whitespace">TỔNG NĂM</td>
+                                <td class="pre-whitespace">TỔNG NĂM (DP)</td>
+                                <td class="pre-whitespace">TRUNG BÌNH THÁNG</td>
                             </tr>
-                            <tr class="sticky-row strong" data-xls-row="header" style="text-align:center">
-                                <td class="pre-whitespace header-year">MÃ SÂN BAY</td>
-                                <td class="pre-whitespace header-year">TÊN SÂN BAY</td>
-                                <td class="pre-whitespace header-year">VNA</td>
-                                <td class="pre-whitespace header-year">HKVN #</td>
-                                <td class="pre-whitespace header-year">CỘNG HKVN</td>
-                            </tr>
-
-                            @foreach (var item in dataYear)
+                            @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
                             {
-                                <tr class="sticky-row">
-                                    <td class="pre-whitespace" style="text-align:center">@item.SAN_BAY_CODE</td>
-                                    <td class="pre-whitespace">@item.SAN_BAY_NAME</td>
-                                    <td class="pre-whitespace">@(item.IS_VNA?.ToStringVN())</td>
-                                    <td class="pre-whitespace">@(item.NOT_VNA?.ToStringVN())</td>
-                                    <td class="pre-whitespace">@(item.SUM_VNA?.ToStringVN())</td>
-                                    <td class="pre-whitespace">@(item.QUOC_TE?.ToStringVN())</td>
-                                    <td class="pre-whitespace">@(item.TONG_CONG?.ToStringVN())</td>
+                                foreach (var item in Model
+                                    .Where(x => x.CENTER_CODE == detail.CENTER_CODE).Where(x => x.CODE == "10020" || x.CODE == "2002")
+                                    .OrderBy(x => x.C_ORDER)
+                                    .GroupBy(x => x.CODE)
+                                    .Select(x => x.First()))
+                                {
+                                    <tr>
+                                        <td class="sticky-cell pre-whitespace">@detail.Center.SAN_BAY_CODE</td>
+                                        <td class="sticky-cell pre-whitespace">@detail.Center.HANG_HANG_KHONG_CODE</td>
+                                        <td class="pre-whitespace sticky-cell">@(item.NAME)</td>
+                                        <td class="pre-whitespace">@item.Values[0].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[1].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[2].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[3].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[4].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[5].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[6].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[7].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[8].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[9].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[10].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[11].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@item.Values[12].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@item.Values[13].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@((item.Values[12] / 12).ToStringVN())</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="doanh-thu-tong">
+                <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_doanh_thu_quoc_te">
+                        <tbody>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ SÂN BAY</td>
+                                <td class="pre-whitespace" style="z-index:11">VN</td>
+                                <td class="pre-whitespace" style="z-index:11">0V</td>
+                                <td class="pre-whitespace" style="z-index:11">BL</td>
+                                <td class="pre-whitespace" style="z-index:11">VJ</td>
+                                <td class="pre-whitespace" style="z-index:11">QH</td>
+                                <td class="pre-whitespace" style="z-index:11">VU</td>
+                                <td class="pre-whitespace" style="z-index:11">HKTN#</td>
+                                <td class="pre-whitespace" style="z-index:11">HKNN</td>
+                                <td class="pre-whitespace" style="z-index:11">TỔNG NĂM</td>
+                            </tr>
+                            @foreach (var sb in lstSanBay)
+                            {
+                                var data = Model.Where(x => x.ProfitCenter.SAN_BAY_CODE == sb.CODE).Where(x => x.CODE == "2001" || x.CODE == "2002");
+                                <tr>
+                                    <td class="pre-whitespace sticky-cell">@(sb.CODE)</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "0V").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "BL").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VJ").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "QH").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VU").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "0V" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "BL" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "VJ" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "QH" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "VU").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HangHangKhong.TYPE == "QT").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Count() == 0 ? 0 : data.Sum(x => x.Values[12]))</td>
                                 </tr>
                             }
-                            <tr class="sticky-row strong">
-                                <td colspan="2" class="pre-whitespace" style="text-align:center">TỔNG CỘNG</td>
-                                <td class="pre-whitespace">@(dataYear.Sum(x=> x.IS_VNA)?.ToStringVN())</td>
-                                <td class="pre-whitespace">@(dataYear.Sum(x=> x.NOT_VNA)?.ToStringVN())</td>
-                                <td class="pre-whitespace">@(dataYear.Sum(x=> x.SUM_VNA)?.ToStringVN())</td>
-                                <td class="pre-whitespace">@(dataYear.Sum(x=> x.QUOC_TE)?.ToStringVN())</td>
-                                <td class="pre-whitespace">@(dataYear.Sum(x=> x.TONG_CONG)?.ToStringVN())</td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="doanh-thu-noi-dia">
+                <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_doanh_thu_quoc_te">
+                        <tbody>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ SÂN BAY</td>
+                                <td class="pre-whitespace" style="z-index:11">VN</td>
+                                <td class="pre-whitespace" style="z-index:11">0V</td>
+                                <td class="pre-whitespace" style="z-index:11">BL</td>
+                                <td class="pre-whitespace" style="z-index:11">VJ</td>
+                                <td class="pre-whitespace" style="z-index:11">QH</td>
+                                <td class="pre-whitespace" style="z-index:11">VU</td>
+                                <td class="pre-whitespace" style="z-index:11">HKTN#</td>
+                                <td class="pre-whitespace" style="z-index:11">HKNN</td>
+                                <td class="pre-whitespace" style="z-index:11">TỔNG NĂM</td>
                             </tr>
+                            @foreach (var sb in lstSanBay)
+                            {
+                                var data = Model.Where(x => x.ProfitCenter.SAN_BAY_CODE == sb.CODE).Where(x => x.CODE == "2001");
+                                <tr>
+                                    <td class="pre-whitespace sticky-cell">@(sb.CODE)</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "0V").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "BL").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VJ").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "QH").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VU").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "0V" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "BL" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "VJ" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "QH" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "VU").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HangHangKhong.TYPE == "QT").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Count() == 0 ? 0 : data.Sum(x => x.Values[12]))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="doanh-thu-quoc-te">
+                <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_doanh_thu_quoc_te">
+                        <tbody>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ SÂN BAY</td>
+                                <td class="pre-whitespace" style="z-index:11">VN</td>
+                                <td class="pre-whitespace" style="z-index:11">0V</td>
+                                <td class="pre-whitespace" style="z-index:11">BL</td>
+                                <td class="pre-whitespace" style="z-index:11">VJ</td>
+                                <td class="pre-whitespace" style="z-index:11">QH</td>
+                                <td class="pre-whitespace" style="z-index:11">VU</td>
+                                <td class="pre-whitespace" style="z-index:11">HKTN#</td>
+                                <td class="pre-whitespace" style="z-index:11">HKNN</td>
+                                <td class="pre-whitespace" style="z-index:11">TỔNG NĂM</td>
+                            </tr>
+                            @foreach (var sb in lstSanBay)
+                            {
+                                var data = Model.Where(x => x.ProfitCenter.SAN_BAY_CODE == sb.CODE).Where(x => x.CODE == "2002");
+                                <tr>
+                                    <td class="pre-whitespace sticky-cell">@(sb.CODE)</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "0V").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "BL").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VJ").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "QH").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VU").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE == "VN").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "0V" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "BL" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "VJ" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "QH" && x.ProfitCenter.HANG_HANG_KHONG_CODE != "VU").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Where(x => x.ProfitCenter.HangHangKhong.TYPE == "QT").Count() == 0 ? 0 : data.Where(x => x.ProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.Values[12]))</td>
+                                    <td class="pre-whitespace sticky-cell">@(data.Count() == 0 ? 0 : data.Sum(x => x.Values[12]))</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>

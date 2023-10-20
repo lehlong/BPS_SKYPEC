@@ -9,6 +9,22 @@ namespace SMO.Core.Entities.MD
 {
     public class T_MD_KHOAN_MUC_DOANH_THU : CoreElement, ICloneable
     {
+        private T_MD_DOANH_THU_PROFIT_CENTER _ProfitCenter;
+        public virtual T_MD_DOANH_THU_PROFIT_CENTER ProfitCenter
+        {
+            get
+            {
+                if (_ProfitCenter == null)
+                {
+                    _ProfitCenter = new T_MD_DOANH_THU_PROFIT_CENTER();
+                }
+                return _ProfitCenter;
+            }
+            set
+            {
+                _ProfitCenter = value;
+            }
+        }
         public T_MD_KHOAN_MUC_DOANH_THU() : base()
         {
             Values = new decimal[14];

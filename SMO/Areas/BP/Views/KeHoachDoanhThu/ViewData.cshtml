@@ -15,6 +15,7 @@
                 @if (SMOUtilities.CheckRight("R301"))
                 {
                     @Html.MyButton("cmdBack", "Kết xuất", $"$('#IS_DRILL_DOWN').val($('#chkDrillDown').is(':checked'));Forms.SubmitForm('{formId}');", "Alt+N", "search")
+                    @Html.MyButton("cmdBack", "Tính toán KHDT", "CalculateKeHoachDoanhThu()", "Alt+N", "functions")
                     @Html.MyButton("cmdBack", "Download", $"DownloadDataCenter();", "Alt+N", "file_download")
                 }
             </div>
@@ -93,6 +94,7 @@
                     @Html.Hidden("exportExcelExchangeRate", Model.EXCHANGE_RATE)
                     @Html.Hidden("kichBan", Model.KICH_BAN)
                     @Html.Hidden("phienBan", Model.PHIEN_BAN)
+                    @Html.Hidden("hangHangKhong", Model.HANG_HANG_KHONG_CODE)
                     @Html.Hidden("moduleType")
                 </form>
             </div>
@@ -109,15 +111,49 @@
             OnChangeOrg(null, null, null, true)
         });
 
+        function CalculateKeHoachDoanhThu() {
+            Swal.fire({
+                title: 'Tính toán dữ liệu?',
+                text: "Bạn có chắc muốn tính toán dữ liệu doanh thu này!",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xác nhận',
+                cancelButtonText: 'Huỷ'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var ajaxParams = {
+                        url: '@Url.Action("CalculateKeHoachDoanhThu")',
+                        type: "POST",
+                        data: {
+                            templateCode: '@Model.TEMPLATE_CODE',
+                            orgCode: '@Model.ORG_CODE',
+                            year: '@Model.YEAR'
+                        },
+                        dataType: 'json',
+                        success: function (response) {
+                            Message.execute(response);
+                        }
+                    };
+                    Forms.Ajax(ajaxParams);
+                }
+            })
+        }
+
         var lastScrollLeft = 0;
 
         function DownloadDataCenter() {
-            var htmlMonth = $('<div>').append($('#divExportRight_@viewId #table_month').clone()).html().trim();
-            if (htmlMonth === '') {
+            var htmlKeHoachTong = $('<div>').append($('#divExportRight_@viewId #ke-hoach-tong').clone()).html().trim();
+            if (htmlKeHoachTong === '') {
                 return;
             }
-            var htmlYear = $('<div>').append($('#divExportRight_@viewId #table_year').clone()).html().trim();
-            if (htmlYear === '') {
+            var htmlDoanhThuNoiDia = $('<div>').append($('#divExportRight_@viewId #doanh-thu-noi-dia').clone()).html().trim();
+            if (htmlDoanhThuNoiDia === '') {
+                return;
+            }
+            var htmlDoanhThuQuocTe = $('<div>').append($('#divExportRight_@viewId #doanh-thu-quoc-te').clone()).html().trim();
+            if (htmlDoanhThuQuocTe === '') {
                 return;
             }
             $('#@inputIdExportExcel').remove();
@@ -131,9 +167,11 @@
             $('#@formIdExportExcel #exportExcelExchangeRate').val($('#@formId #EXCHANGE_RATE').val());
             $('#@formIdExportExcel #kichBan').val($('#@formId #KICH_BAN').val());
             $('#@formIdExportExcel #phienBan').val($('#@formId #PHIEN_BAN').val());
+            $('#@formIdExportExcel #hangHangKhong').val($('#@formId #HANG_HANG_KHONG_CODE').val());
             $('#@formIdExportExcel #moduleType').val("KeHoachDoanhThu");
-            $('#@formIdExportExcel #htmlMonth').val(htmlMonth);
-            $('#@formIdExportExcel #htmlYear').val(htmlYear);
+            $('#@formIdExportExcel #htmlKeHoachTong').val(htmlKeHoachTong);
+            $('#@formIdExportExcel #htmlDoanhThuNoiDia').val(htmlDoanhThuNoiDia);
+            $('#@formIdExportExcel #htmlDoanhThuQuocTe').val(htmlDoanhThuQuocTe);
             $('#@formIdExportExcel').submit();
         }
 

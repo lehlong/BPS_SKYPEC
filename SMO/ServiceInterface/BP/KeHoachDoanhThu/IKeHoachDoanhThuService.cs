@@ -14,12 +14,14 @@ namespace SMO.ServiceInterface.BP.KeHoachDoanhThu
             string centerCode = "",
             int? year = null,
             int? version = null,
-            bool? isHasValue = null);
+            bool? isHasValue = null,
+            string hangHangKhong ="");
         IList<T_MD_KHOAN_MUC_DOANH_THU> PreparePureList(IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> detailCostElements, int year);
         IList<T_MD_KHOAN_MUC_DOANH_THU> PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> detailCostElements,
         string templateId,
         int year,
         string centerCode = "",
+        string hangHangKhong = "",
         bool ignoreAuth = false);
 
         IList<T_MD_KHOAN_MUC_DOANH_THU> PreparePureListForTemplate(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> detailCostElements,
@@ -34,9 +36,10 @@ namespace SMO.ServiceInterface.BP.KeHoachDoanhThu
            string centerCode,
            int? version,
            bool? isHasValue = null,
-           string templateId = "");
+           string templateId = "",
+           string hangHangKhong ="");
         IList<T_MD_KHOAN_MUC_DOANH_THU> SummaryCenterOut(out IList<T_BP_KE_HOACH_DOANH_THU_DATA> plDataCostElements, string centerCode, int year, int? version, bool? isHasValue = null);
-        IList<T_MD_KHOAN_MUC_DOANH_THU> SummaryCenterVersion(out IList<T_BP_KE_HOACH_DOANH_THU_DATA> plDataCostElements, string centerCode, int year, int? version, bool isDrillDown = false);
+        IList<T_MD_KHOAN_MUC_DOANH_THU> SummaryCenterVersion(out IList<T_BP_KE_HOACH_DOANH_THU_DATA> plDataCostElements, string centerCode, int year, int? version, bool isDrillDown = false, string hangHangKhong="");
         //public T_BP_KE_HOACH_DOANH_THU CheckTemplate(string template, int year, string orgCode) { }
     }
 }

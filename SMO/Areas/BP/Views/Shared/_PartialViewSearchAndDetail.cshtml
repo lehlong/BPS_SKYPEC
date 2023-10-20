@@ -50,17 +50,13 @@
 
     function Zoom(fontSize) {
         try {
-            var $table_month = $('#table_month');
-            var $table_year = $('#table_year');
+            var $table_zoom = $('.table-zoom');
 
-            $('#table_month').attr('class', $table_month.get(0).className.replace(/\bfont-\S+/g, ''));
-            $("#table_month").addClass("font-" + fontSize);
+            $('.table-zoom').attr('class', $table_zoom.get(0).className.replace(/\bfont-\S+/g, ''));
+            $(".table-zoom").addClass("font-" + fontSize);
 
-            $('#table_year').attr('class', $table_year.get(0).className.replace(/\bfont-\S+/g, ''));
-            $("#table_year").addClass("font-" + fontSize);
         } catch (ex) {
             console.log("Can't zoom table!")
         }
-
     }
 </script>

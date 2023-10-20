@@ -178,6 +178,7 @@
     <Compile Include="Implement\MD\KhoanMucDoanhThuRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucSanLuongRepo.cs" />
     <Compile Include="Implement\MD\KichBanRepo.cs" />
+    <Compile Include="Implement\MD\LoaiHinhDauTuRepo.cs" />
     <Compile Include="Implement\MD\MaterialRepo.cs" />
     <Compile Include="Implement\MD\MaterialTypeRepo.cs" />
     <Compile Include="Implement\MD\MdBidSpecDetailRepo.cs" />
@@ -308,6 +309,7 @@
     <Compile Include="Interface\MD\IKhoanMucDoanhThuRepo.cs" />
     <Compile Include="Interface\MD\IKhoanMucSanLuongRepo.cs" />
     <Compile Include="Interface\MD\IKichBanRepo.cs" />
+    <Compile Include="Interface\MD\ILoaiHinhDauTuRepo.cs" />
     <Compile Include="Interface\MD\IMaterialRepo.cs" />
     <Compile Include="Interface\MD\IMaterialTypeRepo.cs" />
     <Compile Include="Interface\MD\IMdBidSpecDetailRepo.cs" />
@@ -449,6 +451,7 @@
     <Compile Include="Mapping\MD\T_MD_KHOAN_MUC_DOANH_THU_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_KHOAN_MUC_SAN_LUONG_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_KICH_BAN_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_LOAI_HINH_DAU_TU_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_MATERIAL_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_MATERIAL_TYPE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_OTHER_PROFIT_CENTER_Map.cs" />

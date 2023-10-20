@@ -84,6 +84,22 @@ namespace SMO
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
 
+        public static SelectList GetSelectHangHangKhong(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " Tất cả " });
+            }
+            var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll();
+            foreach (var obj in lstHangHangKhong)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.CODE + " - " + obj.NAME });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
+
         public static SelectList GetAllArea(bool isAddBlank = true, string selected = "")
         {
             IUnitOfWork UnitOfWork = new NHUnitOfWork();

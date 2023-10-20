@@ -181,5 +181,50 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
+
+        public ActionResult OpenModalFilterDataTemplate()
+        {
+            return PartialView();
+        }
+
+        [HttpPost]
+        public ActionResult GetDataKeHoachSanLuong(string kichBan, string phienBan, int year)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.GetDataKeHoachSanLuong(year,kichBan, phienBan);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        public ActionResult CalculateKeHoachDoanhThu(string templateCode, string orgCode, int year)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.CalculateKeHoachDoanhThu(templateCode, orgCode, year);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
     }
 }

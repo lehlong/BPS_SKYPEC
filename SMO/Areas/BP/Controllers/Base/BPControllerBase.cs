@@ -741,7 +741,7 @@ namespace SMO.Areas.BP.Controllers
                 Type = TransferType.AlertSuccessAndJsCommand
             };
 
-            _service.SumUpDataCenter(out _, ProfileUtilities.User.ORGANIZE_CODE, year, kichBan, phienBan);
+            _service.SumUpDataCenter(out _, ProfileUtilities.User.ORGANIZE_CODE, year, kichBan, phienBan,"");
 
             if (_service.State)
             {

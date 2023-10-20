@@ -2021,8 +2021,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
-                    KICH_BAN = ObjDetail.KICH_BAN,
-                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                    KICH_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.KICH_BAN : KeHoachSanLuongCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachSanLuongCurrent.PHIEN_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     FILE_ID = fileStream.PKID,
                     CREATE_BY = currentUser
@@ -2034,8 +2034,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                    KICH_BAN = ObjDetail.KICH_BAN,
-                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                    KICH_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.KICH_BAN : KeHoachSanLuongCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachSanLuongCurrent.PHIEN_BAN,
                     VERSION = versionNext,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     ACTION = Approve_Action.NhapDuLieu,
@@ -3362,7 +3362,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         /// <param name="revenuePL">Output header revenue pl</param>
         /// <param name="centerCode">OtherCost center code want to sum up</param>
         /// <param name="year">Year want to sum up</param>
-        public override void SumUpDataCenter(out T_BP_KE_HOACH_SAN_LUONG_VERSION revenuePL, string centerCode, int year, string kichBan, string phienBan)
+        public override void SumUpDataCenter(out T_BP_KE_HOACH_SAN_LUONG_VERSION revenuePL, string centerCode, int year, string kichBan, string phienBan, string hangHangKhong)
         {
             if (string.IsNullOrEmpty(GetCenter(centerCode).PARENT_CODE))
             {

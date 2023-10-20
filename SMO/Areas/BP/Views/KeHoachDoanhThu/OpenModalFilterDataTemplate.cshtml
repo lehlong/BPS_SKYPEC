@@ -1,0 +1,93 @@
+﻿@{ 
+    var lstTemplate = SelectListUtilities.GetTemplateOfOrg(ProfileUtilities.User.ORGANIZE_CODE, BudgetType.SanLuong, ElementType.SanLuong, TemplateObjectType.SanLuong);
+    var lstKichBan = SelectListUtilities.GetAllKichBan();
+    var lstPhienBan = SelectListUtilities.GetAllPhienBan();
+    var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+}
+<div class="modal-close">
+    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
+</div>
+<div class="modal-body">
+    <div class="container-fluid child-content" style="padding:0">
+        <div class="card border-grey">
+            <div class="body" style="padding-top: 0px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> THÔNG TIN DỮ LIỆU CẦN LẤY TỪ KẾ HOẠCH SẢN LƯỢNG</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    
+                    <div class="row m-t-20">
+                        <div class="col-lg-12 col-xs-10">
+                            <label>Chọn năm kế hoạch</label>
+                            <div class="form-group">
+                                <select id="TIME_YEAR" class="form-control selectpicker show-tick" data_live_search="true" data_container="body">
+                                    @foreach (var temp in lstTimeYear)
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <label>Chọn kịch bản</label>
+                            <div class="form-group">
+                                <select id="KICH_BAN" class="form-control selectpicker show-tick" data_live_search="true" data_container="body">
+                                    @foreach (var temp in lstKichBan)
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <label>Chọn phiên bản</label>
+                            <div class="form-group">
+                                <select id="PHIEN_BAN" class="form-control selectpicker show-tick" data_live_search="true" data_container="body">
+                                    @foreach (var temp in lstPhienBan)
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-close" data-dismiss="modal"><i class="material-icons col-fecon">close</i> Đóng</button>
+    <button type="button" class="btn btn-default" onclick="getDataKeHoachSanLuong()"><i class="material-icons col-fecon">done_all</i> Xác nhận</button>
+</div>
+<script type="text/javascript">
+    function getDataKeHoachSanLuong() {
+        var year = $("#TIME_YEAR").val();
+        var kichBan = $("#KICH_BAN").val();
+        var phienBan = $("#PHIEN_BAN").val();
+
+        var ajaxParams = {
+            url: '@Url.Action("GetDataKeHoachSanLuong")',
+            type: "POST",
+            data: {
+                year: year,
+                kichban: kichBan,
+                phienBan: phienBan
+            },
+            dataType: 'json',
+            success: function (response) {
+                Message.execute(response);
+                if (response.State) {
+                    $(".btn-close").click();
+                }
+            }
+        };
+        Forms.Ajax(ajaxParams);
+    }
+
+    $(function () {
+        Forms.CompleteUI();
+    });
+</script>
+

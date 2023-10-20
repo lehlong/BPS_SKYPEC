@@ -23,6 +23,7 @@ namespace SMO.Repository.Implement.MD
             {
                 query = query.Where(x => x.CODE.IsLike($"%{objFilter.CODE}%") || x.NAME.IsLike($"%{objFilter.CODE}%"));
             }
+            query = query.Where(x => x.CODE.IsLike("%BM%"));
 
             if (!string.IsNullOrWhiteSpace(objFilter.ORG_CODE))
             {

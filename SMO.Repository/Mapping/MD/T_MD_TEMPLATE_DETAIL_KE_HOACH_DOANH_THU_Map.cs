@@ -1,4 +1,5 @@
-﻿using SMO.Core.Entities.MD;
+﻿using FluentNHibernate.Conventions.Inspections;
+using SMO.Core.Entities.MD;
 using System;
 using System.Collections.Generic;
 using System.Linq;

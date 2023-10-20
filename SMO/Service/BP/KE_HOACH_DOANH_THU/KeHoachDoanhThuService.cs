@@ -1,4 +1,6 @@
-﻿using NPOI.SS.UserModel;
+﻿using Hangfire.Annotations;
+using Microsoft.Ajax.Utilities;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 using SMO.AppCode.Utilities;
@@ -6,12 +8,14 @@ using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
 using SMO.Core.Entities.BP.KE_HOACH_DOANH_THU;
 using SMO.Core.Entities.BP.KE_HOACH_DOANH_THU.KE_HOACH_DOANH_THU_DATA_BASE;
+using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Core.Entities.MD;
 using SMO.Helper;
 using SMO.Models;
 using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.KE_HOACH_DOANH_THU;
 using SMO.Repository.Implement.BP.KE_HOACH_DOANH_THU.KE_HOACH_DOANH_THU_DATA_BASE;
+using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Class;
 using SMO.Service.Common;
@@ -1094,7 +1098,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             {
                 ObjDetail.PHIEN_BAN = "PB1";
             }
-            this.ObjList = this.ObjList.Where(x=> x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+            this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
         }
 
         /// <summary>
@@ -1415,7 +1419,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 {
                     lstOrgs.Add(model.ORG_CODE);
                 }
-                var elements = GetDataCostPreview(out detailOtherKhoanMucDoanhThus, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue);
+                var elements = GetDataCostPreview(out detailOtherKhoanMucDoanhThus, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue, model.HANG_HANG_KHONG_CODE);
                 var sumElements = new T_MD_KHOAN_MUC_DOANH_THU
                 {
                     // set tổng năm
@@ -1451,13 +1455,13 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 detailOtherKhoanMucDoanhThus = null;
                 // disabled drill down
                 isDrillDownApply = false;
-                return SummarySumUpCenter(out detailOtherCostData, model.YEAR, model.ORG_CODE, null, isHasValue, templateId: null);
+                return SummarySumUpCenter(out detailOtherCostData, model.YEAR, model.ORG_CODE, null, isHasValue, templateId: null, model.HANG_HANG_KHONG_CODE);
             }
             else
             {
                 // xem dữ liệu được tổng hợp cho đơn vị
                 detailOtherKhoanMucDoanhThus = null;
-                return SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);
+                return SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN, model.HANG_HANG_KHONG_CODE);
             }
         }
 
@@ -1474,13 +1478,13 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 .OrderBy(x => x.C_ORDER).ToList();
         }
 
-        private IList<T_MD_KHOAN_MUC_DOANH_THU> GetDataCostPreview(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> detailOtherKhoanMucDoanhThus, string templateId, List<string> lstOrgs, int year, int? version, bool? isHasValue)
+        private IList<T_MD_KHOAN_MUC_DOANH_THU> GetDataCostPreview(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> detailOtherKhoanMucDoanhThus, string templateId, List<string> lstOrgs, int year, int? version, bool? isHasValue, string hangHangKhong)
         {
             detailOtherKhoanMucDoanhThus = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU>();
             var lstElements = new List<T_MD_KHOAN_MUC_DOANH_THU>();
             foreach (var orgCode in lstOrgs)
             {
-                var elements = GetDataCostPreview(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> detail, templateId, orgCode, year, version, isHasValue);
+                var elements = GetDataCostPreview(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> detail, templateId, orgCode, year, version, isHasValue, hangHangKhong);
                 detailOtherKhoanMucDoanhThus = SummaryElement(detailOtherKhoanMucDoanhThus, detail);
                 lstElements = SummaryUpElement(lstElements, elements).ToList();
             }
@@ -2021,8 +2025,8 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
-                    KICH_BAN = ObjDetail.KICH_BAN,
-                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                    KICH_BAN = KeHoachDoanhThuCurrent == null ? ObjDetail.KICH_BAN : KeHoachDoanhThuCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachDoanhThuCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachDoanhThuCurrent.PHIEN_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     FILE_ID = fileStream.PKID,
                     CREATE_BY = currentUser
@@ -2034,8 +2038,8 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                    KICH_BAN = ObjDetail.KICH_BAN,
-                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                    KICH_BAN = KeHoachDoanhThuCurrent == null ? ObjDetail.KICH_BAN : KeHoachDoanhThuCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachDoanhThuCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachDoanhThuCurrent.PHIEN_BAN,
                     VERSION = versionNext,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     ACTION = Approve_Action.NhapDuLieu,
@@ -2150,7 +2154,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
 
                         costData.VALUE_SUM_YEAR_PREVENTIVE = costData.VALUE_SUM_YEAR * percentagePreventive;
                     }
-                    
+
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Create(costData);
                 }
                 UnitOfWork.Commit();
@@ -2498,7 +2502,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
         public override IList<T_BP_KE_HOACH_DOANH_THU_VERSION> GetVersions(string orgCode, string templateId, int year)
         {
             templateId = templateId ?? string.Empty;
-            var lstVersions = GetVersionsNumber(orgCode, templateId, year,"", "");
+            var lstVersions = GetVersionsNumber(orgCode, templateId, year, "", "");
             return UnitOfWork.Repository<KeHoachDoanhThuVersionRepo>()
                 .GetManyByExpression(x => x.TEMPLATE_CODE == templateId
                 && x.TIME_YEAR == year
@@ -2822,7 +2826,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 var rowHeightDetail = sheet.GetRow(6).Height;
                 foreach (var detail in detailOtherKhoanMucDoanhThus.GroupBy(x => x.CENTER_CODE)
                     .Select(x => x.First())
-                    .OrderBy(x => x.Center.SanBay.CODE).ThenBy(x=> x.Center.SanBay.CODE))
+                    .OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.SanBay.CODE))
                 {
                     foreach (var item in dataOtherCost
                             .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
@@ -3181,10 +3185,11 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             string centerCode = "",
             int? year = null,
             int? version = null,
-            bool? isHasValue = null)
+            bool? isHasValue = null,
+            string hangHangKhong="")
         {
-            var pureLstItems = PreparePureList(out detailOtherKhoanMucDoanhThus, templateId, year.Value, centerCode);
-            var sum = GetSumDescendants(detailOtherKhoanMucDoanhThus, pureLstItems, parent_id: string.Empty, templateId, year, version).Distinct().ToList();
+            var pureLstItems = PreparePureList(out detailOtherKhoanMucDoanhThus, templateId, year.Value, centerCode, hangHangKhong);
+            var sum = GetSumDescendants(detailOtherKhoanMucDoanhThus, pureLstItems, parent_id: string.Empty, templateId, year, version, hangHangKhong).Distinct().ToList();
             if (isHasValue.HasValue)
             {
                 if (isHasValue.Value)
@@ -3225,6 +3230,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     var lst = new List<T_MD_KHOAN_MUC_DOANH_THU>();
                     // add all leaf to temp list item
                     lst.AddRange(from item in lookupElements[code]
+                                 let center = UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Queryable().FirstOrDefault(x => x.CODE == ctCode)
                                  select new T_MD_KHOAN_MUC_DOANH_THU
                                  {
                                      CENTER_CODE = ctCode,
@@ -3233,7 +3239,8 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                                      PARENT_CODE = item.Element.PARENT_CODE,
                                      CODE = item.Element.CODE,
                                      LEVEL = 0,
-                                     TIME_YEAR = item.TIME_YEAR
+                                     TIME_YEAR = item.TIME_YEAR,
+                                     ProfitCenter = center == null ? new T_MD_DOANH_THU_PROFIT_CENTER() : center,
                                  });
                     var parentCode = code;
                     while (!string.IsNullOrEmpty(parentCode))
@@ -3275,18 +3282,28 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             string templateId,
             int year,
             string centerCode = "",
-            bool ignoreAuth = false)
+            string hangHangKhong = "",
+            bool ignoreAuth = false
+            )
         {
             templateId = templateId ?? string.Empty;
             var template = GetTemplate(templateId);
-            
+
             var currentUserCenterCode = ProfileUtilities.User.ORGANIZE_CODE;
             var childOrgOtherCosts = GetListOfChildrenCenter(currentUserCenterCode).Select(x => x.CODE);
 
             if (ignoreAuth || /*childOrgOtherCosts.Contains(template.ORG_CODE) ||*/ currentUserCenterCode.Equals(template.ORG_CODE) || template.ORG_CODE == centerCode)
             {
-                detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
-                    .GetManyWithFetch(x => x.TEMPLATE_CODE.Equals(templateId) && x.TIME_YEAR == year, x => x.Center);
+                if (string.IsNullOrEmpty(hangHangKhong))
+                {
+                    detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
+                                        .GetManyWithFetch(x => x.TEMPLATE_CODE.Equals(templateId) && x.TIME_YEAR == year, x => x.Center);
+                }
+                else
+                {
+                    detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
+                                        .GetManyWithFetch(x => x.TEMPLATE_CODE.Equals(templateId) && x.TIME_YEAR == year && x.Center.HANG_HANG_KHONG_CODE == hangHangKhong, x => x.Center);
+                }            
             }
             else
             {
@@ -3296,13 +3313,30 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     var lstChildCenterCodes = UnitOfWork.Repository<CostCenterRepo>()
                         .GetManyByExpression(x => x.PARENT_CODE == currentUserCenterCode || x.CODE.Equals(currentUserCenterCode))
                         .Select(x => x.CODE);
-                    detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
-                        .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && lstChildCenterCodes.Contains(x.CENTER_CODE) && x.TIME_YEAR == year);
+                    if (string.IsNullOrEmpty(hangHangKhong))
+                    {
+                        detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
+                                                .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && lstChildCenterCodes.Contains(x.CENTER_CODE) && x.TIME_YEAR == year);
+                    }
+                    else
+                    {
+                        detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
+                                                .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && lstChildCenterCodes.Contains(x.CENTER_CODE) && x.TIME_YEAR == year && x.Center.HANG_HANG_KHONG_CODE == hangHangKhong);
+                    }
+                    
                 }
                 else
                 {
-                    detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
-                        .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && x.CENTER_CODE == centerCode && x.TIME_YEAR == year);
+                    if (string.IsNullOrEmpty(hangHangKhong))
+                    {
+                        detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
+                                                .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && x.CENTER_CODE == centerCode && x.TIME_YEAR == year);
+                    }
+                    else
+                    {
+                        detailOtherKhoanMucDoanhThus = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>()
+                                                .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && x.CENTER_CODE == centerCode && x.TIME_YEAR == year && x.Center.HANG_HANG_KHONG_CODE == hangHangKhong);
+                    }                   
                 }
             }
             return PreparePureList(detailOtherKhoanMucDoanhThus, year);
@@ -3362,7 +3396,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
         /// <param name="revenuePL">Output header revenue pl</param>
         /// <param name="centerCode">OtherCost center code want to sum up</param>
         /// <param name="year">Year want to sum up</param>
-        public override void SumUpDataCenter(out T_BP_KE_HOACH_DOANH_THU_VERSION revenuePL, string centerCode, int year, string kichBan, string phienBan)
+        public override void SumUpDataCenter(out T_BP_KE_HOACH_DOANH_THU_VERSION revenuePL, string centerCode, int year, string kichBan, string phienBan, string hangHangKhong)
         {
             if (string.IsNullOrEmpty(GetCenter(centerCode).PARENT_CODE))
             {
@@ -3598,7 +3632,8 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             string centerCode,
             int? version,
             bool? isHasValue = null,
-            string templateId = "")
+            string templateId = "",
+            string hangHangKhong ="")
         {
             // get newest revenue pl data by center code
             plDataOtherKhoanMucDoanhThus = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>()
@@ -3623,7 +3658,8 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             string parent_id,
             string templateId,
             int? year = null,
-            int? version = null)
+            int? version = null,
+            string hangHangKhong = "")
         {
             var lookupCenter = pureItems.ToLookup(x => x.CENTER_CODE);
             foreach (var centerCode in lookupCenter.Select(x => x.Key))
@@ -3669,7 +3705,14 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                                 var detail = details.FirstOrDefault(x => x.ELEMENT_CODE == i.CODE && x.CENTER_CODE == i.CENTER_CODE);
                                 if (detail != null)
                                 {
-                                    detail.PLData = revenuePlData.FirstOrDefault(x => x.KHOAN_MUC_DOANH_THU_CODE == detail.ELEMENT_CODE && x.DOANH_THU_PROFIT_CENTER_CODE == detail.CENTER_CODE);
+                                    if (string.IsNullOrEmpty(hangHangKhong))
+                                    {
+                                        detail.PLData = revenuePlData.FirstOrDefault(x => x.KHOAN_MUC_DOANH_THU_CODE == detail.ELEMENT_CODE && x.DOANH_THU_PROFIT_CENTER_CODE == detail.CENTER_CODE);
+                                    }
+                                    else
+                                    {
+                                        detail.PLData = revenuePlData.FirstOrDefault(x => x.KHOAN_MUC_DOANH_THU_CODE == detail.ELEMENT_CODE && x.DOANH_THU_PROFIT_CENTER_CODE == detail.CENTER_CODE && x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hangHangKhong);
+                                    }
                                 }
                                 var treeData = detail?.PLData;
                                 if (treeData != null)
@@ -3721,7 +3764,15 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     {
                         if (item.PARENT_CODE == parent_id && !item.IS_GROUP)
                         {
-                            var data = revenuePlData.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == item.CODE && x.DOANH_THU_PROFIT_CENTER_CODE == item.CENTER_CODE);
+                            var data = revenuePlData.AsQueryable();
+                            if (string.IsNullOrEmpty(hangHangKhong))
+                            {
+                                data = data.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == item.CODE && x.DOANH_THU_PROFIT_CENTER_CODE == item.CENTER_CODE);
+                            }
+                            else
+                            {
+                                data = data.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == item.CODE && x.DOANH_THU_PROFIT_CENTER_CODE == item.CENTER_CODE && x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hangHangKhong);
+                            }                        
                             if (data != null)
                             {
                                 item.Values = new decimal[14]
@@ -3859,7 +3910,8 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                                                               string centerCode,
                                                               int year,
                                                               int? version,
-                                                              bool isDrillDown = false)
+                                                              bool isDrillDown = false,
+                                                              string hangHangKhong ="")
         {
             if (isDrillDown)
             {
@@ -4280,7 +4332,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
         #endregion
 
         #region Export excel from data center view
-        public override void GenerateExportExcel(ref MemoryStream outFileStream, string htmlMonth,string htmlYear, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
+        public override void GenerateExportExcel(ref MemoryStream outFileStream, string htmlMonth, string htmlYear, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
         {
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
@@ -4371,7 +4423,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             return UnitOfWork.Repository<TypeRepo>().GetFirstWithFetch(x => x.OBJECT_TYPE == TemplateObjectType.Project && x.ELEMENT_TYPE == ElementType.ChiPhi && x.BUDGET_TYPE == BudgetType.DongTien);
         }
 
-        public void UpdateCellValue(string code,string profitCenter,int version, string colEdit, decimal? value)
+        public void UpdateCellValue(string code, string profitCenter, int version, string colEdit, decimal? value)
         {
             UnitOfWork.Clear();
             UnitOfWork.BeginTransaction();
@@ -4470,7 +4522,8 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             UnitOfWork.Commit();
 
         }
-        public T_BP_KE_HOACH_DOANH_THU CheckTemplate(string template, int year, string orgCode) {
+        public T_BP_KE_HOACH_DOANH_THU CheckTemplate(string template, int year, string orgCode)
+        {
             try
             {
                 var checkTemplate = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == template && x.TIME_YEAR == year && x.ORG_CODE == orgCode);
@@ -4489,7 +4542,351 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 this.Exception = ex;
                 return null;
             }
-            
+        }
+
+        public void GetDataKeHoachSanLuong(int year, string kichBan, string phienBan)
+        {
+            try
+            {
+                UnitOfWork.Clear();
+                UnitOfWork.BeginTransaction();
+                var checkData = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x =>x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.Template.ACTIVE == true && x.STATUS == "03").ToList();
+                if (checkData.Count() == 0)
+                {
+                    this.State = false;
+                    this.ErrorMessage = $"Không có dữ liệu kế hoạch sản lượng tại năm: {year}, kịch bản: {kichBan}, phiên bản: {phienBan} hoặc các biểu mẫu đang ở trạng thái deactive!";
+                    return;
+                }
+                else if (checkData.Count() > 1)
+                {
+                    this.State = false;
+                    this.ErrorMessage = $"Có nhiều hơn 1 bản dữ liệu, vui lòng kiểm tra lại!";
+                    return;
+                }
+                else
+                {
+                    var lstKhoanMucDoanhThu = UnitOfWork.Repository<KhoanMucDoanhThuRepo>().Queryable().Where(x => x.IS_GROUP == false && x.ACTIVE == true && x.TIME_YEAR == year).ToList();
+                    if (lstKhoanMucDoanhThu.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = $"Khoản mục doanh thu chưa được cấu hình cho năm {year}! Vui lòng vào Menu -> Danh mục khoản mục -> Khoản mục doanh thu để cấu hình!";
+                        return;
+                    }
+                    var dataHeaderSanLuong = checkData.FirstOrDefault();
+                    var templateKeHoachSanLuong = UnitOfWork.Repository<TemplateRepo>().Queryable().FirstOrDefault(x => x.CODE == dataHeaderSanLuong.TEMPLATE_CODE);
+                    var templateCode = kichBan.ToString() + "-" + phienBan.ToString();
+                    var checkTemplate = UnitOfWork.Repository<TemplateRepo>().Queryable().FirstOrDefault(x => x.CODE == templateCode);
+
+                    var templateDetailKeHoachSanLuong = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.TEMPLATE_CODE == dataHeaderSanLuong.TEMPLATE_CODE && x.TIME_YEAR == year).ToList();
+
+                    var dataCurrent = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE
+                    && x.TIME_YEAR == year && x.TEMPLATE_CODE == dataHeaderSanLuong.TEMPLATE_CODE).ToList();
+                    var dataCurrentHistory = UnitOfWork.Repository<KeHoachSanLuongDataHistoryRepo>().Queryable().Where(x => x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE
+                    && x.TIME_YEAR == year && x.TEMPLATE_CODE == dataHeaderSanLuong.TEMPLATE_CODE).ToList();
+
+                    if (checkTemplate == null)
+                    {
+                        //Tạo header template cho kế hoạch doanh thu
+                        var template = new T_MD_TEMPLATE
+                        {
+                            CODE = templateCode,
+                            OBJECT_TYPE = TemplateObjectType.DoanhThu,
+                            ELEMENT_TYPE = ElementType.DoanhThu,
+                            BUDGET_TYPE = BudgetType.DoanhThu,
+                            ACTIVE = true,
+                            NAME = templateKeHoachSanLuong.NAME,
+                            TITLE = templateKeHoachSanLuong.TITLE,
+                            ORG_CODE = templateKeHoachSanLuong.ORG_CODE,
+                        };
+                        UnitOfWork.Repository<TemplateRepo>().Create(template);
+
+                        //Gen template detail cho header vừa tạo
+                        foreach (var item in templateDetailKeHoachSanLuong.DistinctBy(x => x.CENTER_CODE))
+                        {
+                            var profitCenterCode = Guid.NewGuid().ToString();
+                            var profitCenter = new T_MD_DOANH_THU_PROFIT_CENTER
+                            {
+                                CODE = profitCenterCode,
+                                HANG_HANG_KHONG_CODE = item.Center.HANG_HANG_KHONG_CODE,
+                                SAN_BAY_CODE = item.Center.SAN_BAY_CODE,
+                            };
+                            UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Create(profitCenter);
+                            foreach (var element in lstKhoanMucDoanhThu)
+                            {
+                                var elementDoanhThu = new T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU
+                                {
+                                    PKID = Guid.NewGuid().ToString(),
+                                    CENTER_CODE = profitCenterCode,
+                                    ELEMENT_CODE = element.CODE,
+                                    TEMPLATE_CODE = templateCode,
+                                    TIME_YEAR = year
+                                };
+                                UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Create(elementDoanhThu);
+                            }
+                        }
+
+                        //Tạo header data kế hoạch doanh thu
+                        var headerKeHoachDoanhThu = new T_BP_KE_HOACH_DOANH_THU
+                        {
+                            PKID = Guid.NewGuid().ToString(),
+                            ORG_CODE = dataHeaderSanLuong.ORG_CODE,
+                            TEMPLATE_CODE = templateCode,
+                            TIME_YEAR = year,
+                            VERSION = 1,
+                            PHIEN_BAN = dataHeaderSanLuong.PHIEN_BAN,
+                            KICH_BAN = dataHeaderSanLuong.KICH_BAN,
+                            STATUS = Approve_Status.ChuaTrinhDuyet,
+                            FILE_ID = dataHeaderSanLuong.FILE_ID,
+                            IS_DELETED = false,
+                            IS_SUMUP = false,
+                            CREATE_BY = ProfileUtilities.User.USER_NAME
+                        };
+                        UnitOfWork.Repository<KeHoachDoanhThuRepo>().Create(headerKeHoachDoanhThu);
+
+                        UnitOfWork.Repository<KeHoachDoanhThuVersionRepo>().Create(new T_BP_KE_HOACH_DOANH_THU_VERSION()
+                        {
+                            PKID = Guid.NewGuid().ToString(),
+                            ORG_CODE = dataHeaderSanLuong.ORG_CODE,
+                            TEMPLATE_CODE = templateCode,
+                            VERSION = 1,
+                            KICH_BAN = dataHeaderSanLuong.KICH_BAN,
+                            PHIEN_BAN = dataHeaderSanLuong.PHIEN_BAN,
+                            TIME_YEAR = year,
+                            FILE_ID = dataHeaderSanLuong.FILE_ID,
+                            CREATE_BY = ProfileUtilities.User.USER_NAME
+                        });
+                        UnitOfWork.Commit();
+
+                        GenDataKeHoachSanLuong(false, templateCode, year, dataCurrent);
+                    }
+                    else
+                    {
+                        var lstData = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TIME_YEAR == year).ToList();
+                        var lstDataHistory = UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TIME_YEAR == year).ToList();
+
+                        foreach (var item in lstData)
+                        {
+                            UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Delete(item);
+                        }
+                        foreach (var item in lstDataHistory)
+                        {
+                            UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Delete(item);
+                        }
+                        UnitOfWork.Commit();
+
+                        GenDataKeHoachSanLuong(true, templateCode, year, dataCurrent);
+                    }
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+
+        }
+        public void GenDataKeHoachSanLuong(bool isGhiDe, string templateCode, int year, List<T_BP_KE_HOACH_SAN_LUONG_DATA> dataCurrent)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var template = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year).ToList();                
+                foreach (var item in template)
+                {
+                    var center = UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Queryable().FirstOrDefault(x => x.CODE == item.CENTER_CODE);
+                    var check = new T_BP_KE_HOACH_SAN_LUONG_DATA();
+                    check = center == null ? null : dataCurrent.FirstOrDefault(x => x.SanLuongProfitCenter.SanBay.CODE == center.SAN_BAY_CODE && x.SanLuongProfitCenter.HangHangKhong.CODE == center.HANG_HANG_KHONG_CODE && x.KHOAN_MUC_SAN_LUONG_CODE == item.ELEMENT_CODE);                   
+                    var data = new T_BP_KE_HOACH_DOANH_THU_DATA
+                    {
+                        PKID = Guid.NewGuid().ToString(),
+                        ORG_CODE = ProfileUtilities.User.ORGANIZE_CODE,
+                        TEMPLATE_CODE = templateCode,
+                        DOANH_THU_PROFIT_CENTER_CODE = item.CENTER_CODE,
+                        KHOAN_MUC_DOANH_THU_CODE = item.ELEMENT_CODE,
+                        VERSION = 1,
+                        TIME_YEAR = year,
+                        VALUE_JAN = check == null ? 0 : check.VALUE_JAN,
+                        VALUE_FEB = check == null ? 0 : check.VALUE_FEB,
+                        VALUE_MAR = check == null ? 0 : check.VALUE_MAR,
+                        VALUE_APR = check == null ? 0 : check.VALUE_APR,
+                        VALUE_MAY = check == null ? 0 : check.VALUE_MAY,
+                        VALUE_JUN = check == null ? 0 : check.VALUE_JUN,
+                        VALUE_JUL = check == null ? 0 : check.VALUE_JUL,
+                        VALUE_AUG = check == null ? 0 : check.VALUE_AUG,
+                        VALUE_SEP = check == null ? 0 : check.VALUE_SEP,
+                        VALUE_OCT = check == null ? 0 : check.VALUE_OCT,
+                        VALUE_NOV = check == null ? 0 : check.VALUE_NOV,
+                        VALUE_DEC = check == null ? 0 : check.VALUE_DEC,
+                        VALUE_SUM_YEAR = check == null ? 0 : check.VALUE_SUM_YEAR,
+                        VALUE_SUM_YEAR_PREVENTIVE = check == null ? 0 : check.VALUE_SUM_YEAR_PREVENTIVE,
+                        STATUS = Approve_Status.ChuaTrinhDuyet,
+                    };
+
+                    var dataHistory = new T_BP_KE_HOACH_DOANH_THU_DATA_HISTORY
+                    {
+                        PKID = Guid.NewGuid().ToString(),
+                        ORG_CODE = ProfileUtilities.User.ORGANIZE_CODE,
+                        TEMPLATE_CODE = templateCode,
+                        DOANH_THU_PROFIT_CENTER_CODE = item.CENTER_CODE,
+                        KHOAN_MUC_DOANH_THU_CODE = item.ELEMENT_CODE,
+                        VERSION = 1,
+                        TIME_YEAR = year,
+                        VALUE_JAN = check == null ? 0 : check.VALUE_JAN,
+                        VALUE_FEB = check == null ? 0 : check.VALUE_FEB,
+                        VALUE_MAR = check == null ? 0 : check.VALUE_MAR,
+                        VALUE_APR = check == null ? 0 : check.VALUE_APR,
+                        VALUE_MAY = check == null ? 0 : check.VALUE_MAY,
+                        VALUE_JUN = check == null ? 0 : check.VALUE_JUN,
+                        VALUE_JUL = check == null ? 0 : check.VALUE_JUL,
+                        VALUE_AUG = check == null ? 0 : check.VALUE_AUG,
+                        VALUE_SEP = check == null ? 0 : check.VALUE_SEP,
+                        VALUE_OCT = check == null ? 0 : check.VALUE_OCT,
+                        VALUE_NOV = check == null ? 0 : check.VALUE_NOV,
+                        VALUE_DEC = check == null ? 0 : check.VALUE_DEC,
+                        VALUE_SUM_YEAR = check == null ? 0 : check.VALUE_SUM_YEAR,
+                        VALUE_SUM_YEAR_PREVENTIVE = check == null ? 0 : check.VALUE_SUM_YEAR_PREVENTIVE,
+                        STATUS = Approve_Status.ChuaTrinhDuyet,
+                    };
+
+                    UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Create(data);
+                    UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Create(dataHistory);
+                }
+                UnitOfWork.Commit();
+
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void CalculateKeHoachDoanhThu(string templateCode, string orgCode, int year)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var lstUnitPrice = UnitOfWork.Repository<UnitPriceRepo>().Queryable().Where(x => x.YEAR == year).ToList();
+                if (lstUnitPrice.Count() == 0)
+                {
+                    this.State = false;
+                    this.ErrorMessage = $"Đơn giá năm {year} chưa được cấu hình!";
+                    return;
+                }
+
+                var data = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.ORG_CODE == orgCode && x.TIME_YEAR == year).ToList();
+                var dataHistory = UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.ORG_CODE == orgCode && x.TIME_YEAR == year).ToList();
+
+                var lstProfitCenter = data.GroupBy(x => x.DOANH_THU_PROFIT_CENTER_CODE).Select(x => x.Key).ToList();
+
+                foreach (var key in lstProfitCenter)
+                {
+                    var itemNoiDiaSL = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10010");
+                    var itemQuocTeSL = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10020");
+                    
+                    var itemNoiDiaDT = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2001");
+                    var itemQuocTeDT = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2002");
+                   
+                    var itemNoiDiaHistorySL = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10010");
+                    var itemQuocTeHistorySL = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10020");
+
+                    var itemNoiDiaHistoryDT = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2001");
+                    var itemQuocTeHistoryDT = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2002");
+
+                    var hhk = itemNoiDiaSL.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE;
+
+                    var price = 0;
+                    var unitPrice = lstUnitPrice.FirstOrDefault(x => x.SAN_BAY_CODE == itemNoiDiaSL.DoanhThuProfitCenter.SAN_BAY_CODE);
+                    if (itemNoiDiaSL.DoanhThuProfitCenter.HangHangKhong.TYPE == "ND")
+                    {
+                        price = hhk == "VN" ? unitPrice.VN : hhk == "0V" ? unitPrice.OV : hhk == "BL" ? unitPrice.BL : hhk == "VJ" ? unitPrice.VJ : hhk == "QH" ? unitPrice.QH : hhk == "VU" ? unitPrice.VU : unitPrice.OTHER_HKTN;
+                    }
+                    else
+                    {
+                        price = unitPrice.HKNN;
+                    }
+                    //Tính toán doanh thu nội địa
+                    itemNoiDiaDT.VALUE_JAN = itemNoiDiaSL.VALUE_JAN * price;
+                    itemNoiDiaDT.VALUE_FEB = itemNoiDiaSL.VALUE_FEB * price;
+                    itemNoiDiaDT.VALUE_MAR = itemNoiDiaSL.VALUE_MAR * price;
+                    itemNoiDiaDT.VALUE_APR = itemNoiDiaSL.VALUE_APR * price;
+                    itemNoiDiaDT.VALUE_MAY = itemNoiDiaSL.VALUE_MAY * price;
+                    itemNoiDiaDT.VALUE_JUN = itemNoiDiaSL.VALUE_JUN * price;
+                    itemNoiDiaDT.VALUE_JUL = itemNoiDiaSL.VALUE_JUL * price;
+                    itemNoiDiaDT.VALUE_AUG = itemNoiDiaSL.VALUE_AUG * price;
+                    itemNoiDiaDT.VALUE_SEP = itemNoiDiaSL.VALUE_SEP * price;
+                    itemNoiDiaDT.VALUE_OCT = itemNoiDiaSL.VALUE_OCT * price;
+                    itemNoiDiaDT.VALUE_NOV = itemNoiDiaSL.VALUE_NOV * price;
+                    itemNoiDiaDT.VALUE_DEC = itemNoiDiaSL.VALUE_DEC * price;
+                    itemNoiDiaDT.VALUE_SUM_YEAR = itemNoiDiaSL.VALUE_SUM_YEAR * price;
+                    itemNoiDiaDT.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaSL.VALUE_SUM_YEAR_PREVENTIVE * price;
+                    UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemNoiDiaDT);
+
+                    //Tính toán doanh thu quốc tế
+                    itemQuocTeDT.VALUE_JAN = itemQuocTeSL.VALUE_JAN * price;
+                    itemQuocTeDT.VALUE_FEB = itemQuocTeSL.VALUE_FEB * price;
+                    itemQuocTeDT.VALUE_MAR = itemQuocTeSL.VALUE_MAR * price;
+                    itemQuocTeDT.VALUE_APR = itemQuocTeSL.VALUE_APR * price;
+                    itemQuocTeDT.VALUE_MAY = itemQuocTeSL.VALUE_MAY * price;
+                    itemQuocTeDT.VALUE_JUN = itemQuocTeSL.VALUE_JUN * price;
+                    itemQuocTeDT.VALUE_JUL = itemQuocTeSL.VALUE_JUL * price;
+                    itemQuocTeDT.VALUE_AUG = itemQuocTeSL.VALUE_AUG * price;
+                    itemQuocTeDT.VALUE_SEP = itemQuocTeSL.VALUE_SEP * price;
+                    itemQuocTeDT.VALUE_OCT = itemQuocTeSL.VALUE_OCT * price;
+                    itemQuocTeDT.VALUE_NOV = itemQuocTeSL.VALUE_NOV * price;
+                    itemQuocTeDT.VALUE_DEC = itemQuocTeSL.VALUE_DEC * price;
+                    itemQuocTeDT.VALUE_SUM_YEAR = itemQuocTeSL.VALUE_SUM_YEAR * price;
+                    itemQuocTeDT.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeSL.VALUE_SUM_YEAR_PREVENTIVE * price;
+                    UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemQuocTeDT);
+
+                    //Tính toán doanh thu nội địa history
+                    itemNoiDiaHistoryDT.VALUE_JAN = itemNoiDiaHistorySL.VALUE_JAN * price;
+                    itemNoiDiaHistoryDT.VALUE_FEB = itemNoiDiaHistorySL.VALUE_FEB * price;
+                    itemNoiDiaHistoryDT.VALUE_MAR = itemNoiDiaHistorySL.VALUE_MAR * price;
+                    itemNoiDiaHistoryDT.VALUE_APR = itemNoiDiaHistorySL.VALUE_APR * price;
+                    itemNoiDiaHistoryDT.VALUE_MAY = itemNoiDiaHistorySL.VALUE_MAY * price;
+                    itemNoiDiaHistoryDT.VALUE_JUN = itemNoiDiaHistorySL.VALUE_JUN * price;
+                    itemNoiDiaHistoryDT.VALUE_JUL = itemNoiDiaHistorySL.VALUE_JUL * price;
+                    itemNoiDiaHistoryDT.VALUE_AUG = itemNoiDiaHistorySL.VALUE_AUG * price;
+                    itemNoiDiaHistoryDT.VALUE_SEP = itemNoiDiaHistorySL.VALUE_SEP * price;
+                    itemNoiDiaHistoryDT.VALUE_OCT = itemNoiDiaHistorySL.VALUE_OCT * price;
+                    itemNoiDiaHistoryDT.VALUE_NOV = itemNoiDiaHistorySL.VALUE_NOV * price;
+                    itemNoiDiaHistoryDT.VALUE_DEC = itemNoiDiaHistorySL.VALUE_DEC * price;
+                    itemNoiDiaHistoryDT.VALUE_SUM_YEAR = itemNoiDiaHistorySL.VALUE_SUM_YEAR * price;
+                    itemNoiDiaHistoryDT.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaHistorySL.VALUE_SUM_YEAR_PREVENTIVE * price;
+                    UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemNoiDiaHistoryDT);
+
+                    //Tính toán doanh thu quốc tế history
+                    itemQuocTeHistoryDT.VALUE_JAN = itemQuocTeHistorySL.VALUE_JAN * price;
+                    itemQuocTeHistoryDT.VALUE_FEB = itemQuocTeHistorySL.VALUE_FEB * price;
+                    itemQuocTeHistoryDT.VALUE_MAR = itemQuocTeHistorySL.VALUE_MAR * price;
+                    itemQuocTeHistoryDT.VALUE_APR = itemQuocTeHistorySL.VALUE_APR * price;
+                    itemQuocTeHistoryDT.VALUE_MAY = itemQuocTeHistorySL.VALUE_MAY * price;
+                    itemQuocTeHistoryDT.VALUE_JUN = itemQuocTeHistorySL.VALUE_JUN * price;
+                    itemQuocTeHistoryDT.VALUE_JUL = itemQuocTeHistorySL.VALUE_JUL * price;
+                    itemQuocTeHistoryDT.VALUE_AUG = itemQuocTeHistorySL.VALUE_AUG * price;
+                    itemQuocTeHistoryDT.VALUE_SEP = itemQuocTeHistorySL.VALUE_SEP * price;
+                    itemQuocTeHistoryDT.VALUE_OCT = itemQuocTeHistorySL.VALUE_OCT * price;
+                    itemQuocTeHistoryDT.VALUE_NOV = itemQuocTeHistorySL.VALUE_NOV * price;
+                    itemQuocTeHistoryDT.VALUE_DEC = itemQuocTeHistorySL.VALUE_DEC * price;
+                    itemQuocTeHistoryDT.VALUE_SUM_YEAR = itemQuocTeHistorySL.VALUE_SUM_YEAR * price;
+                    itemQuocTeHistoryDT.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeHistorySL.VALUE_SUM_YEAR_PREVENTIVE * price;
+                    UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemQuocTeHistoryDT);
+
+
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+
         }
 
     }

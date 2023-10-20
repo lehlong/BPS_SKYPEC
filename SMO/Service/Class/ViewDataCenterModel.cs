@@ -4,6 +4,7 @@
     {
         public string ORG_CODE { get; set; }
         public string TEMPLATE_CODE { get; set; }
+        public string HANG_HANG_KHONG_CODE { get; set; }
         public string KICH_BAN { get; set; }
         public string PHIEN_BAN { get; set; }
         public int YEAR { get; set; }
@@ -25,6 +26,21 @@
         public decimal? SUM_VNA { get; set; }
         public decimal? QUOC_TE { get; set; }
         public decimal? TONG_CONG { get; set; }
+
+    }
+
+    public class ViewDataYearDoanhThuModel
+    {
+        public string SAN_BAY_CODE { get; set; }
+        public string VN { get; set; }
+        public string OV { get; set; }
+        public string BL { get; set; }
+        public string VJ { get; set; }
+        public string QH { get; set; }
+        public string VU { get; set; }
+        public string OTHER_HKTN { get; set; }
+        public string HKNN { get; set; }
+        public string TOTAL { get; set; }
 
     }
 }

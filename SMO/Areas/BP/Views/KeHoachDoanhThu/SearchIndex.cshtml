@@ -11,9 +11,7 @@
     <div style="min-height: 500px;">
         <div class="page-function">
             @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
-            @Html.MyButton("cmdBack", "Lấy dữ liệu SL", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "system_update")
-            @Html.MyButton("cmdBack", "Xem dữ liệu SL", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "visibility")
-            @Html.MyButton("cmdBack", "Tính toán KHDT", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "functions")
+            @Html.MyButton("cmdBack", "Lấy dữ liệu SL", $"Forms.LoadAjaxModal('{Url.Action("OpenModalFilterDataTemplate", new { })}');", "Alt+N", "system_update")            
             @Html.MyButton("cmdBack", "Xem dữ liệu tổng hợp", $"Forms.LoadAjax('{Url.Action("ExportData", new { templateCode = "", year = Model.ObjDetail.TIME_YEAR, version = -1 })}');", "Alt+N", "open_in_browser")
             @if (!periodTime.IS_CLOSE)
             {
@@ -196,5 +194,5 @@ else
 
 
 <script type="text/javascript">
-
+    
 </script>
