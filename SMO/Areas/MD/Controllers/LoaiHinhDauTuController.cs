@@ -2,7 +2,7 @@
 
 using System.Web.Mvc;
 
-namespace SMO.LoaiHinhDauTus.MD.Controllers
+namespace SMO.Areas.MD.Controllers
 {
     [AuthorizeCustom(Right = "R270")]
     public class LoaiHinhDauTuController : Controller
