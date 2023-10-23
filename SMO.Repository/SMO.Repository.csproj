@@ -184,8 +184,10 @@
     <Compile Include="Implement\MD\MaterialTypeRepo.cs" />
     <Compile Include="Implement\MD\MdBidSpecDetailRepo.cs" />
     <Compile Include="Implement\MD\MdBidSpecRepo.cs" />
+    <Compile Include="Implement\MD\NganhNgheDauTuRepo.cs" />
     <Compile Include="Implement\MD\OtherProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\PeriodTimeRepo.cs" />
+    <Compile Include="Implement\MD\PhanLoaiDauTuRepo.cs" />
     <Compile Include="Implement\MD\PhienBanRepo.cs" />
     <Compile Include="Implement\MD\PreventiveRepo.cs" />
     <Compile Include="Implement\MD\ProfitCenterRepo.cs" />
@@ -316,8 +318,10 @@
     <Compile Include="Interface\MD\IMaterialTypeRepo.cs" />
     <Compile Include="Interface\MD\IMdBidSpecDetailRepo.cs" />
     <Compile Include="Interface\MD\IMdBidSpecRepo.cs" />
+    <Compile Include="Interface\MD\INganhNgheDauTuRepo.cs" />
     <Compile Include="Interface\MD\IOtherProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IPeriodTimeRepo.cs" />
+    <Compile Include="Interface\MD\IPhanLoaiDauTuRepo.cs" />
     <Compile Include="Interface\MD\IPhienBanRepo.cs" />
     <Compile Include="Interface\MD\IPreventiveRepo.cs" />
     <Compile Include="Interface\MD\IProfitCenterRepo.cs" />
@@ -457,8 +461,10 @@
     <Compile Include="Mapping\MD\T_MD_LOAI_HINH_DAU_TU_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_MATERIAL_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_MATERIAL_TYPE_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_NGANH_NGHE_DAU_TU_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_OTHER_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PERIOD_TIME_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_PHAN_LOAI_DAU_TU_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PHIEN_BAN_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PROJECT_Map.cs" />

@@ -566,7 +566,9 @@
     <Compile Include="Areas\MD\Controllers\BidTypeController.cs" />
     <Compile Include="Areas\MD\Controllers\MaterialTypeController.cs" />
     <Compile Include="Areas\MD\Controllers\CountryController.cs" />
+    <Compile Include="Areas\MD\Controllers\NganhNgheDauTuController.cs" />
     <Compile Include="Areas\MD\Controllers\PeriodTimeController.cs" />
+    <Compile Include="Areas\MD\Controllers\PhanLoaiDauTuController.cs" />
     <Compile Include="Areas\MD\Controllers\PhienBanController.cs" />
     <Compile Include="Areas\MD\Controllers\PreventiveController.cs" />
     <Compile Include="Areas\MD\Controllers\ProjectController.cs" />
@@ -745,7 +747,9 @@
     <Compile Include="Service\MD\DomainService.cs" />
     <Compile Include="Service\MD\MaterialService.cs" />
     <Compile Include="Service\MD\CurrencyService.cs" />
+    <Compile Include="Service\MD\NganhNgheDauTuService.cs" />
     <Compile Include="Service\MD\PeriodTimeService.cs" />
+    <Compile Include="Service\MD\PhanLoaiDauTuService.cs" />
     <Compile Include="Service\MD\PhienBanService.cs" />
     <Compile Include="Service\MD\PreventiveService.cs" />
     <Compile Include="Service\MD\ProjectService.cs" />
@@ -1554,6 +1558,18 @@
     <Content Include="Areas\MD\Views\LoaiHinhDauTu\List.cshtml" />
     <Content Include="Areas\MD\Views\LoaiHinhDauTu\Create.cshtml" />
     <Content Include="Areas\MD\Views\LoaiHinhDauTu\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\GiaiDoanDauTu\Index.cshtml" />
+    <Content Include="Areas\MD\Views\GiaiDoanDauTu\List.cshtml" />
+    <Content Include="Areas\MD\Views\GiaiDoanDauTu\Create.cshtml" />
+    <Content Include="Areas\MD\Views\GiaiDoanDauTu\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\NganhNgheDauTu\Create.cshtml" />
+    <Content Include="Areas\MD\Views\NganhNgheDauTu\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\NganhNgheDauTu\Index.cshtml" />
+    <Content Include="Areas\MD\Views\NganhNgheDauTu\List.cshtml" />
+    <Content Include="Areas\MD\Views\PhanLoaiDauTu\Create.cshtml" />
+    <Content Include="Areas\MD\Views\PhanLoaiDauTu\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\PhanLoaiDauTu\Index.cshtml" />
+    <Content Include="Areas\MD\Views\PhanLoaiDauTu\List.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1701,7 +1717,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\MD\Views\DoanhThuProfitCenter\" />
-    <Folder Include="Areas\MD\Views\GiaiDoanDauTu\" />
     <Folder Include="Areas\MD\Views\RevenueElement\" />
     <Folder Include="Areas\MD\Views\SanLuongProfitCenter\" />
     <Folder Include="BuildPlus\" />

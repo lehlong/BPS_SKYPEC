@@ -1,20 +1,17 @@
-﻿@model SMO.Service.MD.ProjectService
+﻿@model SMO.Service.MD.PhanLoaiDauTuService
 @{
-    var frmFormCode = "frmProjectIndex";
+    var frmFormCode = "frmPhanLoaiDauTuIndex";
     var number = 1;
 }
- 
+
+@{ Html.RenderPartial("Paging", Model); }
+
 <div class="table-responsive">
     <table class="table table-condensed table-bordered table-striped">
         <thead>
             <tr>
                 <th style="max-width: 120px;">Mã</th>
                 <th>Tên</th>
-                <th>Loại hình</th>
-                <th>Giai đoạn</th>
-                <th>Năm bắt đầu</th>
-                <th>Ngành nghề</th>
-                <th>Phân loại</th>
             </tr>
         </thead>
         <tbody>
@@ -26,14 +23,12 @@
                     <td ondblclick="@vdbclickAction">
                         <a href="#" onclick="@vdbclickAction">@item.CODE</a>
                     </td>
-                    <td ondblclick="@vdbclickAction">@item.NAME</td>
-                    <td ondblclick="@vdbclickAction">@(item?.LoaiHinh?.TEXT)</td>
-                    <td ondblclick="@vdbclickAction">@(item?.GiaiDoan?.TEXT)</td>
-                    <td ondblclick="@vdbclickAction">@(item.YEAR)</td>
-                    <td ondblclick="@vdbclickAction">@(item?.NganhNghe?.TEXT)</td>
-                    <td ondblclick="@vdbclickAction">@(item?.PhanLoai?.TEXT)</td>
+                    <td ondblclick="@vdbclickAction">@item.TEXT</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+@{ Html.RenderPartial("Paging", Model); }
+
+

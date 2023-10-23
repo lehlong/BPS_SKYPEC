@@ -5,9 +5,9 @@ using System;
 
 namespace SMO.Service.MD
 {
-    public class ProjectService : GenericService<T_MD_PROJECT, ProjectRepo>
+    public class NganhNgheDauTuService : GenericService<T_MD_NGANH_NGHE_DAU_TU, NganhNgheDauTuRepo>
     {
-        public ProjectService() : base()
+        public NganhNgheDauTuService() : base()
         {
 
         }

@@ -1157,5 +1157,69 @@ namespace SMO
             lstData.Add(new Data() { Value = "03", Text = "Chưa thanh toán" });
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
+
+        public static SelectList SelectLoaiHinhDauTu(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " - " });
+            }
+            var lstLoaiHinhDauTu = UnitOfWork.Repository<LoaiHinhDauTuRepo>().GetAll();
+            foreach (var obj in lstLoaiHinhDauTu)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.CODE + " - " + obj.TEXT });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
+
+        public static SelectList SelectGiaiDoanDauTu(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " - " });
+            }
+            var lstGiaiDoanDauTu = UnitOfWork.Repository<GiaiDoanDauTuRepo>().GetAll();
+            foreach (var obj in lstGiaiDoanDauTu)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.CODE + " - " + obj.TEXT });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
+
+        public static SelectList SelectNganhNgheDauTu(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " - " });
+            }
+            var lstNganhNgheDauTu = UnitOfWork.Repository<NganhNgheDauTuRepo>().GetAll();
+            foreach (var obj in lstNganhNgheDauTu)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.CODE + " - " + obj.TEXT });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
+
+        public static SelectList SelectPhanLoaiDauTu(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " - " });
+            }
+            var lstPhanLoaiDauTu = UnitOfWork.Repository<PhanLoaiDauTuRepo>().GetAll();
+            foreach (var obj in lstPhanLoaiDauTu)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.CODE + " - " + obj.TEXT });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
     }
 }

@@ -5,13 +5,13 @@ using System.Web.Mvc;
 namespace SMO.Areas.MD.Controllers
 {
     [AuthorizeCustom(Right = "R270")]
-    public class ProjectController : Controller
+    public class PhanLoaiDauTuController : Controller
     {
-        private readonly ProjectService _service;
+        private readonly PhanLoaiDauTuService _service;
 
-        public ProjectController()
+        public PhanLoaiDauTuController()
         {
-            _service = new ProjectService();
+            _service = new PhanLoaiDauTuService();
         }
 
         [MyValidateAntiForgeryToken]
@@ -21,7 +21,7 @@ namespace SMO.Areas.MD.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        public ActionResult List(ProjectService service)
+        public ActionResult List(PhanLoaiDauTuService service)
         {
             service.Search();
             return PartialView(service);
@@ -35,7 +35,7 @@ namespace SMO.Areas.MD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ProjectService service)
+        public ActionResult Create(PhanLoaiDauTuService service)
         {
             var result = new TransferObject
             {
@@ -67,7 +67,7 @@ namespace SMO.Areas.MD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update(ProjectService service)
+        public ActionResult Update(PhanLoaiDauTuService service)
         {
             var result = new TransferObject
             {

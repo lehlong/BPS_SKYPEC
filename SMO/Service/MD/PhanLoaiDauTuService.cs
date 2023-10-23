@@ -5,9 +5,9 @@ using System;
 
 namespace SMO.Service.MD
 {
-    public class ProjectService : GenericService<T_MD_PROJECT, ProjectRepo>
+    public class PhanLoaiDauTuService : GenericService<T_MD_PHAN_LOAI_DAU_TU, PhanLoaiDauTuRepo>
     {
-        public ProjectService() : base()
+        public PhanLoaiDauTuService() : base()
         {
 
         }
