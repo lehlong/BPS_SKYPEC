@@ -551,6 +551,7 @@
     <Compile Include="Areas\MD\Controllers\FrequentlyAskedController.cs" />
     <Compile Include="Areas\MD\Controllers\DictionaryController.cs" />
     <Compile Include="Areas\MD\Controllers\DomainController.cs" />
+    <Compile Include="Areas\MD\Controllers\GiaiDoanDauTuController.cs" />
     <Compile Include="Areas\MD\Controllers\HangHangKhongController.cs" />
     <Compile Include="Areas\MD\Controllers\InternalOrderController.cs" />
     <Compile Include="Areas\MD\Controllers\KhoanMucChiPhiController.cs" />
@@ -723,6 +724,7 @@
     <Compile Include="Service\MD\ContractTypeService.cs" />
     <Compile Include="Service\MD\CustomerService.cs" />
     <Compile Include="Service\MD\DoanhThuProfitCenterService.cs" />
+    <Compile Include="Service\MD\GiaiDoanDauTuService.cs" />
     <Compile Include="Service\MD\HangHangKhongService.cs" />
     <Compile Include="Service\MD\KhoanMucChiPhiService.cs" />
     <Compile Include="Service\MD\KhoanMucChungService.cs" />
@@ -1699,6 +1701,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\MD\Views\DoanhThuProfitCenter\" />
+    <Folder Include="Areas\MD\Views\GiaiDoanDauTu\" />
     <Folder Include="Areas\MD\Views\RevenueElement\" />
     <Folder Include="Areas\MD\Views\SanLuongProfitCenter\" />
     <Folder Include="BuildPlus\" />

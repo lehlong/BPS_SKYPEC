@@ -201,6 +201,7 @@
     <Compile Include="Entities\MD\T_MD_DICTIONARY.cs" />
     <Compile Include="Entities\MD\T_MD_DOANH_THU_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DOMAIN.cs" />
+    <Compile Include="Entities\MD\T_MD_GIAI_DOAN_DAU_TU.cs" />
     <Compile Include="Entities\MD\T_MD_HANG_HANG_KHONG.cs" />
     <Compile Include="Entities\MD\T_MD_INTERNAL_ORDER.cs" />
     <Compile Include="Entities\MD\T_MD_KHOAN_MUC_CHI_PHI.cs" />

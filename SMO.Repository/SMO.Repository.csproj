@@ -170,6 +170,7 @@
     <Compile Include="Implement\MD\DomainRepo.cs" />
     <Compile Include="Implement\MD\FAQQuestionRepo.cs" />
     <Compile Include="Implement\MD\FrequentlyAskedRepo.cs" />
+    <Compile Include="Implement\MD\GiaiDoanDauTuRepo.cs" />
     <Compile Include="Implement\MD\HangHangKhongRepo.cs" />
     <Compile Include="Implement\MD\InternalOrderRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucChiPhiRepo.cs" />
@@ -301,6 +302,7 @@
     <Compile Include="Interface\MD\IDomainRepo.cs" />
     <Compile Include="Interface\MD\IFAQQuestionRepo.cs" />
     <Compile Include="Interface\MD\IFrequentlyAskedRepo.cs" />
+    <Compile Include="Interface\MD\IGiaiDoanDauTuRepo.cs" />
     <Compile Include="Interface\MD\IHangHangKhongRepo.cs" />
     <Compile Include="Interface\MD\IInternalOrderRepo.cs" />
     <Compile Include="Interface\MD\IKhoanMucChiPhiRepo.cs" />
@@ -443,6 +445,7 @@
     <Compile Include="Mapping\MD\T_MD_DICTIONARY_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DOANH_THU_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DOMAIN_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_GIAI_DOAN_DAU_TU_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_HANG_HANG_KHONG_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_INTERNAL_ORDER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_KHOAN_MUC_CHI_PHI_Map.cs" />
