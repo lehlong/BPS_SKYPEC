@@ -4721,7 +4721,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                         VALUE_DEC = check == null ? 0 : check.VALUE_DEC,
                         VALUE_SUM_YEAR = check == null ? 0 : check.VALUE_SUM_YEAR,
                         VALUE_SUM_YEAR_PREVENTIVE = check == null ? 0 : check.VALUE_SUM_YEAR_PREVENTIVE,
-                        STATUS = Approve_Status.ChuaTrinhDuyet,
+                        STATUS = Approve_Status.DaPheDuyet,
                     };
 
                     var dataHistory = new T_BP_KE_HOACH_DOANH_THU_DATA_HISTORY

@@ -37,6 +37,7 @@
     {
         SAN_LUONG,
         DOANH_THU,
+        DAU_TU_XAY_DUNG,
         COST_CENTER,
         COST_ELEMENT,
         PROFIT_CENTER,

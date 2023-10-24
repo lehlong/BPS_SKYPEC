@@ -2130,7 +2130,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                             TIME_YEAR = ObjDetail.TIME_YEAR,
                             STATUS = Approve_Status.ChuaTrinhDuyet,
                             VERSION = versionNext,
-                            KHOAN_MUC_SAN_LUONG_CODE = (tableData.Rows[i][9].ToString().Trim() == "0" && tableData.Rows[i][10].ToString().Trim() == "0") ? "10010" : (tableData.Rows[i][9].ToString().Trim() == "0" && tableData.Rows[i][10].ToString().Trim() == "1") ? "10011" : (tableData.Rows[i][9].ToString().Trim() == "1" && tableData.Rows[i][10].ToString().Trim() == "0") ? "10021" : "10020",
+                            KHOAN_MUC_SAN_LUONG_CODE = (tableData.Rows[i][9].ToString().Trim() == "0") ? "10010" : "10020",
                             VALUE_JAN = tableData.Rows[i][11] as decimal? == null ? 0 : tableData.Rows[i][11] as decimal?,
                             VALUE_FEB = tableData.Rows[i][12] as decimal? == null ? 0 : tableData.Rows[i][12] as decimal?,
                             VALUE_MAR = tableData.Rows[i][13] as decimal? == null ? 0 : tableData.Rows[i][13] as decimal?,

@@ -1,0 +1,104 @@
+﻿@model IList<T_MD_KHOAN_MUC_DAU_TU>
+@using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
+@using SMO.Core.Entities.MD;
+@using System.Text;
+@using SMO.Service.Class;
+
+@{
+    var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG>;
+    var costCFHeader = ViewBag.costCFHeader as T_BP_DAU_TU_XAY_DUNG_VERSION;
+    var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
+
+    var lstSanBay = SelectListUtilities.GetListSanBay();
+   
+}
+
+<style>
+    .header-year {
+        background-color: #FFFFFF !important;
+    }
+
+    td {
+        overflow: hidden;
+    }
+
+    .resize-col {
+        resize: horizontal;
+        overflow: hidden;
+        display: block;
+    }
+
+    td .input-edit {
+        border: none;
+        background: border-box;
+        width: 100%;
+        text-align: right;
+    }
+    .table-screen {
+        height: calc(100vh - 162px);
+        margin-bottom:0
+    }
+    .full-screen-table {
+        height: calc(100vh -100px) !important;
+    }
+</style>
+
+@if (Model == null || Model.Count == 0 ||
+    detailCostElements == null || detailCostElements.Count == 0 || costCFHeader == null)
+{
+    Html.RenderPartial("_NothingData");
+}
+else
+{
+    Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
+    <div class="export-left-tab">
+        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
+                <tbody>
+                    <tr class="sticky-row strong" data-xls-row="header" style="text-align: center;">
+                        <td class="sticky-cell pre-whitespace" style="z-index:11" rowspan="2">MÃ DỰ ÁN</td>
+                        <td class="sticky-cell pre-whitespace" style="z-index:11" rowspan="2">TÊN DỰ ÁN</td>
+                        <td class="pre-whitespace" colspan="3">THÔNG TIN VỀ DANH MỤC ĐẦU TƯ</td>
+                        <td class="pre-whitespace" colspan="3">GIÁ TRỊ KL CÔNG VIỆC HOÀN THÀNH</td>
+                        <td class="pre-whitespace" colspan="2">GIÁ TRỊ GIẢI NGÂN</td>
+                        <td class="pre-whitespace" rowspan="2">GHI CHÚ</td>
+                    </tr>
+                    <tr class="sticky-row strong" data-xls-row="header">
+                        <td class="pre-whitespace">TỔNG MỨC ĐẦU TƯ</td>
+                        <td class="pre-whitespace">NGUỒN VCSH</td>
+                        <td class="pre-whitespace">TIẾN ĐỘ THỰC HIỆN</td>
+                        <td class="pre-whitespace">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
+                        <td class="pre-whitespace">KH NĂM</td>
+                        <td class="pre-whitespace">TIẾN ĐỘ TRIỂN KHAI TH NĂM KH</td>
+                        <td class="pre-whitespace">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
+                        <td class="pre-whitespace">QKH NĂM</td>
+                    </tr>
+                    @foreach (var detail in Model.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
+                    {
+                        var item = Model.Where(x => x.CENTER_CODE == detail).ToList();
+                        <tr>
+                            <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE)</td>
+                            <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.NAME)</td>
+                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4001").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4002").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4003").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4010").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4011").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4012").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4020").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4021").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.FirstOrDefault()?.DESCRIPTION)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
+        function mask(e) {
+            $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+    </script>
+}

@@ -34,6 +34,9 @@ namespace SMO.Repository.Mapping.MD
             HasMany(x => x.DetailKeHoachDoanhThu)
                         .KeyColumn("TEMPLATE_CODE")
                         .LazyLoad().Inverse().Cascade.Delete();
+            HasMany(x => x.DetailDauTuXayDung)
+                        .KeyColumn("TEMPLATE_CODE")
+                        .LazyLoad().Inverse().Cascade.Delete();
 
         }
     }

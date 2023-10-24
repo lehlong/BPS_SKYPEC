@@ -1,5 +1,4 @@
-﻿using SharpSapRfc;
-using SMO.Core.Entities.MD;
+﻿using SMO.Core.Entities.MD;
 using System.ComponentModel.DataAnnotations;
 
 namespace SMO.Core.Entities
@@ -9,10 +8,8 @@ namespace SMO.Core.Entities
         [Required(ErrorMessage = "Trường này bắt buộc nhập", AllowEmptyStrings = false)]
         [MaxLength(length: 50, ErrorMessage = "Chỉ được phép nhập tối đa {1} kí tự")]
         [RegularExpression(@"^\S*$", ErrorMessage = "Không được phép nhập dấu cách")]
-        [RfcStructureField("SETNAME")]
         public virtual string CODE { get; set; }
         [Required(ErrorMessage = "Trường này bắt buộc nhập", AllowEmptyStrings = false)]
-        [RfcStructureField("DESCRIPT")]
         public virtual string NAME { get; set; }
         public virtual string LOAI_HINH { get; set; }
         public virtual string GIAI_DOAN { get; set; }

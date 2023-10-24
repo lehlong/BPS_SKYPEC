@@ -12,6 +12,7 @@
         public const string RevenuePL = "RevenuePL";
         public const string KeHoachSanLuong = "SanLuong";
         public const string KeHoachDoanhThu = "DoanhThu";
+        public const string DauTuXayDung = "DauTuCoXayDung";
 
         public static string GetTextSheetName(string type)
         {
@@ -37,6 +38,8 @@
                     return "Kế hoạch sản lượng";
                 case KeHoachDoanhThu:
                     return "Kế hoạch doanh thu";
+                case DauTuXayDung:
+                    return "Kế hoạch đầu tư có xây dựng";
                 case OtherCostPL:
                     return "Kế hoạch chi phí khác của dự án";
                 case RevenueCF:
