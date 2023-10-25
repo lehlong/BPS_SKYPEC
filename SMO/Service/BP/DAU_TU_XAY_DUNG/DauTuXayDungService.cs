@@ -1644,76 +1644,6 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 return;
             }
 
-            // Kiểm tra revenue_center có thuộc mẫu thiết kế không
-            // Có để trống dữ liệu tại 2 cột Mã đơn vị, và mã khoản mục không
-            var lstOrgInTemplate = lstDetailTemplate.Select(x => x.CENTER_CODE).Distinct().ToList();
-            StartRowData = ObjDetail.TYPE_UPLOAD == "01" ? StartRowData : 1;
-            for (int i = this.StartRowData; i < dataTable.Rows.Count; i++)
-            {
-                var projectCode = ObjDetail.TYPE_UPLOAD == "01" ? dataTable.Rows[i][0].ToString().Trim() : dataTable.Rows[i][5].ToString().Trim();
-                var companyCode = ObjDetail.TYPE_UPLOAD == "01" ? dataTable.Rows[i][2].ToString().Trim() : dataTable.Rows[i][7].ToString().Trim();
-                var elementCodeInExcel = dataTable.Rows[i][4].ToString().Trim();
-                if (string.IsNullOrWhiteSpace(projectCode))
-                {
-                    this.State = false;
-                    this.ErrorMessage = $"Mã sân bay [{projectCode}] tại dòng [{i + 1}] trống hoặc không tồn tại trong biểu mẫu {ObjDetail.TEMPLATE_CODE} !";
-                    return;
-                }
-                if (string.IsNullOrWhiteSpace(companyCode))
-                {
-                    this.State = false;
-                    this.ErrorMessage = $"Mã hãng hàng không [{companyCode}] tại dòng [{i + 1}] trống hoặc không tồn tại trong biểu mẫu {ObjDetail.TEMPLATE_CODE} !";
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(elementCodeInExcel))
-                {
-                    this.State = false;
-                    this.ErrorMessage = $"Không được phép để trống dữ liệu tại cột [Mã khoản mục] tại dòng [{i + 1}] !";
-                    return;
-                }
-
-                //if (ObjDetail.TYPE_UPLOAD == "01")
-                //{
-                //    if (lstDetailTemplate.FirstOrDefault(x => x.Center.PROJECT_CODE == projectCode && x.Center.ORG_CODE == companyCode) == null)
-                //    {
-                //        this.State = false;
-                //        this.ErrorMessage = $"Mẫu khai báo [{template.CODE}] không chứa mã [{projectCode}] tại dòng [{i + 1}] !";
-                //        return;
-                //    }
-                //}
-                //else
-                //{
-                //    if (lstDetailTemplate.FirstOrDefault(x => x.Center.Organize.CODE == projectCode && x.Center.Project.CODE == companyCode) == null)
-                //    {
-                //        this.State = false;
-                //        this.ErrorMessage = $"Mẫu khai báo [{template.CODE}] không chứa mã [{projectCode}] tại dòng [{i + 1}] !";
-                //        return;
-                //    }
-                //}
-
-                //if (ObjDetail.TYPE_UPLOAD == "01")
-                //{
-                //    // Kiểm tra các khoản mục lá không nằm trong mẫu thiết kế
-                //    var findElement = lstElement.FirstOrDefault(x => x.CODE == elementCodeInExcel);
-                //    if (findElement == null)
-                //    {
-                //        this.State = false;
-                //        this.ErrorMessage = $"Mã khoản mục [{elementCodeInExcel}] không tồn tại !";
-                //        return;
-                //    }
-
-                //    if (!findElement.IS_GROUP && lstDetailTemplate.Count(x => x.ELEMENT_CODE == elementCodeInExcel
-                //        && x.Center.ORG_CODE == projectCode
-                //        && x.Center.PROJECT_CODE == companyCode) == 0)
-                //    {
-                //        this.State = false;
-                //        this.ErrorMessage = $"Mã khoản mục [{elementCodeInExcel}] tại dòng {i + 1} không nằm trong mẫu thiết kế !";
-                //        return;
-                //    }
-                //}
-            }
-
             // Kiểm tra file excel có dữ liệu từ dòng thứ StartRowData hay không
             if (dataTable == null || dataTable.Rows.Count < this.StartRowData)
             {
@@ -1721,73 +1651,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 this.ErrorMessage = "File excel này không có dữ liệu!";
                 return;
             }
-
-            //Kiếm tra có đúng mẫu hay không
-            //Kiếm tra có đúng mẫu hay không
-            //if (isDataBase)
-            //{
-            //    for (int i = 0; i < ListColumnNameDataBase.Count; i++)
-            //    {
-            //        if (dataTable.Rows[this.StartRowData - 1][i].ToString().ToUpper() != this.ListColumnNameDataBase[i])
-            //        {
-            //            this.State = false;
-            //            this.ErrorMessage = "File excel không đúng theo mẫu thiết kế!";
-            //            return;
-            //        }
-            //    }
-            //    this.ConvertData(dataTable, lstElement.ToList(), startColumn: 8, endColumn: ListColumnNameDataBase.Count - 5, isDataBase);
-
-            //}
-            //else
-            //{
-
-            //    if (ObjDetail.TYPE_UPLOAD == "01")
-            //    {
-            //        for (int i = 0; i < ListColumnName.Count; i++)
-            //        {
-            //            if (dataTable.Rows[this.StartRowData - 1][i].ToString().ToUpper() != this.ListColumnName[i])
-            //            {
-            //                this.State = false;
-            //                this.ErrorMessage = "File excel không đúng theo mẫu thiết kế!";
-            //                return;
-            //            }
-            //        }
-            //        // kiểm tra xem có 2 hàng dữ liệu của cùng 1 khoản mục hay không
-            //        var dictionary = lstDetailTemplate.ToDictionary(x => x.PKID, x => true);
-            //        for (int i = StartRowData; i < dataTable.Rows.Count; i++)
-            //        {
-            //            var projectCode = dataTable.Rows[i][0].ToString().Trim();
-            //            var companyCode = dataTable.Rows[i][2].ToString().Trim();
-            //            var elementCodeInExcel = dataTable.Rows[i][4].ToString().Trim();
-            //            var foundItem = lstDetailTemplate
-            //                .FirstOrDefault(x => x.ELEMENT_CODE == elementCodeInExcel
-            //                && x.Center.ORG_CODE == projectCode
-            //                && x.Center.PROJECT_CODE == companyCode);
-            //            if (foundItem != null && dictionary[foundItem.PKID])
-            //            {
-            //                dictionary[foundItem.PKID] = false;
-            //            }
-            //            else if (foundItem != null)
-            //            {
-            //                this.State = false;
-            //                this.ErrorMessage = $"Mã khoản mục [{foundItem.ELEMENT_CODE}] tại dòng {i + 1} bị lặp lại!";
-            //                return;
-            //            }
-            //        }
-            //    }
-
-
-
-            //    // Kiểm tra dữ liệu có phải là số hay không
-            //    if (ObjDetail.TYPE_UPLOAD == "01")
-            //    {
-            //        this.ConvertData(dataTable, lstElement.ToList(), startColumn: 6, endColumn: ListColumnName.Count - 3, isDataBase);
-            //    }
-            //    else
-            //    {
-            //        this.ConvertData(dataTable, lstElement.ToList(), startColumn: 11, endColumn: 23, isDataBase);
-            //    }
-            //}
+           
             if (this.InvalidCellsList.Count > 0)
             {
                 this.State = false;
@@ -2035,7 +1899,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                     UnitOfWork.Repository<DauTuXayDungDataRepo>().Delete(item);
                 }
 
-                var lstElement = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE && x.TIME_YEAR == ObjDetail.TIME_YEAR).Select(x => x.ELEMENT_CODE).Distinct().ToList();
+                var lstElement = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE && x.TIME_YEAR == ObjDetail.TIME_YEAR).ToList();
                 // Insert dữ liệu vào bảng data
                 for (int i = this.StartRowData; i < actualRows; i++)
                 {
@@ -2080,7 +1944,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                         var value4012 = Convert.ToDecimal(tableData.Rows[i][7] ?? 0);
                         var value4020 = Convert.ToDecimal(tableData.Rows[i][8] ?? 0);
                         var value4021 = Convert.ToDecimal(tableData.Rows[i][9] ?? 0);
-                        foreach (var ele in lstElement)
+                        foreach (var ele in lstElement.Where(x => x.CENTER_CODE == centerCode))
                         {
                             costData = new T_BP_DAU_TU_XAY_DUNG_DATA()
                             {
@@ -2091,8 +1955,8 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 TIME_YEAR = ObjDetail.TIME_YEAR,
                                 STATUS = Approve_Status.ChuaTrinhDuyet,
                                 VERSION = versionNext,
-                                KHOAN_MUC_DAU_TU_CODE = ele,
-                                VALUE = ele == "4001" ? value4001 : ele == "4002" ? value4002 : ele == "4003" ? value4003 : ele == "4010" ? value4010 : ele == "4011" ? value4011 : ele == "4012" ? value4012 : ele == "4020" ? value4020 : ele == "4021" ? value4021 : 0,
+                                KHOAN_MUC_DAU_TU_CODE = ele.ELEMENT_CODE,
+                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4002" ? value4002 : ele.ELEMENT_CODE == "4003" ? value4003 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4012" ? value4012 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
                                 DESCRIPTION = tableData.Rows[i][10].ToString(),
                                 CREATE_BY = currentUser
                             };
