@@ -6,6 +6,7 @@
         public const string ChiPhi = "C";
         public const string DoanhThu = "B";
         public const string DauTuXayDung = "D";
+        public const string DauTuTrangThietBi = "E";
 
         public static string GetText(string type)
         {
@@ -19,6 +20,8 @@
                     return "Doanh thu";
                 case DauTuXayDung:
                     return "Đầu tư có xây dựng";
+                case DauTuTrangThietBi:
+                    return "Đầu tư trang thiết bị";
                 default:
                     return type;
             }

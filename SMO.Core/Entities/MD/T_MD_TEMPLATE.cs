@@ -52,6 +52,9 @@ namespace SMO.Core.Entities.MD
         [ScriptIgnore]
         [JsonIgnore]
         public virtual IList<T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG> DetailDauTuXayDung { get; set; }
+        [ScriptIgnore]
+        [JsonIgnore]
+        public virtual IList<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI> DetailDauTuTrangThietBi { get; set; }
 
         public virtual object Clone()
         {

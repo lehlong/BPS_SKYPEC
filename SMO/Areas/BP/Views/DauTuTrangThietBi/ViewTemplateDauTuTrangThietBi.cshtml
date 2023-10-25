@@ -1,0 +1,90 @@
+﻿@model IList<T_MD_KHOAN_MUC_DAU_TU>
+@using SMO.Core.Entities.MD;
+@using System.Text;
+
+@{
+    var detailOtherCostElements = ViewBag.detailOtherCostElements as IList<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI>;
+    var viewId = Guid.NewGuid().ToString();
+}
+<div id="@viewId" class="container-fluid child-content">
+    <div class="card">
+        <div class="body" style="padding-top: 0px">
+
+            @if (detailOtherCostElements == null || detailOtherCostElements.Count == 0)
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                </div>
+                <div class="p-t-10">
+                    @{
+                        Html.RenderPartial("_NothingData");
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                    @Html.MyButton("cmdDownloadTemlate",
+                                                "Download mẫu",
+                                                "DownloadTemplate();",
+                                                "Alt+V", "file_download")
+                </div>
+                <div class="p-t-10">
+                    <div class="body-content">
+                        <div class="table-responsive" style="max-height: calc(100vh - 140px)">
+                            <table class="table table-condensed table-bordered table-striped table-pre-whitespace">
+                                <thead>
+                                    <tr class="sticky-row">
+                                        <th rowspan="3">Mã</th>
+                                        <th rowspan="3">Tên dự án</th>
+                                        <th colspan="3" style="text-align:center;">Thông tin về danh mục đầu tư</th>
+                                        <th colspan="5" style="text-align:center;">Giá trị KL công việc hoàn thành</th>
+                                        <th colspan="2" style="text-align:center;">Giá trị giải ngân</th>
+                                        <th rowspan="3">Ghi chú</th>
+                                    </tr>
+                                    <tr class="sticky-row">
+                                        <th rowspan="2" class="align-center">Tổng mức <br> đầu tư</th>
+                                        <th rowspan="2">Nguồn VCSH</th>
+                                        <th rowspan="2" class="align-center">Tiến độ <br/> thực hiện</th>
+                                        <th rowspan="2" class="align-center">Luỹ kế đến <br /> đầu kỳ lập KH</th>
+                                        <th colspan="3" class="align-center">KH năm</th>
+                                        <th rowspan="2" class="align-center">Tiến độ triển khai <br /> thực hiện năm KH</th>
+                                        <th rowspan="2" class="align-center">Luỹ kế đến <br /> đầu kỳ lập KH</th>
+                                        <th rowspan="2">KH năm</th>
+                                    </tr>
+                                    <tr class="sticky-row">
+                                        <th>Số lượng</th>
+                                        <th>Đơn giá</th>
+                                        <th>Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var detail in detailOtherCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.Organize.CODE).ThenBy(x => x.Center.Project.CODE))
+                                    {
+                                        <tr>
+                                            <td>@detail.Center.PROJECT_CODE</td>
+                                            <td>@detail.Center.Project.NAME</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

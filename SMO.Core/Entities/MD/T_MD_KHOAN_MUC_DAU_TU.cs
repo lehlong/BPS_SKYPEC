@@ -1,4 +1,6 @@
 ﻿using SMO.Core.Common;
+using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI;
+using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI.DAU_TU_TRANG_THIET_BI_DATA_BASE;
 using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
 using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG.DAU_TU_XAY_DUNG_DATA_BASE;
 
@@ -23,6 +25,22 @@ namespace SMO.Core.Entities.MD
             set
             {
                 _DauTuXayDungProfitCenter = value;
+            }
+        }
+        private T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER _DauTuTrangThietBiProfitCenter;
+        public virtual T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER DauTuTrangThietBiProfitCenter
+        {
+            get
+            {
+                if (_DauTuTrangThietBiProfitCenter == null)
+                {
+                    _DauTuTrangThietBiProfitCenter = new T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER();
+                }
+                return _DauTuTrangThietBiProfitCenter;
+            }
+            set
+            {
+                _DauTuTrangThietBiProfitCenter = value;
             }
         }
         public T_MD_KHOAN_MUC_DAU_TU() : base()
@@ -120,6 +138,94 @@ namespace SMO.Core.Entities.MD
         }
 
         public static explicit operator T_MD_KHOAN_MUC_DAU_TU(T_BP_DAU_TU_XAY_DUNG_DATA_BASE_HISTORY v)
+        {
+            return new T_MD_KHOAN_MUC_DAU_TU
+            {
+                ORG_NAME = $"{v.MATERIAL} ({v.UNIT})",
+                TEMPLATE_CODE = v.TEMPLATE_CODE + v.DAU_TU_PROFIT_CENTER_CODE,
+                TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
+                ORG_CODE = v.ORG_CODE,
+                CENTER_CODE = v.ORG_CODE,
+                VERSION = v.VERSION,
+                IS_GROUP = false,
+                DESCRIPTION = v.DESCRIPTION,
+                Template = v.Template,
+                IsBase = true,
+                ValuesBaseString = new string[1]
+                {
+                    HandleValueBaseString(quantity: v.QUANTITY, price: v.PRICE, amount: v.AMOUNT, time: v.TIME),
+                },
+            };
+        }
+
+        public static explicit operator T_MD_KHOAN_MUC_DAU_TU(T_BP_DAU_TU_TRANG_THIET_BI_DATA_HISTORY v)
+        {
+            if (v == null)
+            {
+                return new T_MD_KHOAN_MUC_DAU_TU();
+            }
+            return new T_MD_KHOAN_MUC_DAU_TU
+            {
+                TEMPLATE_CODE = v.TEMPLATE_CODE + v.DAU_TU_PROFIT_CENTER_CODE,
+                TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
+                ORG_CODE = v.ORG_CODE,
+                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Phòng ban: {v.DauTuTrangThietBiProfitCenter.Organize.NAME}\nDự án: {v.DauTuTrangThietBiProfitCenter.Project.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
+                CENTER_CODE = v.ORG_CODE,
+                Values = new decimal[1]
+                {
+                    v.VALUE ?? 0,
+                },
+                VERSION = v.VERSION,
+                DESCRIPTION = v.DESCRIPTION,
+                Template = v.Template
+            };
+        }
+
+        public static explicit operator T_MD_KHOAN_MUC_DAU_TU(T_BP_DAU_TU_TRANG_THIET_BI_DATA v)
+        {
+            if (v == null)
+            {
+                return new T_MD_KHOAN_MUC_DAU_TU();
+            }
+            return new T_MD_KHOAN_MUC_DAU_TU
+            {
+                TEMPLATE_CODE = v.TEMPLATE_CODE + v.DAU_TU_PROFIT_CENTER_CODE,
+                TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
+                ORG_CODE = v.ORG_CODE,
+                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Phòng ban: {v.DauTuTrangThietBiProfitCenter.Organize.NAME}\nDự án: {v.DauTuTrangThietBiProfitCenter.Project.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
+                CENTER_CODE = v.ORG_CODE,
+                Values = new decimal[1]
+                {
+                    v.VALUE ?? 0,
+                },
+                VERSION = v.VERSION,
+                DESCRIPTION = v.DESCRIPTION,
+                Template = v.Template
+            };
+        }
+
+        public static explicit operator T_MD_KHOAN_MUC_DAU_TU(T_BP_DAU_TU_TRANG_THIET_BI_DATA_BASE v)
+        {
+            return new T_MD_KHOAN_MUC_DAU_TU
+            {
+                ORG_NAME = $"{v.MATERIAL} ({v.UNIT})",
+                TEMPLATE_CODE = v.TEMPLATE_CODE + v.DAU_TU_PROFIT_CENTER_CODE,
+                TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
+                ORG_CODE = v.ORG_CODE,
+                IS_GROUP = false,
+                CENTER_CODE = v.ORG_CODE,
+                VERSION = v.VERSION,
+                DESCRIPTION = v.DESCRIPTION,
+                Template = v.Template,
+                IsBase = true,
+                ValuesBaseString = new string[1]
+                {
+                    HandleValueBaseString(quantity: v.QUANTITY, price: v.PRICE, amount: v.AMOUNT, time: v.TIME),
+                },
+            };
+        }
+
+        public static explicit operator T_MD_KHOAN_MUC_DAU_TU(T_BP_DAU_TU_TRANG_THIET_BI_DATA_BASE_HISTORY v)
         {
             return new T_MD_KHOAN_MUC_DAU_TU
             {

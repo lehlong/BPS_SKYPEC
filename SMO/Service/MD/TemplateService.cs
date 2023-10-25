@@ -3,11 +3,13 @@
 using SMO.Core.Common;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
+using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Core.Entities.MD;
 using SMO.Repository.Common;
 using SMO.Repository.Implement.BP;
+using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.MD;
@@ -114,6 +116,20 @@ namespace SMO.Service.MD
                     {
                         case Budget.DOANH_THU:
                             UpdateDetail<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG, TemplateDetailKeHoachSanLuongRepo, T_MD_KHOAN_MUC_SAN_LUONG, T_MD_SAN_LUONG_PROFIT_CENTER, KeHoachSanLuongRepo, T_BP_KE_HOACH_SAN_LUONG>(centerCode, template, detailCodes, year);
+                            break;
+
+                        default:
+                            Exception = new FormatException("Type of center not support");
+                            State = false;
+                            ErrorMessage = "Type of center not support";
+                            break;
+                    }
+                    break;
+                case TemplateObjectType.DauTuTrangThietBi:
+                    switch (budget)
+                    {
+                        case Budget.DAU_TU_TRANG_THIET_BI:
+                            UpdateDetail<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI, TemplateDetailDauTuTrangThietBiRepo, T_MD_KHOAN_MUC_DAU_TU, T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER, DauTuTrangThietBiRepo, T_BP_DAU_TU_TRANG_THIET_BI>(centerCode, template, detailCodes, year);
                             break;
 
                         default:
@@ -246,6 +262,13 @@ namespace SMO.Service.MD
                         .Where(x => x.ORG_CODE == projectCode)
                         .Select(x => x.PROJECT_CODE)
                         .Distinct();
+                case TemplateObjectType.DauTuTrangThietBi:
+                    return UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>()
+                        .GetManyWithFetch(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId, x => x.Center)
+                        .Select(x => x.Center)
+                        .Where(x => x.ORG_CODE == projectCode)
+                        .Select(x => x.PROJECT_CODE)
+                        .Distinct();
                 default:
                     return new List<string>();
             }
@@ -348,6 +371,8 @@ namespace SMO.Service.MD
                     return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU, TemplateDetailKeHoachDoanhThuRepo, T_MD_KHOAN_MUC_DOANH_THU, T_MD_DOANH_THU_PROFIT_CENTER>(centerCode, year, templateId);
                 case TemplateObjectType.DauTuXayDung:
                     return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG, TemplateDetailDauTuXayDungRepo, T_MD_KHOAN_MUC_DAU_TU, T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER>(centerCode, year, templateId);
+                case TemplateObjectType.DauTuTrangThietBi:
+                    return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI, TemplateDetailDauTuTrangThietBiRepo, T_MD_KHOAN_MUC_DAU_TU, T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER>(centerCode, year, templateId);
                 default:
                     return new List<string>();
             }
@@ -556,6 +581,44 @@ namespace SMO.Service.MD
                             ErrorMessage = e.Message;
                         }
                         break;
+                    case Budget.DAU_TU_TRANG_THIET_BI:
+                        try
+                        {
+                            UnitOfWork.BeginTransaction();
+                            var centerCode = Guid.NewGuid().ToString();
+                            // create other profit center
+                            UnitOfWork.Repository<DauTuTrangThietBiProfitCenterRepo>().Create(new T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER
+                            {
+                                CODE = centerCode,
+                                ORG_CODE = companyCode,
+                                PROJECT_CODE = projectCode,
+                            });
+
+                            switch (ObjDetail.BUDGET_TYPE.Trim())
+                            {
+                                case BudgetType.DauTuTrangThietBi:
+                                    var detailsCostPL = from d in detailCodes
+                                                        select new T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI
+                                                        (Guid.NewGuid().ToString(), template, d, centerCode, year);
+
+                                    UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Create(detailsCostPL.ToList());
+                                    break;
+
+                                default:
+                                    break;
+                            }
+
+                            UnitOfWork.Commit();
+                        }
+                        catch (Exception e)
+                        {
+                            UnitOfWork.Rollback();
+                            Exception = e;
+                            State = false;
+                            ErrorMessage = e.Message;
+                        }
+                        break;
+
 
                     default:
                         Exception = new FormatException("Type of center not support");
@@ -614,6 +677,9 @@ namespace SMO.Service.MD
                         case TemplateObjectType.DauTuXayDung:
                             canDeactiveTemplate = CheckStatusData<DauTuXayDungRepo, T_BP_DAU_TU_XAY_DUNG>(templateId);
                             break;
+                        case TemplateObjectType.DauTuTrangThietBi:
+                            canDeactiveTemplate = CheckStatusData<DauTuTrangThietBiRepo, T_BP_DAU_TU_TRANG_THIET_BI>(templateId);
+                            break;
                         default:
                             State = false;
                             ErrorMessage = "Mẫu không khả dụng";
@@ -655,6 +721,9 @@ namespace SMO.Service.MD
                         break;
                     case TemplateObjectType.DauTuXayDung:
                         CopyTemplate<TemplateDetailDauTuXayDungRepo, T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG, KhoanMucDauTuRepo, T_MD_KHOAN_MUC_DAU_TU, DauTuXayDungProfitCenterRepo, T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
+                        break;
+                    case TemplateObjectType.DauTuTrangThietBi:
+                        CopyTemplate<TemplateDetailDauTuTrangThietBiRepo, T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI, KhoanMucDauTuRepo, T_MD_KHOAN_MUC_DAU_TU, DauTuTrangThietBiProfitCenterRepo, T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
                         break;
                     default:
                         State = false;

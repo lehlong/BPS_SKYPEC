@@ -7,6 +7,7 @@
         
         public const string DoanhThu = "B";
         public const string DauTuXayDung = "D";
+        public const string DauTuTrangThietBi = "E";
 
         public const string Department = "01";
         
@@ -24,6 +25,8 @@
                     return "Doanh thu";
                 case DauTuXayDung:
                     return "Đầu tư có xây dựng";
+                case DauTuTrangThietBi:
+                    return "Đầu tư trang thiết bị";
                 case Department:
                     return "Phòng ban";
                 case Project:

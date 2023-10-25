@@ -520,6 +520,9 @@
     <Compile Include="Areas\BP\Controllers\BudgetPeriodController.cs" />
     <Compile Include="Areas\BP\Controllers\CommentController.cs" />
     <Compile Include="Areas\BP\Controllers\Base\IBPController.cs" />
+    <Compile Include="Areas\BP\Controllers\DauTuTrangThietBiController.cs" />
+    <Compile Include="Areas\BP\Controllers\DauTuTrangThietBiReviewCommentController.cs" />
+    <Compile Include="Areas\BP\Controllers\DauTuTrangThietBiReviewController.cs" />
     <Compile Include="Areas\BP\Controllers\DauTuXayDungController.cs" />
     <Compile Include="Areas\BP\Controllers\DauTuXayDungReviewCommentController.cs" />
     <Compile Include="Areas\BP\Controllers\DauTuXayDungReviewController.cs" />
@@ -549,6 +552,7 @@
     <Compile Include="Areas\MD\Controllers\ContractTypeController.cs" />
     <Compile Include="Areas\MD\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\MD\Controllers\DauTuTrangThietBiProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuXayDungProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\DoanhThuProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\FAQQuestionController.cs" />
@@ -561,6 +565,7 @@
     <Compile Include="Areas\MD\Controllers\KhoanMucChiPhiController.cs" />
     <Compile Include="Areas\MD\Controllers\KhoanMucChungController.cs" />
     <Compile Include="Areas\MD\Controllers\KhoanMucDauTuController.cs" />
+    <Compile Include="Areas\MD\Controllers\KhoanMucDauTuNDNController.cs" />
     <Compile Include="Areas\MD\Controllers\KhoanMucDoanhThuController.cs" />
     <Compile Include="Areas\MD\Controllers\KhoanMucSanLuongController.cs" />
     <Compile Include="Areas\MD\Controllers\KichBanController.cs" />
@@ -647,6 +652,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="ServiceInterface\BP\DauTuTrangThietBi\IDauTuTrangThietBiService.cs" />
     <Compile Include="ServiceInterface\BP\DauTuXayDung\IDauTuXayDungService.cs" />
     <Compile Include="ServiceInterface\BP\KeHoachDoanhThu\IKeHoachDoanhThuService.cs" />
     <Compile Include="ServiceInterface\BP\KeHoachSanLuong\IKeHoachSanLuongService.cs" />
@@ -668,6 +674,11 @@
     <Compile Include="Service\BP\BaseBPService.cs" />
     <Compile Include="Service\BP\BudgetPeriodService.cs" />
     <Compile Include="Service\BP\CommentHeaderService.cs" />
+    <Compile Include="Service\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiReviewCommentService.cs" />
+    <Compile Include="Service\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiReviewHistoryService.cs" />
+    <Compile Include="Service\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiReviewResultService.cs" />
+    <Compile Include="Service\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiReviewService.cs" />
+    <Compile Include="Service\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiService.cs" />
     <Compile Include="Service\BP\DAU_TU_XAY_DUNG\DauTuXayDungReviewCommentService.cs" />
     <Compile Include="Service\BP\DAU_TU_XAY_DUNG\DauTuXayDungReviewHistoryService.cs" />
     <Compile Include="Service\BP\DAU_TU_XAY_DUNG\DauTuXayDungReviewResultService.cs" />
@@ -700,6 +711,9 @@
     <Compile Include="Service\Class\Base\IReviewCenterViewModelBase.cs" />
     <Compile Include="Service\Class\Base\ReviewCenterViewModelBase.cs" />
     <Compile Include="Service\Class\CompareDataViewModel.cs" />
+    <Compile Include="Service\Class\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiElementReviewCenterModel.cs" />
+    <Compile Include="Service\Class\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiReviewViewModel.cs" />
+    <Compile Include="Service\Class\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiElementReviewCenter.cs" />
     <Compile Include="Service\Class\DAU_TU_XAY_DUNG\DauTuXayDungElementReviewCenterModel.cs" />
     <Compile Include="Service\Class\DAU_TU_XAY_DUNG\DauTuXayDungReviewViewModel.cs" />
     <Compile Include="Service\Class\DAU_TU_XAY_DUNG\IDauTuXayDungElementReviewCenter.cs" />
@@ -738,12 +752,14 @@
     <Compile Include="Service\MD\ContractPhaseService.cs" />
     <Compile Include="Service\MD\ContractTypeService.cs" />
     <Compile Include="Service\MD\CustomerService.cs" />
+    <Compile Include="Service\MD\DauTuTrangThietBiProfitCenterService.cs" />
     <Compile Include="Service\MD\DauTuXayDungProfitCenterService.cs" />
     <Compile Include="Service\MD\DoanhThuProfitCenterService.cs" />
     <Compile Include="Service\MD\GiaiDoanDauTuService.cs" />
     <Compile Include="Service\MD\HangHangKhongService.cs" />
     <Compile Include="Service\MD\KhoanMucChiPhiService.cs" />
     <Compile Include="Service\MD\KhoanMucChungService.cs" />
+    <Compile Include="Service\MD\KhoanMucDauTuNDNService.cs" />
     <Compile Include="Service\MD\KhoanMucDauTuService.cs" />
     <Compile Include="Service\MD\KhoanMucDoanhThuService.cs" />
     <Compile Include="Service\MD\KhoanMucSanLuongService.cs" />
@@ -1621,6 +1637,48 @@
     <Content Include="Areas\BP\Views\DauTuXayDungReviewComment\FilterCommentCenter.cshtml" />
     <Content Include="Areas\BP\Views\DauTuXayDungReviewComment\Index.cshtml" />
     <Content Include="Areas\BP\Views\DauTuXayDungReviewComment\ReviewData.cshtml" />
+    <Content Include="Areas\MD\Views\KhoanMucDauTuNDN\Index.cshtml" />
+    <Content Include="Areas\MD\Views\KhoanMucDauTuNDN\BuildTree.cshtml" />
+    <Content Include="Areas\MD\Views\KhoanMucDauTuNDN\BuildTreeKhoanMucChung.cshtml" />
+    <Content Include="Areas\MD\Views\KhoanMucDauTuNDN\Create.cshtml" />
+    <Content Include="Areas\MD\Views\KhoanMucDauTuNDN\Edit.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\DataFlowIndex.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\DataFlowTree.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ExportDataFlowIndex.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ExportDataHistory.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ExportDataHistorySumUp.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ExportDataInformation.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ExportDataVersion.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ExportDataViewHistory.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ImportExcel.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\Index.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\IndexOfChild.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\SearchIndex.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\SearchIndexHistory.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\SearchIndexOfChild.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\SummaryDataCenter.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ViewData.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBi\ViewTemplateDauTuTrangThietBi.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\Details.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\HistoryControl.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\HistoryReview.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\Index.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\ResultReviewsIndex.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\ReviewDataCenter.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\ReviewHistoryIndex.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\ReviewIndex.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\SummaryIndex.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReview\SummaryReviewDataCenter.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReviewComment\FilterCommentCenter.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReviewComment\Index.cshtml" />
+    <Content Include="Areas\BP\Views\DauTuTrangThietBiReviewComment\ReviewData.cshtml" />
+    <Content Include="Areas\MD\Views\Template\TemplateDauTuTrangThietBi.cshtml" />
+    <Content Include="Areas\BP\Views\Shared\_PartialViewDropdownActionDauTuTrangThietBi.cshtml" />
+    <Content Include="Areas\BP\Views\Shared\_PartialViewExportHeaderDauTuTrangThietBi.cshtml" />
+    <Content Include="Areas\BP\Views\Shared\_PartialViewReviewDataHeaderDauTuTrangThietBi.cshtml" />
+    <Content Include="Areas\BP\Views\Shared\_PartialViewSummaryCenterDauTuTrangThietBi.cshtml" />
+    <Content Include="Areas\BP\Views\Shared\_PartialViewTableChildDauTuTrangThietBi.cshtml" />
+    <Content Include="Areas\BP\Views\Shared\_PartialViewTemplateDataDauTuTrangThietBi.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1767,10 +1825,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\MD\Views\DauTuProfitCenter\" />
-    <Folder Include="Areas\MD\Views\DoanhThuProfitCenter\" />
-    <Folder Include="Areas\MD\Views\RevenueElement\" />
-    <Folder Include="Areas\MD\Views\SanLuongProfitCenter\" />
     <Folder Include="BuildPlus\" />
     <Folder Include="Content\IconFileType\" />
     <Folder Include="Content\ImageUpload\" />
