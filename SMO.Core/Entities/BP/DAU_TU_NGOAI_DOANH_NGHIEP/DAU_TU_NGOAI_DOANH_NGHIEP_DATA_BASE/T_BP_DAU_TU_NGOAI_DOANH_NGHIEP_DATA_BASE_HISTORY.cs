@@ -46,6 +46,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_NGOAI_DOANH_NGHIEP.DAU_TU_NGOAI_DOANH_NGHI
         public virtual decimal AMOUNT_6 { get; set; }
 
         public virtual string DESCRIPTION { get; set; }
+        public virtual string PROCESS { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }
         public virtual T_MD_KHOAN_MUC_DAU_TU KhoanMucDauTu { get; set; }
@@ -97,6 +98,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_NGOAI_DOANH_NGHIEP.DAU_TU_NGOAI_DOANH_NGHI
                 TIME_6 = v.TIME_6,
 
                 DESCRIPTION = v.DESCRIPTION,
+                PROCESS = v.PROCESS,
             };
         }
     }

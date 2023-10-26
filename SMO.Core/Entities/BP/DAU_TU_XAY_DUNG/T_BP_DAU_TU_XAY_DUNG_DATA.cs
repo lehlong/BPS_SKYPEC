@@ -13,6 +13,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
         public virtual int TIME_YEAR { get; set; }
         public virtual decimal? VALUE { get; set; }    
         public virtual string DESCRIPTION { get; set; }
+        public virtual string PROCESS { get; set; }
         public virtual string STATUS { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }

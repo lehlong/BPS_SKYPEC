@@ -19,6 +19,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_NGOAI_DOANH_NGHIEP
         public virtual decimal? VALUE_6 { get; set; }
         
         public virtual string DESCRIPTION { get; set; }
+        public virtual string PROCESS { get; set; }
         public virtual string STATUS { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }

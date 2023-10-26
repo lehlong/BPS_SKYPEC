@@ -21,6 +21,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI.DAU_TU_TRANG_THIET_BI_DATA_
         public virtual decimal AMOUNT { get; set; }
 
         public virtual string DESCRIPTION { get; set; }
+        public virtual string PROCESS { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }
         public virtual T_MD_KHOAN_MUC_DAU_TU KhoanMucDauTu { get; set; }
@@ -46,6 +47,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI.DAU_TU_TRANG_THIET_BI_DATA_
                 AMOUNT = v.AMOUNT,
                 TIME = v.TIME,
                 DESCRIPTION = v.DESCRIPTION,
+                PROCESS = v.PROCESS,
             };
         }
     }

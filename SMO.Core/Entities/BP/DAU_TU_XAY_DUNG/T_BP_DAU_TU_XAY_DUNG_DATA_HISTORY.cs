@@ -13,6 +13,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
         public virtual int TIME_YEAR { get; set; }
         public virtual decimal? VALUE { get; set; }
         public virtual string DESCRIPTION { get; set; }
+        public virtual string PROCESS { get; set; }
         public virtual string STATUS { get; set; }
 
         public virtual T_MD_KHOAN_MUC_DAU_TU KhoanMucDauTu { get; set; }
@@ -35,6 +36,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
                 VALUE = history.VALUE,
 
                 DESCRIPTION = history.DESCRIPTION,
+                PROCESS = history.PROCESS,
                 ACTIVE = history.ACTIVE,
                 CREATE_BY = history.CREATE_BY,
                 CREATE_DATE = history.CREATE_DATE,
@@ -64,6 +66,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
                 VALUE = data.VALUE,
 
                 DESCRIPTION = data.DESCRIPTION,
+                PROCESS = data.PROCESS,
                 ACTIVE = data.ACTIVE,
                 CREATE_BY = data.CREATE_BY,
                 CREATE_DATE = data.CREATE_DATE,

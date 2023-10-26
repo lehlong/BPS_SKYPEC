@@ -36,6 +36,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
                 VALUE = history.VALUE,
 
                 DESCRIPTION = history.DESCRIPTION,
+                PROCESS = history.PROCESS,
                 ACTIVE = history.ACTIVE,
                 CREATE_BY = history.CREATE_BY,
                 CREATE_DATE = history.CREATE_DATE,
@@ -65,6 +66,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
                 VALUE = data.VALUE,
 
                 DESCRIPTION = data.DESCRIPTION,
+                PROCESS = data.PROCESS,
                 ACTIVE = data.ACTIVE,
                 CREATE_BY = data.CREATE_BY,
                 CREATE_DATE = data.CREATE_DATE,

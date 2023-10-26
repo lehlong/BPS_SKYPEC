@@ -6,6 +6,7 @@ namespace SMO.Core.Common
     {
         string CENTER_CODE { get; set; }
         string DESCRIPTION { get; set; }
+        string PROCESS { get; set; }
         bool HasAssignValue { get; set; }
         bool IS_GROUP { get; set; }
         bool IsBase { get; set; }

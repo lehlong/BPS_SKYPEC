@@ -23,6 +23,7 @@ namespace SMO.Repository.Mapping.BP.DAU_TU_XAY_DUNG
             Map(x => x.VALUE);
 
             Map(x => x.DESCRIPTION);
+            Map(x => x.PROCESS);
             Map(x => x.STATUS);
 
             References(x => x.KhoanMucDauTu).Columns("KHOAN_MUC_DAU_TU_CODE", "TIME_YEAR")

@@ -18,6 +18,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_NGOAI_DOANH_NGHIEP
         public virtual decimal? VALUE_5 { get; set; }
         public virtual decimal? VALUE_6 { get; set; }
         public virtual string DESCRIPTION { get; set; }
+        public virtual string PROCESS { get; set; }
         public virtual string STATUS { get; set; }
 
         public virtual T_MD_KHOAN_MUC_DAU_TU KhoanMucDauTu { get; set; }
@@ -45,6 +46,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_NGOAI_DOANH_NGHIEP
                 VALUE_6 = history.VALUE_6,
 
                 DESCRIPTION = history.DESCRIPTION,
+                PROCESS = history.PROCESS,
                 ACTIVE = history.ACTIVE,
                 CREATE_BY = history.CREATE_BY,
                 CREATE_DATE = history.CREATE_DATE,
@@ -79,6 +81,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_NGOAI_DOANH_NGHIEP
                 VALUE_6 = history.VALUE_6,
 
                 DESCRIPTION = history.DESCRIPTION,
+                PROCESS = history.PROCESS,
                 ACTIVE = history.ACTIVE,
                 CREATE_BY = history.CREATE_BY,
                 CREATE_DATE = history.CREATE_DATE,

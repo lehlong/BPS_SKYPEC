@@ -1939,7 +1939,6 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                     {
                         var value4001 = Convert.ToDecimal(tableData.Rows[i][2] ?? 0);
                         var value4002 = Convert.ToDecimal(tableData.Rows[i][3] ?? 0);
-                        var value4003 = Convert.ToDecimal(tableData.Rows[i][4] ?? 0);
                         var value4010 = Convert.ToDecimal(tableData.Rows[i][5] ?? 0);
                         var value4011 = Convert.ToDecimal(tableData.Rows[i][6] ?? 0);
                         var value4012 = Convert.ToDecimal(tableData.Rows[i][7] ?? 0);
@@ -1957,8 +1956,9 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 STATUS = Approve_Status.ChuaTrinhDuyet,
                                 VERSION = versionNext,
                                 KHOAN_MUC_DAU_TU_CODE = ele.ELEMENT_CODE,
-                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4002" ? value4002 : ele.ELEMENT_CODE == "4003" ? value4003 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4012" ? value4012 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
+                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4002" ? value4002 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4012" ? value4012 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
                                 DESCRIPTION = tableData.Rows[i][10].ToString(),
+                                PROCESS = tableData.Rows[i][4].ToString(),
                                 CREATE_BY = currentUser
                             };
                             UnitOfWork.Repository<DauTuXayDungDataRepo>().Create(costData);
