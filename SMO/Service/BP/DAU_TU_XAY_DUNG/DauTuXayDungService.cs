@@ -1916,9 +1916,10 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                     var centerCode = "";
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
-                        centerCode = UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().Queryable().FirstOrDefault(
-                                                x => x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE &&
-                                                x.PROJECT_CODE == tableData.Rows[i][0].ToString().Trim())?.CODE;
+                        centerCode = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().FirstOrDefault(
+                                                x => x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE &&
+                                                x.Center.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE &&
+                                                x.Center.PROJECT_CODE == tableData.Rows[i][0].ToString().Trim())?.CENTER_CODE;
                     }
                     else
                     {

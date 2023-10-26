@@ -1913,8 +1913,10 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     var centerCode = "";
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
-                        centerCode = UnitOfWork.Repository<DauTuTrangThietBiProfitCenterRepo>().Queryable().FirstOrDefault(
-                                                x => x.PROJECT_CODE == tableData.Rows[i][0].ToString().Trim())?.CODE;
+                        centerCode = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().FirstOrDefault(
+                                                x => x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE &&
+                                                x.Center.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE &&
+                                                x.Center.PROJECT_CODE == tableData.Rows[i][0].ToString().Trim())?.CENTER_CODE;
                     }
                     else
                     {
@@ -1934,7 +1936,6 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     {
                         var value4001 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? 0 : tableData.Rows[i][2]);
                         var value4002 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
-                        var value4003 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? 0 : tableData.Rows[i][4]);
                         var value4010 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? 0 : tableData.Rows[i][5]);
                         var value4030 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
                         var value4031 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
@@ -1954,8 +1955,9 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                                 STATUS = Approve_Status.ChuaTrinhDuyet,
                                 VERSION = versionNext,
                                 KHOAN_MUC_DAU_TU_CODE = ele.ELEMENT_CODE,
-                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4002" ? value4002 : ele.ELEMENT_CODE == "4003" ? value4003 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4030" ? value4030 : ele.ELEMENT_CODE == "4031" ? value4031 : ele.ELEMENT_CODE == "4032" ? value4032 : ele.ELEMENT_CODE == "4012" ? value4012 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
+                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4002" ? value4002 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4030" ? value4030 : ele.ELEMENT_CODE == "4031" ? value4031 : ele.ELEMENT_CODE == "4032" ? value4032 : ele.ELEMENT_CODE == "4012" ? value4012 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
                                 DESCRIPTION = tableData.Rows[i][12].ToString(),
+                                PROCESS = tableData.Rows[i][4].ToString(),
                                 CREATE_BY = currentUser
                             };
                             UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Create(costData);
@@ -3354,6 +3356,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
 
                                     i.Values[0] = treeData.VALUE ?? 0;
                                     i.DESCRIPTION = treeData.DESCRIPTION;
+                                    i.PROCESS = treeData.PROCESS;
                                 }
                             }
                             yield return i;

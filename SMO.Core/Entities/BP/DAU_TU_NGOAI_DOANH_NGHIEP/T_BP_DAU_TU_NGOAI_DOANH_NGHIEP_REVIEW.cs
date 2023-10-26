@@ -1,0 +1,6 @@
+﻿namespace SMO.Core.Entities.BP.DAU_TU_NGOAI_DOANH_NGHIEP
+{
+    public class T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_REVIEW : BPBaseReviewEntity<T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_REVIEW_RESULT>
+    {
+    }
+}

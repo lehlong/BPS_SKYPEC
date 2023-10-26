@@ -130,6 +130,18 @@
     <Compile Include="Entities\BP\BaseBPHistoryEntity.cs" />
     <Compile Include="Entities\BP\BaseBPVersionEntity.cs" />
     <Compile Include="Entities\BP\BPBaseReviewEntity.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\DAU_TU_NGOAI_DOANH_NGHIEP_DATA_BASE\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_DATA_BASE.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\DAU_TU_NGOAI_DOANH_NGHIEP_DATA_BASE\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_DATA_BASE_HISTORY.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_DATA.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_DATA_HISTORY.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_HISTORY.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_REVIEW.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_REVIEW_COMMENT.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_REVIEW_HISTORY.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_REVIEW_RESULT.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_SUM_UP_DETAIL.cs" />
+    <Compile Include="Entities\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_VERSION.cs" />
     <Compile Include="Entities\BP\DAU_TU_TRANG_THIET_BI\DAU_TU_TRANG_THIET_BI_DATA_BASE\T_BP_DAU_TU_TRANG_THIET_BI_DATA_BASE.cs" />
     <Compile Include="Entities\BP\DAU_TU_TRANG_THIET_BI\DAU_TU_TRANG_THIET_BI_DATA_BASE\T_BP_DAU_TU_TRANG_THIET_BI_DATA_BASE_HISTORY.cs" />
     <Compile Include="Entities\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI.cs" />
@@ -222,6 +234,7 @@
     <Compile Include="Entities\MD\T_MD_COUNTRY.cs" />
     <Compile Include="Entities\MD\T_MD_CURRENCY.cs" />
     <Compile Include="Entities\MD\T_MD_CUSTOMER.cs" />
+    <Compile Include="Entities\MD\T_MD_DAU_TU_NGOAI_DOANH_NGHIEP_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DICTIONARY.cs" />
@@ -253,6 +266,7 @@
     <Compile Include="Entities\MD\T_MD_SAN_BAY.cs" />
     <Compile Include="Entities\MD\T_MD_SAN_LUONG_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE.cs" />
+    <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_DAU_TU_NGOAI_DOANH_NGHIEP.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU.cs" />
