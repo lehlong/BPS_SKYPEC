@@ -6,8 +6,10 @@
         public const string SanLuong = "A";
         
         public const string DoanhThu = "B";
+        public const string ChiPhi = "C";
         public const string DauTuXayDung = "D";
         public const string DauTuTrangThietBi = "E";
+        public const string DauTuNgoaiDoanhNghiep = "F";
 
         public const string Department = "01";
         
@@ -23,10 +25,14 @@
                     return "Sản lượng";
                 case DoanhThu:
                     return "Doanh thu";
+                case ChiPhi:
+                    return "Chi phí";
                 case DauTuXayDung:
                     return "Đầu tư có xây dựng";
                 case DauTuTrangThietBi:
                     return "Đầu tư trang thiết bị";
+                case DauTuNgoaiDoanhNghiep:
+                    return "Đầu tư ngoài doanh nghiệp";
                 case Department:
                     return "Phòng ban";
                 case Project:

@@ -4575,7 +4575,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     var dataHeaderSanLuong = checkData.FirstOrDefault();
                     var templateKeHoachSanLuong = UnitOfWork.Repository<TemplateRepo>().Queryable().FirstOrDefault(x => x.CODE == dataHeaderSanLuong.TEMPLATE_CODE);
                     var templateCode = kichBan.ToString() + "-" + phienBan.ToString();
-                    var checkTemplate = UnitOfWork.Repository<TemplateRepo>().Queryable().FirstOrDefault(x => x.CODE == templateCode);
+                    var checkTemplate = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year);
 
                     var templateDetailKeHoachSanLuong = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.TEMPLATE_CODE == dataHeaderSanLuong.TEMPLATE_CODE && x.TIME_YEAR == year).ToList();
 
@@ -4586,20 +4586,23 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
 
                     if (checkTemplate == null)
                     {
-                        //Tạo header template cho kế hoạch doanh thu
-                        var template = new T_MD_TEMPLATE
+                        if (UnitOfWork.Repository<TemplateRepo>().Queryable().FirstOrDefault(x => x.CODE == templateCode) == null)
                         {
-                            CODE = templateCode,
-                            OBJECT_TYPE = TemplateObjectType.DoanhThu,
-                            ELEMENT_TYPE = ElementType.DoanhThu,
-                            BUDGET_TYPE = BudgetType.DoanhThu,
-                            ACTIVE = true,
-                            NAME = templateKeHoachSanLuong.NAME,
-                            TITLE = templateKeHoachSanLuong.TITLE,
-                            ORG_CODE = templateKeHoachSanLuong.ORG_CODE,
-                        };
-                        UnitOfWork.Repository<TemplateRepo>().Create(template);
-
+                            //Tạo header template cho kế hoạch doanh thu
+                            var template = new T_MD_TEMPLATE
+                            {
+                                CODE = templateCode,
+                                OBJECT_TYPE = TemplateObjectType.DoanhThu,
+                                ELEMENT_TYPE = ElementType.DoanhThu,
+                                BUDGET_TYPE = BudgetType.DoanhThu,
+                                ACTIVE = true,
+                                NAME = templateKeHoachSanLuong.NAME,
+                                TITLE = templateKeHoachSanLuong.TITLE,
+                                ORG_CODE = templateKeHoachSanLuong.ORG_CODE,
+                            };
+                            UnitOfWork.Repository<TemplateRepo>().Create(template);
+                        }
+                        
                         //Gen template detail cho header vừa tạo
                         foreach (var item in templateDetailKeHoachSanLuong.DistinctBy(x => x.CENTER_CODE))
                         {

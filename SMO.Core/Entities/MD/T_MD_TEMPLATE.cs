@@ -51,6 +51,9 @@ namespace SMO.Core.Entities.MD
         public virtual IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> DetailKeHoachDoanhThu { get; set; }
         [ScriptIgnore]
         [JsonIgnore]
+        public virtual IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> DetailKeHoachChiPhi { get; set; }
+        [ScriptIgnore]
+        [JsonIgnore]
         public virtual IList<T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG> DetailDauTuXayDung { get; set; }
         [ScriptIgnore]
         [JsonIgnore]
@@ -58,6 +61,7 @@ namespace SMO.Core.Entities.MD
         [ScriptIgnore]
         [JsonIgnore]
         public virtual IList<T_MD_TEMPLATE_DETAIL_DAU_TU_NGOAI_DOANH_NGHIEP> DetailDauTuNgoaiDoanhNghiep { get; set; }
+
 
         public virtual object Clone()
         {

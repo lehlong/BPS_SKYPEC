@@ -81,7 +81,7 @@ else
                             <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.NAME)</td>
                             <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4001").Sum(x => x.Values[0]).ToStringVN())</td>
                             <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4002").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4003").Sum(x => x.Values[0]).ToStringVN())</td>
+                            <td class="pre-whitespace align-right">@(item.FirstOrDefault()?.PROCESS)</td>
                             <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4010").Sum(x => x.Values[0]).ToStringVN())</td>
                             <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4011").Sum(x => x.Values[0]).ToStringVN())</td>
                             <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4012").Sum(x => x.Values[0]).ToStringVN())</td>

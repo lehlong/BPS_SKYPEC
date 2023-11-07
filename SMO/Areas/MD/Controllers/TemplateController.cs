@@ -49,6 +49,10 @@ namespace SMO.Areas.MD.Controllers
             {
                 return PartialView("TemplateKeHoachDoanhThu", _service);
             }
+            else if (_service.ObjDetail.OBJECT_TYPE.Trim() == TemplateObjectType.ChiPhi && _service.ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
+            {
+                return PartialView("TemplateKeHoachChiPhi", _service);
+            }
             else if (_service.ObjDetail.OBJECT_TYPE.Trim() == TemplateObjectType.DauTuXayDung && _service.ObjDetail.ELEMENT_TYPE == ElementType.DauTuXayDung)
             {
                 return PartialView("TemplateDauTuXayDung", _service);
@@ -56,6 +60,10 @@ namespace SMO.Areas.MD.Controllers
             else if (_service.ObjDetail.OBJECT_TYPE.Trim() == TemplateObjectType.DauTuTrangThietBi && _service.ObjDetail.ELEMENT_TYPE == ElementType.DauTuTrangThietBi)
             {
                 return PartialView("TemplateDauTuTrangThietBi", _service);
+            }
+            else if (_service.ObjDetail.OBJECT_TYPE.Trim() == TemplateObjectType.DauTuNgoaiDoanhNghiep && _service.ObjDetail.ELEMENT_TYPE == ElementType.DauTuNgoaiDoanhNghiep)
+            {
+                return PartialView("TemplateDauTuNgoaiDoanhNghiep", _service);
             }
             else
             {
@@ -101,6 +109,16 @@ namespace SMO.Areas.MD.Controllers
                 return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
             }
             var nodeDetailElements = _service.GetNodeDetailKhoanMucSanLuong(budget, projectCode, companyCode, year, templateId);
+            return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetDetailInformationKhoanMucChiPhi(string templateId, string projectCode, string type, int year, string companyCode)
+        {
+            var isEnum = Enum.TryParse(type, out Budget budget);
+            if (!isEnum)
+            {
+                return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
+            }
+            var nodeDetailElements = _service.GetNodeDetailKhoanMucChiPhi(budget, projectCode, companyCode, year, templateId);
             return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetDetailInformationKhoanMucDauTuXayDung(string templateId, string projectCode, string type, int year, string companyCode)
@@ -166,10 +184,14 @@ namespace SMO.Areas.MD.Controllers
                     return RedirectToAction("ViewTemplate", "../BP/KeHoachSanLuong", new { templateId, version, year });
                 case TemplateObjectType.DoanhThu:
                     return RedirectToAction("ViewTemplate", "../BP/KeHoachDoanhThu", new { templateId, version, year });
+                case TemplateObjectType.ChiPhi:
+                    return RedirectToAction("ViewTemplate", "../BP/KeHoachChiPhi", new { templateId, version, year });
                 case TemplateObjectType.DauTuXayDung:
                     return RedirectToAction("ViewTemplate", "../BP/DauTuXayDung", new { templateId, version, year });
                 case TemplateObjectType.DauTuTrangThietBi:
                     return RedirectToAction("ViewTemplate", "../BP/DauTuTrangThietBi", new { templateId, version, year });
+                case TemplateObjectType.DauTuNgoaiDoanhNghiep:
+                    return RedirectToAction("ViewTemplate", "../BP/DauTuNgoaiDoanhNghiep", new { templateId, version, year });
                 default:
                     return HttpNotFound();
             }
@@ -203,10 +225,14 @@ namespace SMO.Areas.MD.Controllers
                     return RedirectToAction("DownloadTemplate", "../BP/KeHoachSanLuong", new { templateId, year });
                 case TemplateObjectType.DoanhThu:
                     return RedirectToAction("DownloadTemplate", "../BP/KeHoachDoanhThu", new { templateId, year });
+                case TemplateObjectType.ChiPhi:
+                    return RedirectToAction("DownloadTemplate", "../BP/KeHoachChiPhi", new { templateId, year });
                 case TemplateObjectType.DauTuXayDung:
                     return RedirectToAction("DownloadTemplate", "../BP/DauTuXayDung", new { templateId, year });
                 case TemplateObjectType.DauTuTrangThietBi:
                     return RedirectToAction("DownloadTemplate", "../BP/DauTuTrangThietBi", new { templateId, year });
+                case TemplateObjectType.DauTuNgoaiDoanhNghiep:
+                    return RedirectToAction("DownloadTemplate", "../BP/DauTuNgoaiDoanhNghiep", new { templateId, year });
 
                 default:
                     return HttpNotFound();
@@ -296,10 +322,14 @@ namespace SMO.Areas.MD.Controllers
                             return RedirectToAction("BuildTreeByTemplate", "SanLuongProfitCenter", new { templateId, year });
                         case TemplateObjectType.DoanhThu:
                             return RedirectToAction("BuildTreeByTemplate", "DoanhThuProfitCenter", new { templateId, year });
+                        case TemplateObjectType.ChiPhi:
+                            return RedirectToAction("BuildTreeByTemplate", "ChiPhiProfitCenter", new { templateId, year });
                         case TemplateObjectType.DauTuXayDung:
                             return RedirectToAction("BuildTreeByTemplate", "DauTuXayDungProfitCenter", new { templateId, year });
                         case TemplateObjectType.DauTuTrangThietBi:
                             return RedirectToAction("BuildTreeByTemplate", "DauTuTrangThietBiProfitCenter", new { templateId, year });
+                        case TemplateObjectType.DauTuNgoaiDoanhNghiep:
+                            return RedirectToAction("BuildTreeByTemplate", "DauTuNgoaiDoanhNghiepProfitCenter", new { templateId, year });
                         default:
                             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
@@ -312,11 +342,19 @@ namespace SMO.Areas.MD.Controllers
                     {
                         return RedirectToAction("BuildTreeByTemplate", "KhoanMucSanLuong", new { year });
                     }
+                    else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.ChiPhi))
+                    {
+                        return RedirectToAction("BuildTreeByTemplate", "KhoanMucChiPhi", new { year });
+                    }
                     else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.DauTuXayDung))
                     {
                         return RedirectToAction("BuildTreeByTemplate", "KhoanMucDauTu", new { year });
                     }
                     else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.DauTuTrangThietBi))
+                    {
+                        return RedirectToAction("BuildTreeByTemplate", "KhoanMucDauTu", new { year });
+                    }
+                    else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.DauTuNgoaiDoanhNghiep))
                     {
                         return RedirectToAction("BuildTreeByTemplate", "KhoanMucDauTu", new { year });
                     }
@@ -380,6 +418,31 @@ namespace SMO.Areas.MD.Controllers
         }
 
         [MyValidateAntiForgeryToken]
+        public ActionResult BuildTreeKeHoachChiPhi(string templateId, string type, int year)
+        {
+            var isEnum = Enum.TryParse(type, out TemplateType templateType);
+            if (!isEnum)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            _service.Get(templateId);
+
+            if (templateType == TemplateType.CENTER)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "ChiPhiProfitCenter", new { templateId, year });
+
+            }
+            else if (templateType == TemplateType.ELEMENT)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "KhoanMucChiPhi", new { year });
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+        }
+
+        [MyValidateAntiForgeryToken]
         public ActionResult BuildTreeDauTuXayDung(string templateId, string type, int year)
         {
             var isEnum = Enum.TryParse(type, out TemplateType templateType);
@@ -417,6 +480,31 @@ namespace SMO.Areas.MD.Controllers
             if (templateType == TemplateType.CENTER)
             {
                 return RedirectToAction("BuildTreeByTemplate", "DauTuTrangThietBiProfitCenter", new { templateId, year });
+
+            }
+            else if (templateType == TemplateType.ELEMENT)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "KhoanMucDauTu", new { year });
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+        }
+
+        [MyValidateAntiForgeryToken]
+        public ActionResult BuildTreeDauTuNgoaiDoanhNghiep(string templateId, string type, int year)
+        {
+            var isEnum = Enum.TryParse(type, out TemplateType templateType);
+            if (!isEnum)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            _service.Get(templateId);
+
+            if (templateType == TemplateType.CENTER)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "DauTuNgoaiDoanhNghiepProfitCenter", new { templateId, year });
 
             }
             else if (templateType == TemplateType.ELEMENT)

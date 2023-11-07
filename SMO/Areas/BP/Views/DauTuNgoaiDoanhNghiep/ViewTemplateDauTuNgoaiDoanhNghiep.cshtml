@@ -1,0 +1,92 @@
+@model IList<T_MD_KHOAN_MUC_DAU_TU>
+@using SMO.Core.Entities.MD;
+@using System.Text;
+
+@{
+    var detailOtherCostElements = ViewBag.detailOtherCostElements as IList<T_MD_TEMPLATE_DETAIL_DAU_TU_NGOAI_DOANH_NGHIEP>;
+    var viewId = Guid.NewGuid().ToString();
+}
+<div id="@viewId" class="container-fluid child-content">
+    <div class="card">
+        <div class="body" style="padding-top: 0px">
+
+            @if (detailOtherCostElements == null || detailOtherCostElements.Count == 0)
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                </div>
+                <div class="p-t-10">
+                    @{
+                        Html.RenderPartial("_NothingData");
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                    @Html.MyButton("cmdDownloadTemlate",
+                                                "Download mẫu",
+                                                "DownloadTemplate();",
+                                                "Alt+V", "file_download")
+                </div>
+                <div class="p-t-10">
+                    <div class="body-content">
+                        <div class="table-responsive" style="max-height: calc(100vh - 140px)">
+                            <table class="table table-condensed table-bordered table-striped table-pre-whitespace">
+                                <thead>
+                                    <tr class="sticky-row">
+                                        <th class="align-center">Mã dự án</th>
+                                        <th class="align-center">Tên dự án</th>
+                                        <th class="align-center">Mã khoản mục</th>
+                                        <th class="align-center">Tên khoản mục</th>
+                                        <th class="align-center">Giá trị đầu tư <br /> thời điểm đầu năm</th>
+                                        <th class="align-center">Kế hoạch tăng/giảm <br /> trong năm</th>
+                                        <th class="align-center">Giá trị đầu tư <br /> thời điểm cuối năm</th>
+                                        <th class="align-center">Tỷ lệ vốn góp (%) <br /> đến cuối năm</th>
+                                        <th class="align-center">Kế hoạch cổ tức <br /> / lợi nhuận được chia</th>
+                                        <th class="align-center">Tỷ lệ LN được chia <br /> trên vốn đầu tư</th>
+                                        <th class="align-center">Ghi chú</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var detail in detailOtherCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.Project.CODE))
+                                    {
+                                        foreach (var item in Model
+                                            .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
+                                            .OrderBy(x => x.C_ORDER)
+                                            .GroupBy(x => x.CODE)
+                                            .Select(x => x.First()))
+                                        {
+                                            var space = new StringBuilder();
+                                            for (int i = 0; i < item.LEVEL; i++)
+                                            {
+                                                space.Append("\t");
+                                            }
+                                            var classParent = item.IS_GROUP ? "strong" : string.Empty;
+                                            <tr class="@classParent">
+                                                <td>@(detail.Center.PROJECT_CODE)</td>
+                                                <td>@(detail.Center.Project.NAME)</td>
+                                                <td>@item.CODE</td>
+                                                <td class=" @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

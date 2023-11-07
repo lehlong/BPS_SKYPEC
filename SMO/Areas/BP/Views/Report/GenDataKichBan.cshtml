@@ -1,0 +1,59 @@
+﻿@model List<SMO.Models.SynthesisReportModel>
+@{ 
+    var year = ViewBag.Year as int?;
+}
+<style>
+    .header-table{
+        text-align:center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+<table class="table-condensed table-bordered table-striped font-13" style="width:100%">
+    <tbody>
+        <tr class="header-table">
+            <td rowspan="2">STT</td>
+            <td rowspan="2">Diễn giải</td>
+            <td rowspan="2">ĐVT</td>
+            <td rowspan="2">TH @(year - 2)</td>
+            <td colspan="3">Năm @(year - 1)</td>
+            <td rowspan="2">Kế hoạch @year</td>
+            <td rowspan="2">Kế hoạch @year sau điều chỉnh</td>
+            <td rowspan="2">KH @year/ TH @(year - 2) (%)</td>
+            <td rowspan="2">KH @year/ ƯTH @(year - 1) (%)</td>
+        </tr>
+        <tr class="header-table">
+            <td>Kế hoạch</td>
+            <td>9T ĐN</td>
+            <td>Ước TH năm</td>
+        </tr>
+        @*<tr style="font-weight:bold">
+            <td colspan="3">TỔNG CỘNG</td>
+            <td>@Model.Sum(x => x.Value1).ToStringVN()</td>
+            <td>@Model.Sum(x => x.Value2).ToStringVN()</td>
+            <td>@Model.Sum(x => x.Value3).ToStringVN()</td>
+            <td>@Model.Sum(x => x.Value4).ToStringVN()</td>
+            <td>@Model.Sum(x => x.Value5).ToStringVN()</td>
+            <td>@Model.Sum(x => x.Value6).ToStringVN()</td>
+            <td>@(Model.Sum(x => x.Value7)?.ToString("0.00"))</td>
+            <td>@(Model.Sum(x => x.Value8)?.ToString("0.00"))</td>
+        </tr>*@
+        @foreach (var item in Model.OrderBy(x => x.Order))
+        {
+            var bold = item.IsBold == true ? "bold" : "";
+            <tr style="font-weight:@bold">
+                <td>@item.Stt</td>
+                <td>@item.Name</td>
+                <td>@item.UnitName</td>
+                <td>@item.Value1.ToStringVN()</td>
+                <td>@item.Value2.ToStringVN()</td>
+                <td>@item.Value3.ToStringVN()</td>
+                <td>@item.Value4.ToStringVN()</td>
+                <td>@item.Value5.ToStringVN()</td>
+                <td>@item.Value6.ToStringVN()</td>
+                <td>@(item.Value7?.ToString("0.00"))</td>
+                <td>@(item.Value8?.ToString("0.00"))</td>
+            </tr>
+        }
+    </tbody>
+</table>

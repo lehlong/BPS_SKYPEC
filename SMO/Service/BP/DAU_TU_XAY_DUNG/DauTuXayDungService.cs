@@ -1916,9 +1916,8 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                     var centerCode = "";
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
-                        centerCode = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().FirstOrDefault(
+                        centerCode = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().FirstOrDefault(
                                                 x => x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE &&
-                                                x.Center.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE &&
                                                 x.Center.PROJECT_CODE == tableData.Rows[i][0].ToString().Trim())?.CENTER_CODE;
                     }
                     else
@@ -3357,6 +3356,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
 
                                     i.Values[0] = treeData.VALUE ?? 0;
                                     i.DESCRIPTION = treeData.DESCRIPTION;
+                                    i.PROCESS = treeData.PROCESS;
                                 }
                             }
                             yield return i;

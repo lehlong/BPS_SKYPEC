@@ -64,7 +64,7 @@ namespace SMO.Core.Entities.MD
         }
         public T_MD_KHOAN_MUC_DAU_TU() : base()
         {
-            Values = new decimal[14];
+            Values = new decimal[6];
         }
 
         public virtual object Clone()

@@ -1,0 +1,130 @@
+﻿@model IList<T_MD_KHOAN_MUC_CHI_PHI>
+@using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
+@using SMO.Core.Entities.MD;
+@using System.Text;
+@using SMO.Service.Class;
+
+@{
+    var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>;
+    var costCFHeader = ViewBag.costCFHeader as T_BP_KE_HOACH_CHI_PHI_VERSION;
+    var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
+}
+
+<style>
+    .header-year {
+        background-color: #FFFFFF !important;
+    }
+
+    td {
+        overflow: hidden;
+    }
+
+    .resize-col {
+        resize: horizontal;
+        overflow: hidden;
+        display: block;
+    }
+
+    td .input-edit {
+        border: none;
+        background: border-box;
+        width: 100%;
+        text-align: right;
+    }
+    .table-screen {
+        height: calc(100vh - 212px);
+        margin-bottom:0
+    }
+    .full-screen-table {
+        height: calc(100vh -100px) !important;
+    }
+</style>
+
+@if (Model == null || Model.Count == 0 ||
+    detailCostElements == null || detailCostElements.Count == 0 || costCFHeader == null)
+{
+    Html.RenderPartial("_NothingData");
+}
+else
+{
+    Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
+    <div class="export-left-tab">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active" style="cursor: pointer; left: 0;">
+                <a href="#month" title="Kế hoạch theo tháng" data-toggle="tab">Kế hoạch theo tháng</a>
+            </li>
+        </ul>
+        <div class="tab-content" style="padding-bottom:0">
+            <div role="tabpanel" class="tab-pane fade in active" id="month">
+                @*Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);*@
+                <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
+                        <tbody>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">MÃ KHOẢN MỤC</td>
+                                <td class="sticky-cell pre-whitespace" style="z-index:11">TÊN KHOẢN MỤC</td>
+                                <td class="pre-whitespace">THÁNG 1</td>
+                                <td class="pre-whitespace">THÁNG 2</td>
+                                <td class="pre-whitespace">THÁNG 3</td>
+                                <td class="pre-whitespace">THÁNG 4</td>
+                                <td class="pre-whitespace">THÁNG 5</td>
+                                <td class="pre-whitespace">THÁNG 6</td>
+                                <td class="pre-whitespace">THÁNG 7</td>
+                                <td class="pre-whitespace">THÁNG 8</td>
+                                <td class="pre-whitespace">THÁNG 9</td>
+                                <td class="pre-whitespace">THÁNG 10</td>
+                                <td class="pre-whitespace">THÁNG 11</td>
+                                <td class="pre-whitespace">THÁNG 12</td>
+                                <td class="pre-whitespace">TỔNG NĂM</td>
+                                <td class="pre-whitespace">TỔNG NĂM (DP)</td>
+                                <td class="pre-whitespace">TRUNG BÌNH THÁNG</td>
+                                <td>GHI CHÚ</td>
+                            </tr>
+
+                            @foreach (var item in Model.OrderBy(x => x.C_ORDER)
+                                    .GroupBy(x => x.CODE)
+                                    .Select(x => x.First()))
+                                {
+                                    var space = new StringBuilder();
+                                    for (int i = 0; i < item.LEVEL; i++)
+                                    {
+                                        space.Append("\t");
+                                    }
+                                    var classParent = item.IS_GROUP ? "strong" : string.Empty;
+                                    var isEdit = item.IS_GROUP ? "disabled" : "";
+                                    <tr class="@classParent">
+                                        <td class="sticky-cell pre-whitespace" level="@item.LEVEL">@item.CODE</td>
+                                        <td class="pre-whitespace sticky-cell @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                        <td class="pre-whitespace">@item.Values[0].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[1].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[2].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[3].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[4].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[5].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[6].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[7].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[8].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[9].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[10].ToStringVN()</td>
+                                        <td class="pre-whitespace">@item.Values[11].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@item.Values[12].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@item.Values[13].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@((item.Values[12] / 12).ToStringVN())</td>
+                                        <td>@item.DESCRIPTION</td>
+                                    </tr>
+                                }
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
+        function mask(e) {
+            $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+    </script>
+}

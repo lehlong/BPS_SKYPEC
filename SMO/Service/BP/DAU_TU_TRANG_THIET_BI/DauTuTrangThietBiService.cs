@@ -1915,7 +1915,6 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     {
                         centerCode = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().FirstOrDefault(
                                                 x => x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE &&
-                                                x.Center.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE &&
                                                 x.Center.PROJECT_CODE == tableData.Rows[i][0].ToString().Trim())?.CENTER_CODE;
                     }
                     else

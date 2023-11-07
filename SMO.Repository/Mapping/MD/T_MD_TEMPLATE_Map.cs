@@ -34,10 +34,16 @@ namespace SMO.Repository.Mapping.MD
             HasMany(x => x.DetailKeHoachDoanhThu)
                         .KeyColumn("TEMPLATE_CODE")
                         .LazyLoad().Inverse().Cascade.Delete();
+            HasMany(x => x.DetailKeHoachChiPhi)
+                        .KeyColumn("TEMPLATE_CODE")
+                        .LazyLoad().Inverse().Cascade.Delete();
             HasMany(x => x.DetailDauTuXayDung)
                         .KeyColumn("TEMPLATE_CODE")
                         .LazyLoad().Inverse().Cascade.Delete();
             HasMany(x => x.DetailDauTuTrangThietBi)
+                        .KeyColumn("TEMPLATE_CODE")
+                        .LazyLoad().Inverse().Cascade.Delete();
+            HasMany(x => x.DetailDauTuNgoaiDoanhNghiep)
                         .KeyColumn("TEMPLATE_CODE")
                         .LazyLoad().Inverse().Cascade.Delete();
 

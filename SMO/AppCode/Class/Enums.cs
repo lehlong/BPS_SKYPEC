@@ -37,8 +37,10 @@
     {
         SAN_LUONG,
         DOANH_THU,
+        CHI_PHI,
         DAU_TU_XAY_DUNG,
         DAU_TU_TRANG_THIET_BI,
+        DAU_TU_NGOAI_DOANH_NGHIEP,
         COST_CENTER,
         COST_ELEMENT,
         PROFIT_CENTER,

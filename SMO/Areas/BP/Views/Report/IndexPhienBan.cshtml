@@ -1,0 +1,70 @@
+﻿@{ 
+    var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+    var lstPhienBan = SelectListUtilities.GetAllPhienBan();
+}
+<div class="container-fluid child-content">
+    <div class="card border-grey">
+        <div class="body" style="padding-top: 0px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> DANH SÁCH HỢP ĐỒNG</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="page-function" style="width:100%">
+                    <div class="page-function-button m-r-20" style="float:left">
+                        @Html.MyButton("cmdAdd", "Xem báo cáo", "ViewData();", "Alt+N", "visibility")
+                        @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
+                    </div>
+                    <div class="input-group page-function-search row" style="margin-bottom: 7px !important">
+                        <div class="col-md-6">
+                            <select class="form-control selectpicker show-tick" id="time-year">
+                                @foreach (var item in lstTimeYear)
+                                {
+                                    <option value="@item.Value">@(item.Text)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-control selectpicker show-tick" id="kich-ban">
+                                @foreach (var item in lstPhienBan)
+                                {
+                                    <option value="@item.Value">@(item.Text)</option>
+                                }
+                            </select>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div id="divReport">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        Forms.CompleteUI();
+    });
+    function ViewData() {
+        $("#divReport").empty();
+        var ajaxParams = {
+            url: "@Url.Action("GenDataPhienBan")",
+            data: {
+                year: $("#time-year").val(),
+                kichBan: $("#kich-ban").val()
+            },
+            htmlTarget:'#divReport',
+        };
+        Forms.LoadAjax(ajaxParams);
+    }
+    function ExportData() {
+        var year = $("#time-year").val();
+        var kichBan = $("#kich-ban").val();
+        window.open(`/BP/Report/ExportExcelDataPhienBan?year=${year}&phienBan=${kichBan}`, '_blank');
+    }
+</script>
+
