@@ -1,13 +1,12 @@
-﻿
-@model IList<T_MD_KHOAN_MUC_CHI_PHI>
+﻿@model IList<T_MD_KHOAN_MUC_CHI_PHI>
 
 @using SMO.Core.Entities.MD;
-@using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
+@using SMO.Core.Entities;
 @using SMO.Service.Class;
 @using System.Text;
 @{
 
-    var header = ViewBag.costCFHeader as T_BP_KE_HOACH_CHI_PHI_VERSION;
+    var header = ViewBag.KeHoachChiPhiHeader as T_BP_KE_HOACH_CHI_PHI_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
 }
 @if (Model == null || Model.Count == 0 || header == null)
@@ -118,7 +117,7 @@ else
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[11]).ToStringVN()</td>
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[12]).ToStringVN()</td>
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[13]).ToStringVN()</td>
-                                <td class=" align-right">@((lstElements.Sum(x => x.Values[12]) / 12).ToStringVN())</td>
+                                <td class=" align-right">@((lstElements.Sum(x => x.Values[12])/12).ToStringVN())</td>
                                 <td class=""></td>
                             }
                         </tr>
@@ -163,12 +162,12 @@ else
 
                         space.Append("\t");
 
-                        foreach (var element in detailCostElements.Where(x => x.KHOAN_MUC_CHI_PHI_CODE == item.CODE).OrderBy(x => x.ORG_CODE))
+                        foreach (var element in detailCostElements.Where(x => x.ELEMENT_CODE == item.CODE).OrderBy(x => x.CENTER_CODE))
                         {
                             var sum = element.VALUE_JAN + element.VALUE_FEB + element.VALUE_MAR + element.VALUE_APR + element.VALUE_MAY + element.VALUE_JUN + element.VALUE_JUL + element.VALUE_AUG + element.VALUE_SEP + element.VALUE_OCT + element.VALUE_NOV + element.VALUE_DEC;
-                            <tr class="@element.KHOAN_MUC_CHI_PHI_CODE @dataCenterModel.ORG_CODE-@element.KHOAN_MUC_CHI_PHI_CODE">
-                                <td id="@element.KHOAN_MUC_CHI_PHI_CODE"
-                                    centerCode="@element.ORG_CODE"
+                            <tr class="@element.ELEMENT_CODE @dataCenterModel.ORG_CODE-@element.ELEMENT_CODE">
+                                <td id="@element.ELEMENT_CODE"
+                                    centerCode="@element.CENTER_CODE"
                                     version="@element.VERSION"
                                     level="@(item.LEVEL+1)"
                                     class="sticky-cell"
@@ -177,7 +176,7 @@ else
                                     <i class="material-icons swap-icon-drill-down">unfold_more</i>
                                 </td>
                                 <td class="sticky-cell"></td>
-                                <td class="sticky-cell">@($"{space.ToString()}{element.Organize.NAME}")</td>
+                                <td class="sticky-cell">@($"{space.ToString()}{element.CostCenter.NAME}")</td>
                                 <td class=" align-right">@((element.VALUE_JAN ?? 0).ToStringVN())</td>
                                 <td class=" align-right">@((element.VALUE_FEB ?? 0).ToStringVN())</td>
                                 <td class=" align-right">@((element.VALUE_MAR ?? 0).ToStringVN())</td>
@@ -192,7 +191,7 @@ else
                                 <td class=" align-right">@((element.VALUE_DEC ?? 0).ToStringVN())</td>
                                 <td class=" align-right">@((element.VALUE_SUM_YEAR ?? 0).ToStringVN())</td>
                                 <td class=" align-right">@((element.VALUE_SUM_YEAR_PREVENTIVE ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@(((element.VALUE_SUM_YEAR ?? 0) / 12).ToStringVN())</td>
+                                <td class=" align-right">@(((element.VALUE_SUM_YEAR ?? 0)/12).ToStringVN())</td>
                                 <td class=""></td>
                             </tr>
                         }

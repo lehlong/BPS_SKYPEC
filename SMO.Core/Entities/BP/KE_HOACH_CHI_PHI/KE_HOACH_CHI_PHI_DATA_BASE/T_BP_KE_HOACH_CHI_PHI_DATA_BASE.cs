@@ -1,4 +1,5 @@
 ﻿using SMO.Core.Entities.MD;
+
 using System.Collections.Generic;
 
 namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
@@ -8,11 +9,9 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
         public virtual string PKID { get; set; }
 
         public virtual string ORG_CODE { get; set; }
-        public virtual string HANG_HANG_KHONG_CODE { get; set; }
-        public virtual string SAN_BAY_CODE { get; set; }
-        public virtual string CHI_PHI_PROFIT_CENTER_CODE { get; set; }
+        public virtual string CENTER_CODE { get; set; }
         public virtual string TEMPLATE_CODE { get; set; }
-        public virtual string KHOAN_MUC_CHI_PHI_CODE { get; set; }
+        public virtual string ELEMENT_CODE { get; set; }
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
         public virtual string MATERIAL { get; set; }
@@ -87,10 +86,37 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
         public virtual string DESCRIPTION { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }
-        public virtual T_MD_KHOAN_MUC_CHI_PHI KhoanMucChiPhi { get; set; }
-        public virtual T_MD_CHI_PHI_PROFIT_CENTER ChiPhiProfitCenter { get; set; }
-        public virtual T_MD_SAN_BAY SanBay { get; set; }
-        public virtual T_MD_HANG_HANG_KHONG HangHangKhong { get; set; }
+        public virtual T_MD_KHOAN_MUC_CHI_PHI CostElement { get; set; }
+        public virtual T_MD_COST_CENTER CostCenter { get; set; }
         public virtual T_MD_COST_CENTER Organize { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is T_BP_KE_HOACH_CHI_PHI_DATA_BASE baseData &&
+                   PKID == baseData.PKID &&
+                   ORG_CODE == baseData.ORG_CODE &&
+                   CENTER_CODE == baseData.CENTER_CODE &&
+                   TEMPLATE_CODE == baseData.TEMPLATE_CODE &&
+                   ELEMENT_CODE == baseData.ELEMENT_CODE &&
+                   VERSION == baseData.VERSION &&
+                   TIME_YEAR == baseData.TIME_YEAR &&
+                   MATERIAL == baseData.MATERIAL &&
+                   UNIT == baseData.UNIT;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -245565264;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PKID);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ORG_CODE);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CENTER_CODE);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TEMPLATE_CODE);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ELEMENT_CODE);
+            hashCode = hashCode * -1521134295 + VERSION.GetHashCode();
+            hashCode = hashCode * -1521134295 + TIME_YEAR.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MATERIAL);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(UNIT);
+            return hashCode;
+        }
     }
 }

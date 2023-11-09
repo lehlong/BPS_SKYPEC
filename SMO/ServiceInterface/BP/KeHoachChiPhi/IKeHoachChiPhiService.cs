@@ -1,6 +1,6 @@
 ﻿using SMO.Core.Entities;
-using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
+using SMO.Service.Class;
 
 using System.Collections.Generic;
 
@@ -37,6 +37,6 @@ namespace SMO.ServiceInterface.BP.KeHoachChiPhi
            string templateId = "");
         IList<T_MD_KHOAN_MUC_CHI_PHI> SummaryCenterOut(out IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataCostElements, string centerCode, int year, int? version, bool? isHasValue = null);
         IList<T_MD_KHOAN_MUC_CHI_PHI> SummaryCenterVersion(out IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataCostElements, string centerCode, int year, int? version, bool isDrillDown = false);
-        //public T_BP_KE_HOACH_CHI_PHI CheckTemplate(string template, int year, string orgCode) { }
+        IList<T_MD_KHOAN_MUC_CHI_PHI> GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements, out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailCostData, out bool isDrillDownApply, ViewDataCenterModel model);
     }
 }

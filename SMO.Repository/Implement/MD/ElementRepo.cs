@@ -7,20 +7,20 @@ using System.Linq;
 
 namespace SMO.Repository.Implement.MD
 {
-    public class TableRepo : GenericRepository<T_MD_TABLE>, ITableRepo
+    public class ElementRepo : GenericRepository<T_MD_ELEMENT>, IElementRepo
     {
-        public TableRepo(NHUnitOfWork unitOfWork) : base(unitOfWork.Session)
+        public ElementRepo(NHUnitOfWork unitOfWork) : base(unitOfWork.Session)
         {
 
         }
 
-        public override IList<T_MD_TABLE> Search(T_MD_TABLE objFilter, int pageSize, int pageIndex, out int total)
+        public override IList<T_MD_ELEMENT> Search(T_MD_ELEMENT objFilter, int pageSize, int pageIndex, out int total)
         {
             var query = Queryable();
 
             if (!string.IsNullOrWhiteSpace(objFilter.CODE))
             {
-                query = query.Where(x => x.CODE.ToLower().Contains(objFilter.CODE.ToLower()) || x.TEXT.ToLower().Contains(objFilter.CODE.ToLower()));
+                query = query.Where(x => x.CODE.ToLower().Contains(objFilter.CODE.ToLower()) || x.NAME.ToLower().Contains(objFilter.CODE.ToLower()));
             }
 
             query = query.OrderByDescending(x => x.ACTIVE);

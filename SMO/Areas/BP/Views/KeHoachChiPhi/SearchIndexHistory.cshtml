@@ -1,5 +1,4 @@
-﻿
-@model SMO.Service.BP.KE_HOACH_CHI_PHI.KeHoachChiPhiService
+﻿@model SMO.Service.BP.KeHoachChiPhiService
 
 <div class="table-responsive font-13" style="max-height: 500px">
     @if (ProfileUtilities.User.Organize.IS_GROUP)
@@ -61,7 +60,7 @@
                             }
                             else
                             {
-                                <div>@item.Template.NAME</div>
+                                <div>@(item.Template?.NAME)</div>
                             }
                             <div>Version: @item.VERSION</div>
                         </td>

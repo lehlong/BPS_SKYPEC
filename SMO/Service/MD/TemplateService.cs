@@ -132,8 +132,8 @@ namespace SMO.Service.MD
                 case TemplateObjectType.ChiPhi:
                     switch (budget)
                     {
-                        case Budget.CHI_PHI:
-                            UpdateDetail<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI, TemplateDetailKeHoachChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, T_MD_CHI_PHI_PROFIT_CENTER, KeHoachChiPhiRepo, T_BP_KE_HOACH_CHI_PHI>(centerCode, template, detailCodes, year);
+                        case Budget.COST_CENTER:
+                            UpdateDetail<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI, TemplateDetailKeHoachChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, T_MD_COST_CENTER, KeHoachChiPhiRepo, T_BP_KE_HOACH_CHI_PHI>(centerCode, template, detailCodes, year);
                             break;
 
                         default:
@@ -288,12 +288,7 @@ namespace SMO.Service.MD
                         .Select(x => x.HANG_HANG_KHONG_CODE)
                         .Distinct();
                 case TemplateObjectType.ChiPhi:
-                    return UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
-                        .GetManyWithFetch(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId, x => x.Center)
-                        .Select(x => x.Center)
-                        .Where(x => x.SAN_BAY_CODE == projectCode)
-                        .Select(x => x.HANG_HANG_KHONG_CODE)
-                        .Distinct();
+                    
                 case TemplateObjectType.DauTuXayDung:
                     return UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>()
                         .GetManyWithFetch(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId, x => x.Center)
@@ -421,7 +416,7 @@ namespace SMO.Service.MD
                 case TemplateObjectType.DoanhThu:
                     return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU, TemplateDetailKeHoachDoanhThuRepo, T_MD_KHOAN_MUC_DOANH_THU, T_MD_DOANH_THU_PROFIT_CENTER>(centerCode, year, templateId);
                 case TemplateObjectType.ChiPhi:
-                    return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI, TemplateDetailKeHoachChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, T_MD_CHI_PHI_PROFIT_CENTER>(centerCode, year, templateId);
+                    return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI, TemplateDetailKeHoachChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, T_MD_COST_CENTER>(centerCode, year, templateId);
                 case TemplateObjectType.DauTuXayDung:
                     return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG, TemplateDetailDauTuXayDungRepo, T_MD_KHOAN_MUC_DAU_TU, T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER>(centerCode, year, templateId);
                 case TemplateObjectType.DauTuTrangThietBi:
@@ -441,7 +436,7 @@ namespace SMO.Service.MD
         internal IList<string> GetNodeDetailKhoanMucChiPhi(Budget budget, string centerCode, int year, string templateId)
         {
             Get(templateId);
-            return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI, TemplateDetailKeHoachChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, T_MD_CHI_PHI_PROFIT_CENTER>(centerCode, year, templateId);
+            return GetNodeDetailElement<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI, TemplateDetailKeHoachChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, T_MD_COST_CENTER>(centerCode, year, templateId);
         }
         internal IList<string> GetNodeDetailKhoanMucDauTuXayDung(Budget budget, string centerCode, int year, string templateId)
         {
@@ -865,7 +860,7 @@ namespace SMO.Service.MD
                         CopyTemplate<TemplateDetailKeHoachDoanhThuRepo, T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU, KhoanMucDoanhThuRepo, T_MD_KHOAN_MUC_DOANH_THU, DoanhThuProfitCenterRepo, T_MD_DOANH_THU_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
                         break;
                     case TemplateObjectType.ChiPhi:
-                        CopyTemplate<TemplateDetailKeHoachChiPhiRepo, T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI, KhoanMucChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, ChiPhiProfitCenterRepo, T_MD_CHI_PHI_PROFIT_CENTER>(sourceYear, destinationYear, templateId);
+                        CopyTemplate<TemplateDetailKeHoachChiPhiRepo, T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI, KhoanMucChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, CostCenterRepo, T_MD_COST_CENTER>(sourceYear, destinationYear, templateId);
                         break;
                     case TemplateObjectType.DauTuXayDung:
                         CopyTemplate<TemplateDetailDauTuXayDungRepo, T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG, KhoanMucDauTuRepo, T_MD_KHOAN_MUC_DAU_TU, DauTuXayDungProfitCenterRepo, T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER>(sourceYear, destinationYear, templateId);

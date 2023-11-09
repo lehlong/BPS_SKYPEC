@@ -598,7 +598,7 @@
     <Compile Include="Areas\MD\Controllers\SAPMdExpenseController.cs" />
     <Compile Include="Areas\MD\Controllers\SAPMdGLAccountController.cs" />
     <Compile Include="Areas\MD\Controllers\SAPMdPaymentController.cs" />
-    <Compile Include="Areas\MD\Controllers\TableController.cs" />
+    <Compile Include="Areas\MD\Controllers\ElementController.cs" />
     <Compile Include="Areas\MD\Controllers\TemplateBaseController.cs" />
     <Compile Include="Areas\MD\Controllers\TemplateController.cs" />
     <Compile Include="Areas\MD\Controllers\TransportGroupController.cs" />
@@ -822,7 +822,7 @@
     <Compile Include="Service\MD\SAPMdExpenseService.cs" />
     <Compile Include="Service\MD\SAPMdGLAccountService.cs" />
     <Compile Include="Service\MD\SAPMdPaymentService.cs" />
-    <Compile Include="Service\MD\TableService.cs" />
+    <Compile Include="Service\MD\ElementService.cs" />
     <Compile Include="Service\MD\TemplateBaseService.cs" />
     <Compile Include="Service\MD\TemplateService.cs" />
     <Compile Include="Service\MD\TransportGroupService.cs" />
@@ -1795,6 +1795,10 @@
     <Content Include="Areas\MD\Views\Table\List.cshtml" />
     <Content Include="Areas\MD\Views\Table\Create.cshtml" />
     <Content Include="Areas\MD\Views\Table\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\Element\Index.cshtml" />
+    <Content Include="Areas\MD\Views\Element\List.cshtml" />
+    <Content Include="Areas\MD\Views\Element\Create.cshtml" />
+    <Content Include="Areas\MD\Views\Element\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

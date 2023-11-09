@@ -1,14 +1,14 @@
 ﻿using SMO.Core.Entities.MD;
 
-namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI   
+namespace SMO.Core.Entities
 {
     public partial class T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY : BaseEntity
     {
         public virtual string PKID { get; set; }
         public virtual string ORG_CODE { get; set; }
-        public virtual string CHI_PHI_PROFIT_CENTER_CODE { get; set; }
+        public virtual string CENTER_CODE { get; set; }
         public virtual string TEMPLATE_CODE { get; set; }
-        public virtual string KHOAN_MUC_CHI_PHI_CODE { get; set; }
+        public virtual string ELEMENT_CODE { get; set; }
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
         public virtual decimal? VALUE_JAN { get; set; }
@@ -23,16 +23,18 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
         public virtual decimal? VALUE_OCT { get; set; }
         public virtual decimal? VALUE_NOV { get; set; }
         public virtual decimal? VALUE_DEC { get; set; }
+
         #region Ngân sách dự phòng
         public virtual decimal? VALUE_SUM_YEAR_PREVENTIVE { get; set; }
         public virtual decimal? VALUE_SUM_YEAR { get; set; }
 
         #endregion
+
         public virtual string DESCRIPTION { get; set; }
         public virtual string STATUS { get; set; }
 
-        public virtual T_MD_KHOAN_MUC_CHI_PHI KhoanMucChiPhi { get; set; }
-        public virtual T_MD_CHI_PHI_PROFIT_CENTER ChiPhiProfitCenter { get; set; }
+        public virtual T_MD_KHOAN_MUC_CHI_PHI CostElement { get; set; }
+        public virtual T_MD_COST_CENTER CostCenter { get; set; }
         public virtual T_MD_COST_CENTER Organize { get; set; }
         public virtual T_MD_TEMPLATE Template { get; set; }
 
@@ -43,9 +45,9 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
             {
                 PKID = history.PKID,
                 ORG_CODE = history.ORG_CODE,
-                CHI_PHI_PROFIT_CENTER_CODE = history.CHI_PHI_PROFIT_CENTER_CODE,
+                CENTER_CODE = history.CENTER_CODE,
                 TEMPLATE_CODE = history.TEMPLATE_CODE,
-                KHOAN_MUC_CHI_PHI_CODE = history.KHOAN_MUC_CHI_PHI_CODE,
+                ELEMENT_CODE = history.ELEMENT_CODE,
                 VERSION = history.VERSION,
                 TIME_YEAR = history.TIME_YEAR,
                 VALUE_APR = history.VALUE_APR,
@@ -72,8 +74,8 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
                 UPDATE_DATE = history.UPDATE_DATE,
                 USER_CREATE = history.USER_CREATE,
                 USER_UPDATE = history.USER_UPDATE,
-                KhoanMucChiPhi = history.KhoanMucChiPhi,
-                ChiPhiProfitCenter = history.ChiPhiProfitCenter,
+                CostElement = history.CostElement,
+                CostCenter = history.CostCenter,
                 STATUS = history.STATUS,
                 Template = history.Template,
                 Organize = history.Organize
@@ -86,9 +88,9 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
             {
                 PKID = data.PKID,
                 ORG_CODE = data.ORG_CODE,
-                CHI_PHI_PROFIT_CENTER_CODE = data.CHI_PHI_PROFIT_CENTER_CODE,
+                CENTER_CODE = data.CENTER_CODE,
                 TEMPLATE_CODE = data.TEMPLATE_CODE,
-                KHOAN_MUC_CHI_PHI_CODE = data.KHOAN_MUC_CHI_PHI_CODE,
+                ELEMENT_CODE = data.ELEMENT_CODE,
                 VERSION = data.VERSION,
                 TIME_YEAR = data.TIME_YEAR,
                 VALUE_APR = data.VALUE_APR,
@@ -115,8 +117,8 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
                 UPDATE_DATE = data.UPDATE_DATE,
                 USER_CREATE = data.USER_CREATE,
                 USER_UPDATE = data.USER_UPDATE,
-                KhoanMucChiPhi = data.KhoanMucChiPhi,
-                ChiPhiProfitCenter = data.ChiPhiProfitCenter,
+                CostElement = data.CostElement,
+                CostCenter = data.CostCenter,
                 STATUS = data.STATUS,
                 Organize = data.Organize,
                 Template = data.Template

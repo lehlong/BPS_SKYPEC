@@ -1,11 +1,9 @@
 ﻿using NHibernate.Linq;
 
 using SMO.Core.Entities;
-
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
 using SMO.Repository.Implement.BP;
-
 using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Class;
@@ -128,9 +126,9 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 else
                 {
                     return (from d in dataCost
-                            let result = objReview?.Results.FirstOrDefault(x => x.KHOAN_MUC_CHI_PHI_CODE.Equals(d.CODE))
+                            let result = objReview?.Results.FirstOrDefault(x => x.ELEMENT_CODE.Equals(d.CODE))
                             let status = result?.RESULT
-                            let elementComments = comments.Where(x => x.KHOAN_MUC_CHI_PHI_CODE == d.CODE)
+                            let elementComments = comments.Where(x => x.ELEMENT_CODE == d.CODE)
                             let elementCommentsInOrg = elementComments.Where(x => x.ON_ORG_CODE == d.ORG_CODE)
                             select new KeHoachChiPhiElementReviewCenter(
                                 d,
@@ -147,18 +145,18 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             var lstReviewResult = UnitOfWork.Repository<KeHoachChiPhiReviewResultRepo>()
                 .GetManyByExpression(x => lstReviews.Any(y => y.PKID.Equals(x.HEADER_ID)));
 
-            var lookupReviewByElements = lstReviewResult.ToLookup(x => x.KHOAN_MUC_CHI_PHI_CODE);
+            var lookupReviewByElements = lstReviewResult.ToLookup(x => x.ELEMENT_CODE);
 
             var isHasValue = model.IS_COMPLETED ? model.IS_NOT_COMPLETED ? (bool?)null : true : false;
 
             return (from d in dataCost
-                    let result = objReview?.Results.FirstOrDefault(x => x.KHOAN_MUC_CHI_PHI_CODE.Equals(d.CODE))
+                    let result = objReview?.Results.FirstOrDefault(x => x.ELEMENT_CODE.Equals(d.CODE))
                     let elements = lookupReviewByElements[d.CODE]
                     let success = elements.Count() == 0 ? null : elements.Where(x => x.RESULT.HasValue && x.RESULT.Value).Select(x => x.Header.REVIEW_USER).ToList()
                     let failure = elements.Count() == 0 ? null : elements.Where(x => x.RESULT.HasValue && !x.RESULT.Value).Select(x => x.Header.REVIEW_USER).ToList()
                     let notReviewed = elements.Count() == 0 ? null : elements.Where(x => !x.RESULT.HasValue).Select(x => x.Header.REVIEW_USER).ToList()
                     let status = result?.RESULT
-                    let elementComments = comments.Where(x => x.KHOAN_MUC_CHI_PHI_CODE == d.CODE)
+                    let elementComments = comments.Where(x => x.ELEMENT_CODE == d.CODE)
                     let elementCommentsInOrg = elementComments.Where(x => x.ON_ORG_CODE == d.ORG_CODE)
                     select new KeHoachChiPhiElementReviewCenter(
                         d,
@@ -167,7 +165,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         notReviewed,
                         status,
                         elementComments.Sum(x => x.NUMBER_COMMENTS),
-                        elementCommentsInOrg.Sum(x => x.NUMBER_COMMENTS))).ToList();
+                        elementCommentsInOrg.Sum(x => x.NUMBER_COMMENTS)
+                        )).ToList();
         }
 
         internal T_BP_KE_HOACH_CHI_PHI GetHeader()
@@ -399,7 +398,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                  {
                                      PKID = Guid.NewGuid().ToString(),
                                      HEADER_ID = headerId,
-                                     KHOAN_MUC_CHI_PHI_CODE = r.CODE,
+                                     ELEMENT_CODE = r.CODE,
                                      RESULT = r.Status,
                                      TIME_YEAR = model.Year
                                  }).ToList());
@@ -425,7 +424,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 ErrorMessage = errorMessage.ToString();
             }
         }
-
 
         /// <summary>
         /// Kiểm tra xem các khoản mục mà không đạt đã được comment bởi current user hay chưa
@@ -455,10 +453,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             queryable = queryable.Where(x => x.ORG_CODE == model.OrgCode);
             queryable = queryable.Where(x => x.TIME_YEAR == model.Year);
             // queryable = queryable.Where(x => x.DATA_VERSION == model.Version);
-            queryable = queryable.Where(x => elementsNotSuccess.Contains(x.KHOAN_MUC_CHI_PHI_CODE));
+            queryable = queryable.Where(x => elementsNotSuccess.Contains(x.ELEMENT_CODE));
             queryable = queryable.FetchMany(x => x.Comments);
 
-            var lookupComments = queryable.ToList().ToLookup(x => x.KHOAN_MUC_CHI_PHI_CODE);
+            var lookupComments = queryable.ToList().ToLookup(x => x.ELEMENT_CODE);
             var allElements = GetAllMasterData<KhoanMucChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI>().Where(x => x.TIME_YEAR == model.Year);
             foreach (var element in elementsNotSuccess)
             {
@@ -580,8 +578,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
             // show all
             return (from d in dataCost
-                    let result = objReview?.Results?.FirstOrDefault(x => x.KHOAN_MUC_CHI_PHI_CODE.Equals(d.CODE))
-                    let elementComments = comments.Where(x => x.KHOAN_MUC_CHI_PHI_CODE == d.CODE)
+                    let result = objReview?.Results?.FirstOrDefault(x => x.ELEMENT_CODE.Equals(d.CODE))
+                    let elementComments = comments.Where(x => x.ELEMENT_CODE == d.CODE)
                     let elementCommentsInOrg = elementComments.Where(x => x.ON_ORG_CODE == d.ORG_CODE)
                     select new KeHoachChiPhiElementReview(
                         d,

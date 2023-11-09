@@ -1,5 +1,4 @@
-﻿
-@model SMO.Service.BP.KE_HOACH_CHI_PHI.KeHoachChiPhiService
+﻿@model SMO.Service.BP.KeHoachChiPhiService
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     var viewParentId = ViewBag.ViewId as string;
@@ -13,8 +12,6 @@
             <tr>
                 <th></th>
                 <th class="align-center">Version</th>
-                <th class="align-center">Kịch bản</th>
-                <th class="align-center">Phiên bản</th>
                 <th class="align-center">Người nhập</th>
                 <th class="align-center">Ngày nhập</th>
                 <th style="min-width: 350px">File</th>
@@ -31,12 +28,6 @@
                     </td>
                     <td class="align-center">
                         @item.VERSION
-                    </td>
-                    <td class="align-center">
-                        @(item.KichBan?.TEXT)
-                    </td>
-                    <td class="align-center">
-                        @(item.PhienBan?.TEXT)
                     </td>
                     <td class="align-center">
                         @item.CREATE_BY

@@ -151,6 +151,25 @@ namespace SMO
 
             return new SelectList(lstData, "Value", "Text", new Data {});
         }
+        public static SelectList SelectElementType()
+        {
+            var lstData = new List<Data>();
+
+            lstData.Add(new Data { Value = "S", Text = "S" });
+            lstData.Add(new Data { Value = "U", Text = "U" });
+
+            return new SelectList(lstData, "Value", "Text", new Data { });
+        }
+
+        public static SelectList SelectElementStatus()
+        {
+            var lstData = new List<Data>();
+
+            lstData.Add(new Data { Value = "Y", Text = "Đang áp dụng" });
+            lstData.Add(new Data { Value = "N", Text = "Không áp dụng" });
+
+            return new SelectList(lstData, "Value", "Text", new Data { });
+        }
 
         public static SelectList GetAllProvince(bool isAddBlank = true, string selected = "")
         {

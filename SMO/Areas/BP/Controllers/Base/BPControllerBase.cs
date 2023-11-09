@@ -527,17 +527,16 @@ namespace SMO.Areas.BP.Controllers
             }
             else
             {
-                //var template = service.GetTemplate(service.ObjDetail.TEMPLATE_CODE);
-                //if (template.IS_BASE)
-                //{
-                //    service.ImportExcelBase(Request);
-                //}
-                //else
-                //{
+                var template = service.GetTemplate(service.ObjDetail.TEMPLATE_CODE);
+                if (template.IS_BASE)
+                {
+                    service.ImportExcelBase(Request);
+                }
+                else
+                {
 
-                //    service.ImportExcel(Request);
-                //}
-                service.ImportExcel(Request);
+                    service.ImportExcel(Request);
+                }
             }
 
             if (service.State)

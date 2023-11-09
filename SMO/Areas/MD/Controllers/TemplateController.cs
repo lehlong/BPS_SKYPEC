@@ -323,7 +323,7 @@ namespace SMO.Areas.MD.Controllers
                         case TemplateObjectType.DoanhThu:
                             return RedirectToAction("BuildTreeByTemplate", "DoanhThuProfitCenter", new { templateId, year });
                         case TemplateObjectType.ChiPhi:
-                            return RedirectToAction("BuildTreeByTemplate", "ChiPhiProfitCenter", new { templateId, year });
+                            return RedirectToAction("BuildTreeByTemplate", "CostCenter", new { templateId, year });
                         case TemplateObjectType.DauTuXayDung:
                             return RedirectToAction("BuildTreeByTemplate", "DauTuXayDungProfitCenter", new { templateId, year });
                         case TemplateObjectType.DauTuTrangThietBi:

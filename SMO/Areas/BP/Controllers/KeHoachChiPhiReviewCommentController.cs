@@ -1,5 +1,4 @@
 ﻿using SMO.Service.BP.KE_HOACH_CHI_PHI;
-using SMO.Service.Class;
 
 using System.Web.Mvc;
 
@@ -30,7 +29,7 @@ namespace SMO.Areas.BP.Controllers
             return PartialView(_service);
         }
 
-        //[MyValidateAntiForgeryToken]
+        [MyValidateAntiForgeryToken]
         public ActionResult Index(string orgCode, string elementCode, int year, int version, string onOrgCode)
         {
             _service.GetHeader(orgCode, elementCode, year, version, onOrgCode);
@@ -89,7 +88,7 @@ namespace SMO.Areas.BP.Controllers
             {
                 SMOUtilities.GetMessage("1001", service, result);
                 result.ExtData = $"Forms.SubmitForm('{service.ObjDetail.PKID}'); " +
-                    $"RefreshComment('{service.ObjDetail.KHOAN_MUC_CHI_PHI_CODE}', '{service.ObjDetail.ON_ORG_CODE}'); " +
+                    $"RefreshComment('{service.ObjDetail.ELEMENT_CODE}', '{service.ObjDetail.ON_ORG_CODE}'); " +
                     $"$('#txtContent').val('')";
             }
             else
@@ -101,10 +100,6 @@ namespace SMO.Areas.BP.Controllers
 
         }
 
-        [MyValidateAntiForgeryToken]
-        public ActionResult FilterCommentCenter(FilterCommentCenterViewModel model)
-        {
-            return PartialView(model);
-        }
+
     }
 }

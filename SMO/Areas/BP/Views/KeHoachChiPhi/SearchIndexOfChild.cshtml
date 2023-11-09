@@ -1,7 +1,7 @@
-﻿@model SMO.Service.BP.KE_HOACH_CHI_PHI.KeHoachChiPhiService
+﻿@model SMO.Service.BP.KeHoachChiPhiService
 @{
     var number = 1;
-    var headerOfParent = ViewBag.HeaderOfParent as SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.T_BP_KE_HOACH_CHI_PHI;
+    var headerOfParent = ViewBag.HeaderOfParent as SMO.Core.Entities.T_BP_KE_HOACH_CHI_PHI;
     var periodTime = Model.UnitOfWork.Repository<SMO.Repository.Implement.MD.PeriodTimeRepo>().Get(Model.ObjDetail.TIME_YEAR);
     var isChange = "False";
 }
@@ -10,15 +10,16 @@
     <div class="page-function">
         <div style="">
             @if (!periodTime.IS_CLOSE
-        && Model.ObjList.Count(x => x.STATUS == Approve_Status.DaPheDuyet) > 0
-        && (headerOfParent == null || headerOfParent.STATUS == Approve_Status.ChuaTrinhDuyet || headerOfParent.STATUS == Approve_Status.TuChoi)
-    )
+                && Model.ObjList.Count(x => x.STATUS == Approve_Status.DaPheDuyet) > 0
+                && (headerOfParent == null || headerOfParent.STATUS == Approve_Status.ChuaTrinhDuyet || headerOfParent.STATUS == Approve_Status.TuChoi)
+            )
             {
                 @Html.MyButton("cmdTongHop", "Tổng hợp dữ liệu", "TongHopDuLieu();", "", "dvr")
             }
         </div>
     </div>
 }
+
 @if (Model.ObjList.Count() == 0)
 {
     <div class="align-center border-grey col-indigo font-15" style="padding: 15px;">
@@ -69,7 +70,7 @@
                 <tr class="@clsChange">
 
                     @{
-                        Html.RenderPartial("_PartialViewTableChildKeHoachChiPhi", item,
+                        Html.RenderPartial("_PartialViewTableChildData", item,
                                new ViewDataDictionary
                                 {
                                                new KeyValuePair<string, object>("number", number)
@@ -102,7 +103,7 @@
                 <tr class="@clsChange">
 
                     @{
-                        Html.RenderPartial("_PartialViewTableChildKeHoachChiPhi", item,
+                        Html.RenderPartial("_PartialViewTableChildData", item,
                                new ViewDataDictionary
                                 {
                                                new KeyValuePair<string, object>("number", number)
@@ -121,4 +122,3 @@
         }
     });
 </script>
-

@@ -1,14 +1,14 @@
 ﻿using SMO.Core.Entities.MD;
 
-namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
+namespace SMO.Core.Entities
 {
     public partial class T_BP_KE_HOACH_CHI_PHI_DATA : BaseEntity
     {
         public virtual string PKID { get; set; }
         public virtual string ORG_CODE { get; set; }
-        public virtual string CHI_PHI_PROFIT_CENTER_CODE { get; set; }
+        public virtual string CENTER_CODE { get; set; }
         public virtual string TEMPLATE_CODE { get; set; }
-        public virtual string KHOAN_MUC_CHI_PHI_CODE { get; set; }
+        public virtual string ELEMENT_CODE { get; set; }
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
         public virtual decimal? VALUE_JAN { get; set; }
@@ -23,17 +23,19 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
         public virtual decimal? VALUE_OCT { get; set; }
         public virtual decimal? VALUE_NOV { get; set; }
         public virtual decimal? VALUE_DEC { get; set; }
+
         #region Ngân sách dự phòng
         public virtual decimal? VALUE_SUM_YEAR_PREVENTIVE { get; set; }
         public virtual decimal? VALUE_SUM_YEAR { get; set; }
 
         #endregion
+
         public virtual string DESCRIPTION { get; set; }
         public virtual string STATUS { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }
-        public virtual T_MD_KHOAN_MUC_CHI_PHI KhoanMucChiPhi { get; set; }
-        public virtual T_MD_CHI_PHI_PROFIT_CENTER ChiPhiProfitCenter { get; set; }
+        public virtual T_MD_KHOAN_MUC_CHI_PHI CostElement { get; set; }
+        public virtual T_MD_COST_CENTER CostCenter { get; set; }
         public virtual T_MD_COST_CENTER Organize { get; set; }
 
     }

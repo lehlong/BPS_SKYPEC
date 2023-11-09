@@ -5,13 +5,13 @@ using System.Web.Mvc;
 namespace SMO.Areas.MD.Controllers
 {
     [AuthorizeCustom(Right = "R270")]
-    public class TableController : Controller
+    public class ElementController : Controller
     {
-        private readonly TableService _service;
+        private readonly ElementService _service;
 
-        public TableController()
+        public ElementController()
         {
-            _service = new TableService();
+            _service = new ElementService();
         }
 
         [MyValidateAntiForgeryToken]
@@ -21,7 +21,7 @@ namespace SMO.Areas.MD.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        public ActionResult List(TableService service)
+        public ActionResult List(ElementService service)
         {
             service.Search();
             return PartialView(service);
@@ -35,7 +35,7 @@ namespace SMO.Areas.MD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(TableService service)
+        public ActionResult Create(ElementService service)
         {
             var result = new TransferObject
             {
@@ -55,6 +55,26 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
+        public ActionResult CalculateValue()
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.CalculateValueElement();
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
         [MyValidateAntiForgeryToken]
         public ActionResult Edit(string id)
         {
@@ -67,7 +87,7 @@ namespace SMO.Areas.MD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update(TableService service)
+        public ActionResult Update(ElementService service)
         {
             var result = new TransferObject
             {

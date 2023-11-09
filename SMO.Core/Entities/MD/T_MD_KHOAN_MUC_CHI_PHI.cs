@@ -1,5 +1,4 @@
 ﻿using SMO.Core.Common;
-using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE;
 
 using System;
@@ -44,11 +43,10 @@ namespace SMO.Core.Entities.MD
             }
             return new T_MD_KHOAN_MUC_CHI_PHI
             {
-                TEMPLATE_CODE = v.TEMPLATE_CODE + v.CHI_PHI_PROFIT_CENTER_CODE,
-                TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
+                TEMPLATE_CODE = v.TEMPLATE_CODE,
                 ORG_CODE = v.ORG_CODE,
-                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Hãng hàng không: {v.ChiPhiProfitCenter.HangHangKhong.NAME}\nSân bay: {v.ChiPhiProfitCenter.SanBay.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
-                CENTER_CODE = v.ORG_CODE,
+                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.CostCenter.NAME : $"Đơn vị nộp: {v.Template.Organize.NAME}\nMẫu: {v.Template.NAME}({v.TEMPLATE_CODE})\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
+                CENTER_CODE = v.CENTER_CODE,
                 Values = new decimal[14]
                 {
                     v.VALUE_JAN ?? 0,
@@ -80,11 +78,10 @@ namespace SMO.Core.Entities.MD
             }
             return new T_MD_KHOAN_MUC_CHI_PHI
             {
-                TEMPLATE_CODE = v.TEMPLATE_CODE + v.CHI_PHI_PROFIT_CENTER_CODE,
-                TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
+                TEMPLATE_CODE = v.TEMPLATE_CODE,
+                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.CostCenter.NAME : $"Đơn vị nộp: {v.Template.Organize.NAME}\nMẫu: {v.Template.NAME}({v.TEMPLATE_CODE})\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
                 ORG_CODE = v.ORG_CODE,
-                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Hãng hàng không: {v.ChiPhiProfitCenter.HangHangKhong.NAME}\nSân bay: {v.ChiPhiProfitCenter.SanBay.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
-                CENTER_CODE = v.ORG_CODE,
+                CENTER_CODE = v.CENTER_CODE,
                 Values = new decimal[14]
                 {
                     v.VALUE_JAN ?? 0,
@@ -113,11 +110,10 @@ namespace SMO.Core.Entities.MD
             return new T_MD_KHOAN_MUC_CHI_PHI
             {
                 ORG_NAME = $"{v.MATERIAL} ({v.UNIT})",
-                TEMPLATE_CODE = v.TEMPLATE_CODE + v.CHI_PHI_PROFIT_CENTER_CODE,
-                TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
+                TEMPLATE_CODE = v.TEMPLATE_CODE,
                 ORG_CODE = v.ORG_CODE,
                 IS_GROUP = false,
-                CENTER_CODE = v.ORG_CODE,
+                CENTER_CODE = v.CENTER_CODE,
                 VERSION = v.VERSION,
                 DESCRIPTION = v.DESCRIPTION,
                 Template = v.Template,
@@ -150,10 +146,9 @@ namespace SMO.Core.Entities.MD
             return new T_MD_KHOAN_MUC_CHI_PHI
             {
                 ORG_NAME = $"{v.MATERIAL} ({v.UNIT})",
-                TEMPLATE_CODE = v.TEMPLATE_CODE + v.CHI_PHI_PROFIT_CENTER_CODE,
-                TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
+                TEMPLATE_CODE = v.TEMPLATE_CODE,
                 ORG_CODE = v.ORG_CODE,
-                CENTER_CODE = v.ORG_CODE,
+                CENTER_CODE = v.CENTER_CODE,
                 VERSION = v.VERSION,
                 IS_GROUP = false,
                 DESCRIPTION = v.DESCRIPTION,

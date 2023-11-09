@@ -14,6 +14,5 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
         public virtual T_MD_COST_CENTER CostCenter { get; set; }
         public virtual T_MD_COST_CENTER FromCostCenter { get; set; }
         public virtual T_MD_TEMPLATE Template { get; set; }
-
     }
 }

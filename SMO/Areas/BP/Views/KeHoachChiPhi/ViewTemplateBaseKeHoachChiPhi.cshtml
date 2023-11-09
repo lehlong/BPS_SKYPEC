@@ -3,7 +3,7 @@
 @using System.Text;
 
 @{
-    var detailCostElements = ViewBag.detailOtherCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>;
+    var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>;
     var viewId = Guid.NewGuid().ToString();
 }
 <div id="@viewId" class="container-fluid child-content">
@@ -36,7 +36,7 @@
                             <table class="table table-condensed table-bordered table-striped table-pre-whitespace">
                                 <thead>
                                     <tr>
-                                        <th colspan="8"></th>
+                                        <th colspan="6"></th>
                                         @for (int i = 0; i < 12; i++)
                                         {
                                             <th colspan="4" class="align-center">Tháng @(i + 1)</th>
@@ -46,10 +46,8 @@
                                         <th></th>
                                     </tr>
                                     <tr>
-                                        <th>Mã sân bay</th>
-                                        <th>Tên sân bay</th>
-                                        <th>Mã hãng hàng không</th>
-                                        <th>Tên hãng hàng không</th>
+                                        <th>Mã đơn vị</th>
+                                        <th style="min-width: 200px;">Tên đơn vị</th>
                                         <th>Mã khoản mục</th>
                                         <th>Tên khoản mục</th>
                                         <th>Hàng hóa, dịch vụ</th>
@@ -86,11 +84,8 @@
                                             }
                                             var classParent = item.IS_GROUP ? "strong" : string.Empty;
                                             <tr class="@classParent">
-
-                                                <td>@(detail.Center.SAN_BAY_CODE)</td>
-                                                <td>@(detail.Center.SanBay.NAME)</td>
-                                                <td>@(detail.Center.HANG_HANG_KHONG_CODE)</td>
-                                                <td>@(detail.Center.HangHangKhong.NAME)</td>
+                                                <td>@(detail.CENTER_CODE)</td>
+                                                <td>@(detail.Center.NAME)</td>
                                                 <td>@item.CODE</td>
                                                 <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                                 @for (int i = 0; i < 2 + 4 * 12 + 4 + 1; i++)

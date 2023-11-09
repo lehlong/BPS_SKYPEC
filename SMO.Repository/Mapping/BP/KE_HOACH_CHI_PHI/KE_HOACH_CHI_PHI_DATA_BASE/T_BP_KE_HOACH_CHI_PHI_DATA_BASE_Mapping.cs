@@ -1,9 +1,4 @@
 ﻿using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SMO.Repository.Mapping.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
 {
@@ -14,11 +9,9 @@ namespace SMO.Repository.Mapping.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
             Id(x => x.PKID);
 
             Map(x => x.ORG_CODE);
-            Map(x => x.CHI_PHI_PROFIT_CENTER_CODE);
+            Map(x => x.CENTER_CODE);
             Map(x => x.TEMPLATE_CODE);
-            Map(x => x.KHOAN_MUC_CHI_PHI_CODE);
-            Map(x => x.SAN_BAY_CODE);
-            Map(x => x.HANG_HANG_KHONG_CODE);
+            Map(x => x.ELEMENT_CODE);
             Map(x => x.VERSION);
             Map(x => x.TIME_YEAR);
             Map(x => x.MATERIAL);
@@ -89,13 +82,9 @@ namespace SMO.Repository.Mapping.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
 
             Map(x => x.DESCRIPTION);
 
-            References(x => x.KhoanMucChiPhi).Columns("KHOAN_MUC_CHI_PHI_CODE", "TIME_YEAR")
+            References(x => x.CostElement).Columns("ELEMENT_CODE", "TIME_YEAR")
                 .Not.Insert().Not.Update();
-            References(x => x.ChiPhiProfitCenter, "CHI_PHI_PROFIT_CENTER_CODE")
-                .Not.Insert().Not.Update();
-            References(x => x.SanBay, "SAN_BAY_CODE")
-                .Not.Insert().Not.Update();
-            References(x => x.HangHangKhong, "HANG_HANG_KHONG_CODE")
+            References(x => x.CostCenter, "CENTER_CODE")
                 .Not.Insert().Not.Update();
             References(x => x.Organize, "ORG_CODE")
                 .Not.Insert().Not.Update();

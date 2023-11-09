@@ -1,0 +1,49 @@
+﻿@model SMO.Service.MD.ElementService
+@{
+    var frmFormCode = "frmElementIndex";
+    var number = 1;
+}
+
+<div class="table-responsive">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th style="max-width: 120px;">Mã</th>
+                <th>Tên</th>
+                <th>Loại Element</th>
+                <th>Độ ưu tiên</th>
+                <th>Trạng thái</th>
+                <th>Công thức</th>
+                <th>Đơn vị tính</th>
+                <th style="width:30%">SQL Query</th>
+                <th>Giá trị</th>
+                <th>Màn hình</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList)
+            {
+                number++;
+                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.CODE }));
+                <tr>
+                    <td ondblclick="@vdbclickAction">
+                        <a href="#" onclick="@vdbclickAction">@item.CODE</a>
+                    </td>
+                    <td ondblclick="@vdbclickAction">@item.NAME</td>
+                    <td ondblclick="@vdbclickAction">@item.ELEMENT_TYPE</td>
+                    <td ondblclick="@vdbclickAction">@item.PRIORITY</td>
+                    <td ondblclick="@vdbclickAction">@item.STATUS</td>
+                    <td ondblclick="@vdbclickAction">@item.FORMULA</td>
+                    <td ondblclick="@vdbclickAction">@item.UNIT_CODE</td>
+                    <td ondblclick="@vdbclickAction">@item.QUERY</td>
+                    <td ondblclick="@vdbclickAction">@item.VALUE</td>
+                    <td ondblclick="@vdbclickAction">@item.SCREEN</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{ Html.RenderPartial("Paging", Model); }
+
+
+
