@@ -218,6 +218,7 @@
     <Compile Include="Implement\MD\DauTuTrangThietBiProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\DauTuXayDungProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\DictionaryRepo.cs" />
+    <Compile Include="Implement\MD\DeliveryConditionsRepo.cs" />
     <Compile Include="Implement\MD\DoanhThuProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\DomainRepo.cs" />
     <Compile Include="Implement\MD\FAQQuestionRepo.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="Implement\MD\ProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\ProjectRepo.cs" />
     <Compile Include="Implement\MD\ProvinceRepo.cs" />
+    <Compile Include="Implement\MD\PurcharseDataRepo.cs" />
     <Compile Include="Implement\MD\RouteRepo.cs" />
     <Compile Include="Implement\MD\SanBayRepo.cs" />
     <Compile Include="Implement\MD\SanLuongProfitCenter.cs" />
@@ -272,6 +274,7 @@
     <Compile Include="Implement\MD\UserReviewRepo.cs" />
     <Compile Include="Implement\MD\VehicleRepo.cs" />
     <Compile Include="Implement\MD\VendorRepo.cs" />
+    <Compile Include="Implement\MD\WarehouseRepo.cs" />
     <Compile Include="Implement\WF\ActivityComRepo.cs" />
     <Compile Include="Implement\WF\ActivityRepo.cs" />
     <Compile Include="Implement\WF\ActivityUserRepo.cs" />
@@ -410,6 +413,7 @@
     <Compile Include="Interface\MD\IDauTuTrangThietBiProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IDauTuXayDungProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IDictionaryRepo.cs" />
+    <Compile Include="Interface\MD\IDeliveryConditionsRepo.cs" />
     <Compile Include="Interface\MD\IDoanhThuProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IDomainRepo.cs" />
     <Compile Include="Interface\MD\IFAQQuestionRepo.cs" />
@@ -438,6 +442,7 @@
     <Compile Include="Interface\MD\IProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IProjectRepo.cs" />
     <Compile Include="Interface\MD\IProvinceRepo.cs" />
+    <Compile Include="Interface\MD\IPurchaseDataRepo.cs" />
     <Compile Include="Interface\MD\IRouteRepo.cs" />
     <Compile Include="Interface\MD\ISanBayRepo.cs" />
     <Compile Include="Interface\MD\ISanLuongProfitCenter.cs" />
@@ -464,6 +469,7 @@
     <Compile Include="Interface\MD\IUserReviewRepo.cs" />
     <Compile Include="Interface\MD\IVehicleRepo.cs" />
     <Compile Include="Interface\MD\IVendorRepo.cs" />
+    <Compile Include="Interface\MD\IWarehouseRepo.cs" />
     <Compile Include="Interface\WF\IActivityComRepo.cs" />
     <Compile Include="Interface\WF\IActivityRepo.cs" />
     <Compile Include="Interface\WF\IActivityUserRepo.cs" />
@@ -615,6 +621,7 @@
     <Compile Include="Mapping\MD\T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DICTIONARY_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_DELIVERY_CONDITIONS_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DOANH_THU_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DOMAIN_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_GIAI_DOAN_DAU_TU_Map.cs" />
@@ -638,6 +645,7 @@
     <Compile Include="Mapping\MD\T_MD_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PROJECT_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PROVINCE_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_PURCHASE_DATA_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_ROUTE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_SAN_BAY_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_SAN_LUONG_PROFIT_CENTER_Map.cs" />
@@ -655,6 +663,7 @@
     <Compile Include="Mapping\MD\T_MD_USER_REVIEW_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_VEHICLE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_VENDOR_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_WAREHOUSE_Map.cs" />
     <Compile Include="Mapping\MD\T_SAP_ACTUAL_DATA_Map.cs" />
     <Compile Include="Mapping\MD\T_SAP_MD_COST_CF_ELEMENT_Map.cs" />
     <Compile Include="Mapping\MD\T_SAP_MD_COST_PL_ELEMENT_Map.cs" />

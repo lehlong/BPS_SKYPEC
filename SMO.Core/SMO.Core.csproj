@@ -251,6 +251,7 @@
     <Compile Include="Entities\MD\T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DICTIONARY.cs" />
+    <Compile Include="Entities\MD\T_MD_DELIVERY_CONDITIONS.cs" />
     <Compile Include="Entities\MD\T_MD_DOANH_THU_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DOMAIN.cs" />
     <Compile Include="Entities\MD\T_MD_GIAI_DOAN_DAU_TU.cs" />
@@ -275,6 +276,7 @@
     <Compile Include="Entities\MD\T_MD_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_PROJECT.cs" />
     <Compile Include="Entities\MD\T_MD_PROVINCE.cs" />
+    <Compile Include="Entities\MD\T_MD_PURCHASE_DATA.cs" />
     <Compile Include="Entities\MD\T_MD_ROUTE.cs" />
     <Compile Include="Entities\MD\T_MD_SAN_BAY.cs" />
     <Compile Include="Entities\MD\T_MD_SAN_LUONG_PROFIT_CENTER.cs" />
@@ -292,6 +294,7 @@
     <Compile Include="Entities\MD\T_MD_USER_REVIEW.cs" />
     <Compile Include="Entities\MD\T_MD_VEHICLE.cs" />
     <Compile Include="Entities\MD\T_MD_VENDOR.cs" />
+    <Compile Include="Entities\MD\T_MD_WAREHOUSE.cs" />
     <Compile Include="Entities\MD\T_SAP_ACTUAL_DATA.cs" />
     <Compile Include="Entities\MD\T_SAP_MD_COST_CF_ELEMENT.cs" />
     <Compile Include="Entities\MD\T_SAP_MD_COST_PL_ELEMENT.cs" />

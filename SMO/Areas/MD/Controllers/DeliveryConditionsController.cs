@@ -5,13 +5,13 @@ using System.Web.Mvc;
 namespace SMO.Areas.MD.Controllers
 {
     [AuthorizeCustom(Right = "R270")]
-    public class ElementController : Controller
+    public class DeliveryConditionsController : Controller
     {
-        private readonly ElementService _service;
+        private readonly DeliveryConditionsService _service;
 
-        public ElementController()
+        public DeliveryConditionsController()
         {
-            _service = new ElementService();
+            _service = new DeliveryConditionsService();
         }
 
         [MyValidateAntiForgeryToken]
@@ -20,20 +20,8 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        [MyValidateAntiForgeryToken]
-        public ActionResult IndexKeHoachGiaThanh()
-        {
-            return PartialView(_service);
-        }
-
-        public ActionResult GetDataKeHoachGiaThanh(int year)
-        {
-            var data = _service.GetDataKeHoachGiaThanh(year);
-            return PartialView(data);
-        }
-
         [ValidateAntiForgeryToken]
-        public ActionResult List(ElementService service)
+        public ActionResult List(DeliveryConditionsService service)
         {
             service.Search();
             return PartialView(service);
@@ -47,7 +35,7 @@ namespace SMO.Areas.MD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ElementService service)
+        public ActionResult Create(DeliveryConditionsService service)
         {
             var result = new TransferObject
             {
@@ -79,7 +67,7 @@ namespace SMO.Areas.MD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update(ElementService service)
+        public ActionResult Update(DeliveryConditionsService service)
         {
             var result = new TransferObject
             {

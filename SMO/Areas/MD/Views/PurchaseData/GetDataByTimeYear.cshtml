@@ -1,0 +1,101 @@
+﻿@model List<SMO.Core.Entities.T_MD_PURCHASE_DATA>
+
+<style>
+    .input-paste {
+        border: none;
+        background: none;
+        width:100%
+    }
+</style>
+<div>
+    <table class="table table-condensed table-bordered table-striped" id="table-purchase-data">
+        <thead>
+            <tr>
+                <th rowspan="2">Kho đầu nguồn</th>
+                <th rowspan="2">ĐK giao hàng</th>
+                <th colspan="2">Tỷ lệ nhập</th>
+                <th colspan="2">Premium</th>
+                <th rowspan="2">Thùng/Tấn</th>
+                <th rowspan="2">Bảo hiểm ($/tấn)</th>
+                <th rowspan="2">Thuế suất</th>
+            </tr>
+            <tr>
+                <th>Tỷ lệ nhập theo kho</th>
+                <th>SL nhập theo kho</th>
+                <th>Hàng/thùng</th>
+                <th>Tàu</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><input class="WAREHOUSE_CODE" value="@item.WAREHOUSE_CODE" disabled style="background:none; border:none" /></td>
+                    <td><input class="DELIVERY_CONDITIONS_CODE" value="@item.DELIVERY_CONDITIONS_CODE" disabled style="background:none; border:none" /></td>
+                    <td><input class="input-paste S0001" value="@item.S0001" /></td>
+                    <td><input class="input-paste S0002" value="@item.S0002" /></td>
+                    <td><input class="input-paste S0003" value="@item.S0003" /></td>
+                    <td><input class="input-paste S0004" value="@item.S0004" /></td>
+                    <td><input class="input-paste S0005" value="@item.S0005" /></td>
+                    <td><input class="input-paste S0006" value="@item.S0006" /></td>
+                    <td><input class="input-paste S0007" value="@item.S0007" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $('.input-paste').on('paste', function (e) {
+        var $this = $(this);
+        $.each(e.originalEvent.clipboardData.items, function (i, v) {
+            if (v.type === 'text/plain') {
+                v.getAsString(function (text) {
+                    var x = $this.closest('td').index(),
+                        y = $this.closest('tr').index(),
+                        obj = {};
+                    text = text.trim('\r\n');
+                    $.each(text.split('\r\n'), function (i2, v2) {
+                        $.each(v2.split('\t'), function (i3, v3) {
+                            var row = y + i2 + 1, col = x + i3;
+                            obj['cell-' + row + '-' + col] = v3;
+                            $this.closest('table').find('tr:eq(' + row + ') td:eq(' + col + ') .input-paste').val(v3);
+                        });
+                    });
+                });
+            }
+        });
+        return false;
+    });
+
+    function savePurchaseData() {
+        var year = $("#TIME_YEAR").val();
+        var data = [];
+        $('#table-purchase-data > tbody  > tr').each(function (index, tr) {
+            row = $(this);
+            data.push({
+                WAREHOUSE_CODE: row.find(".WAREHOUSE_CODE").val(),
+                DELIVERY_CONDITIONS_CODE: row.find(".DELIVERY_CONDITIONS_CODE").val(),
+                TIME_YEAR: year,
+                S0001: row.find(".S0001").val(),
+                S0002: row.find(".S0002").val(),
+                S0003: row.find(".S0003").val(),
+                S0004: row.find(".S0004").val(),
+                S0005: row.find(".S0005").val(),
+                S0006: row.find(".S0006").val(),
+                S0007: row.find(".S0007").val(),
+            })
+        });
+        var ajaxParams = {
+            url: "@Url.Action("Update")",
+            type: "POST",
+            data: {
+                data: JSON.stringify(data)
+            },
+            dataType: 'json',
+            success: function (response) {
+                Message.execute(response);
+            }
+        }
+        Forms.Ajax(ajaxParams)
+    }
+</script>

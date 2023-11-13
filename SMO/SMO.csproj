@@ -563,6 +563,7 @@
     <Compile Include="Areas\MD\Controllers\DauTuNgoaiDoanhNghiepProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuTrangThietBiProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuXayDungProfitCenterController.cs" />
+    <Compile Include="Areas\MD\Controllers\DeliveryConditionsController.cs" />
     <Compile Include="Areas\MD\Controllers\DoanhThuProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\FAQQuestionController.cs" />
     <Compile Include="Areas\MD\Controllers\FrequentlyAskedController.cs" />
@@ -591,6 +592,7 @@
     <Compile Include="Areas\MD\Controllers\PreventiveController.cs" />
     <Compile Include="Areas\MD\Controllers\ProjectController.cs" />
     <Compile Include="Areas\MD\Controllers\ProvinceController.cs" />
+    <Compile Include="Areas\MD\Controllers\PurcharseDataController.cs" />
     <Compile Include="Areas\MD\Controllers\RouteController.cs" />
     <Compile Include="Areas\MD\Controllers\SanBayController.cs" />
     <Compile Include="Areas\MD\Controllers\SanLuongProfitCenterController.cs" />
@@ -606,6 +608,7 @@
     <Compile Include="Areas\MD\Controllers\UnitPriceController.cs" />
     <Compile Include="Areas\MD\Controllers\UserReviewController.cs" />
     <Compile Include="Areas\MD\Controllers\VehicleController.cs" />
+    <Compile Include="Areas\MD\Controllers\WarehouseController.cs" />
     <Compile Include="Areas\MD\MDAreaRegistration.cs" />
     <Compile Include="Areas\RP\Controllers\ReportTableauController.cs" />
     <Compile Include="Areas\RP\RPAreaRegistration.cs" />
@@ -645,6 +648,7 @@
     <Compile Include="Hubs\ConnectionMapping.cs" />
     <Compile Include="Hubs\NotificationHub.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DataCenterModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\StepBudgetItem.cs" />
@@ -785,6 +789,7 @@
     <Compile Include="Service\MD\DauTuNgoaiDoanhNghiepProfitCenterService.cs" />
     <Compile Include="Service\MD\DauTuTrangThietBiProfitCenterService.cs" />
     <Compile Include="Service\MD\DauTuXayDungProfitCenterService.cs" />
+    <Compile Include="Service\MD\DeliveryConditionsService.cs" />
     <Compile Include="Service\MD\DoanhThuProfitCenterService.cs" />
     <Compile Include="Service\MD\GiaiDoanDauTuService.cs" />
     <Compile Include="Service\MD\HangHangKhongService.cs" />
@@ -815,6 +820,7 @@
     <Compile Include="Service\MD\PreventiveService.cs" />
     <Compile Include="Service\MD\ProjectService.cs" />
     <Compile Include="Service\MD\ProvinceService.cs" />
+    <Compile Include="Service\MD\PurchaseDataService.cs" />
     <Compile Include="Service\MD\RouteService.cs" />
     <Compile Include="Service\MD\SanBayService.cs" />
     <Compile Include="Service\MD\SanLuongProfitCenterService.cs" />
@@ -830,6 +836,7 @@
     <Compile Include="Service\MD\UnitService.cs" />
     <Compile Include="Service\MD\UserReviewService.cs" />
     <Compile Include="Service\MD\VehicleService.cs" />
+    <Compile Include="Service\MD\WarehouseService.cs" />
     <Compile Include="Service\RecaptchaValidationService.cs" />
     <Compile Include="Service\WF\WorkFlowService.cs" />
     <Compile Include="SimpleHelpers\ObjectDiffPatch.cs" />
@@ -1799,6 +1806,18 @@
     <Content Include="Areas\MD\Views\Element\List.cshtml" />
     <Content Include="Areas\MD\Views\Element\Create.cshtml" />
     <Content Include="Areas\MD\Views\Element\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\Warehouse\Index.cshtml" />
+    <Content Include="Areas\MD\Views\Warehouse\List.cshtml" />
+    <Content Include="Areas\MD\Views\Warehouse\Create.cshtml" />
+    <Content Include="Areas\MD\Views\Warehouse\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\DeliveryConditions\Index.cshtml" />
+    <Content Include="Areas\MD\Views\DeliveryConditions\List.cshtml" />
+    <Content Include="Areas\MD\Views\DeliveryConditions\Create.cshtml" />
+    <Content Include="Areas\MD\Views\DeliveryConditions\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\Element\IndexKeHoachGiaThanh.cshtml" />
+    <Content Include="Areas\MD\Views\Element\GetDataKeHoachGiaThanh.cshtml" />
+    <Content Include="Areas\MD\Views\PurchaseData\Index.cshtml" />
+    <Content Include="Areas\MD\Views\PurchaseData\GetDataByTimeYear.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1947,6 +1966,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\MD\Views\ChiPhiProfitCenter\" />
     <Folder Include="Areas\MD\Views\DauTuNgoaiDoanhNghiepProfitCenter\" />
+    <Folder Include="Areas\MD\Views\PurcharseData\" />
     <Folder Include="BuildPlus\" />
     <Folder Include="Content\IconFileType\" />
     <Folder Include="Content\ImageUpload\" />

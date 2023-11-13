@@ -21,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.ObjList)
+            @foreach (var item in Model.ObjList.OrderBy(x => x.CODE))
             {
                 number++;
                 var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.CODE }));
