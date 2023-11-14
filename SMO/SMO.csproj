@@ -601,6 +601,7 @@
     <Compile Include="Areas\MD\Controllers\SAPMdGLAccountController.cs" />
     <Compile Include="Areas\MD\Controllers\SAPMdPaymentController.cs" />
     <Compile Include="Areas\MD\Controllers\ElementController.cs" />
+    <Compile Include="Areas\MD\Controllers\SharedDataController.cs" />
     <Compile Include="Areas\MD\Controllers\TemplateBaseController.cs" />
     <Compile Include="Areas\MD\Controllers\TemplateController.cs" />
     <Compile Include="Areas\MD\Controllers\TransportGroupController.cs" />
@@ -829,6 +830,7 @@
     <Compile Include="Service\MD\SAPMdGLAccountService.cs" />
     <Compile Include="Service\MD\SAPMdPaymentService.cs" />
     <Compile Include="Service\MD\ElementService.cs" />
+    <Compile Include="Service\MD\SharedDataService.cs" />
     <Compile Include="Service\MD\TemplateBaseService.cs" />
     <Compile Include="Service\MD\TemplateService.cs" />
     <Compile Include="Service\MD\TransportGroupService.cs" />
@@ -1818,6 +1820,10 @@
     <Content Include="Areas\MD\Views\Element\GetDataKeHoachGiaThanh.cshtml" />
     <Content Include="Areas\MD\Views\PurchaseData\Index.cshtml" />
     <Content Include="Areas\MD\Views\PurchaseData\GetDataByTimeYear.cshtml" />
+    <Content Include="Areas\MD\Views\SharedData\Index.cshtml" />
+    <Content Include="Areas\MD\Views\SharedData\List.cshtml" />
+    <Content Include="Areas\MD\Views\SharedData\Create.cshtml" />
+    <Content Include="Areas\MD\Views\SharedData\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -1,60 +1,173 @@
 ﻿@model SMO.Models.DataCenterModel
+@using SMO.Models;
+@{
+    var lstSharedData = ViewBag.LstSharedData as List<SMO.Core.Entities.T_MD_SHARED_DATA>;
 
-<div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
-    <table class="table table-condensed table-bordered table-striped" style="text-align:center">
-        <thead>
-            <tr>
-                <th rowspan="2">Kho đầu nguồn</th>
-                <th rowspan="2">ĐK giao hàng</th>
-                <th colspan="2" class="align-center">Tỷ lệ nhập</th>
-                <th rowspan="2">Platt's ($/thùng)</th>
-                <th colspan="2" class="align-center">Premium</th>
-                <th rowspan="2">CFR ($/thùng)</th>
-                <th rowspan="2">Thùng/tấn</th>
-                <th rowspan="2">Giá CFR ($/tấn)</th>
-                <th rowspan="2">Bảo hiểm ($/tấn)</th>
-                <th colspan="2" class="align-center">Thuế NK</th>
-                <th rowspan="2">CIF + tấn ($/tấn)</th>
-                <th rowspan="2">CIF + tấn ($/tấn) BQ</th>
-                <th rowspan="2">CIF + tấn ($/tấn) BQ</th>
-                <th rowspan="2">Pre + BH ($/thùng)</th>
-                <th rowspan="2"></th>
-                <th rowspan="2">Giảm trừ thuế hàng <br /> Dung Quất + Form D</th>
-            </tr>
-            <tr>
-                <th>Tỷ lệ nhập theo kho</th>
-                <th>SL nhập theo kho</th>
-                <th>Hàng (thùng)</th>
-                <th>Tàu</th>
-                <th>Thuế suất</th>
-                <th>Thuế ($/tấn)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.KeHoachGiaThanhData)
-            {
-                <tr>
-                    <td>@item.Warehouse</td>
-                    <td>@item.DeliveryConditions</td>
-                    <td>@item.S0001.ToStringVN()</td>
-                    <td>@item.S0002.ToStringVN()</td>
-                    <td>@item.U0001.ToStringVN()</td>
-                    <td>@item.S0003.ToStringVN()</td>
-                    <td>@item.S0004.ToStringVN()</td>
-                    <td>@item.U0002.ToStringVN()</td>
-                    <td>@item.S0005.ToStringVN()</td>
-                    <td>@item.U0003.ToStringVN()</td>
-                    <td>@item.S0006.ToStringVN()</td>
-                    <td>@item.S0007.ToStringVN()</td>
-                    <td>@item.U0004.ToStringVN()</td>
-                    <td>@item.U0005.ToStringVN()</td>
-                    <td>@item.U0006.ToStringVN()</td>
-                    <td>@item.U0007.ToStringVN()</td>
-                    <td>@item.U0008.ToStringVN()</td>
-                    <td>@item.U0009.ToStringVN()</td>
-                    <td>@item.U0010.ToStringVN()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    var lstWarehouse = Model.KeHoachGiaThanhData.GroupBy(x => x.Warehouse).Select(x => x.First()).ToList();
+    foreach (var item in lstWarehouse)
+    {
+        var data = new PreTrungBinhKhoData();
+        data.Warehouse = item.Warehouse;
+        if (item.Warehouse == "Liên Chiểu" || item.Warehouse == "Dung Quất")
+        {
+            data.PreTrungBinh = item.U0008;
+        }
+        else
+        {
+            var a = Model.KeHoachGiaThanhData.Where(x => x.Warehouse == item.Warehouse).Sum(x => x.U0008 * x.S0002);
+            var b = Model.KeHoachGiaThanhData.Where(x => x.Warehouse == item.Warehouse).Sum(x => x.S0002);
+            data.PreTrungBinh = a == 0 || b == 0 ? 0 : a / b;
+        }
+
+        if (data.Warehouse == "Cát Lái")
+        {
+            var c = Model.KeHoachGiaThanhData.Where(x => x.Warehouse == item.Warehouse).Sum(x => x.S0002);
+            data.SanLuong = c == 0 ? 0 : c / lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE - Model.KeHoachGiaThanhData.Where(x => x.Warehouse == "Liên Chiểu").Sum(x => x.S0002);
+        }
+        else
+        {
+            var d = Model.KeHoachGiaThanhData.Where(x => x.Warehouse == item.Warehouse).Sum(x => x.S0002);
+            data.SanLuong = d == 0 ? 0 : d / lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE;
+        }
+
+        var e = data.PreTrungBinh;
+        data.TrungBinh = e == 0 ? 0 : e * lstSharedData.FirstOrDefault(x => x.CODE == "2").VALUE / lstSharedData.FirstOrDefault(x => x.CODE == "4").VALUE;
+
+        Model.PreTrungBinhKhoData.Add(data);
+    }
+}
+
+<ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
+    <li role="presentation" class="active" style="cursor: pointer;">
+        <a href="#pre-kho-1" title="Kế hoạch theo tháng" data-toggle="tab">Pre kho 1</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#pre-tb-kho">Pre TB kho</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#pre">Pre</a>
+    </li>
+</ul>
+<div class="tab-content" style="padding-bottom:0">
+    <div role="tabpanel" class="tab-pane fade in active" id="pre-kho-1">
+        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Kho đầu nguồn</th>
+                            <th rowspan="2">ĐK giao hàng</th>
+                            <th colspan="2" class="align-center">Tỷ lệ nhập</th>
+                            <th rowspan="2">Platt's ($/thùng)</th>
+                            <th colspan="2" class="align-center">Premium</th>
+                            <th rowspan="2">CFR ($/thùng)</th>
+                            <th rowspan="2">Thùng/tấn</th>
+                            <th rowspan="2">Giá CFR ($/tấn)</th>
+                            <th rowspan="2">Bảo hiểm ($/tấn)</th>
+                            <th colspan="2" class="align-center">Thuế NK</th>
+                            <th rowspan="2">CIF + tấn ($/tấn)</th>
+                            <th rowspan="2">CIF + tấn ($/tấn) BQ</th>
+                            <th rowspan="2">CIF + tấn ($/tấn) BQ</th>
+                            <th rowspan="2">Pre + BH ($/thùng)</th>
+                            <th rowspan="2"></th>
+                            <th rowspan="2">Giảm trừ thuế hàng <br /> Dung Quất + Form D</th>
+                        </tr>
+                        <tr>
+                            <th>Tỷ lệ nhập theo kho</th>
+                            <th>SL nhập theo kho</th>
+                            <th>Hàng (thùng)</th>
+                            <th>Tàu</th>
+                            <th>Thuế suất</th>
+                            <th>Thuế ($/tấn)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.KeHoachGiaThanhData)
+                        {
+                            <tr>
+                                <td>@item.Warehouse</td>
+                                <td>@item.DeliveryConditions</td>
+                                <td>@item.S0001.ToStringVN()</td>
+                                <td>@item.S0002.ToStringVN()</td>
+                                <td>@item.U0001.ToStringVN()</td>
+                                <td>@item.S0003.ToStringVN()</td>
+                                <td>@item.S0004.ToStringVN()</td>
+                                <td>@item.U0002.ToStringVN()</td>
+                                <td>@item.S0005.ToStringVN()</td>
+                                <td>@item.U0003.ToStringVN()</td>
+                                <td>@item.S0006.ToStringVN()</td>
+                                <td>@item.S0007.ToStringVN()</td>
+                                <td>@item.U0004.ToStringVN()</td>
+                                <td>@item.U0005.ToStringVN()</td>
+                                <td>@item.U0006.ToStringVN()</td>
+                                <td>@item.U0007.ToStringVN()</td>
+                                <td>@item.U0008.ToStringVN()</td>
+                                <td>@item.U0009.ToStringVN()</td>
+                                <td>@item.U0010.ToStringVN()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="pre-tb-kho">
+        <div class="sticky-table sticky-headers sticky-ltr-cells">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                    <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center;">Mã kho</th>
+                                <th style="text-align:center;">Pre trung bình kho/BBL</th>
+                                <th style="text-align:center;">Sản lượng (m3)</th>
+                                <th style="text-align:center;">Trung bình</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.PreTrungBinhKhoData)
+                            {
+                                <tr>
+                                    <td>@item.Warehouse</td>
+                                    <td>@item.PreTrungBinh.ToStringVN()</td>
+                                    <td>@item.SanLuong.ToStringVN()</td>
+                                    <td>@item.TrungBinh.ToStringVN()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="pre">
+        <div class="sticky-table sticky-headers sticky-ltr-cells">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                    <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                        @*<thead>
+                            <tr>
+                                <th style="text-align:center;">Mã kho</th>
+                                <th style="text-align:center;">Pre trung bình kho/BBL</th>
+                                <th style="text-align:center;">Sản lượng (m3)</th>
+                                <th style="text-align:center;">Trung bình</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.PreTrungBinhKhoData)
+                            {
+                                <tr>
+                                    <td>@item.Warehouse</td>
+                                    <td>@item.PreTrungBinh.ToStringVN()</td>
+                                    <td>@item.SanLuong.ToStringVN()</td>
+                                    <td>@item.TrungBinh.ToStringVN()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>*@
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

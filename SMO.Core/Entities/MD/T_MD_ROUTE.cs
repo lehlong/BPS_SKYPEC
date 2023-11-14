@@ -15,23 +15,11 @@ namespace SMO.Core.Entities.MD
         public virtual string CODE { get; set; }
         [Required(ErrorMessage = "Trường này bắt buộc nhập", AllowEmptyStrings = false)]
         public virtual string NAME { get; set; }
-        public virtual string AREA_CODE { get; set; }
-        
-        private T_MD_AREA _Area;     
-        public virtual T_MD_AREA Area
-        {
-            get
-            {
-                if (_Area == null)
-                {
-                    _Area = new T_MD_AREA();
-                }
-                return _Area;
-            }
-            set
-            {
-                _Area = value;
-            }
-        }
+        public virtual string FIRST_POINT { get; set; }
+        public virtual string FINAL_POINT { get; set; }
+        public virtual int KM_CO_HANG { get; set; }
+        public virtual int KM_KHONG_HANG { get; set; }
+        public virtual decimal HE_SO_HAO_HUT { get; set; }
+        public virtual string PARENT_LEVEL_ID { get; set; }
     }
 }

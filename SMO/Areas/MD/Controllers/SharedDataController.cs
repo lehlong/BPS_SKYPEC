@@ -1,18 +1,17 @@
-﻿using SMO.Repository.Implement.MD;
-using SMO.Service.MD;
-using System.Linq;
+﻿using SMO.Service.MD;
+
 using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
     [AuthorizeCustom(Right = "R270")]
-    public class ElementController : Controller
+    public class SharedDataController : Controller
     {
-        private readonly ElementService _service;
+        private readonly SharedDataService _service;
 
-        public ElementController()
+        public SharedDataController()
         {
-            _service = new ElementService();
+            _service = new SharedDataService();
         }
 
         [MyValidateAntiForgeryToken]
@@ -21,21 +20,8 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        [MyValidateAntiForgeryToken]
-        public ActionResult IndexKeHoachGiaThanh()
-        {
-            return PartialView(_service);
-        }
-
-        public ActionResult GetDataKeHoachGiaThanh(int year)
-        {
-            ViewBag.LstSharedData = _service.UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
-            var data = _service.GetDataKeHoachGiaThanh(year);
-            return PartialView(data);
-        }
-
         [ValidateAntiForgeryToken]
-        public ActionResult List(ElementService service)
+        public ActionResult List(SharedDataService service)
         {
             service.Search();
             return PartialView(service);
@@ -49,7 +35,7 @@ namespace SMO.Areas.MD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ElementService service)
+        public ActionResult Create(SharedDataService service)
         {
             var result = new TransferObject
             {
@@ -81,7 +67,7 @@ namespace SMO.Areas.MD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update(ElementService service)
+        public ActionResult Update(SharedDataService service)
         {
             var result = new TransferObject
             {

@@ -32,13 +32,13 @@
                 <tr>
                     <td><input class="WAREHOUSE_CODE" value="@item.WAREHOUSE_CODE" disabled style="background:none; border:none" /></td>
                     <td><input class="DELIVERY_CONDITIONS_CODE" value="@item.DELIVERY_CONDITIONS_CODE" disabled style="background:none; border:none" /></td>
-                    <td><input class="input-paste S0001" value="@item.S0001" /></td>
-                    <td><input class="input-paste S0002" value="@item.S0002" /></td>
-                    <td><input class="input-paste S0003" value="@item.S0003" /></td>
-                    <td><input class="input-paste S0004" value="@item.S0004" /></td>
-                    <td><input class="input-paste S0005" value="@item.S0005" /></td>
-                    <td><input class="input-paste S0006" value="@item.S0006" /></td>
-                    <td><input class="input-paste S0007" value="@item.S0007" /></td>
+                    <td><input class="input-paste S0001" value="@(item.S0001?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0002" value="@(item.S0002?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0003" value="@(item.S0003?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0004" value="@(item.S0004?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0005" value="@(item.S0005?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0006" value="@(item.S0006?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0007" value="@(item.S0007?.ToString("G29"))" /></td>
                 </tr>
             }
         </tbody>

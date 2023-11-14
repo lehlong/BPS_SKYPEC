@@ -281,6 +281,7 @@
     <Compile Include="Entities\MD\T_MD_SAN_BAY.cs" />
     <Compile Include="Entities\MD\T_MD_SAN_LUONG_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_ELEMENT.cs" />
+    <Compile Include="Entities\MD\T_MD_SHARED_DATA.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_DAU_TU_NGOAI_DOANH_NGHIEP.cs" />
     <Compile Include="Entities\MD\T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI.cs" />
