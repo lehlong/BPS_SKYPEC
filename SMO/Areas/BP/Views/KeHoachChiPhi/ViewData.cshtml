@@ -28,7 +28,7 @@
                     @using (Ajax.BeginForm("SummaryDataCenter", null, FormDataUtils.GetAjaxOptions(viewId, $"#divExportRight_{viewId}"), new { @id = formId }))
                     {
 
-                        Html.RenderPartial("_PartialViewExportHeader", Model,
+                        Html.RenderPartial("_PartialViewExportHeaderKeHoachChiPhi", Model,
                             new ViewDataDictionary
                             {
                                 new KeyValuePair<string, object>("viewId", viewId),
@@ -82,6 +82,8 @@
             </div>
             <div class="hidden">
                 <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("exportExcel")">
+                    @Html.Hidden("htmlMonth")
+                    @Html.Hidden("htmlYear")
                     @Html.Hidden("exportExcelYear", Model.YEAR)
                     @Html.Hidden("exportExcelVersion", Model.VERSION)
                     @Html.Hidden("exportExcelTemplate", Model.TEMPLATE_CODE)
@@ -89,6 +91,9 @@
                     @Html.Hidden("exportExcelCenterCode", Model.ORG_CODE)
                     @Html.Hidden("exportExcelUnit", Model.EXCHANGE_TYPE)
                     @Html.Hidden("exportExcelExchangeRate", Model.EXCHANGE_RATE)
+                    @Html.Hidden("kichBan", Model.KICH_BAN)
+                    @Html.Hidden("phienBan", Model.PHIEN_BAN)
+                    @Html.Hidden("moduleType")
                 </form>
             </div>
         </div>
@@ -120,7 +125,7 @@
             $('#@formIdExportExcel #exportExcelUnit').val($('#@formId #EXCHANGE_TYPE').val());
             $('#@formIdExportExcel #exportExcelIsDrillDown').val($('#@formId #IS_DRILL_DOWN').val() == undefined ? false : $('#@formId #IS_DRILL_DOWN').val());
             $('#@formIdExportExcel #exportExcelExchangeRate').val($('#@formId #EXCHANGE_RATE').val());
-            $('#@inputIdExportExcel').val(html);
+            $('#@formIdExportExcel #htmlMonth').val(html);
             $('#@formIdExportExcel').submit();
         }
 

@@ -4166,7 +4166,11 @@ namespace SMO.Service.BP.DAU_TU_NGOAI_DOANH_NGHIEP
         #endregion
 
         #region Export excel from data center view
-        public override void GenerateExportExcel(ref MemoryStream outFileStream, dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
+
+       
+
+        public override void GenerateExportExcel(ref MemoryStream outFileStream,dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
+
         {
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template

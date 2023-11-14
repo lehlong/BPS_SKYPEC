@@ -288,9 +288,14 @@ namespace SMO.Areas.BP.Controllers
         }
 
         [ValidateInput(false)]
+
+
+
+
         public FileContentResult ExportExcel(int exportExcelYear, int? exportExcelVersion, string exportExcelCenterCode, string exportExcelTemplate, string exportExcelUnit, decimal exportExcelExchangeRate, string kichBan, string moduleType)
-        { 
-            if (moduleType == "KeHoachSanLuong") {
+        {
+            if (moduleType == "KeHoachSanLuong")
+            {
                 var htmlMonth = HttpUtility.UrlDecode(Request.Form["htmlMonth"]);
                 var htmlYear = HttpUtility.UrlDecode(Request.Form["htmlYear"]);
                 if (htmlMonth is null && htmlYear is null)
@@ -358,7 +363,7 @@ namespace SMO.Areas.BP.Controllers
                 var fileName = $"{exportExcelTemplate}_{exportExcelYear}_{kichBan}_V{exportExcelVersion}_{moduleType}";
                 return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
             }
-                    
+
         }
 
         [HttpGet]

@@ -49,21 +49,48 @@
                                     <input type="file" accept=".xls, .xlsx" id="files" name="files" />
                                 </div>
                             </div>
+
+                            <label>Chọn kịch bản kế hoạch</label>
+                            <div class="form-group">
+                                @Html.MyDropDownListFor(x => x.ObjDetail.KICH_BAN,
+                                SelectListUtilities.GetAllKichBan(),
+                                    new
+                                    {
+                                        @class = "selectpicker show-tick",
+                                        @data_live_search = "true",
+                                        @data_container = "body"
+                                    })
+                            </div>
+
+                            <label>Chọn phiên bản kế hoạch</label>
+                            <div class="form-group">
+                                @Html.MyDropDownListFor(x => x.ObjDetail.PHIEN_BAN,
+                                SelectListUtilities.GetAllPhienBan(),
+                                    new
+                                    {
+                                        @class = "selectpicker show-tick",
+                                        @data_live_search = "true",
+                                        @data_container = "body"
+                                    })
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     }
-    <script type="text/javascript">
+<script type="text/javascript">
         $(function () {
             Forms.CompleteUI();
         });
 
         function SubmitImportExcel() {
             var formData = new FormData($('#@Model.FormId')[0]);
-            //var file = document.getElementById("files").files[0];
-            //formData.append("files", file);
+            if (document.getElementById("files").files.length == 0) {
+                alert("Vui lòng chọn file upload!");
+                return;
+            }
+            console.log(formData);
             Forms.ShowLoading();
             $.ajax({
                 type: "POST",
@@ -79,5 +106,32 @@
             });
         }
 
-    </script>
+        @*function onChangeTemplate(value) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CheckTemplate")',
+            data: {
+                template: value,
+                year: '@Model.ObjDetail.TIME_YEAR',
+                orgCode: '@ProfileUtilities.User.Organize.CODE'
+            },
+            success: function (response) {
+                if (response.State) {
+                    $(`#@Model.ViewId #ObjDetail_PHIEN_BAN option[value=${response.Data.PHIEN_BAN}]`).attr('selected', 'selected').trigger('change');
+                    $(`#@Model.ViewId #ObjDetail_KICH_BAN option[value=${response.Data.KICH_BAN}]`).attr('selected', 'selected').trigger('change');
+                    if (response.Data.KICH_BAN != null && response.Data.PHIEN_BAN != null) {
+                        $("#@Model.ViewId #ObjDetail_KICH_BAN").prop('disabled', 'disabled');
+                        $("#@Model.ViewId #ObjDetail_PHIEN_BAN").prop('disabled', 'disabled');
+                    } else {
+                        $("#@Model.ViewId #ObjDetail_KICH_BAN").removeAttr("disabled");
+                        $("#@Model.ViewId #ObjDetail_PHIEN_BAN").removeAttr("disabled");
+                    }
+                }
+            },
+            error: Forms.AjaxErrorHandler
+        });
+    }
+    onChangeTemplate($("#@Model.ViewId #ObjDetail_TEMPLATE_CODE").val());*@
+
+</script>
 </div>

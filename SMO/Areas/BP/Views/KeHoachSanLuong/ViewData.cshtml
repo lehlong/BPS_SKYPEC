@@ -111,6 +111,15 @@
 
         var lastScrollLeft = 0;
 
+        function htmlEncode(value) {
+            // Tạo một thẻ div ảo để chứa giá trị
+            var div = document.createElement('div');
+            // Thiết lập giá trị của thẻ div thành giá trị cần mã hóa
+            div.appendChild(document.createTextNode(value));
+            // Lấy nội dung của thẻ div, nó sẽ chứa giá trị đã được mã hóa HTML
+            return div.innerHTML;
+        }
+
         function DownloadDataCenter() {
             var htmlMonth = $('<div>').append($('#divExportRight_@viewId #table_month').clone()).html().trim();
             if (htmlMonth === '') {

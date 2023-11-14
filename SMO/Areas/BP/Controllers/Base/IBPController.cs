@@ -30,7 +30,10 @@ namespace SMO.Areas.BP.Controllers
         ActionResult ExportDataInformation(string orgCode, string templateId, int year, int? version);
         ActionResult ExportDataVersion(string orgCode, string templateId, int year, string viewId, string formId);
         ActionResult ExportDataViewHistory(string orgCode, string templateId, int year, string viewId, string formId);
-        FileContentResult ExportExcel( int exportExcelYear, int? exportExcelVersion, string exportExcelCenterCode, string exportExcelTemplate, string exportExcelUnit, decimal exportExcelExchangeRate, string kichBan, string moduleType);
+
+        
+
+        FileContentResult ExportExcel(int exportExcelYear, int? exportExcelVersion, string exportExcelCenterCode, string exportExcelTemplate, string exportExcelUnit, decimal exportExcelExchangeRate, string kichBan, string moduleType);
         JsonResult GetDetailPreviewSumUp(string centerCode, int year, string elementCode);
         JsonResult GetDetailSumUp(string centerCode, int year, string elementCode, int version, int? sumUpVersion);
         ActionResult GetDetailSumUpReview(string centerCode, int year, string elementCode, int version, int? sumUpVersion, string templateCode, bool? isShowFile, bool? fileBase);

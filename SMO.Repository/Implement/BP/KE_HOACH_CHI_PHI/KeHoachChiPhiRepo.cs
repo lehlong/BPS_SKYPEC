@@ -21,6 +21,17 @@ namespace SMO.Repository.Implement.BP
                 query = query.Where(x => x.ORG_CODE == objFilter.ORG_CODE);
             }
 
+            if (string.IsNullOrWhiteSpace(objFilter.PHIEN_BAN))
+            {
+                objFilter.PHIEN_BAN = "PB1";
+            }
+            query = query.Where(x => x.PHIEN_BAN == objFilter.PHIEN_BAN);
+
+            if (string.IsNullOrWhiteSpace(objFilter.KICH_BAN))
+            {
+                objFilter.KICH_BAN = "TB";
+            }
+            query = query.Where(x => x.KICH_BAN == objFilter.KICH_BAN);
             if (objFilter.TIME_YEAR != 0)
             {
                 query = query.Where(x => x.TIME_YEAR == objFilter.TIME_YEAR);

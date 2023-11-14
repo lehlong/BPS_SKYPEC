@@ -14,16 +14,16 @@
 #pragma warning disable 1591
 
 namespace SMO.SMS_GW {
-    using System;
-    using System.Web.Services;
     using System.Diagnostics;
-    using System.Web.Services.Protocols;
+    using System;
     using System.Xml.Serialization;
     using System.ComponentModel;
+    using System.Web.Services.Protocols;
+    using System.Web.Services;
     
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3190.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="SendShortMessageFromExternalSoap", Namespace="http://tempuri.org/")]
@@ -35,7 +35,7 @@ namespace SMO.SMS_GW {
         
         /// <remarks/>
         public SendShortMessageFromExternal() {
-            this.Url = global::SMO.Properties.Settings.Default.SMO_SMS_GW_SendShortMessageFromExternal;
+            this.Url = "http://sms.petrolimexsg.com.vn/SendShortMessageFromExternal.asmx";
             if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;
@@ -129,11 +129,11 @@ namespace SMO.SMS_GW {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3190.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void SendSMSCompletedEventHandler(object sender, SendSMSCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3190.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SendSMSCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {

@@ -1,4 +1,6 @@
-﻿using NPOI.SS.UserModel;
+﻿using NHibernate.Criterion;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.Streaming.Values;
 using NPOI.XSSF.UserModel;
 
 using SMO.AppCode.Utilities;
@@ -1690,6 +1692,8 @@ namespace SMO.Service.BP
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
                         VERSION = versionNext,
+                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                        KICH_BAN = ObjDetail.KICH_BAN,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
                         FILE_ID = fileStream.PKID,
                         IS_REVIEWED = false,
@@ -1706,6 +1710,8 @@ namespace SMO.Service.BP
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
+                    PHIEN_BAN = KeHoachChiPhiCurrent == null?ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
+                    KICH_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.KICH_BAN : KeHoachChiPhiCurrent.KICH_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     FILE_ID = fileStream.PKID,
                     CREATE_BY = currentUser
@@ -1718,6 +1724,8 @@ namespace SMO.Service.BP
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
+                    PHIEN_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
+                    KICH_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.KICH_BAN : KeHoachChiPhiCurrent.KICH_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     ACTION = Approve_Action.NhapDuLieu,
                     ACTION_DATE = DateTime.Now,
@@ -1903,6 +1911,8 @@ namespace SMO.Service.BP
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
                         VERSION = versionNext,
+                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                        KICH_BAN = ObjDetail.KICH_BAN,
                         IS_DELETED = false,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
                         FILE_ID = fileStream.PKID,
@@ -1918,6 +1928,8 @@ namespace SMO.Service.BP
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
+                    PHIEN_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
+                    KICH_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.KICH_BAN : KeHoachChiPhiCurrent.KICH_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     FILE_ID = fileStream.PKID,
                     CREATE_BY = currentUser
@@ -1930,6 +1942,8 @@ namespace SMO.Service.BP
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
+                    PHIEN_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
+                    KICH_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.KICH_BAN : KeHoachChiPhiCurrent.KICH_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     ACTION = Approve_Action.NhapDuLieu,
                     ACTION_DATE = DateTime.Now,
@@ -4141,7 +4155,11 @@ namespace SMO.Service.BP
         #endregion
 
         #region Export excel from data center view
-        public override void GenerateExportExcel(ref MemoryStream outFileStream, dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
+
+ 
+
+        public override void GenerateExportExcel(ref MemoryStream outFileStream,dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
+
         {
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
@@ -4165,7 +4183,9 @@ namespace SMO.Service.BP
                 metaDataMonth.MetaTBody,
                 NUM_CELL_MONTH,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-
+            if(!string.IsNullOrEmpty(htmlYear))
+            {
+                
             ISheet sheetYear = workbook.GetSheetAt(1);
             var metaDataYear = ExcelHelper.GetExcelMeta(htmlYear);
             var NUM_CELL_YEAR = 7;
@@ -4177,7 +4197,7 @@ namespace SMO.Service.BP
                 metaDataYear.MetaTBody,
                 NUM_CELL_YEAR,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-
+            }
 
 
 
