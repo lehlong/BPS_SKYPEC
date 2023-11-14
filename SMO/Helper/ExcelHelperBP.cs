@@ -132,6 +132,7 @@ namespace SMO.Helper
             }
         }
 
+
         public static void InsertBodyTableByYear(ref IWorkbook workbook,
             ref ISheet sheet,
             IList<IList<ExcelCellMeta>> metaTBody,
@@ -224,7 +225,7 @@ namespace SMO.Helper
             var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
             ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
             rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {centerName}");
-            rowHeader1.Cells[2].SetCellValue(name);
+            rowHeader1.Cells[3].SetCellValue(name);
 
             var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
             ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);

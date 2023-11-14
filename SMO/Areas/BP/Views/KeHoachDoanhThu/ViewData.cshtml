@@ -83,8 +83,12 @@
             </div>
             <div class="hidden">
                 <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("exportExcel")">
-                    @Html.Hidden("htmlMonth")
-                    @Html.Hidden("htmlYear")
+                    @Html.Hidden("htmlKeHoachTong")
+                    @Html.Hidden("htmlTraNapNoiDia")
+                    @Html.Hidden("htmlTraNapQuocTe")
+                    @Html.Hidden("htmlDoanhThuTong")
+                    @Html.Hidden("htmlDoanhThuNoiDia")
+                    @Html.Hidden("htmlDoanhThuQuocTe")
                     @Html.Hidden("exportExcelYear", Model.YEAR)
                     @Html.Hidden("exportExcelVersion", Model.VERSION)
                     @Html.Hidden("exportExcelTemplate", Model.TEMPLATE_CODE)
@@ -144,15 +148,27 @@
         var lastScrollLeft = 0;
 
         function DownloadDataCenter() {
-            var htmlKeHoachTong = $('<div>').append($('#divExportRight_@viewId #ke-hoach-tong').clone()).html().trim();
+            var htmlKeHoachTong = $('<div>').append($('#divExportRight_@viewId #table_ke_hoach_tong').clone()).html().trim();
             if (htmlKeHoachTong === '') {
                 return;
             }
-            var htmlDoanhThuNoiDia = $('<div>').append($('#divExportRight_@viewId #doanh-thu-noi-dia').clone()).html().trim();
+            var htmlTraNapNoiDia = $('<div>').append($('#divExportRight_@viewId #table_tra_nap_noi_dia').clone()).html().trim();
+            if (htmlTraNapNoiDia === '') {
+                return;
+            }
+            var htmlTraNapQuocTe = $('<div>').append($('#divExportRight_@viewId #table_tra_nap_quoc_te').clone()).html().trim();
+            if (htmlTraNapQuocTe === '') {
+                return;
+            }
+            var htmlDoanhThuTong = $('<div>').append($('#divExportRight_@viewId #table_doanh_thu_tong').clone()).html().trim();
+            if (htmlDoanhThuTong === '') {
+                return;
+            }
+            var htmlDoanhThuNoiDia = $('<div>').append($('#divExportRight_@viewId #table_doanh_thu_noi_dia').clone()).html().trim();
             if (htmlDoanhThuNoiDia === '') {
                 return;
             }
-            var htmlDoanhThuQuocTe = $('<div>').append($('#divExportRight_@viewId #doanh-thu-quoc-te').clone()).html().trim();
+            var htmlDoanhThuQuocTe = $('<div>').append($('#divExportRight_@viewId #table_doanh_thu_quoc_te').clone()).html().trim();
             if (htmlDoanhThuQuocTe === '') {
                 return;
             }
@@ -169,9 +185,12 @@
             $('#@formIdExportExcel #phienBan').val($('#@formId #PHIEN_BAN').val());
             $('#@formIdExportExcel #hangHangKhong').val($('#@formId #HANG_HANG_KHONG_CODE').val());
             $('#@formIdExportExcel #moduleType').val("KeHoachDoanhThu");
-            $('#@formIdExportExcel #htmlKeHoachTong').val(htmlKeHoachTong);
-            $('#@formIdExportExcel #htmlDoanhThuNoiDia').val(htmlDoanhThuNoiDia);
-            $('#@formIdExportExcel #htmlDoanhThuQuocTe').val(htmlDoanhThuQuocTe);
+            $('#@formIdExportExcel #htmlKeHoachTong').val(encodeURIComponent(htmlKeHoachTong));
+            $('#@formIdExportExcel #htmlTraNapNoiDia').val(encodeURIComponent(htmlTraNapNoiDia));
+            $('#@formIdExportExcel #htmlTraNapQuocTe').val(encodeURIComponent(htmlTraNapQuocTe));
+            $('#@formIdExportExcel #htmlDoanhThuTong').val(encodeURIComponent(htmlDoanhThuTong));
+            $('#@formIdExportExcel #htmlDoanhThuNoiDia').val(encodeURIComponent(htmlDoanhThuNoiDia));
+            $('#@formIdExportExcel #htmlDoanhThuQuocTe').val(encodeURIComponent(htmlDoanhThuQuocTe));
             $('#@formIdExportExcel').submit();
         }
 

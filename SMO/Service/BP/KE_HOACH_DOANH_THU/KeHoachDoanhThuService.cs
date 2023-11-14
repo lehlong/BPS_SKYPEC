@@ -4332,10 +4332,16 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
         #endregion
 
         #region Export excel from data center view
-        public override void GenerateExportExcel(ref MemoryStream outFileStream, string htmlMonth, string htmlYear, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
+        public override void GenerateExportExcel(ref MemoryStream outFileStream, dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
         {
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
+            var htmlKeHoachTong = table.htmlKeHoachTong;
+            var htmlTraNapNoiDia = table.htmlTraNapNoiDia;
+            var htmlTraNapQuocTe = table.htmlTraNapQuocTe;
+            var htmlDoanhThuTong = table.htmlDoanhThuTong;
+            var htmlDoanhThuNoiDia = table.htmlDoanhThuNoiDia;
+            var htmlDoanhThuQuocTe = table.htmlDoanhThuQuocTe;
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
@@ -4343,40 +4349,81 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             fs.Close();
 
 
-            ISheet sheetMonth = workbook.GetSheetAt(0);
-            var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
-            var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
+            ISheet sheetKeHoachTong = workbook.GetSheetAt(0);
+            var metaDataKeHoachTong = ExcelHelper.GetExcelMeta(htmlKeHoachTong);
+            var NUM_CELL_KE_HOACH_TONG = string.IsNullOrEmpty(templateId) ? 18 : 18;
 
-            InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            InitHeaderFile(ref sheetKeHoachTong, year, centerCode, version, NUM_CELL_KE_HOACH_TONG, templateId, "Tấn", exchangeRate);
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetKeHoachTong, metaDataKeHoachTong.MetaTHead, NUM_CELL_KE_HOACH_TONG, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
-                ref sheetMonth,
-                metaDataMonth.MetaTBody,
-                NUM_CELL_MONTH,
+                ref sheetKeHoachTong,
+                metaDataKeHoachTong.MetaTBody,
+                NUM_CELL_KE_HOACH_TONG,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
 
-            ISheet sheetYear = workbook.GetSheetAt(1);
-            var metaDataYear = ExcelHelper.GetExcelMeta(htmlYear);
-            var NUM_CELL_YEAR = 7;
-
-            InitHeaderFile(ref sheetYear, year, centerCode, version, NUM_CELL_YEAR, templateId, "Tấn", exchangeRate);
-            //ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetYear, metaDataYear.MetaTHead, NUM_CELL_YEAR, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            ExcelHelperBP.InsertBodyTableByYear(ref workbook,
-                ref sheetYear,
-                metaDataYear.MetaTBody,
-                NUM_CELL_YEAR,
+            ISheet sheetTraNapNoiDia = workbook.GetSheetAt(1);
+            var metaDataTraNapNoiDia = ExcelHelper.GetExcelMeta(htmlTraNapNoiDia);
+            var NUM_CELL_DOANH_THU_NOI_DIA = 18;
+            
+            InitHeaderFile(ref sheetTraNapNoiDia, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
+            /*ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuNoiDia, metaDataDoanhThuNoiDia.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));*/
+            ExcelHelperBP.InsertBodyTable(ref workbook,
+                ref sheetTraNapNoiDia,
+                metaDataTraNapNoiDia.MetaTBody,
+                NUM_CELL_DOANH_THU_NOI_DIA,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
 
+            ISheet sheetTraNapQuocTe = workbook.GetSheetAt(2);
+            var metaDataTraNapQuocTe = ExcelHelper.GetExcelMeta(htmlTraNapQuocTe);
+            var NUM_CELL_DOANH_THU_QUOC_TE = 18;
 
+            InitHeaderFile(ref sheetTraNapQuocTe, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetTraNapQuocTe, metaDataTraNapQuocTe.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertBodyTable(ref workbook,
+                ref sheetTraNapQuocTe,
+                metaDataTraNapQuocTe.MetaTBody,
+                NUM_CELL_DOANH_THU_NOI_DIA,
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
 
+            ISheet sheetDoanhThuTong = workbook.GetSheetAt(3);
+            var metaDataDoanhThuTong = ExcelHelper.GetExcelMeta(htmlDoanhThuTong);
+            var NUM_CELL_DOANH_THU_TONG = 10;
+            InitHeaderFile(ref sheetDoanhThuTong, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuTong, metaDataDoanhThuTong.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertBodyTable(ref workbook,
+                ref sheetDoanhThuTong,
+                metaDataDoanhThuTong.MetaTBody,
+                NUM_CELL_DOANH_THU_TONG,
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
 
+            ISheet sheetDoanhThuNoiDia = workbook.GetSheetAt(4);
+            var metaDataDoanhThuNoiDia = ExcelHelper.GetExcelMeta(htmlDoanhThuNoiDia);
+
+            InitHeaderFile(ref sheetDoanhThuNoiDia, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuNoiDia, metaDataDoanhThuNoiDia.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertBodyTable(ref workbook,
+                ref sheetDoanhThuNoiDia,
+                metaDataDoanhThuNoiDia.MetaTBody,
+                NUM_CELL_DOANH_THU_TONG,
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+
+            ISheet sheetDoanhThuQuocTe = workbook.GetSheetAt(5);
+            var metaDataDoanhThuQuocTe = ExcelHelper.GetExcelMeta(htmlDoanhThuQuocTe);
+
+            InitHeaderFile(ref sheetDoanhThuQuocTe, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuNoiDia, metaDataDoanhThuNoiDia.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertBodyTable(ref workbook,
+                ref sheetDoanhThuQuocTe,
+                metaDataDoanhThuQuocTe.MetaTBody,
+                NUM_CELL_DOANH_THU_TONG,
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             // Save the Excel spreadsheet to a MemoryStream and return it to the client
             workbook.Write(outFileStream);
         }
 
         private void InitHeaderFile(ref ISheet sheet, int year, string centerCode, int? version, int NUM_CELL, string templateId, string unit, decimal exchangeRate)
         {
-            var name = "DỮ LIỆU KẾ HOẠCH SẢN LƯỢNG";
+            var name = "DỮ LIỆU KẾ HOẠCH DOANH THU";
             var centerName = GetCenter(centerCode).NAME.ToUpper();
             var template = GetTemplate(templateId);
             var templateName = template != null ? $"Mẫu khai báo: {template.CODE} - {template.NAME}" : "Tổng hợp dữ liệu";

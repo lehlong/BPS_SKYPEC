@@ -3843,10 +3843,12 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
         #endregion
 
         #region Export excel from data center view
-        public override void GenerateExportExcel(ref MemoryStream outFileStream, string htmlMonth,string htmlYear, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
+        public override void GenerateExportExcel(ref MemoryStream outFileStream, dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
         {
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
+            var htmlMonth = table.htmlMonth;
+            var htmlYear = table.htmlYear;
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
