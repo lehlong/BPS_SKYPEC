@@ -46,20 +46,48 @@
                                 </div>
                             </div>
 
-                            <label>Khu vực</label>
-                            <select class="form-control  selectpicker show-tick" data-live-search="true" data-val="true" data-show-subtext="true"
-                                    name="@Html.NameFor(x => x.ObjDetail.AREA_CODE)">
-                                @foreach (var item in lstArea)
-                                {
-                                    var selected = "";
-                                    if (item.Value == Model.ObjDetail.AREA_CODE)
-                                    {
-                                        selected = "selected";
-                                    }
-                                    <option @selected value="@item.Value">@item.Text</option>
-                                }
-                            </select>
-                           
+                            <label>Điểm đầu</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.FIRST_POINT)
+                                </div>
+                            </div>
+
+                            <label>Điểm cuối</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.FINAL_POINT)
+                                </div>
+                            </div>
+
+                            <label>Km có hàng</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.KM_CO_HANG)
+                                </div>
+                            </div>
+
+                            <label>Km không hàng</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.KM_KHONG_HANG)
+                                </div>
+                            </div>
+
+                            <label>Hệ số hao hụt</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.HE_SO_HAO_HUT)
+                                </div>
+                            </div>
+
+                            <label>Parent Level ID</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.PARENT_LEVEL_ID)
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

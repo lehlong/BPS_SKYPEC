@@ -13,7 +13,12 @@
             <tr>
                 <th style="max-width: 120px;">Mã tuyến đường</th>
                 <th>Tên tuyến đường</th>
-                <th>Khu vực</th>
+                <th>Điểm đầu</th>
+                <th>Điểm cuối</th>
+                <th>Km có hàng</th>
+                <th>Km không hàng</th>
+                <th>Hệ số hao hụt</th>
+                <th>Parent Level ID</th>
             </tr>
         </thead>
         <tbody>
@@ -26,7 +31,12 @@
                         <a href="#" onclick="@vdbclickAction">@item.CODE</a>
                     </td>
                     <td ondblclick="@vdbclickAction">@item.NAME</td>
-                    <td ondblclick="@vdbclickAction">@item.Area.TEXT</td>
+                    <td ondblclick="@vdbclickAction">@item.FIRST_POINT</td>
+                    <td ondblclick="@vdbclickAction">@item.FINAL_POINT</td>
+                    <td ondblclick="@vdbclickAction">@item.KM_CO_HANG</td>
+                    <td ondblclick="@vdbclickAction">@item.KM_KHONG_HANG</td>
+                    <td ondblclick="@vdbclickAction">@item.HE_SO_HAO_HUT.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.PARENT_LEVEL_ID</td>
                 </tr>
             }
         </tbody>

@@ -43,13 +43,54 @@
                                 @Html.ValidationMessageFor(m => m.ObjDetail.NAME)
                             </div>
 
-                            <label>Khu vực</label>
+                            <label>Điểm đầu</label>
                             <div class="form-group">
                                 <div class="form-line">
-                                    @Html.MyDropDownListFor(m => m.ObjDetail.AREA_CODE, SelectListUtilities.GetAllArea(), new { @class = "selectpicker show-tick", @data_val = false })
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.FIRST_POINT)
                                 </div>
-                                @Html.ValidationMessageFor(m => m.ObjDetail.AREA_CODE)
+                                @Html.ValidationMessageFor(m => m.ObjDetail.FIRST_POINT)
                             </div>
+
+                            <label>Điểm cuối</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.FINAL_POINT)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.FINAL_POINT)
+                            </div>
+
+                            <label>Km có hàng</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.KM_CO_HANG)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.KM_CO_HANG)
+                            </div>
+
+                            <label>Km không hàng</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.KM_KHONG_HANG)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.KM_KHONG_HANG)
+                            </div>
+
+                            <label>Hệ số hao hụt</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.HE_SO_HAO_HUT)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.HE_SO_HAO_HUT)
+                            </div>
+
+                            <label>Parent Level ID</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.PARENT_LEVEL_ID)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.PARENT_LEVEL_ID)
+                            </div>
+
                         </div>
                     </div>
                 </div>

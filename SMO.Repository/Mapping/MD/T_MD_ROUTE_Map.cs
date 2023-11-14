@@ -11,9 +11,13 @@ namespace SMO.Repository.Mapping.MD
             Table("T_MD_ROUTE");
             Id(x => x.CODE);
             Map(x => x.NAME).Nullable();
-            Map(x => x.AREA_CODE).Nullable();
+            Map(x => x.FINAL_POINT).Nullable();
+            Map(x => x.FIRST_POINT).Nullable();
+            Map(x => x.KM_CO_HANG).Nullable();
+            Map(x => x.KM_KHONG_HANG).Nullable();
+            Map(x => x.HE_SO_HAO_HUT).Nullable();
+            Map(x => x.PARENT_LEVEL_ID).Nullable();
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
-            References(x => x.Area).Column("AREA_CODE").Not.Insert().Not.Update().LazyLoad();
         }
     }
 }
