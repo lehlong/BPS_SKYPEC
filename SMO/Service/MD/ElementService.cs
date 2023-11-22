@@ -1,13 +1,17 @@
-﻿using NHibernate.Criterion;
+﻿using iTextSharp.text;
+using Microsoft.Office.Interop.Excel;
+using NHibernate.Criterion;
 using SMO.Core.Entities;
 using SMO.Models;
 using SMO.Repository.Implement.MD;
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace SMO.Service.MD
 {
@@ -134,7 +138,7 @@ namespace SMO.Service.MD
                             break;
                     }
                 }
-                DataTable table = new DataTable();
+                System.Data.DataTable table = new System.Data.DataTable();
                 object result = table.Compute(analysisFormula, "");
                 return Convert.ToDecimal(result);
             }
@@ -149,7 +153,7 @@ namespace SMO.Service.MD
             try
             {
                 var data = new KeHoachGiaThanhData();
-                var lstElementTypeSystem = UnitOfWork.Repository<ElementRepo>().Queryable().Where(x => x.ELEMENT_TYPE == "S").OrderBy(x => x.PRIORITY).ToList();
+                var lstElementTypeSystem = UnitOfWork.Repository<ElementRepo>().Queryable().Where(x => x.ELEMENT_TYPE == "S" && x.SCREEN == "GIA_THANH").OrderBy(x => x.PRIORITY).ToList();
                 foreach (var element in lstElementTypeSystem)
                 {
                     try
@@ -189,7 +193,7 @@ namespace SMO.Service.MD
                     }
                 }
                 //Analysis formula
-                var lstElementTypeUser = UnitOfWork.Repository<ElementRepo>().Queryable().Where(x => x.ELEMENT_TYPE == "U").OrderBy(x => x.PRIORITY).ToList();
+                var lstElementTypeUser = UnitOfWork.Repository<ElementRepo>().Queryable().Where(x => x.ELEMENT_TYPE == "U" && x.SCREEN == "GIA_THANH").OrderBy(x => x.PRIORITY).ToList();
                 foreach (var element in lstElementTypeUser)
                 {
                     var value = AnalysisFormula(element.FORMULA, data);
@@ -248,6 +252,37 @@ namespace SMO.Service.MD
             }
         }
 
+        public decimal? AnalysisFormulaTaiChinh(string formula, IList<KeHoachTaiChinhData> data)
+        {
+            try
+            {
+                var analysisFormula = "";
+                var stringFormula = Regex.Replace(formula, @"\s", "");
+                string spacedFormula = AddSpacesToFormula("x=" + formula);
+
+                string[] stringArray = spacedFormula.Replace("x = ", "").Split(' ');
+                foreach (var str in stringArray)
+                {
+                    var item = data.FirstOrDefault(x => x.ElementCode == str);
+                    if (item != null)
+                    {
+                        analysisFormula += item.Value;
+                    }
+                    else
+                    {
+                        analysisFormula += str;
+                    }
+                }
+                System.Data.DataTable table = new System.Data.DataTable();
+                object result = table.Compute(analysisFormula, "");
+                var stringResult = result.ToString();
+                return formula == "" || formula == null ? 0 : Convert.ToDecimal(result);
+            }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+        }
         public DataCenterModel GetDataKeHoachGiaThanh(int year)
         {
             try
@@ -255,15 +290,104 @@ namespace SMO.Service.MD
                 var data = new DataCenterModel();
                 var lstWarehouse = UnitOfWork.Repository<WarehouseRepo>().GetAll().ToList();
                 var lstDeliveryConditions = UnitOfWork.Repository<DeliveryConditionsRepo>().GetAll().ToList();
+                var lstSharedData = UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
+
+                //Pre kho 1
                 foreach (var warehouse in lstWarehouse)
                 {
                     foreach (var deliveryCondition in lstDeliveryConditions)
                     {
                         var dataCalculate = CalculateValueElement(year, warehouse.CODE, deliveryCondition.CODE);
+                        dataCalculate.WarehouseCode = warehouse.CODE;
                         dataCalculate.Warehouse = warehouse.TEXT;
+                        dataCalculate.DeliveryConditionsCode = deliveryCondition.CODE;
                         dataCalculate.DeliveryConditions = deliveryCondition.TEXT;
                         data.KeHoachGiaThanhData.Add(dataCalculate);
                     }
+                }
+
+                //Pre TB Kho
+                var keHoachGiaThanhData = data.KeHoachGiaThanhData.GroupBy(x => x.WarehouseCode).Select(x => x.First()).ToList();
+                foreach (var item in keHoachGiaThanhData)
+                {
+                    var pretbkho = new PreTrungBinhKhoData();
+                    pretbkho.WarehouseCode = item.WarehouseCode;
+                    pretbkho.Warehouse = item.Warehouse;
+
+                    if (item.WarehouseCode == "KHO1003" || item.WarehouseCode == "KHO2001")
+                    {
+                        pretbkho.PreTrungBinh = item.U0008;
+                    }
+                    else
+                    {
+                        var a = data.KeHoachGiaThanhData.Where(x => x.WarehouseCode == item.WarehouseCode).Sum(x => x.U0008 * x.S0002);
+                        var b = data.KeHoachGiaThanhData.Where(x => x.WarehouseCode == item.WarehouseCode).Sum(x => x.S0002);
+                        pretbkho.PreTrungBinh = a == 0 || b == 0 ? 0 : a / b;
+                    }
+
+                    if (item.WarehouseCode == "KHO1005")
+                    {
+                        var c = data.KeHoachGiaThanhData.Where(x => x.Warehouse == item.Warehouse).Sum(x => x.S0002);
+                        pretbkho.SanLuong = c == 0 ? 0 : c / lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE - data.KeHoachGiaThanhData.Where(x => x.WarehouseCode == "KHO1003").Sum(x => x.S0002);
+                    }
+                    else
+                    {
+                        var d = data.KeHoachGiaThanhData.Where(x => x.WarehouseCode == item.WarehouseCode).Sum(x => x.S0002);
+                        pretbkho.SanLuong = d == 0 ? 0 : d / lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE;
+                    }
+
+                    var e = pretbkho.PreTrungBinh;
+                    pretbkho.TrungBinh = e == 0 ? 0 : e * lstSharedData.FirstOrDefault(x => x.CODE == "2").VALUE / lstSharedData.FirstOrDefault(x => x.CODE == "4").VALUE;
+
+                    data.PreTrungBinhKhoData.Add(pretbkho);
+                }
+
+                //Pre
+
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                UnitOfWork.Rollback();
+                return new DataCenterModel();
+            }
+        }
+
+        public DataCenterModel GetDataKeHoachTaiChinh(int year)
+        {
+            try
+            {
+                var data = new DataCenterModel();
+                var lstElement = UnitOfWork.Repository<ElementRepo>().Queryable().Where(x => x.SCREEN == "KE_HOACH_TAI_CHINH" || x.SCREEN == "KE_HOACH_TAI_CHINH_2").ToList();
+                foreach (var item in lstElement.Where(x => x.ELEMENT_TYPE == "S").OrderBy(x => x.PRIORITY))
+                {
+                    var itemData = new KeHoachTaiChinhData
+                    {
+                        ElementCode = item.CODE,
+                        ElementName = item.NAME,
+                        UnitCode = item?.Unit?.TEXT,
+                        Order = item.VALUE,
+                        Screen = item.SCREEN,
+                        Value = item.QUERY == "" || item.QUERY == null ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{item.QUERY.Replace("[YEAR]",year.ToString())}").List()[0])
+                        
+                    };
+                    data.KeHoachTaiChinhData.Add(itemData);
+                }
+                foreach (var item in lstElement.Where(x => x.ELEMENT_TYPE == "U").OrderBy(x => x.PRIORITY))
+                {
+                    var valueFormula = AnalysisFormulaTaiChinh(item.FORMULA, data.KeHoachTaiChinhData);
+                    var itemData = new KeHoachTaiChinhData
+                    {
+                        ElementCode = item.CODE,
+                        ElementName = item.NAME,
+                        UnitCode = item?.Unit?.TEXT,
+                        Order = item.VALUE,
+                        Screen = item.SCREEN,
+                        Value = valueFormula == -1 ? 0 : valueFormula
+                    };
+                    data.KeHoachTaiChinhData.Add(itemData);
                 }
                 return data;
             }

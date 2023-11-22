@@ -1,0 +1,111 @@
+﻿@model IList<T_MD_KHOAN_MUC_SUA_CHUA>
+@using SMO.Core.Entities.BP.SUA_CHUA_LON;
+@using SMO.Core.Entities.MD;
+@using System.Text;
+@using SMO.Service.Class;
+
+@{
+    var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON>;
+    var costCFHeader = ViewBag.costCFHeader as T_BP_SUA_CHUA_LON_VERSION;
+    var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
+    var hihi = Model;
+}
+
+<style>
+    .header-year {
+        background-color: #FFFFFF !important;
+    }
+
+    td {
+        overflow: hidden;
+    }
+
+    .resize-col {
+        resize: horizontal;
+        overflow: hidden;
+        display: block;
+    }
+
+    td .input-edit {
+        border: none;
+        background: border-box;
+        width: 100%;
+        text-align: right;
+    }
+
+    .table-screen {
+        height: calc(100vh - 162px);
+        margin-bottom: 0
+    }
+
+    .full-screen-table {
+        height: calc(100vh -100px) !important;
+    }
+</style>
+
+@if (Model == null || Model.Count == 0 ||
+    detailCostElements == null || detailCostElements.Count == 0 || costCFHeader == null)
+{
+    Html.RenderPartial("_NothingData");
+}
+else
+{
+    Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
+    <div class="export-left-tab">
+        <div role="tabpanel" class="tab-pane fade in active" id="month">
+            @*Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);*@
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
+                    <tbody>
+                        <tr class="sticky-row strong" data-xls-row="header">
+                            <td class="pre-whitespace" rowspan="2" style="text-align:center">CHỈ TIÊU</td>
+                            <td class="pre-whitespace" rowspan="2">QUY MÔ</td>
+
+                            <td class="pre-whitespace" style="text-align:center" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 2)">KINH PHÍ</td>
+                            <td rowspan="2">GHI CHÚ</td>
+                        </tr>
+                        <tr class="sticky-row strong" data-xls-row="header">
+                            <td class="pre-whitespace">VPCN</td>
+                            @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                            {
+                                <td class="pre-whitespace">@sb.Center.SanBay.NAME</td>
+                            }
+                            <td class="pre-whitespace">Cộng</td>
+                        </tr>
+
+
+                        @foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                        {
+                            var space = new StringBuilder();
+                            for (int i = 0; i < item.LEVEL; i++)
+                            {
+                                space.Append("\t");
+                            }
+                            var classParent = item.IS_GROUP ? "strong" : string.Empty;
+                            var isEdit = item.IS_GROUP ? "disabled" : "";
+                            <tr class="@classParent">
+                                <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO)</td>
+                                <td class="pre-whitespace"></td>
+                                @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                {
+                                    <td class="pre-whitespace">@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())</td>
+                                }
+                                <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
+                                <td>@item.DESCRIPTION</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
+        function mask(e) {
+            $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+    </script>
+}

@@ -1409,7 +1409,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                     IsChildren = false,
                     C_ORDER = 0,
                     CODE = string.Empty,
-                    Values = new decimal[14]
+                    Values = new decimal[6]
                 };
                 //var isTemplateBase = GetTemplate(model.TEMPLATE_CODE)?.IS_BASE;
                 //isTemplateBase = isTemplateBase.HasValue && isTemplateBase.Value;

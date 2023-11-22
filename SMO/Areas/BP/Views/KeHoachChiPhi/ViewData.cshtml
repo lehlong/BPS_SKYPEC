@@ -20,10 +20,10 @@
             </div>
             <div class="btn-function m-l-5" id="btn-function">
             </div>
-            <div style="position: absolute; right: 15px; top: 15px;"><b>KẾ HOẠCH CHI THƯỜNG XUYÊN</b></div>
+            <div style="position: absolute; right: 15px; top: 15px;"><b>KẾ HOẠCH SỬA CHỮA LỚN</b></div>
         </div>
         <div class="export-data" id="divExport_@viewId">
-            <div class="export-left" id="divExportLeft_@viewId">
+            <div class="export-left" id="divExportLeft_@viewId" style="resize:horizontal; overflow:hidden">
                 <div class="export-left-header" id="divExportHeader_@viewId">
                     @using (Ajax.BeginForm("SummaryDataCenter", null, FormDataUtils.GetAjaxOptions(viewId, $"#divExportRight_{viewId}"), new { @id = formId }))
                     {
@@ -34,10 +34,10 @@
                                 new KeyValuePair<string, object>("viewId", viewId),
                                 new KeyValuePair<string, object>("formId", formId),
                                 new KeyValuePair<string, object>("currencies", ViewBag.currencies),
-                                new KeyValuePair<string, object>("objectType", TemplateObjectType.Department),
-                                new KeyValuePair<string, object>("budgetType", BudgetType.DongTien),
+                                new KeyValuePair<string, object>("objectType", TemplateObjectType.ChiPhi),
+                                new KeyValuePair<string, object>("budgetType", BudgetType.ChiPhi),
                                 new KeyValuePair<string, object>("elementType", ElementType.ChiPhi),
-    });
+            });
                     }
                 </div>
                 <div class="export-left-tab" id="divExportTab_@viewId">
@@ -52,7 +52,7 @@
                             <a href="#comment" data-toggle="tab" title="Comment">Comment</a>
                         </li>
                         <li role="presentation" style="cursor: pointer;">
-                            <a title="Danh sách version" href="#version" data-toggle="tab">Version</a>
+                            <a title="Danh sách version" href="#version" data-toggle="tab">Kịch bản</a>
                         </li>
                         <li role="presentation" style="cursor: pointer;">
                             <a title="Dòng dữ liệu" href="#flow" data-toggle="tab">Flow</a>
@@ -61,7 +61,7 @@
                             <a title="File cơ sở" href="#templateBase" data-toggle="tab">File</a>
                         </li>
                     </ul>
-                    <div class="tab-content" style="overflow-y: scroll; overflow-x: scroll;" id="divExportTabContent_@viewId">
+                    <div class="tab-content" style="overflow:auto" id="divExportTabContent_@viewId">
                         <div role="tabpanel" class="tab-pane fade in active" id="information">
                         </div>
                         <div role="tabpanel" class="tab-pane fade" id="progress">
@@ -77,7 +77,7 @@
                     </div>
                 </div>
             </div>
-            <div class="export-right" id="divExportRight_@viewId">
+            <div class="export-right" id="divExportRight_@viewId" style="margin-left:auto">
 
             </div>
             <div class="hidden">
@@ -111,9 +111,22 @@
 
         var lastScrollLeft = 0;
 
+        function htmlEncode(value) {
+            // Tạo một thẻ div ảo để chứa giá trị
+            var div = document.createElement('div');
+            // Thiết lập giá trị của thẻ div thành giá trị cần mã hóa
+            div.appendChild(document.createTextNode(value));
+            // Lấy nội dung của thẻ div, nó sẽ chứa giá trị đã được mã hóa HTML
+            return div.innerHTML;
+        }
+
         function DownloadDataCenter() {
-            var html = $('<div>').append($('#divExportRight_@viewId table').clone()).html().trim();
-            if (html === '') {
+            var htmlMonth = $('<div>').append($('#divExportRight_@viewId #table_month').clone()).html().trim();
+            if (htmlMonth === '') {
+                return;
+            }
+            var htmlYear = $('<div>').append($('#divExportRight_@viewId #table_year').clone()).html().trim();
+            if (htmlYear === '') {
                 return;
             }
             $('#@inputIdExportExcel').remove();
@@ -125,10 +138,15 @@
             $('#@formIdExportExcel #exportExcelUnit').val($('#@formId #EXCHANGE_TYPE').val());
             $('#@formIdExportExcel #exportExcelIsDrillDown').val($('#@formId #IS_DRILL_DOWN').val() == undefined ? false : $('#@formId #IS_DRILL_DOWN').val());
             $('#@formIdExportExcel #exportExcelExchangeRate').val($('#@formId #EXCHANGE_RATE').val());
-            $('#@formIdExportExcel #htmlMonth').val(html);
+            $('#@formIdExportExcel #kichBan').val($('#@formId #KICH_BAN').val());
+            $('#@formIdExportExcel #phienBan').val($('#@formId #PHIEN_BAN').val());
+            $('#@formIdExportExcel #moduleType').val("KeHoachSanLuong");
+            $('#@formIdExportExcel #htmlMonth').val(encodeURIComponent(htmlMonth));
+            $('#@formIdExportExcel #htmlYear').val(encodeURIComponent(htmlYear));
             $('#@formIdExportExcel').submit();
         }
 
     </script>
 
 </div>
+

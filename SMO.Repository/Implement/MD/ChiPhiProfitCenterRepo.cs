@@ -22,9 +22,9 @@ namespace SMO.Repository.Implement.MD
                 query = query.Where(x => x.CODE.Contains(objFilter.CODE) || x.NAME.Contains(objFilter.NAME));
             }
 
-            if (!string.IsNullOrWhiteSpace(objFilter.HANG_HANG_KHONG_CODE))
+            if (!string.IsNullOrWhiteSpace(objFilter.COST_CENTER_CODE))
             {
-                query = query.Where(x => x.HANG_HANG_KHONG_CODE == objFilter.HANG_HANG_KHONG_CODE);
+                query = query.Where(x => x.COST_CENTER_CODE == objFilter.COST_CENTER_CODE);
             }
 
             if (!string.IsNullOrWhiteSpace(objFilter.SAN_BAY_CODE))

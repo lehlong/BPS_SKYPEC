@@ -10,28 +10,29 @@ namespace SMO.Service.MD
 {
     public class ChiPhiProfitCenterService : GenericCenterService<T_MD_CHI_PHI_PROFIT_CENTER, ChiPhiProfitCenterRepo>
     {
-        internal IList<NodeHangHangKhong> GetNodeHangHangKhongByTemplate(string templateId, int year)
+        internal IList<NodeCostCenter> GetNodeCostCenterByTemplate(string templateId, int year)
         {
-            var lstNode = new List<NodeHangHangKhong>();
+            var lstNode = new List<NodeCostCenter>();
 
             var template = UnitOfWork.Repository<TemplateRepo>().Get(templateId);
-            var allHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll();
+            var allHangHangKhong = UnitOfWork.Repository<CostCenterRepo>().GetAll();
             var lstDetails = new List<string>();
             if (template != null)
             {
-                // get all cost center selected in template
-                lstDetails = template.DetailKeHoachChiPhi
-                    .Where(x => x.TIME_YEAR == year)
-                    .GroupBy(x => x.CENTER_CODE)
-                    .Select(x => x.First().CENTER_CODE).ToList();
+                if (template.BUDGET_TYPE == BudgetType.ChiPhi)
+                    lstDetails = template.DetailKeHoachChiPhi
+                                            .Where(x => x.TIME_YEAR == year)
+                                            .GroupBy(x => x.CENTER_CODE)
+                                            .Select(x => x.First().CENTER_CODE).ToList();
+
             }
 
             var selectedHangHangKhong = CurrentRepository.GetManyWithFetch(x => lstDetails.Contains(x.CODE))
-                .GroupBy(x => x.HANG_HANG_KHONG_CODE)
-                .Select(x => x.First().HANG_HANG_KHONG_CODE);
+                .GroupBy(x => x.COST_CENTER_CODE)
+                .Select(x => x.First().COST_CENTER_CODE);
             foreach (var item in allHangHangKhong)
             {
-                var node = new NodeHangHangKhong()
+                var node = new NodeCostCenter()
                 {
                     id = item.CODE,
                     pId = null,
@@ -58,10 +59,21 @@ namespace SMO.Service.MD
             var lstDetails = new List<string>();
             if (template != null)
             {
-                lstDetails = template.DetailKeHoachChiPhi
+                if (template.BUDGET_TYPE == BudgetType.ChiPhi)
+                {
+                    lstDetails = template.DetailKeHoachChiPhi
+                                            .Where(x => x.TIME_YEAR == year)
+                                            .GroupBy(x => x.CENTER_CODE)
+                                            .Select(x => x.First().CENTER_CODE).ToList();
+                }
+                else if (template.BUDGET_TYPE == BudgetType.ChiPhi)
+                {
+                    lstDetails = template.DetailKeHoachChiPhi
                         .Where(x => x.TIME_YEAR == year)
                         .GroupBy(x => x.CENTER_CODE)
                         .Select(x => x.First().CENTER_CODE).ToList();
+                }
+
             }
 
             var selectedProjects = CurrentRepository.GetManyWithFetch(x => lstDetails.Contains(x.CODE))

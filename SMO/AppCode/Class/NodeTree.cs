@@ -106,6 +106,39 @@
         }
     }
 
+    public class NodeKhoanMucHangHoa : Node
+    {
+        public string isGroup { get; set; }
+        public string isSap { get; set; }
+        public string type { get; set; }
+        public NodeKhoanMucHangHoa() : base()
+        {
+
+        }
+    }
+
+    public class NodeKhoanMucSuaChua : Node
+    {
+        public string isGroup { get; set; }
+        public string isSap { get; set; }
+        public string type { get; set; }
+        public NodeKhoanMucSuaChua() : base()
+        {
+
+        }
+    }
+
+    public class NodeKhoanMucVanChuyen : Node
+    {
+        public string isGroup { get; set; }
+        public string isSap { get; set; }
+        public string type { get; set; }
+        public NodeKhoanMucVanChuyen() : base()
+        {
+
+        }
+    }
+
     public class NodeKhoanMucDoanhThu : Node
     {
         public string isGroup { get; set; }

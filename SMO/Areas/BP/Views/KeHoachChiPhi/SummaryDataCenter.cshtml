@@ -1,11 +1,12 @@
-﻿@model IList<T_MD_KHOAN_MUC_CHI_PHI>
+﻿@model IList<T_MD_KHOAN_MUC_HANG_HOA>
 @using SMO.Core.Entities;
 @using SMO.Core.Entities.MD;
 @using SMO.Service.Class;
+@using System.Text;
 
 @{
     var viewId = Guid.NewGuid().ToString();
-    var KeHoachChiPhiHeader = ViewBag.KeHoachChiPhiHeader as T_BP_KE_HOACH_CHI_PHI_VERSION;
+    var revenuePLHeader = ViewBag.revenuePLHeader as T_BP_KE_HOACH_CHI_PHI_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
 }
 @if (Model == null || Model.Count == 1)
@@ -16,19 +17,17 @@
 @if (!string.IsNullOrEmpty(dataCenterModel.TEMPLATE_CODE))
 {
     // view template data
-    ViewBag.KeHoachChiPhiHeader = KeHoachChiPhiHeader;
+    ViewBag.revenuePLHeader = revenuePLHeader;
     ViewBag.dataCenterModel = dataCenterModel;
 
     Html.RenderPartial("_PartialViewTemplateDataKeHoachChiPhi", Model);
 }
 else if (dataCenterModel.VERSION == null || dataCenterModel.VERSION.Value < 0)
 {
-
     // xem dữ liệu trước khi tổng hợp
     Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
     ViewBag.dataCenterModel = dataCenterModel;
     Html.RenderPartial("_PartialViewSumUpPreview", Model.Select(x => (SMO.Core.Common.CoreElement)x).ToList());
-
     <script>
         $(document).on("keyup", "#text-search-table", () => SearchTable(2, 1, 1, 2));
     </script>
@@ -40,10 +39,11 @@ else
     Html.RenderPartial("_PartialViewSummaryCenterKeHoachChiPhi", Model);
 }
 
+
 @{
     if (!string.IsNullOrEmpty(dataCenterModel.TEMPLATE_CODE))
     {
-        ViewBag.EmptyColumns = 4;
+        ViewBag.EmptyColumns = 6;
         Html.RenderPartial("_ScriptViewTemplateData", dataCenterModel.YEAR);
     }
     else

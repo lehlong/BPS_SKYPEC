@@ -9,12 +9,15 @@ namespace SMO.Models
     {
         public List<KeHoachGiaThanhData> KeHoachGiaThanhData { get; set; } = new List<KeHoachGiaThanhData> { };
         public List<PreTrungBinhKhoData> PreTrungBinhKhoData { get; set; } = new List<PreTrungBinhKhoData> { };
+        public List<KeHoachTaiChinhData> KeHoachTaiChinhData { get; set; } = new List<KeHoachTaiChinhData> { };
     }
 
     public class KeHoachGiaThanhData
     {
+        public string WarehouseCode { get; set; }
         public string Warehouse { get; set; }
         public string DeliveryConditions { get; set; }
+        public string DeliveryConditionsCode { get; set; }
         public decimal S0001 { get; set;}
         public decimal S0002 { get; set; }
         public decimal S0003 { get; set; }
@@ -37,10 +40,21 @@ namespace SMO.Models
 
     public class PreTrungBinhKhoData
     {
+        public string WarehouseCode { get; set; }
         public string Warehouse { get; set; }
         public decimal PreTrungBinh { get; set; }
         public decimal SanLuong { get; set; }
         public decimal TrungBinh { get; set; }
 
+    }
+
+    public class KeHoachTaiChinhData
+    {
+        public string ElementCode { get; set; }
+        public string ElementName { get; set; }
+        public string UnitCode { get; set; }
+        public decimal? Value { get; set; }
+        public decimal? Order { get; set; }
+        public string Screen { get; set; }
     }
 }

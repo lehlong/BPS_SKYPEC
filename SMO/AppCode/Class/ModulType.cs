@@ -12,7 +12,10 @@
         public const string RevenuePL = "RevenuePL";
         public const string KeHoachSanLuong = "SanLuong";
         public const string KeHoachDoanhThu = "DoanhThu";
+        public const string KeHoachVanChuyen = "VanChuyen";
         public const string KeHoachChiPhi = "ChiPhi";
+        public const string SuaChuaLon = "SuaChuaLon";
+        public const string SuaChuaThuongXuyen = "SuaChuaThuongXuyen";
         public const string DauTuXayDung = "DauTuCoXayDung";
         public const string DauTuTrangThietBi = "DauTuTrangThietBi";
         public const string DauTuNgoaiDoanhNghiep = "DauTuNgoaiDoanhNghiep";
@@ -37,12 +40,18 @@
                     return "Kế hoạch chi phí";
                 case OtherCostCF:
                     return "Kế hoạch chi khác của dự án";
+                case SuaChuaLon:
+                    return "Kế hoạch sửa chữa lớn";
+                case SuaChuaThuongXuyen:
+                    return "Kế hoạch sửa chữa thường xuyên";
                 case KeHoachSanLuong:
                     return "Kế hoạch sản lượng";
                 case KeHoachDoanhThu:
                     return "Kế hoạch doanh thu";
                 case KeHoachChiPhi:
                     return "Kế hoạch chi phí";
+                case KeHoachVanChuyen:
+                    return "Kế hoạch vận chuyển";
                 case DauTuXayDung:
                     return "Kế hoạch đầu tư có xây dựng";
                 case DauTuTrangThietBi:

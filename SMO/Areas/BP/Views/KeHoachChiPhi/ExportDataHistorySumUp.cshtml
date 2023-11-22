@@ -1,4 +1,5 @@
-﻿@model SMO.Service.BP.KeHoachChiPhiService
+﻿
+@model SMO.Service.BP.KE_HOACH_CHI_PHI.KeHoachChiPhiService
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     var orgCode = ViewBag.OrgCode as string;
@@ -48,7 +49,7 @@
                                     @Html.MyButton("cmdBack", "", $"ViewData({item.DATA_VERSION}, '{item.TEMPLATE_CODE}', {item.TIME_YEAR}, '{item.FROM_ORG_CODE}');", "Alt+N", "search")
                                 </td>
                                 <td>
-                                    @(item.FromCostCenter?.CODE)
+                                    @(item.FROM_ORG_CODE)
                                     <div>@(item.FromCostCenter?.NAME)</div>
                                 </td>
                                 <td>

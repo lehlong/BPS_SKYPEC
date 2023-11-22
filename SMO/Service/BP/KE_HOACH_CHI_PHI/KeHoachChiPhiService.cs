@@ -1,6 +1,4 @@
-﻿using NHibernate.Criterion;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.Streaming.Values;
+﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 using SMO.AppCode.Utilities;
@@ -15,7 +13,6 @@ using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE;
 using SMO.Repository.Implement.MD;
-using SMO.Service.BP.KE_HOACH_CHI_PHI;
 using SMO.Service.Class;
 using SMO.Service.Common;
 using SMO.ServiceInterface.BP.KeHoachChiPhi;
@@ -31,9 +28,9 @@ using System.Web;
 
 using static SMO.SelectListUtilities;
 
-namespace SMO.Service.BP
+namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 {
-    public class KeHoachChiPhiService : BaseBPService<T_BP_KE_HOACH_CHI_PHI, KeHoachChiPhiRepo, T_MD_KHOAN_MUC_CHI_PHI, T_BP_KE_HOACH_CHI_PHI_VERSION, T_BP_KE_HOACH_CHI_PHI_HISTORY, KeHoachChiPhiHistoryRepo>, IKeHoachChiPhiService
+    public class KeHoachChiPhiService : BaseBPService<T_BP_KE_HOACH_CHI_PHI, KeHoachChiPhiRepo, T_MD_KHOAN_MUC_HANG_HOA, T_BP_KE_HOACH_CHI_PHI_VERSION, T_BP_KE_HOACH_CHI_PHI_HISTORY, KeHoachChiPhiHistoryRepo>, IKeHoachChiPhiService
     {
         private readonly List<Point> InvalidCellsList;
         private readonly List<string> ListColumnName;
@@ -45,10 +42,11 @@ namespace SMO.Service.BP
         public KeHoachChiPhiService()
         {
             this.StartRowData = 6;
-            this.ListColumnName = new List<string>
-            {
-                "MÃ ĐƠN VỊ",
-                "TÊN ĐƠN VỊ",
+            this.ListColumnName = new List<string> {
+                "MÃ SÂN BAY",
+                "TÊN SÂN BAY",
+                "MÃ HÃNG HÀNG KHÔNG",
+                "TÊN HÃNG HÀNG KHÔNG",
                 "MÃ KHOẢN MỤC",
                 "TÊN KHOẢN MỤC",
                 "THÁNG 1",
@@ -67,11 +65,12 @@ namespace SMO.Service.BP
                 "TRUNG BÌNH NĂM",
                 "GHI CHÚ"
             };
-
             this.ListColumnNameDataBase = new List<string>
             {
-                "MÃ ĐƠN VỊ",
-                "TÊN ĐƠN VỊ",
+                "MÃ SÂN BAY",
+                "TÊN SÂN BAY",
+                "MÃ HÃNG HÀNG KHÔNG",
+                "TÊN HÃNG HÀNG KHÔNG",
                 "MÃ KHOẢN MỤC",
                 "TÊN KHOẢN MỤC",
                 "HÀNG HÓA, DỊCH VỤ",
@@ -453,8 +452,7 @@ namespace SMO.Service.BP
                 UnitOfWork.Repository<KeHoachChiPhiVersionRepo>().Update(x => x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.VERSION == ObjDetail.VERSION, x => x.IS_DELETED = 1, x => x.UPDATE_BY = currentUser);
 
                 // update main table
-                ObjDetail.IS_DELETED = true;
-                CurrentRepository.Update(ObjDetail);
+                ObjDetail.IS_DELETED = true; CurrentRepository.Update(ObjDetail);
 
                 // create history log
                 UnitOfWork.Repository<KeHoachChiPhiHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_HISTORY
@@ -698,7 +696,7 @@ namespace SMO.Service.BP
                     var plReviewService = new KeHoachChiPhiReviewService();
                     plReviewService.ObjDetail.TIME_YEAR = year;
                     plReviewService.ObjDetail.ORG_CODE = orgCode;
-                    var dataCost = plReviewService.SummaryCenterVersion(out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailCostElements);
+                    var dataCost = plReviewService.SummaryCenterVersion(out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailKhoanMucHangHoas);
                     dataCost = dataCost.OrderBy(x => x.C_ORDER)
                                                     .GroupBy(x => x.CODE)
                                                     .Select(x => x.First()).ToList();
@@ -708,7 +706,7 @@ namespace SMO.Service.BP
                                  select new T_BP_KE_HOACH_CHI_PHI_REVIEW_RESULT
                                  {
                                      PKID = Guid.NewGuid().ToString(),
-                                     ELEMENT_CODE = e.CODE,
+                                     KHOAN_MUC_HANG_HOA_CODE = e.CODE,
                                      HEADER_ID = reviewId,
                                      RESULT = false,
                                      TIME_YEAR = year,
@@ -771,11 +769,6 @@ namespace SMO.Service.BP
 
                 //TODO: Cập nhật lại code thực thi
                 UnitOfWork.GetSession().CreateSQLQuery($"UPDATE T_BP_KE_HOACH_CHI_PHI_DATA SET STATUS = '{Approve_Status.TKS_PheDuyet}' WHERE ORG_CODE = '{ObjDetail.ORG_CODE}' AND TEMPLATE_CODE = '{ObjDetail.TEMPLATE_CODE}' AND TIME_YEAR = {ObjDetail.TIME_YEAR}").ExecuteUpdate();
-                UnitOfWork.Repository<KeHoachChiPhiReviewRepo>()
-                    .Update(x => x.ORG_CODE == orgCode
-                                && x.TIME_YEAR == year
-                                && x.DATA_VERSION == version
-                                && x.IS_SUMMARY, x => x.IS_END = true);
 
                 UnitOfWork.Commit();
 
@@ -814,9 +807,9 @@ namespace SMO.Service.BP
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = ObjDetail.ORG_CODE,
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                        NOTES = note,
                         VERSION = ObjDetail.VERSION,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
-                        NOTES = note,
                         ACTION = Approve_Action.TuChoiKiemSoat,
                         ACTION_USER = currentUser,
                         ACTION_DATE = DateTime.Now,
@@ -842,6 +835,7 @@ namespace SMO.Service.BP
                 State = false;
             }
         }
+
         public override void TrinhDuyetTongKiemSoat(string orgCode, int year, int version)
         {
             try
@@ -878,6 +872,7 @@ namespace SMO.Service.BP
                                 && x.TIME_YEAR == year
                                 && x.DATA_VERSION == version
                                 && x.IS_SUMMARY, x => x.IS_END = true);
+
                 UnitOfWork.Commit();
 
                 SendNotify(Activity.AC_TRINH_DUYET_TKS);
@@ -946,7 +941,6 @@ namespace SMO.Service.BP
                         CREATE_BY = currentUser,
                         NOTES = noteChild
                     });
-
                 UnitOfWork.Commit();
 
                 NotifyUtilities.CreateNotifyYeuCauCapDuoiDieuChinh(
@@ -979,7 +973,6 @@ namespace SMO.Service.BP
                 {
                     return;
                 }
-
                 ObjDetail.STATUS = Approve_Status.ThamDinh_DuLieu;
                 ObjDetail.UPDATE_BY = currentUser;
 
@@ -1000,14 +993,12 @@ namespace SMO.Service.BP
                         ACTION_DATE = DateTime.Now,
                         CREATE_BY = currentUser
                     });
-
                 // cập nhật dữ liệu kết thúc thẩm định sang chưa kết thúc nếu là chuyển thẳng lên HDNS
                 if (ObjDetail.IS_REVIEWED)
                 {
                     UnitOfWork.Repository<KeHoachChiPhiReviewRepo>().Update(x => x.DATA_VERSION == ObjDetail.VERSION
                     && x.TIME_YEAR == ObjDetail.TIME_YEAR && !x.IS_SUMMARY && x.ORG_CODE == ObjDetail.ORG_CODE, x => x.IS_END = false);
                 }
-
                 UnitOfWork.Commit();
                 SendNotify(Activity.AC_CHUYEN_HDNS);
 
@@ -1064,7 +1055,6 @@ namespace SMO.Service.BP
             }
         }
 
-
         #endregion
 
 
@@ -1096,7 +1086,15 @@ namespace SMO.Service.BP
                 );
 
             this.ObjList.AddRange(findKeHoachChiPhi);
-            this.ObjList = this.ObjList.OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+            if (string.IsNullOrEmpty(ObjDetail.KICH_BAN))
+            {
+                ObjDetail.KICH_BAN = "TB";
+            }
+            if (string.IsNullOrEmpty(ObjDetail.PHIEN_BAN))
+            {
+                ObjDetail.PHIEN_BAN = "PB1";
+            }
+            this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
         }
 
         /// <summary>
@@ -1124,8 +1122,262 @@ namespace SMO.Service.BP
             this.ObjListSumUpHistory = query.List().ToList();
         }
 
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements,
-            out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailCostData,
+        /// <summary>
+        /// Lấy dữ liệu được sum up lên đơn vị theo version và khoản mục
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="centerCode"></param>
+        /// <param name="elementCode"></param>
+        /// <param name="sumUpVersion"></param>
+        /// <returns></returns>
+        private (IList<T_BP_KE_HOACH_CHI_PHI_DATA>, bool) GetDataSumUp(int year, string centerCode, string elementCode, int sumUpVersion)
+        {
+            var plDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
+            var costPlReviewCommentRepo = UnitOfWork.Repository<KeHoachChiPhiReviewCommentRepo>();
+            var plVersionRepo = UnitOfWork.Repository<KeHoachChiPhiRepo>();
+            var plDataHistoryRepo = UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>();
+
+            var lstDetails = UnitOfWork.Repository<KeHoachChiPhiSumUpDetailRepo>()
+                .GetManyByExpression(x => x.ORG_CODE == centerCode &&
+                    x.TIME_YEAR == year &&
+                    x.SUM_UP_VERSION == sumUpVersion);
+            var lookup = lstDetails.ToLookup(x => x.FROM_ORG_CODE);
+            var lstChildren = GetListOfChildrenCenter(centerCode).Select(x => x.CODE);
+
+            var isCorp = string.IsNullOrEmpty(GetCenter(centerCode).PARENT_CODE);
+            var isLeafCenter = IsLeaf(centerCode);
+
+            var data = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
+            foreach (var key in lookup.Select(x => x.Key))
+            {
+                var costPL = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
+                var isLeaf = IsLeaf(key);
+                if (isLeaf)
+                {
+                    foreach (var item in lookup[key])
+                    {
+                        if (lstChildren.Contains(GetTemplate(item.TEMPLATE_CODE).ORG_CODE))
+                        {
+                            // đơn vị con tự nộp
+                            costPL.AddRange(plDataRepo.GetCFDataByCenterCode(item.FROM_ORG_CODE, lstChildren.ToList(), year, item.TEMPLATE_CODE, item.DATA_VERSION).ToList());
+                        }
+                        else
+                        {
+                            // được nộp hộ
+                            var dataFromOrg = plDataRepo.GetCFDataByOrgCode(item.FROM_ORG_CODE, year, item.TEMPLATE_CODE, item.DATA_VERSION).ToList();
+                            costPL.AddRange(dataFromOrg.Where(x => lstChildren.Contains(x.ORG_CODE)));
+                        }
+                    }
+                }
+                else
+                {
+                    if (isCorp)
+                    {
+                        foreach (var item in lookup[key])
+                        {
+                            costPL.AddRange(plDataRepo.GetCFDataByOrgCode(key, year, string.Empty, item.DATA_VERSION).ToList());
+                        }
+                    }
+                    else
+                    {
+                        costPL = plDataRepo.GetCFDataByCenterCode(key, lstChildren.ToList(), year, null, sumUpVersion).ToList();
+                    }
+                }
+                data.AddRange(costPL.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == elementCode &&
+                lookup[key].Select(y => y.TEMPLATE_CODE).Contains(x.TEMPLATE_CODE)));
+                if (data == null || data.Count() == 0)
+                {
+                    continue;
+                }
+            }
+            return (data, isCorp);
+        }
+
+        /// <summary>
+        /// Get list of cost elements have summed up
+        /// </summary>
+        /// <param name="centerCode">Cost center code has summed up</param>
+        /// <param name="elementCode">Element code want to get detail</param>
+        /// <param name="year">Year summed up</param>
+        /// <param name="version">Version summed up</param>
+        /// <returns>Returns list of cost elements have summed up</returns>
+        public override IEnumerable<T_MD_KHOAN_MUC_HANG_HOA> GetDetailSumUp(string centerCode, string elementCode, int year, int version, int? sumUpVersion, bool isCountComments, bool? isShowFile = null)
+        {
+            var plDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
+            var costPlReviewCommentRepo = UnitOfWork.Repository<KeHoachChiPhiReviewCommentRepo>();
+            var plVersionRepo = UnitOfWork.Repository<KeHoachChiPhiRepo>();
+            var plDataHistoryRepo = UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>();
+
+            if (IsLeaf(centerCode))
+            {
+                var parentCenterCode = GetCenter(centerCode).PARENT_CODE;
+                var lstChildren = GetListOfChildrenCenter(parentCenterCode).Select(x => x.CODE);
+
+                var (data, isCorp) = GetDataSumUp(year, parentCenterCode, elementCode, sumUpVersion.Value);
+                var lookupData = data.Where(x => x.ORG_CODE == centerCode).ToLookup(x => x.TEMPLATE_CODE);
+                foreach (var key in lookupData.Select(x => x.Key))
+                {
+                    foreach (var item in lookupData[key])
+                    {
+                        var element = (T_MD_KHOAN_MUC_HANG_HOA)item;
+                        element.IS_GROUP = isShowFile.HasValue; // count comment is in the review, drill down will show the file base so it still will be group
+                        yield return element;
+                    }
+                    //if (lookupData[key].First().Template.IS_BASE)
+                    //{
+                    //    var isNewestVersion = UnitOfWork.Repository<KeHoachChiPhiVersionRepo>()
+                    //        .GetNewestByExpression(x => x.TEMPLATE_CODE == key && x.TIME_YEAR == year,
+                    //        order: x => x.VERSION, isDescending: true)
+                    //        .VERSION == lookupData[key].First().VERSION;
+                    //    foreach (var item in lookupData[key])
+                    //    {
+                    //        var lstElements = lookupData[key].Where(x => x.CHI_PHI_PROFIT_CENTER_CODE == item.CHI_PHI_PROFIT_CENTER_CODE);
+                    //        var element = (T_MD_KHOAN_MUC_HANG_HOA)item;
+                    //        element.IsBase = true;
+                    //        element.Values = new decimal[14]
+                    //        {
+                    //            lstElements.Sum(x => x.VALUE_JAN) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_FEB) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_MAR) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_APR) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_MAY) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_JUN) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_JUL) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_AUG) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_SEP) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_OCT) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_NOV) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_DEC) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    //            lstElements.Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0,
+                    //        };
+                    //        element.NAME = item.Template.NAME;
+                    //        yield return element;
+                    //    }
+                    //    if (isNewestVersion)
+                    //    {
+                    //        // get data from base
+                    //        var baseData = UnitOfWork.Repository<KeHoachChiPhiDataBaseRepo>()
+                    //            .GetManyWithFetch(x => x.KHOAN_MUC_HANG_HOA_CODE == elementCode && x.ORG_CODE == centerCode && x.TEMPLATE_CODE == key && x.VERSION == lookupData[key].First().VERSION && x.TIME_YEAR == year);
+                    //        foreach (var item in baseData)
+                    //        {
+                    //            yield return (T_MD_KHOAN_MUC_HANG_HOA)item;
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        // get data from base history
+                    //        var baseDataHistory = UnitOfWork.Repository<KeHoachChiPhiDataBaseHistoryRepo>()
+                    //            .GetManyWithFetch(x => x.KHOAN_MUC_HANG_HOA_CODE == elementCode && x.ORG_CODE == centerCode && x.TEMPLATE_CODE == key && x.VERSION == lookupData[key].First().VERSION && x.TIME_YEAR == year);
+
+                    //        foreach (var item in baseDataHistory)
+                    //        {
+                    //            yield return (T_MD_KHOAN_MUC_HANG_HOA)item;
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    foreach (var item in lookupData[key])
+                    //    {
+                    //        var element = (T_MD_KHOAN_MUC_HANG_HOA)item;
+                    //        element.IS_GROUP = isShowFile.HasValue; // count comment is in the review, drill down will show the file base so it still will be group
+                    //        yield return element;
+                    //    }
+                    //}
+                }
+            }
+            else
+            {
+                var comments = new List<T_BP_KE_HOACH_CHI_PHI_REVIEW_COMMENT>();
+                if (isCountComments)
+                {
+                    comments = costPlReviewCommentRepo.GetManyWithFetch(
+                            x => x.TIME_YEAR == year &&
+                            x.ORG_CODE == GetCorp().CODE &&
+                            x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
+                }
+                var (data, isCorp) = GetDataSumUp(year, centerCode, elementCode, version);
+                var lookupData = data.ToLookup(x => x.ORG_CODE);
+                foreach (var key in lookupData.Select(x => x.Key))
+                {
+                    IEnumerable<string> lstChildren = null;
+                    var childComments = 0;
+                    var parentComments = 0;
+                    if (isCountComments)
+                    {
+                        lstChildren = GetListOfChildrenCenter(key).Select(x => x.CODE);
+                        childComments = comments.Where(x => lstChildren.Contains(x.ON_ORG_CODE)).Sum(x => x.NUMBER_COMMENTS);
+                        parentComments = comments.Where(x => x.ON_ORG_CODE == key).Sum(x => x.NUMBER_COMMENTS);
+                    }
+                    var isChild = IsLeaf(key);
+                    yield return new T_MD_KHOAN_MUC_HANG_HOA
+                    {
+                        ORG_CODE = key,
+                        CENTER_CODE = key,
+                        CODE = elementCode,
+                        IsChildren = isChild,
+                        //IS_GROUP = IsLeaf(key) ? lookupData[key].First().Template.IS_BASE ? true : false : true,
+                        IS_GROUP = true,
+                        TEMPLATE_CODE = lookupData[key].First().TEMPLATE_CODE,
+                        TIME_YEAR = year,
+                        VERSION = isCorp ? lookupData[key].First().VERSION : version, // cấp tập đoàn thì sẽ là data_version còn nếu cấp dưới thì sẽ là sumup version
+                        ORG_NAME = lookupData[key].First().Organize.NAME,
+                        Values = new decimal[3]
+                            {
+                                lookupData[key].Sum(x => x.QUANTITY) ?? 0,
+                                lookupData[key].Sum(x => x.PRICE) ?? 0,
+                                lookupData[key].Sum(x => x.AMOUNT) ?? 0,
+                            },
+                        NUMBER_COMMENTS = isCountComments ? isChild ?
+                        $"{parentComments}" :
+                        $"{parentComments + childComments}|{parentComments}" : $"{childComments}|0"
+                    };
+                }
+            }
+        }
+
+
+        public override IEnumerable<T_MD_KHOAN_MUC_HANG_HOA> GetDetailSumUpTemplate(string elementCode, int year, int version, string templateCode, string centerCode)
+        {
+            var newestVersionInDb = GetFirstWithFetch(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year)?.VERSION;
+            if (!newestVersionInDb.HasValue)
+            {
+                return null;
+            }
+            else
+            {
+                if (newestVersionInDb.Value == version)
+                {
+                    // newest data
+                    // get data in table base data
+                    var baseData = UnitOfWork.Repository<KeHoachChiPhiDataBaseRepo>()
+                        .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode
+                        && x.TIME_YEAR == year
+                        && x.KHOAN_MUC_HANG_HOA_CODE == elementCode
+                        && x.VERSION == version
+                        && x.CHI_PHI_PROFIT_CENTER_CODE == centerCode);
+                    return from item in baseData
+                           select (T_MD_KHOAN_MUC_HANG_HOA)item;
+                }
+                else
+                {
+                    // old data
+                    // get data in table base data history
+                    var baseData = UnitOfWork.Repository<KeHoachChiPhiDataBaseHistoryRepo>()
+                        .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode
+                        && x.TIME_YEAR == year
+                        && x.KHOAN_MUC_HANG_HOA_CODE == elementCode
+                        && x.VERSION == version
+                        && x.CHI_PHI_PROFIT_CENTER_CODE == centerCode);
+                    return from item in baseData
+                           select (T_MD_KHOAN_MUC_HANG_HOA)item;
+                }
+            }
+        }
+
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas,
+            out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailOtherCostData,
             out bool isDrillDownApply,
             ViewDataCenterModel model)
         {
@@ -1133,8 +1385,8 @@ namespace SMO.Service.BP
             if (!model.IS_HAS_NOT_VALUE && !model.IS_HAS_VALUE &&
                 (!string.IsNullOrEmpty(model.TEMPLATE_CODE) || model.VERSION == null || model.VERSION.Value == -1))
             {
-                detailCostData = null;
-                detailCostElements = null;
+                detailOtherCostData = null;
+                detailOtherKhoanMucHangHoas = null;
                 return null;
             }
             var isHasValue = model.IS_HAS_VALUE ? model.IS_HAS_NOT_VALUE ? (bool?)null : true : false;
@@ -1142,7 +1394,7 @@ namespace SMO.Service.BP
             if (!string.IsNullOrEmpty(model.TEMPLATE_CODE))
             {
                 // view template Data
-                detailCostData = null;
+                detailOtherCostData = null;
                 var lstOrgs = new List<string>();
                 if (isParent)
                 {
@@ -1152,8 +1404,8 @@ namespace SMO.Service.BP
                 {
                     lstOrgs.Add(model.ORG_CODE);
                 }
-                var elements = GetDataCostPreview(out detailCostElements, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue);
-                var sumElements = new T_MD_KHOAN_MUC_CHI_PHI
+                var elements = GetDataCostPreview(out detailOtherKhoanMucHangHoas, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue);
+                var sumElements = new T_MD_KHOAN_MUC_HANG_HOA
                 {
                     // set tổng năm
                     // tạo element tổng
@@ -1164,16 +1416,16 @@ namespace SMO.Service.BP
                     IsChildren = false,
                     C_ORDER = 0,
                     CODE = string.Empty,
-                    Values = new decimal[14]
+                    Values = new decimal[3]
                 };
-                var isTemplateBase = GetTemplate(model.TEMPLATE_CODE)?.IS_BASE;
-                isTemplateBase = isTemplateBase.HasValue && isTemplateBase.Value;
+                //var isTemplateBase = GetTemplate(model.TEMPLATE_CODE)?.IS_BASE;
+                //isTemplateBase = isTemplateBase.HasValue && isTemplateBase.Value;
                 foreach (var item in elements.Distinct().Where(x => !x.IS_GROUP))
                 {
-                    if (isTemplateBase.Value && item.Values.Sum() > 0)
-                    {
-                        item.IsChildren = true;
-                    }
+                    //if (isTemplateBase.Value && item.Values.Sum() > 0)
+                    //{
+                    //    item.IsChildren = true;
+                    //}
                     for (int i = 0; i < sumElements.Values.Length; i++)
                     {
                         sumElements.Values[i] += item.Values[i];
@@ -1185,40 +1437,40 @@ namespace SMO.Service.BP
             else if (model.VERSION == null || model.VERSION.Value == -1)
             {
                 // xem dữ liệu trước khi tổng hợp
-                detailCostElements = null;
+                detailOtherKhoanMucHangHoas = null;
                 // disabled drill down
                 isDrillDownApply = false;
-                return SummarySumUpCenter(out detailCostData, model.YEAR, model.ORG_CODE, null, isHasValue, templateId: null);
+                return SummarySumUpCenter(out detailOtherCostData, model.YEAR, model.ORG_CODE, null, isHasValue, templateId: null);
             }
             else
             {
                 // xem dữ liệu được tổng hợp cho đơn vị
-                detailCostElements = null;
-                return SummaryCenterVersion(out detailCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);
+                detailOtherKhoanMucHangHoas = null;
+                return SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);
             }
         }
 
-        public override IList<T_MD_KHOAN_MUC_CHI_PHI> GetDetailPreviewSumUp(string centerCode, string elementCode, int year)
+        public override IList<T_MD_KHOAN_MUC_HANG_HOA> GetDetailPreviewSumUp(string centerCode, string elementCode, int year)
         {
             var plVersionRepo = UnitOfWork.Repository<KeHoachChiPhiRepo>();
             var plDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
             var plDataHistoryRepo = UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>();
 
-            var plDataCostElements = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().GetCFDataByCenterCode(null, new List<string> { centerCode }, year, null, null);
+            var plDataOtherKhoanMucHangHoas = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().GetCFDataByCenterCode(null, new List<string> { centerCode }, year, null, null);
 
-            return plDataCostElements.Where(x => x.ELEMENT_CODE == elementCode)
-                .Select(x => (T_MD_KHOAN_MUC_CHI_PHI)x)
+            return plDataOtherKhoanMucHangHoas.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == elementCode)
+                .Select(x => (T_MD_KHOAN_MUC_HANG_HOA)x)
                 .OrderBy(x => x.C_ORDER).ToList();
         }
 
-        private IList<T_MD_KHOAN_MUC_CHI_PHI> GetDataCostPreview(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements, string templateId, List<string> lstOrgs, int year, int? version, bool? isHasValue)
+        private IList<T_MD_KHOAN_MUC_HANG_HOA> GetDataCostPreview(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas, string templateId, List<string> lstOrgs, int year, int? version, bool? isHasValue)
         {
-            detailCostElements = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>();
-            var lstElements = new List<T_MD_KHOAN_MUC_CHI_PHI>();
+            detailOtherKhoanMucHangHoas = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>();
+            var lstElements = new List<T_MD_KHOAN_MUC_HANG_HOA>();
             foreach (var orgCode in lstOrgs)
             {
                 var elements = GetDataCostPreview(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detail, templateId, orgCode, year, version, isHasValue);
-                detailCostElements = SummaryElement(detailCostElements, detail);
+                detailOtherKhoanMucHangHoas = SummaryElement(detailOtherKhoanMucHangHoas, detail);
                 lstElements = SummaryUpElement(lstElements, elements).ToList();
             }
             return lstElements;
@@ -1230,7 +1482,7 @@ namespace SMO.Service.BP
         /// <param name="lst1"></param>
         /// <param name="lst2"></param>
         /// <returns></returns>
-        private IList<T_MD_KHOAN_MUC_CHI_PHI> SummaryUpElement(IList<T_MD_KHOAN_MUC_CHI_PHI> lst1, IList<T_MD_KHOAN_MUC_CHI_PHI> lst2)
+        private IList<T_MD_KHOAN_MUC_HANG_HOA> SummaryUpElement(IList<T_MD_KHOAN_MUC_HANG_HOA> lst1, IList<T_MD_KHOAN_MUC_HANG_HOA> lst2)
         {
             if (lst1.Count == 0)
             {
@@ -1302,6 +1554,7 @@ namespace SMO.Service.BP
         }
 
         #endregion
+
         /// <summary>
         /// Lấy tất cả lịch sử dữ liệu trong năm của một đơn vị
         /// </summary>
@@ -1309,8 +1562,16 @@ namespace SMO.Service.BP
         /// <param name="year"></param>
         public override void GetHistory(string orgCode, int year)
         {
+            if (ObjDetail.KICH_BAN == null)
+            {
+                ObjDetail.KICH_BAN = "TB";
+            }
+            if (ObjDetail.PHIEN_BAN == null)
+            {
+                ObjDetail.PHIEN_BAN = "PB1";
+            }
             var query = this.UnitOfWork.GetSession().QueryOver<T_BP_KE_HOACH_CHI_PHI_HISTORY>();
-            query = query.Where(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year)
+            query = query.Where(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year && x.KICH_BAN == ObjDetail.KICH_BAN && x.PHIEN_BAN == ObjDetail.PHIEN_BAN)
                 .Fetch(x => x.Template).Eager
                 .Fetch(x => x.USER_CREATE).Eager;
             this.ObjListHistory = query.List().ToList();
@@ -1375,9 +1636,12 @@ namespace SMO.Service.BP
                 return;
             }
 
-            var lstDetailTemplate = this.UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>().GetManyByExpression(x => x.TIME_YEAR == this.ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == this.ObjDetail.TEMPLATE_CODE);
 
-            var lstElement = this.UnitOfWork.Repository<KhoanMucChiPhiRepo>().GetManyByExpression(x => x.TIME_YEAR == this.ObjDetail.TIME_YEAR);
+            var lstDetailTemplate = this.UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
+                .GetManyWithFetch(x => x.TIME_YEAR == this.ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == this.ObjDetail.TEMPLATE_CODE,
+                x => x.Center);
+
+            var lstElement = this.UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetManyByExpression(x => x.TIME_YEAR == this.ObjDetail.TIME_YEAR);
 
             // Kiểm tra mẫu này đã được thiết kế cho năm ngân sách đang chọn chưa
             if (lstDetailTemplate.Count == 0)
@@ -1387,17 +1651,25 @@ namespace SMO.Service.BP
                 return;
             }
 
-            // Kiểm tra cost_center có thuộc mẫu thiết kế không
+            // Kiểm tra revenue_center có thuộc mẫu thiết kế không
             // Có để trống dữ liệu tại 2 cột Mã đơn vị, và mã khoản mục không
             var lstOrgInTemplate = lstDetailTemplate.Select(x => x.CENTER_CODE).Distinct().ToList();
+            StartRowData = ObjDetail.TYPE_UPLOAD == "01" ? StartRowData : 1;
             for (int i = this.StartRowData; i < dataTable.Rows.Count; i++)
             {
-                var orgCodeInExcel = dataTable.Rows[i][0].ToString().Trim();
-                var elementCodeInExcel = dataTable.Rows[i][2].ToString().Trim();
-                if (string.IsNullOrWhiteSpace(orgCodeInExcel))
+                var projectCode = ObjDetail.TYPE_UPLOAD == "01" ? dataTable.Rows[i][0].ToString().Trim() : dataTable.Rows[i][5].ToString().Trim();
+                var companyCode = ObjDetail.TYPE_UPLOAD == "01" ? dataTable.Rows[i][2].ToString().Trim() : dataTable.Rows[i][7].ToString().Trim();
+                var elementCodeInExcel = dataTable.Rows[i][4].ToString().Trim();
+                if (string.IsNullOrWhiteSpace(projectCode))
                 {
                     this.State = false;
-                    this.ErrorMessage = $"Không được phép để trống dữ liệu tại cột [Mã đơn vị] tại dòng [{i + 1}] !";
+                    this.ErrorMessage = $"Mã sân bay [{projectCode}] tại dòng [{i + 1}] trống hoặc không tồn tại trong biểu mẫu {ObjDetail.TEMPLATE_CODE} !";
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(companyCode))
+                {
+                    this.State = false;
+                    this.ErrorMessage = $"Mã hãng hàng không [{companyCode}] tại dòng [{i + 1}] trống hoặc không tồn tại trong biểu mẫu {ObjDetail.TEMPLATE_CODE} !";
                     return;
                 }
 
@@ -1408,27 +1680,35 @@ namespace SMO.Service.BP
                     return;
                 }
 
-                if (!lstOrgInTemplate.Contains(orgCodeInExcel))
+                if (ObjDetail.TYPE_UPLOAD == "01")
                 {
-                    this.State = false;
-                    this.ErrorMessage = $"Mẫu khai báo [{template.CODE}] không chứa đơn vị [{orgCodeInExcel}] tại dòng [{i + 1}] !";
-                    return;
+                    if (lstDetailTemplate.FirstOrDefault(x => x.Center.COST_CENTER_CODE == projectCode && x.Center.SAN_BAY_CODE == companyCode) == null)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = $"Mẫu khai báo [{template.CODE}] không chứa mã [{projectCode}] tại dòng [{i + 1}] !";
+                        return;
+                    }
                 }
 
-                // Kiểm tra các khoản mục lá không nằm trong mẫu thiết kế
-                var findElement = lstElement.FirstOrDefault(x => x.CODE == elementCodeInExcel);
-                if (findElement == null)
+                if (ObjDetail.TYPE_UPLOAD == "01")
                 {
-                    this.State = false;
-                    this.ErrorMessage = $"Mã khoản mục [{elementCodeInExcel}] không tồn tại !";
-                    return;
-                }
+                    // Kiểm tra các khoản mục lá không nằm trong mẫu thiết kế
+                    var findElement = lstElement.FirstOrDefault(x => x.CODE == elementCodeInExcel);
+                    if (findElement == null)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = $"Mã khoản mục [{elementCodeInExcel}] không tồn tại !";
+                        return;
+                    }
 
-                if (!findElement.IS_GROUP && lstDetailTemplate.Count(x => x.ELEMENT_CODE == elementCodeInExcel && x.CENTER_CODE == orgCodeInExcel) == 0)
-                {
-                    this.State = false;
-                    this.ErrorMessage = $"Mã khoản mục [{elementCodeInExcel}] tại dòng {i + 1} không nằm trong mẫu thiết kế !";
-                    return;
+                    if (!findElement.IS_GROUP && lstDetailTemplate.Count(x => x.ELEMENT_CODE == elementCodeInExcel
+                        && x.Center.COST_CENTER_CODE == projectCode
+                        && x.Center.SAN_BAY_CODE == companyCode) == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = $"Mã khoản mục [{elementCodeInExcel}] tại dòng {i + 1} không nằm trong mẫu thiết kế !";
+                        return;
+                    }
                 }
             }
 
@@ -1441,6 +1721,7 @@ namespace SMO.Service.BP
             }
 
             //Kiếm tra có đúng mẫu hay không
+            //Kiếm tra có đúng mẫu hay không
             if (isDataBase)
             {
                 for (int i = 0; i < ListColumnNameDataBase.Count; i++)
@@ -1452,79 +1733,86 @@ namespace SMO.Service.BP
                         return;
                     }
                 }
-                this.ConvertData(dataTable, lstElement.ToList(), startColumn: 6, endColumn: ListColumnNameDataBase.Count - 5, isDataBase);
+                this.ConvertData(dataTable, lstElement.ToList(), startColumn: 8, endColumn: ListColumnNameDataBase.Count - 5, isDataBase);
 
             }
             else
             {
-                for (int i = 0; i < ListColumnName.Count; i++)
+
+                if (ObjDetail.TYPE_UPLOAD == "01")
                 {
-                    if (dataTable.Rows[this.StartRowData - 1][i].ToString().ToUpper() != this.ListColumnName[i])
+                    //for (int i = 0; i < ListColumnName.Count; i++)
+                    //{
+                    //    if (dataTable.Rows[this.StartRowData - 1][i].ToString().ToUpper() != this.ListColumnName[i])
+                    //    {
+                    //        this.State = false;
+                    //        this.ErrorMessage = "File excel không đúng theo mẫu thiết kế!";
+                    //        return;
+                    //    }
+                    //}
+                    // kiểm tra xem có 2 hàng dữ liệu của cùng 1 khoản mục hay không
+                    var dictionary = lstDetailTemplate.ToDictionary(x => x.PKID, x => true);
+                    for (int i = StartRowData; i < dataTable.Rows.Count; i++)
                     {
-                        this.State = false;
-                        this.ErrorMessage = "File excel không đúng theo mẫu thiết kế!";
-                        return;
+                        var projectCode = dataTable.Rows[i][0].ToString().Trim();
+                        var companyCode = dataTable.Rows[i][2].ToString().Trim();
+                        var elementCodeInExcel = dataTable.Rows[i][4].ToString().Trim();
+                        var foundItem = lstDetailTemplate
+                            .FirstOrDefault(x => x.ELEMENT_CODE == elementCodeInExcel
+                            && x.Center.COST_CENTER_CODE == projectCode
+                            && x.Center.SAN_BAY_CODE == companyCode);
+                        if (foundItem != null && dictionary[foundItem.PKID])
+                        {
+                            dictionary[foundItem.PKID] = false;
+                        }
+                        else if (foundItem != null)
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Mã khoản mục [{foundItem.ELEMENT_CODE}] tại dòng {i + 1} bị lặp lại!";
+                            return;
+                        }
                     }
                 }
 
-                // kiểm tra xem có 2 hàng dữ liệu của cùng 1 khoản mục hay không
-                var dictionary = lstDetailTemplate.ToDictionary(x => x.PKID, x => true);
-                for (int i = StartRowData; i < dataTable.Rows.Count; i++)
-                {
-                    var foundItem = lstDetailTemplate
-                        .FirstOrDefault(x => x.CENTER_CODE == dataTable.Rows[i][0].ToString().Trim() &&
-                        x.ELEMENT_CODE == dataTable.Rows[i][2].ToString().Trim());
-                    if (foundItem != null && dictionary[foundItem.PKID])
-                    {
-                        dictionary[foundItem.PKID] = false;
-                    }
-                    else if (foundItem != null)
-                    {
-                        this.State = false;
-                        this.ErrorMessage = $"Mã khoản mục [{foundItem.ELEMENT_CODE}] tại dòng {i + 1} bị lặp lại!";
-                        return;
-                    }
-                }
+
 
                 // Kiểm tra dữ liệu có phải là số hay không
-                this.ConvertData(dataTable, lstElement.ToList(), startColumn: 4, endColumn: ListColumnName.Count - 3, isDataBase);
+                if (ObjDetail.TYPE_UPLOAD == "01")
+                {
+                    this.ConvertData(dataTable, lstElement.ToList(), startColumn: 6, endColumn: 9, isDataBase);
+                }
+                else
+                {
+                    this.ConvertData(dataTable, lstElement.ToList(), startColumn: 11, endColumn: 23, isDataBase);
+                }
             }
-
-
             if (this.InvalidCellsList.Count > 0)
             {
                 this.State = false;
                 this.ErrorMessage = "Dữ liệu tại các cell sau không phải là số!<br>";
-                if (isDataBase)
+                foreach (var item in this.InvalidCellsList)
                 {
-                    foreach (var item in this.InvalidCellsList)
-                    {
-                        this.ErrorMessage += $"Dòng [{item.X + 1}] - Cột [{this.ListColumnNameDataBase[item.Y]}] <br>";
-                    }
-                }
-                else
-                {
-                    foreach (var item in this.InvalidCellsList)
-                    {
-                        this.ErrorMessage += $"Dòng [{item.X + 1}] - Cột [{this.ListColumnName[item.Y]}] <br>";
-                    }
+                    this.ErrorMessage += $"Dòng [{item.X + 1}] - Cột [{this.ListColumnName[item.Y]}] <br>";
                 }
                 return;
+            }
+            if (ObjDetail.TYPE_UPLOAD == "01")
+            {
+                if (dataTable.Rows.Count == this.StartRowData)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "File excel này không có dữ liệu!";
+                    return;
+                }
             }
 
-            if (dataTable.Rows.Count == this.StartRowData)
-            {
-                this.State = false;
-                this.ErrorMessage = "File excel này không có dữ liệu!";
-                return;
-            }
         }
 
         /// <summary>
         /// Convert data về số
         /// </summary>
         /// <param name="dataTable"></param>
-        public override void ConvertData(DataTable dataTable, List<T_MD_KHOAN_MUC_CHI_PHI> lstElement, int startColumn, int endColumn, bool isDataBase)
+        public override void ConvertData(DataTable dataTable, List<T_MD_KHOAN_MUC_HANG_HOA> lstElement, int startColumn, int endColumn, bool isDataBase)
         {
             var iActualRow = dataTable.Rows.Count;
             for (int i = this.StartRowData; i < iActualRow; i++)
@@ -1538,15 +1826,15 @@ namespace SMO.Service.BP
                     }
                     var strValue = (dataTable.Rows[i][j] ?? "0").ToString() ?? "0";
                     strValue = string.IsNullOrWhiteSpace(strValue) ? "0" : strValue.Trim();
-                    var canParse = decimal.TryParse(strValue, out decimal result);
-                    if (canParse)
+                    if (decimal.TryParse(strValue, out decimal data))
                     {
-                        dataTable.Rows[i][j] = result;
+                        dataTable.Rows[i][j] = data;
                     }
                     else
                     {
                         this.InvalidCellsList.Add(new Point(i, j));
                     }
+
                 }
             }
 
@@ -1554,62 +1842,67 @@ namespace SMO.Service.BP
             {
                 return;
             }
-
-            // Xóa những dữ liệu trắng, và dữ liệu mã cha
-            var lstDataRowInValid = new List<DataRow>();
-            for (int i = this.StartRowData; i < iActualRow; i++)
+            if (ObjDetail.TYPE_UPLOAD == "01")
             {
-                var yearAmount = 0m;
-                bool isValid = true;
-                bool isEmptyValues = true;
-                var elementCodeInExcel = dataTable.Rows[i][2].ToString().Trim();
-                var findElement = lstElement.FirstOrDefault(x => x.CODE == elementCodeInExcel);
-                if (findElement.IS_GROUP)
+                // Xóa những dữ liệu trắng, và dữ liệu mã cha
+                var lstDataRowInValid = new List<DataRow>();
+                for (int i = this.StartRowData; i < iActualRow; i++)
                 {
-                    isValid = false;
-                }
-                else
-                {
-                    for (int j = startColumn; j < endColumn; j++)
+                    var yearAmount = 0m;
+                    bool isValid = true;
+                    bool isEmptyValues = true;
+                    var elementCodeInExcel = dataTable.Rows[i][4].ToString().Trim();
+                    var findElement = lstElement.FirstOrDefault(x => x.CODE == elementCodeInExcel);
+                    if (findElement == null || findElement.IS_GROUP)
                     {
-                        var cellValue = dataTable.Rows[i][j].ToString().Trim();
-                        if (!string.IsNullOrEmpty(cellValue) && cellValue != "0")
+                        isValid = false;
+                    }
+                    else
+                    {
+                        for (int j = startColumn; j < endColumn; j++)
                         {
-                            isEmptyValues = false;
-                        }
-                        if (isDataBase && (j - startColumn) % 4 == 1)
-                        {
-                            if (!string.IsNullOrEmpty(cellValue))
+
+                            var cellValue = dataTable.Rows[i][j].ToString().Trim();
+                            if (!string.IsNullOrEmpty(cellValue) && cellValue != "0")
                             {
-                                isValid = true;
+                                isEmptyValues = false;
                             }
-                            // ignore column time 
-                            continue;
-                        }
-                        if (!string.IsNullOrEmpty(cellValue) &&
-                            decimal.TryParse(cellValue, out decimal val))
-                        {
-                            if ((isDataBase && (j - startColumn) % 4 == 3 && j <= endColumn)
-                                || !isDataBase)
+                            if (isDataBase && (j - startColumn) % 4 == 1)
                             {
-                                yearAmount += val;
+                                if (!string.IsNullOrEmpty(cellValue))
+                                {
+                                    isValid = true;
+                                }
+                                // ignore column time 
+                                continue;
                             }
-                            if (val != 0 && !isValid)
+                            if (!string.IsNullOrEmpty(cellValue) &&
+                                decimal.TryParse(cellValue, out decimal val))
                             {
-                                isValid = true;
+                                if ((isDataBase && (j - startColumn) % 4 == 3 && j <= endColumn)
+                                    || !isDataBase)
+                                {
+                                    yearAmount += val;
+                                }
+                                if (val != 0 && !isValid)
+                                {
+                                    isValid = true;
+                                }
                             }
                         }
                     }
+                    if (!isValid || isEmptyValues || yearAmount == 0)
+                    {
+                        lstDataRowInValid.Add(dataTable.Rows[i]);
+                    }
                 }
-                if (!isValid || isEmptyValues || yearAmount == 0)
+
+                foreach (var item in lstDataRowInValid)
                 {
-                    lstDataRowInValid.Add(dataTable.Rows[i]);
+                    dataTable.Rows.Remove(item);
                 }
             }
-            foreach (var item in lstDataRowInValid)
-            {
-                dataTable.Rows.Remove(item);
-            }
+
         }
 
         /// <summary>
@@ -1624,7 +1917,6 @@ namespace SMO.Service.BP
                 return;
             }
             var orgCode = ProfileUtilities.User.ORGANIZE_CODE;
-
             // Lưu file vào database
             var fileStream = new FILE_STREAM()
             {
@@ -1684,21 +1976,20 @@ namespace SMO.Service.BP
                 }
                 else
                 {
-                    // Tạo mới bản ghi cost pl
+                    // Tạo mới bản ghi revenue pl
                     CurrentRepository.Create(new T_BP_KE_HOACH_CHI_PHI()
                     {
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = orgCode,
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                        KICH_BAN = ObjDetail.KICH_BAN,
+                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
                         VERSION = versionNext,
-                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
-                        KICH_BAN = ObjDetail.KICH_BAN,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
                         FILE_ID = fileStream.PKID,
-                        IS_REVIEWED = false,
-                        IS_SUMUP = false,
                         IS_DELETED = false,
+                        IS_SUMUP = false,
                         CREATE_BY = currentUser
                     });
                 }
@@ -1710,8 +2001,8 @@ namespace SMO.Service.BP
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
-                    PHIEN_BAN = KeHoachChiPhiCurrent == null?ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
                     KICH_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.KICH_BAN : KeHoachChiPhiCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     FILE_ID = fileStream.PKID,
                     CREATE_BY = currentUser
@@ -1723,9 +2014,9 @@ namespace SMO.Service.BP
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                    VERSION = versionNext,
-                    PHIEN_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
                     KICH_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.KICH_BAN : KeHoachChiPhiCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
+                    VERSION = versionNext,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     ACTION = Approve_Action.NhapDuLieu,
                     ACTION_DATE = DateTime.Now,
@@ -1737,17 +2028,16 @@ namespace SMO.Service.BP
                 // Insert data vào history
                 foreach (var item in dataCurrent)
                 {
-                    var costDataHis = (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)item;
-                    UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>().Create(costDataHis);
+                    var revenueDataHis = (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)item;
+                    UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>().Create(revenueDataHis);
                     UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Delete(item);
                 }
 
-
+                var allChiPhiProfitCenters = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().GetAll();
                 // Insert dữ liệu vào bảng data
                 for (int i = this.StartRowData; i < actualRows; i++)
                 {
-                    var centerCode = tableData.Rows[i][0].ToString().Trim();
-                    var percentagePreventive = GetPreventive(centerCode, year: ObjDetail.TIME_YEAR)?.PERCENTAGE;
+                    var percentagePreventive = GetPreventive(orgCode, year: ObjDetail.TIME_YEAR)?.PERCENTAGE;
                     if (percentagePreventive == null)
                     {
                         percentagePreventive = 1;
@@ -1756,36 +2046,44 @@ namespace SMO.Service.BP
                     {
                         percentagePreventive = 1 + percentagePreventive / 100;
                     }
-                    int j = 4;
-                    var costData = new T_BP_KE_HOACH_CHI_PHI_DATA()
+
+                    var centerCode = "";
+                    if (ObjDetail.TYPE_UPLOAD == "01")
                     {
-                        PKID = Guid.NewGuid().ToString(),
-                        ORG_CODE = orgCode,
-                        CENTER_CODE = centerCode,
-                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                        TIME_YEAR = ObjDetail.TIME_YEAR,
-                        STATUS = Approve_Status.ChuaTrinhDuyet,
-                        VERSION = versionNext,
-                        ELEMENT_CODE = tableData.Rows[i][2].ToString().Trim(),
-                        VALUE_JAN = tableData.Rows[i][j++] as decimal?,
-                        VALUE_FEB = tableData.Rows[i][j++] as decimal?,
-                        VALUE_MAR = tableData.Rows[i][j++] as decimal?,
-                        VALUE_APR = tableData.Rows[i][j++] as decimal?,
-                        VALUE_MAY = tableData.Rows[i][j++] as decimal?,
-                        VALUE_JUN = tableData.Rows[i][j++] as decimal?,
-                        VALUE_JUL = tableData.Rows[i][j++] as decimal?,
-                        VALUE_AUG = tableData.Rows[i][j++] as decimal?,
-                        VALUE_SEP = tableData.Rows[i][j++] as decimal?,
-                        VALUE_OCT = tableData.Rows[i][j++] as decimal?,
-                        VALUE_NOV = tableData.Rows[i][j++] as decimal?,
-                        VALUE_DEC = tableData.Rows[i][j++] as decimal?,
+                        centerCode = allChiPhiProfitCenters.FirstOrDefault(
+                                                x => x.SAN_BAY_CODE == tableData.Rows[i][2].ToString().Trim() &&
+                                                x.COST_CENTER_CODE == tableData.Rows[i][0].ToString().Trim())?.CODE;
+                    }
 
-                        DESCRIPTION = tableData.Rows[i][18].ToString(),
-                        CREATE_BY = currentUser
-                    };
-                    costData.VALUE_SUM_YEAR = costData.VALUE_JAN + costData.VALUE_FEB + costData.VALUE_MAR + costData.VALUE_APR + costData.VALUE_MAY + costData.VALUE_JUN + costData.VALUE_JUL + costData.VALUE_AUG + costData.VALUE_SEP + costData.VALUE_OCT + costData.VALUE_NOV + costData.VALUE_DEC;
 
-                    costData.VALUE_SUM_YEAR_PREVENTIVE = costData.VALUE_SUM_YEAR * percentagePreventive;
+                    if (centerCode == null)
+                    {
+                        throw new Exception($"Định dạng file không đúng ở dòng thứ {i + 1}");
+                    }
+
+                    var costData = new T_BP_KE_HOACH_CHI_PHI_DATA();
+
+                    if (ObjDetail.TYPE_UPLOAD == "01")
+                    {
+                        costData = new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        {
+                            PKID = Guid.NewGuid().ToString(),
+                            ORG_CODE = orgCode,
+                            CHI_PHI_PROFIT_CENTER_CODE = centerCode,
+                            TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                            TIME_YEAR = ObjDetail.TIME_YEAR,
+                            STATUS = Approve_Status.ChuaTrinhDuyet,
+                            VERSION = versionNext,
+                            KHOAN_MUC_HANG_HOA_CODE = tableData.Rows[i][4].ToString().Trim(),
+                           
+                            QUANTITY = tableData.Rows[i][6] as decimal? == null ? 0 : tableData.Rows[i][6] as decimal?,
+                            PRICE = tableData.Rows[i][7] as decimal? == null ? 0 : tableData.Rows[i][7] as decimal?,
+
+                            DESCRIPTION = tableData.Rows[i][9].ToString(),
+                            CREATE_BY = currentUser
+                        };
+                        costData.AMOUNT = costData.QUANTITY * costData.PRICE;
+                    }
 
                     UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costData);
                 }
@@ -1808,7 +2106,6 @@ namespace SMO.Service.BP
                 Exception = ex;
             }
         }
-
         /// <summary>
         /// Lấy entity khai báo ngân sách dự phòng
         /// </summary>
@@ -1820,7 +2117,6 @@ namespace SMO.Service.BP
             return UnitOfWork.Repository<PreventiveRepo>()
                 .GetFirstWithFetch(x => x.ORG_CODE == centerCode && x.TIME_YEAR == year);
         }
-
 
         /// <summary>
         /// Nhập dữ liệu từ CƠ SỞ excel vào database
@@ -1848,11 +2144,8 @@ namespace SMO.Service.BP
             FileStreamService.InsertFile(fileStream);
 
             // Xác định version dữ liệu
-            //var KeHoachChiPhiCurrent = GetFirstWithFetch(x => x.ORG_CODE == orgCode
-            //    && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE);
-
-            var KeHoachChiPhiCurrent = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.ORG_CODE == orgCode
-                && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).FirstOrDefault();
+            var KeHoachChiPhiCurrent = GetFirstWithFetch(x => x.ORG_CODE == orgCode
+                && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE);
 
             if (KeHoachChiPhiCurrent != null && !(KeHoachChiPhiCurrent.STATUS == Approve_Status.TuChoi || KeHoachChiPhiCurrent.STATUS == Approve_Status.ChuaTrinhDuyet))
             {
@@ -1909,11 +2202,11 @@ namespace SMO.Service.BP
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = orgCode,
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                        TIME_YEAR = ObjDetail.TIME_YEAR,
-                        VERSION = versionNext,
-                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
                         KICH_BAN = ObjDetail.KICH_BAN,
+                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                        TIME_YEAR = ObjDetail.TIME_YEAR,
                         IS_DELETED = false,
+                        VERSION = versionNext,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
                         FILE_ID = fileStream.PKID,
                         IS_SUMUP = false,
@@ -1926,10 +2219,10 @@ namespace SMO.Service.BP
                 {
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = orgCode,
+                    KICH_BAN = ObjDetail.KICH_BAN,
+                    PHIEN_BAN = ObjDetail.PHIEN_BAN,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
-                    PHIEN_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
-                    KICH_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.KICH_BAN : KeHoachChiPhiCurrent.KICH_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     FILE_ID = fileStream.PKID,
                     CREATE_BY = currentUser
@@ -1942,8 +2235,6 @@ namespace SMO.Service.BP
                     ORG_CODE = orgCode,
                     TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                     VERSION = versionNext,
-                    PHIEN_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachChiPhiCurrent.PHIEN_BAN,
-                    KICH_BAN = KeHoachChiPhiCurrent == null ? ObjDetail.KICH_BAN : KeHoachChiPhiCurrent.KICH_BAN,
                     TIME_YEAR = ObjDetail.TIME_YEAR,
                     ACTION = Approve_Action.NhapDuLieu,
                     ACTION_DATE = DateTime.Now,
@@ -1951,8 +2242,6 @@ namespace SMO.Service.BP
                     CREATE_BY = currentUser
                 });
 
-
-                // Insert data vào history
                 foreach (var item in dataCurrent)
                 {
                     var costDataHis = (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)item;
@@ -1967,49 +2256,41 @@ namespace SMO.Service.BP
                     lstRowValues.Add(tableData.Rows[i]);
                 }
 
-                var lookUp = lstRowValues.OfType<DataRow>().ToLookup(x => new { CenterCode = x[0].ToString(), ElementCode = x[2].ToString() });
+                var allChiPhiProfitCenters = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().GetAll();
+                var lookUp = lstRowValues.OfType<DataRow>().ToLookup(x => new { ProjectCode = x[0].ToString().Trim(), CompanyCode = x[2].ToString().Trim(), ElementCode = x[4].ToString().Trim() });
 
-                var lstCenterCodeInExcelFile = lookUp.Select(y => y.Key.CenterCode).Distinct();
-                var lstPreventives = UnitOfWork.Repository<PreventiveRepo>()
-                    .GetManyWithFetch(x => lstCenterCodeInExcelFile.Contains(x.ORG_CODE) && x.TIME_YEAR == ObjDetail.TIME_YEAR);
+                var percentagePreventive = GetPreventive(orgCode, ObjDetail.TIME_YEAR)?.PERCENTAGE;
+                if (percentagePreventive == null)
+                {
+                    percentagePreventive = 1;
+                }
+                else
+                {
+                    percentagePreventive = 1 + percentagePreventive / 100;
+                }
                 foreach (var key in lookUp.Select(x => x.Key))
                 {
-                    var percentagePreventive = lstPreventives.FirstOrDefault(x => x.ORG_CODE == key.CenterCode)?.PERCENTAGE;
-                    if (percentagePreventive == null)
+                    var centerCode = allChiPhiProfitCenters.FirstOrDefault(
+                            x => x.SAN_BAY_CODE == key.ProjectCode &&
+                            x.COST_CENTER_CODE == key.CompanyCode)?.CODE;
+                    if (centerCode == null)
                     {
-                        percentagePreventive = 1;
-                    }
-                    else
-                    {
-                        percentagePreventive = 1 + percentagePreventive / 100;
+                        throw new Exception($"Định dạng file không đúng");
                     }
                     var costData = new T_BP_KE_HOACH_CHI_PHI_DATA()
                     {
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = orgCode,
-                        CENTER_CODE = key.CenterCode,
+                        CHI_PHI_PROFIT_CENTER_CODE = centerCode,
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
                         VERSION = versionNext,
-                        ELEMENT_CODE = key.ElementCode,
-                        VALUE_JAN = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[9].ToString())),
-                        VALUE_FEB = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[13].ToString())),
-                        VALUE_MAR = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[17].ToString())),
-                        VALUE_APR = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[21].ToString())),
-                        VALUE_MAY = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[25].ToString())),
-                        VALUE_JUN = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[29].ToString())),
-                        VALUE_JUL = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[33].ToString())),
-                        VALUE_AUG = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[37].ToString())),
-                        VALUE_SEP = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[41].ToString())),
-                        VALUE_OCT = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[45].ToString())),
-                        VALUE_NOV = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[49].ToString())),
-                        VALUE_DEC = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[53].ToString())),
+                        KHOAN_MUC_HANG_HOA_CODE = key.ElementCode,
+                        //VALUE = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[11].ToString())),
                         CREATE_BY = currentUser
                     };
-                    costData.VALUE_SUM_YEAR = costData.VALUE_JAN + costData.VALUE_FEB + costData.VALUE_MAR + costData.VALUE_APR + costData.VALUE_MAY + costData.VALUE_JUN + costData.VALUE_JUL + costData.VALUE_AUG + costData.VALUE_SEP + costData.VALUE_OCT + costData.VALUE_NOV + costData.VALUE_DEC;
 
-                    costData.VALUE_SUM_YEAR_PREVENTIVE = costData.VALUE_SUM_YEAR * percentagePreventive;
                     KeHoachChiPhiDataRepo.Create(costData);
                 }
 
@@ -2022,96 +2303,37 @@ namespace SMO.Service.BP
                 // Insert dữ liệu vào bảng data
                 for (int i = this.StartRowData; i < actualRows; i++)
                 {
-                    var centerCode = tableData.Rows[i][0].ToString().Trim();
-                    var percentagePreventive = lstPreventives.FirstOrDefault(x => x.ORG_CODE == centerCode)?.PERCENTAGE;
-                    if (percentagePreventive == null)
+                    int j = 8;
+                    var centerCode = allChiPhiProfitCenters.FirstOrDefault(
+                            x => x.SAN_BAY_CODE == tableData.Rows[i][0].ToString().Trim() &&
+                            x.COST_CENTER_CODE == tableData.Rows[i][2].ToString().Trim())?.CODE;
+                    if (centerCode == null)
                     {
-                        percentagePreventive = 1;
+                        throw new Exception($"Định dạng file không đúng");
                     }
-                    else
-                    {
-                        percentagePreventive = 1 + percentagePreventive / 100;
-                    }
-                    int j = 6;
                     var costData = new T_BP_KE_HOACH_CHI_PHI_DATA_BASE()
                     {
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = orgCode,
-                        CENTER_CODE = centerCode,
+                        SAN_BAY_CODE = tableData.Rows[i][0].ToString().Trim(),
+                        //COST_CENTER_CODE = tableData.Rows[i][2].ToString().Trim(),
+                        CHI_PHI_PROFIT_CENTER_CODE = centerCode,
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
                         VERSION = versionNext,
-                        ELEMENT_CODE = tableData.Rows[i][2].ToString().Trim(),
-                        MATERIAL = tableData.Rows[i][4].ToString().Trim(),
-                        UNIT = tableData.Rows[i][5].ToString().Trim(),
+                        KHOAN_MUC_HANG_HOA_CODE = tableData.Rows[i][4].ToString().Trim(),
+                        MATERIAL = tableData.Rows[i][6].ToString().Trim(),
+                        UNIT = tableData.Rows[i][7].ToString().Trim(),
 
-                        QUANTITY_M1 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M1 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M1 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M1 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M2 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M2 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M2 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M2 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M3 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M3 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M3 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M3 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M4 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M4 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M4 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M4 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M5 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M5 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M5 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M5 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M6 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M6 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M6 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M6 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M7 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M7 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M7 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M7 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M8 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M8 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M8 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M8 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M9 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M9 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M9 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M9 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M10 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M10 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M10 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M10 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M11 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M11 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M11 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M11 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-
-                        QUANTITY_M12 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        TIME_M12 = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE_M12 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
-                        AMOUNT_M12 = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
+                        QUANTITY = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
+                        TIME = tableData.Rows[i][j++].ToString().Trim(),
+                        PRICE = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
+                        AMOUNT = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
 
                         DESCRIPTION = tableData.Rows[i][ListColumnNameDataBase.Count - 1].ToString().Trim(),
 
                         CREATE_BY = currentUser
                     };
-                    costData.AMOUNT_YEAR = costData.AMOUNT_M1 + costData.AMOUNT_M2 + costData.AMOUNT_M3 + costData.AMOUNT_M4 + costData.AMOUNT_M5 + costData.AMOUNT_M6 + costData.AMOUNT_M7 + costData.AMOUNT_M8 + costData.AMOUNT_M9 + costData.AMOUNT_M10 + costData.AMOUNT_M11 + costData.AMOUNT_M12;
-                    costData.AMOUNT_YEAR_PREVENTIVE = costData.AMOUNT_YEAR * percentagePreventive.Value;
-
                     KeHoachChiPhiDataBaseRepo.Create(costData);
                 }
                 UnitOfWork.Commit();
@@ -2152,8 +2374,8 @@ namespace SMO.Service.BP
             ObjDetail.ORG_CODE = orgCode;
             var lstOrgCodes = new List<string>() { orgCode };
             var lstTemplateCurrentUserSelfUpload = new List<string>();
-            var isLeaf = IsLeaf();
 
+            var isLeaf = IsLeaf();
             if (isLeaf)
             {
                 // is leaf
@@ -2166,6 +2388,7 @@ namespace SMO.Service.BP
                 // get all child
                 lstOrgCodes.AddRange(GetListOfChildrenCenter(orgCode).Select(x => x.CODE));
             }
+
             var templates = lstTemplateCurrentUserSelfUpload;
             if (AuthorizeUtilities.CheckUserRight("R323") || !isLeaf)
             {
@@ -2201,7 +2424,7 @@ namespace SMO.Service.BP
         private IList<string> GetTemplateData(List<string> lstOrgCodes, int? year = null)
         {
             return UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
-                .GetManyByExpression(x => lstOrgCodes.Contains(x.CENTER_CODE) && !lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value))
+                .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value))
                 .Select(x => x.TEMPLATE_CODE)
                 .Distinct()
                 .ToList();
@@ -2210,7 +2433,7 @@ namespace SMO.Service.BP
         private IList<string> GetTemplateDataHistory(List<string> lstOrgCodes, int? year = null)
         {
             return UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>()
-                .GetManyByExpression(x => lstOrgCodes.Contains(x.CENTER_CODE) && !lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value))
+                .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value))
                 .Select(x => x.TEMPLATE_CODE)
                 .Distinct()
                 .ToList();
@@ -2276,7 +2499,7 @@ namespace SMO.Service.BP
             if (string.IsNullOrEmpty(templateId))
             {
                 return UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>()
-                    .GetManyByExpression(x => lstOrgCodes.Contains(x.CENTER_CODE))
+                    .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE))
                     .Select(x => x.TIME_YEAR)
                     .Distinct()
                     .ToList();
@@ -2284,7 +2507,7 @@ namespace SMO.Service.BP
             else
             {
                 return UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>()
-                    .GetManyByExpression(x => lstOrgCodes.Contains(x.CENTER_CODE) && x.TEMPLATE_CODE == templateId)
+                    .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE == templateId)
                     .Select(x => x.TIME_YEAR)
                     .Distinct()
                     .ToList();
@@ -2296,7 +2519,7 @@ namespace SMO.Service.BP
             if (string.IsNullOrEmpty(templateId))
             {
                 return UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
-                    .GetManyByExpression(x => lstOrgCodes.Contains(x.CENTER_CODE))
+                    .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE))
                     .Select(x => x.TIME_YEAR)
                     .Distinct()
                     .ToList();
@@ -2304,7 +2527,7 @@ namespace SMO.Service.BP
             else
             {
                 return UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
-                    .GetManyByExpression(x => lstOrgCodes.Contains(x.CENTER_CODE) && x.TEMPLATE_CODE == templateId)
+                    .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE == templateId)
                     .Select(x => x.TIME_YEAR)
                     .Distinct()
                     .ToList();
@@ -2318,7 +2541,7 @@ namespace SMO.Service.BP
             if (!string.IsNullOrEmpty(templateId))
             {
                 return UnitOfWork.Repository<KeHoachChiPhiVersionRepo>()
-                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year)
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
                     .Select(x => x.VERSION)
                     .OrderByDescending(x => x)
                     .ToList();
@@ -2326,12 +2549,37 @@ namespace SMO.Service.BP
             else
             {
                 return UnitOfWork.Repository<KeHoachChiPhiVersionRepo>()
-                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.ORG_CODE == orgCode)
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.ORG_CODE == orgCode && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
                     .Select(x => x.VERSION)
                     .OrderByDescending(x => x)
                     .ToList();
             }
 
+            //ObjDetail.ORG_CODE = orgCode;
+            //var lstOrgCodes = new List<string>() { orgCode };
+            //var lstTemplateCurrentUserSelfUpload = new List<int>();
+            //templateId = templateId ?? string.Empty;
+            //if (IsLeaf())
+            //{
+            //    // is leaf
+            //    lstOrgCodes.Add(orgCode);
+            //}
+            //else
+            //{
+            //    // is group
+            //    // get all child
+            //    if (!string.IsNullOrEmpty(templateId))
+            //    {
+            //        lstOrgCodes.AddRange(GetListOfChildrenCenter(orgCode).Select(x => x.CODE));
+            //    }
+            //}
+
+            //lstTemplateCurrentUserSelfUpload.AddRange(GetVersionCurrentUserSelfUpload(orgCode, templateId, year));
+            //return GetVersionTemplateData(lstOrgCodes, templateId, year)
+            //    .Union(GetVersionTemplateDataHistory(lstOrgCodes, templateId, year))
+            //    .Union(lstTemplateCurrentUserSelfUpload)
+            //    .OrderByDescending(x => x)
+            //    .ToList();
         }
 
         #endregion
@@ -2361,9 +2609,9 @@ namespace SMO.Service.BP
         /// <param name="year"></param>
         public override void GenerateTemplate(ref MemoryStream outFileStream, string path, string templateId, int year)
         {
-            var dataCost = PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements, templateId, year, ignoreAuth: true);
+            var dataOtherCost = PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas, templateId, year, ignoreAuth: true);
 
-            if (dataCost.Count == 0 || detailCostElements.Count == 0)
+            if (dataOtherCost.Count == 0 || detailOtherKhoanMucHangHoas.Count == 0)
             {
                 State = false;
                 ErrorMessage = "Không tìm thấy dữ liệu";
@@ -2376,12 +2624,13 @@ namespace SMO.Service.BP
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                 IWorkbook templateWorkbook;
                 templateWorkbook = new XSSFWorkbook(fs);
+                templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
                 fs.Close();
                 ISheet sheet = templateWorkbook.GetSheetAt(0);
-                templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
+
                 //Số hàng và số cột hiện tại
                 int numRowCur = 0;
-                int NUM_CELL = 19;
+                int NUM_CELL = 21;
 
                 //Style cần dùng
                 ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
@@ -2413,14 +2662,14 @@ namespace SMO.Service.BP
                 var template = UnitOfWork.Repository<TemplateRepo>().Get(templateId);
                 var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 0, NUM_CELL);
                 ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
-                rowHeader1.Cells[0].SetCellValue(template.Organize?.Parent?.NAME.ToUpper());
+                rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {template.Organize?.Parent?.NAME.ToUpper()}");
 
                 var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
 
                 ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
-                rowHeader2.Cells[0].SetCellValue(template.Organize.NAME.ToUpper());
+                rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
                 rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
-                rowHeader2.Cells[14].SetCellValue(rowHeader2.Cells[14].StringCellValue + $" {year}");
+                rowHeader2.Cells[18].SetCellValue(rowHeader2.Cells[18].StringCellValue + $" {year}");
 
                 var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
 
@@ -2434,11 +2683,11 @@ namespace SMO.Service.BP
                 numRowCur = 6;
                 var number = 1;
                 var rowHeightDetail = sheet.GetRow(6).Height;
-                foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE)
+                foreach (var detail in detailOtherKhoanMucHangHoas.GroupBy(x => x.CENTER_CODE)
                     .Select(x => x.First())
-                    .OrderByDescending(x => x.CENTER_CODE))
+                    .OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.SanBay.CODE))
                 {
-                    foreach (var item in dataCost
+                    foreach (var item in dataOtherCost
                             .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
                             .OrderBy(x => x.C_ORDER)
                             .GroupBy(x => x.CODE)
@@ -2455,43 +2704,49 @@ namespace SMO.Service.BP
                         IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
                         rowCur.Height = -1;
 
-                        rowCur.Cells[0].SetCellValue(detail.CENTER_CODE);
-                        rowCur.Cells[0].CellStyle = styleCellDetail;
-
-                        rowCur.Cells[1].SetCellValue(detail.Center.NAME);
-                        rowCur.Cells[1].CellStyle = styleCellDetail;
-
-                        rowCur.Cells[2].SetCellValue(item.CODE);
+                        rowCur.Cells[2].SetCellValue(detail.Center.SAN_BAY_CODE);
                         rowCur.Cells[2].CellStyle = styleCellDetail;
 
-                        rowCur.Cells[3].SetCellValue($"{space}{item.NAME}");
+                        rowCur.Cells[3].SetCellValue(detail.Center.SanBay.NAME);
+                        rowCur.Cells[3].CellStyle = styleCellDetail;
+
+                        rowCur.Cells[0].SetCellValue(detail.Center.COST_CENTER_CODE);
+                        rowCur.Cells[0].CellStyle = styleCellDetail;
+
+                        rowCur.Cells[1].SetCellValue(detail.Center.CostCenter.NAME);
+                        rowCur.Cells[1].CellStyle = styleCellDetail;
+
+                        rowCur.Cells[4].SetCellValue(item.CODE);
+                        rowCur.Cells[4].CellStyle = styleCellDetail;
+
+                        rowCur.Cells[5].SetCellValue($"{space}{item.NAME}");
                         if (item.IS_GROUP)
                         {
-                            rowCur.Cells[3].CellStyle = styleCellBold;
-                            rowCur.Cells[3].CellStyle.SetFont(fontBold);
+                            rowCur.Cells[5].CellStyle = styleCellBold;
+                            rowCur.Cells[5].CellStyle.SetFont(fontBold);
                         }
                         else
                         {
-                            rowCur.Cells[3].CellStyle = styleCellDetail;
+                            rowCur.Cells[5].CellStyle = styleCellDetail;
                         }
 
-                        for (int i = 4; i < 16; i++)
+                        for (int i = 6; i < 18; i++)
                         {
                             rowCur.Cells[i].SetCellValue(string.Empty);
-                            rowCur.Cells[i].CellStyle = styleCellNumber;
                             rowCur.Cells[i].SetCellType(CellType.Numeric);
+                            rowCur.Cells[i].CellStyle = styleCellNumber;
                         }
 
-                        rowCur.Cells[16].SetCellFormula($"SUM(E{numRowCur + 1}:P{numRowCur + 1})");
-                        rowCur.Cells[16].CellStyle = styleCellNumberColor;
-                        rowCur.Cells[16].SetCellType(CellType.Formula);
+                        rowCur.Cells[18].SetCellFormula($"SUM(G{numRowCur + 1}:R{numRowCur + 1})");
+                        rowCur.Cells[18].CellStyle = styleCellNumberColor;
+                        rowCur.Cells[18].SetCellType(CellType.Formula);
 
-                        rowCur.Cells[17].SetCellFormula($"Q{numRowCur + 1}/12");
-                        rowCur.Cells[17].CellStyle = styleCellNumberColor;
-                        rowCur.Cells[17].SetCellType(CellType.Formula);
+                        rowCur.Cells[19].SetCellFormula($"S{numRowCur + 1}/12");
+                        rowCur.Cells[19].CellStyle = styleCellNumberColor;
+                        rowCur.Cells[19].SetCellType(CellType.Formula);
 
-                        rowCur.Cells[18].SetCellValue(string.Empty);
-                        rowCur.Cells[18].CellStyle = styleCellDetail;
+                        rowCur.Cells[20].SetCellValue(string.Empty);
+                        rowCur.Cells[20].CellStyle = styleCellDetail;
 
                         numRowCur++;
                         number++;
@@ -2511,7 +2766,7 @@ namespace SMO.Service.BP
             catch (Exception ex)
             {
                 this.State = false;
-                this.ErrorMessage = "Có lỗi xẩy ra trong quá trình tạo file excel!";
+                this.ErrorMessage = "Có lỗi xảy ra trong quá trình tạo file excel!";
                 this.Exception = ex;
             }
         }
@@ -2525,9 +2780,9 @@ namespace SMO.Service.BP
         /// <param name="year"></param>
         public override void GenerateTemplateBase(ref MemoryStream outFileStream, string path, string templateId, int year)
         {
-            var dataCost = PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements, templateId, year, ignoreAuth: true);
+            var dataOtherCost = PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailKhoanMucHangHoas, templateId, year, ignoreAuth: true);
 
-            if (dataCost.Count == 0 || detailCostElements.Count == 0)
+            if (dataOtherCost.Count == 0 || detailKhoanMucHangHoas.Count == 0)
             {
                 State = false;
                 ErrorMessage = "Không tìm thấy dữ liệu";
@@ -2540,9 +2795,9 @@ namespace SMO.Service.BP
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                 IWorkbook templateWorkbook;
                 templateWorkbook = new XSSFWorkbook(fs);
+                templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
                 fs.Close();
                 ISheet sheet = templateWorkbook.GetSheetAt(0);
-                templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
 
                 //Số hàng và số cột hiện tại
                 int numRowCur = 0;
@@ -2585,13 +2840,12 @@ namespace SMO.Service.BP
                 ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
                 rowHeader2.Cells[0].SetCellValue(template.Organize.NAME.ToUpper());
                 rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
-                rowHeader2.Cells[6].SetCellValue(rowHeader2.Cells[6].StringCellValue + $" {year}");
+                rowHeader2.Cells[8].SetCellValue(rowHeader2.Cells[8].StringCellValue + $" {year}");
 
                 var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
 
                 ReportUtilities.CreateCell(ref rowHeader3, NUM_CELL);
                 rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
-                //rowHeader2.Cells[14].SetCellValue(string.Concat(rowHeader2.Cells[14].StringCellValue, " ", template.));
                 #endregion
 
                 #region Details
@@ -2599,11 +2853,11 @@ namespace SMO.Service.BP
                 numRowCur = 6;
                 var number = 1;
                 var rowHeightDetail = sheet.GetRow(6).Height;
-                foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE)
+                foreach (var detail in detailKhoanMucHangHoas.GroupBy(x => x.CENTER_CODE)
                     .Select(x => x.First())
                     .OrderByDescending(x => x.CENTER_CODE))
                 {
-                    foreach (var item in dataCost
+                    foreach (var item in dataOtherCost
                             .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
                             .OrderBy(x => x.C_ORDER)
                             .GroupBy(x => x.CODE)
@@ -2620,12 +2874,19 @@ namespace SMO.Service.BP
                         IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
                         rowCur.Height = -1;
                         int j = 0;
-
-                        rowCur.Cells[j].SetCellValue(detail.CENTER_CODE);
+                        rowCur.Cells[j].SetCellValue(detail.Center.SAN_BAY_CODE);
                         rowCur.Cells[j].CellStyle = styleCellDetail;
                         j++;
 
-                        rowCur.Cells[j].SetCellValue(detail.Center.NAME);
+                        rowCur.Cells[j].SetCellValue(detail.Center.SanBay.NAME);
+                        rowCur.Cells[j].CellStyle = styleCellDetail;
+                        j++;
+
+                        rowCur.Cells[j].SetCellValue(detail.Center.COST_CENTER_CODE);
+                        rowCur.Cells[j].CellStyle = styleCellDetail;
+                        j++;
+
+                        rowCur.Cells[j].SetCellValue(detail.Center.CostCenter.NAME);
                         rowCur.Cells[j].CellStyle = styleCellDetail;
                         j++;
 
@@ -2644,17 +2905,18 @@ namespace SMO.Service.BP
                             rowCur.Cells[j].CellStyle = styleCellDetail;
                         }
                         j++;
+                        rowCur.Cells[j].SetCellValue(string.Empty);
+                        rowCur.Cells[j].CellStyle = styleCellDetail;
+                        j++;
 
                         rowCur.Cells[j].SetCellValue(string.Empty);
                         rowCur.Cells[j].CellStyle = styleCellDetail;
-
-                        rowCur.Cells[j].SetCellValue(string.Empty);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
+                        j++;
 
                         for (; j < NUM_CELL - 1; j++)
                         {
                             rowCur.Cells[j].SetCellValue(string.Empty);
-                            if (j < NUM_CELL - 5 && (j - 5) % 4 == 2)
+                            if (j < NUM_CELL - 5 && (j - 7) % 4 == 2)
                             {
                                 rowCur.Cells[j].CellStyle = styleCellDetail;
                             }
@@ -2698,7 +2960,6 @@ namespace SMO.Service.BP
             }
         }
 
-
         public override IList<NodeDataFlow> BuildDataFlowTree(string orgCode, int year, int? version, int? sumUpVersion)
         {
             var costCenterRepo = UnitOfWork.Repository<CostCenterRepo>();
@@ -2708,9 +2969,9 @@ namespace SMO.Service.BP
                 // nếu muốn xem tất cả các bản tổng hợp thì để version và sumUpVersion = null ở lần gọi đầu tiên
                 if (!sumUpVersion.HasValue)
                 {
-                    var KeHoachChiPhiData = UnitOfWork.Repository<KeHoachChiPhiSumUpDetailRepo>()
+                    var revenuePLData = UnitOfWork.Repository<KeHoachChiPhiSumUpDetailRepo>()
                         .GetManyByExpression(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year);
-                    return (from data in KeHoachChiPhiData.GroupBy(x => x.SUM_UP_VERSION).Select(x => x.First())
+                    return (from data in revenuePLData.GroupBy(x => x.SUM_UP_VERSION).Select(x => x.First())
                             orderby data.SUM_UP_VERSION descending
                             select new NodeDataFlow
                             {
@@ -2728,10 +2989,10 @@ namespace SMO.Service.BP
                 {
                     // level 1: Center
                     // get centers
-                    var KeHoachChiPhiData = UnitOfWork.Repository<KeHoachChiPhiSumUpDetailRepo>()
+                    var revenuePLData = UnitOfWork.Repository<KeHoachChiPhiSumUpDetailRepo>()
                         .GetManyByExpression(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year
                          && x.SUM_UP_VERSION == sumUpVersion.Value);
-                    return (from data in KeHoachChiPhiData.GroupBy(x => x.FROM_ORG_CODE).Select(x => x.First())
+                    return (from data in revenuePLData.GroupBy(x => x.FROM_ORG_CODE).Select(x => x.First())
                             orderby data.FROM_ORG_CODE descending
                             select new NodeDataFlow
                             {
@@ -2768,313 +3029,25 @@ namespace SMO.Service.BP
         }
 
         #region Data Preview
-        /// <summary>
-        /// Lấy dữ liệu được sum up lên đơn vị theo version và khoản mục
-        /// </summary>
-        /// <param name="year"></param>
-        /// <param name="centerCode"></param>
-        /// <param name="elementCode"></param>
-        /// <param name="sumUpVersion"></param>
-        /// <returns></returns>
-        private (IList<T_BP_KE_HOACH_CHI_PHI_DATA>, bool) GetDataSumUp(int year, string centerCode, string elementCode, int sumUpVersion)
-        {
-            var plDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
-            var costPlReviewCommentRepo = UnitOfWork.Repository<KeHoachChiPhiReviewCommentRepo>();
-            var plVersionRepo = UnitOfWork.Repository<KeHoachChiPhiRepo>();
-            var plDataHistoryRepo = UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>();
-
-            var lstDetails = UnitOfWork.Repository<KeHoachChiPhiSumUpDetailRepo>()
-                .GetManyByExpression(x => x.ORG_CODE == centerCode &&
-                    x.TIME_YEAR == year &&
-                    x.SUM_UP_VERSION == sumUpVersion);
-            var lookup = lstDetails.ToLookup(x => x.FROM_ORG_CODE);
-            var lstChildren = GetListOfChildrenCenter(centerCode).Select(x => x.CODE);
-
-            var isCorp = string.IsNullOrEmpty(GetCenter(centerCode).PARENT_CODE);
-            var isLeafCenter = IsLeaf(centerCode);
-
-            var data = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
-            foreach (var key in lookup.Select(x => x.Key))
-            {
-                var costPL = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
-                var isLeaf = IsLeaf(key);
-                if (isLeaf)
-                {
-                    foreach (var item in lookup[key])
-                    {
-                        if (lstChildren.Contains(GetTemplate(item.TEMPLATE_CODE).ORG_CODE))
-                        {
-                            // đơn vị con tự nộp
-                            costPL.AddRange(plDataRepo.GetCFDataByCenterCode(item.FROM_ORG_CODE, lstChildren.ToList(), year, item.TEMPLATE_CODE, item.DATA_VERSION).ToList());
-                        }
-                        else
-                        {
-                            // được nộp hộ
-                            var dataFromOrg = plDataRepo.GetCFDataByOrgCode(item.FROM_ORG_CODE, year, item.TEMPLATE_CODE, item.DATA_VERSION).ToList();
-                            costPL.AddRange(dataFromOrg.Where(x => lstChildren.Contains(x.CENTER_CODE)));
-                        }
-                    }
-                }
-                else
-                {
-                    if (isCorp)
-                    {
-                        // tập đoàn
-                        if (string.IsNullOrEmpty(GetCenter(key).PARENT_CODE))
-                        {
-                            // tập đoàn tổng hợp
-                            foreach (var item in lookup[key])
-                            {
-                                costPL.AddRange(plDataRepo.GetCFDataByOrgCode(key, year, string.Empty, item.DATA_VERSION).ToList());
-                            }
-                        }
-                        else
-                        {
-                            // được phòng ban nộp hộ
-                            foreach (var item in lookup[key])
-                            {
-                                // được nộp hộ
-                                var dataFromOrg = plDataRepo.GetCFDataByOrgCode(item.FROM_ORG_CODE, year, item.TEMPLATE_CODE, item.DATA_VERSION).ToList();
-                                costPL.AddRange(dataFromOrg.Where(x => lstChildren.Contains(x.CENTER_CODE)));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // trung tâm
-                        if (key == centerCode)
-                        {
-                            // trung tâm tổng hợp
-                            costPL = plDataRepo.GetCFDataByCenterCode(key, lstChildren.ToList(), year, null, sumUpVersion).ToList();
-                        }
-                        else
-                        {
-                            // được phòng ban nộp hộ
-                            foreach (var item in lookup[key])
-                            {
-                                // được nộp hộ
-                                var dataFromOrg = plDataRepo.GetCFDataByOrgCode(item.FROM_ORG_CODE, year, item.TEMPLATE_CODE, item.DATA_VERSION).ToList();
-                                costPL.AddRange(dataFromOrg.Where(x => lstChildren.Contains(x.CENTER_CODE)));
-                            }
-                        }
-                    }
-                }
-                data.AddRange(costPL.Where(x => x.ELEMENT_CODE == elementCode &&
-                lookup[key].Select(y => y.TEMPLATE_CODE).Contains(x.TEMPLATE_CODE)));
-                if (data == null || data.Count() == 0)
-                {
-                    continue;
-                }
-            }
-            return (data, isCorp);
-        }
-
-        /// <summary>
-        /// Get list of cost elements have summed up
-        /// </summary>
-        /// <param name="centerCode">Cost center code has summed up</param>
-        /// <param name="elementCode">Element code want to get detail</param>
-        /// <param name="year">Year summed up</param>
-        /// <param name="version">Version summed up</param>
-        /// <returns>Returns list of cost elements have summed up</returns>
-        public override IEnumerable<T_MD_KHOAN_MUC_CHI_PHI> GetDetailSumUp(string centerCode, string elementCode, int year, int version, int? sumUpVersion, bool isCountComments, bool? isShowFile = null)
-        {
-            var plDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
-            var costPlReviewCommentRepo = UnitOfWork.Repository<KeHoachChiPhiReviewCommentRepo>();
-            var plVersionRepo = UnitOfWork.Repository<KeHoachChiPhiRepo>();
-            var plDataHistoryRepo = UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>();
-
-            if (IsLeaf(centerCode))
-            {
-                var parentCenterCode = GetCenter(centerCode).PARENT_CODE;
-                var lstChildren = GetListOfChildrenCenter(parentCenterCode).Select(x => x.CODE);
-                var (data, isCorp) = GetDataSumUp(year, parentCenterCode, elementCode, sumUpVersion.Value);
-                #region Tìm dựa vào đơn vị tổng hợp
-                var lookupData = data.Where(x => x.CENTER_CODE == centerCode).ToLookup(x => x.TEMPLATE_CODE);
-                foreach (var key in lookupData.Select(x => x.Key))
-                {
-                    if (lookupData[key].First().Template.IS_BASE)
-                    {
-                        var isNewestVersion = UnitOfWork.Repository<KeHoachChiPhiVersionRepo>()
-                            .GetNewestByExpression(x => x.TEMPLATE_CODE == key && x.TIME_YEAR == year,
-                            order: x => x.VERSION, isDescending: true)
-                            .VERSION == lookupData[key].First().VERSION;
-                        foreach (var item in lookupData[key])
-                        {
-                            var element = (T_MD_KHOAN_MUC_CHI_PHI)item;
-                            element.IsBase = true;
-                            element.Values = new decimal[14]
-                            {
-                                lookupData[key].Sum(x => x.VALUE_JAN) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_FEB) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_MAR) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_APR) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_MAY) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_JUN) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_JUL) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_AUG) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_SEP) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_OCT) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_NOV) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_DEC) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0,
-                            };
-                            element.NAME = item.Template.NAME;
-                            yield return element;
-                        }
-                        if (isNewestVersion)
-                        {
-                            // get data from base
-                            var baseData = UnitOfWork.Repository<KeHoachChiPhiDataBaseRepo>()
-                                .GetManyWithFetch(x => x.ELEMENT_CODE == elementCode && x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == key && x.VERSION == lookupData[key].First().VERSION && x.TIME_YEAR == year);
-                            foreach (var item in baseData)
-                            {
-                                yield return (T_MD_KHOAN_MUC_CHI_PHI)item;
-                            }
-                        }
-                        else
-                        {
-                            // get data from base history
-                            var baseDataHistory = UnitOfWork.Repository<KeHoachChiPhiDataBaseHistoryRepo>()
-                                .GetManyWithFetch(x => x.ELEMENT_CODE == elementCode && x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == key && x.VERSION == lookupData[key].First().VERSION && x.TIME_YEAR == year);
-
-                            foreach (var item in baseDataHistory)
-                            {
-                                yield return (T_MD_KHOAN_MUC_CHI_PHI)item;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var item in lookupData[key])
-                        {
-                            var element = (T_MD_KHOAN_MUC_CHI_PHI)item;
-                            element.IS_GROUP = isShowFile.HasValue; // count comment is in the review, drill down will show the file base so it still will be group
-                            yield return element;
-                        }
-                    }
-                }
-
-                #endregion
-            }
-            else
-            {
-                var comments = new List<T_BP_KE_HOACH_CHI_PHI_REVIEW_COMMENT>();
-                if (isCountComments)
-                {
-                    comments = costPlReviewCommentRepo.GetManyWithFetch(
-                            x => x.TIME_YEAR == year &&
-                            x.ORG_CODE == GetCorp().CODE &&
-                            x.ELEMENT_CODE == elementCode).ToList();
-                }
-                var (data, isCorp) = GetDataSumUp(year, centerCode, elementCode, version);
-                var lookupData = data.ToLookup(x => x.CENTER_CODE);
-                foreach (var key in lookupData.Select(x => x.Key))
-                {
-                    IEnumerable<string> lstChildren = null;
-                    var childComments = 0;
-                    var parentComments = 0;
-                    if (isCountComments)
-                    {
-                        lstChildren = GetListOfChildrenCenter(key).Select(x => x.CODE);
-                        childComments = comments.Where(x => lstChildren.Contains(x.ON_ORG_CODE)).Sum(x => x.NUMBER_COMMENTS);
-                        parentComments = comments.Where(x => x.ON_ORG_CODE == key).Sum(x => x.NUMBER_COMMENTS);
-                    }
-                    var isChild = IsLeaf(key);
-                    yield return new T_MD_KHOAN_MUC_CHI_PHI
-                    {
-                        ORG_CODE = key,
-                        CENTER_CODE = key,
-                        CODE = elementCode,
-                        IsChildren = isChild,
-                        //IS_GROUP = IsLeaf(key) ? lookupData[key].First().Template.IS_BASE ? true : false : true,
-                        IS_GROUP = true,
-                        TEMPLATE_CODE = lookupData[key].First().TEMPLATE_CODE,
-                        TIME_YEAR = year,
-                        VERSION = isCorp ? lookupData[key].First().VERSION : isChild ? version : lookupData[key].First().VERSION, // cấp tập đoàn thì sẽ là data_version còn nếu cấp dưới thì sẽ là sumup version
-                        ORG_NAME = lookupData[key].First().CostCenter.NAME,
-                        Values = new decimal[14]
-                            {
-                                lookupData[key].Sum(x => x.VALUE_JAN) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_FEB) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_MAR) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_APR) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_MAY) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_JUN) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_JUL) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_AUG) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_SEP) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_OCT) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_NOV) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_DEC) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                lookupData[key].Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0,
-                            },
-                        NUMBER_COMMENTS = isCountComments ? isChild ?
-                        $"{parentComments}" :
-                        $"{parentComments + childComments}|{parentComments}" : $"{childComments}|0"
-                    };
-                }
-            }
-        }
-
-        public override IEnumerable<T_MD_KHOAN_MUC_CHI_PHI> GetDetailSumUpTemplate(string elementCode, int year, int version, string templateCode, string centerCode)
-        {
-            var newestVersionInDb = GetFirstWithFetch(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year)?.VERSION;
-            if (!newestVersionInDb.HasValue)
-            {
-                return null;
-            }
-            else
-            {
-                if (newestVersionInDb.Value == version)
-                {
-                    // newest data
-                    // get data in table base data
-                    var baseData = UnitOfWork.Repository<KeHoachChiPhiDataBaseRepo>()
-                        .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode
-                        && x.TIME_YEAR == year
-                        && x.ELEMENT_CODE == elementCode
-                        && x.VERSION == version
-                        && x.CENTER_CODE == centerCode);
-                    return from item in baseData
-                           select (T_MD_KHOAN_MUC_CHI_PHI)item;
-                }
-                else
-                {
-                    // old data
-                    // get data in table base data history
-                    var baseData = UnitOfWork.Repository<KeHoachChiPhiDataBaseHistoryRepo>()
-                        .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode
-                        && x.TIME_YEAR == year
-                        && x.ELEMENT_CODE == elementCode
-                        && x.VERSION == version
-                        && x.CENTER_CODE == centerCode);
-                    return from item in baseData
-                           select (T_MD_KHOAN_MUC_CHI_PHI)item;
-                }
-            }
-        }
 
         /// <summary>
         /// Get template to ObjDetail first before call this method
-        /// Get data cost elements include detail cost elements.
+        /// Get data revenue elements include detail revenue elements.
         /// </summary>
-        /// <param name="detailCostElements">out detail cost elemts</param>
+        /// <param name="detailOtherKhoanMucHangHoas">out detail revenue elemts</param>
         /// <param name="year">which year of template</param>
         /// <param name="version">which version of template</param>
-        /// <returns>Returns list cost elemts with their parents and their value</returns>
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> GetDataCostPreview(
-            out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements,
+        /// <returns>Returns list revenue elemts with their parents and their value</returns>
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> GetDataCostPreview(
+            out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas,
             string templateId,
             string centerCode = "",
             int? year = null,
             int? version = null,
             bool? isHasValue = null)
         {
-            var pureLstItems = PreparePureList(out detailCostElements, templateId, year.Value, centerCode);
-            var sum = GetSumDescendants(detailCostElements, pureLstItems, parent_id: string.Empty, templateId, year, version).Distinct().ToList();
+            var pureLstItems = PreparePureList(out detailOtherKhoanMucHangHoas, templateId, year.Value, centerCode);
+            var sum = GetSumDescendants(detailOtherKhoanMucHangHoas, pureLstItems, parent_id: string.Empty, templateId, year, version).Distinct().ToList();
             if (isHasValue.HasValue)
             {
                 if (isHasValue.Value)
@@ -3092,30 +3065,30 @@ namespace SMO.Service.BP
             }
         }
 
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> PreparePureList(IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements, int year)
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> PreparePureList(IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas, int year)
         {
-            // get all cost elements
-            var allCostElements = UnitOfWork.Repository<KhoanMucChiPhiRepo>().GetManyByExpression(x => x.TIME_YEAR == year);
-            // get cost elements in details cost elements
-            var costElements = from d in detailCostElements
-                               select d.Element;
-            // lookup cost elements by center code
-            var lookupElementsCenter = detailCostElements.ToLookup(x => x.CENTER_CODE);
+            // get all revenue elements
+            var allOtherKhoanMucHangHoas = UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetManyByExpression(x => x.TIME_YEAR == year);
+            // get revenue elements in details revenue elements
+            var revenueElements = from d in detailOtherKhoanMucHangHoas
+                                  select d.Element;
+            // lookup revenue elements by center code
+            var lookupElementsCenter = detailOtherKhoanMucHangHoas.ToLookup(x => x.CENTER_CODE);
 
-            var pureLstItems = new List<T_MD_KHOAN_MUC_CHI_PHI>();
+            var pureLstItems = new List<T_MD_KHOAN_MUC_HANG_HOA>();
             // loop through all center
             foreach (var ctCode in lookupElementsCenter.Select(l => l.Key))
             {
-                // lookup cost elements
+                // lookup revenue elements
                 var lookupElements = lookupElementsCenter[ctCode].ToLookup(x => x.Element.PARENT_CODE);
                 foreach (var code in lookupElements.Select(l => l.Key))
                 {
                     var level = 0;
                     // temp list
-                    var lst = new List<T_MD_KHOAN_MUC_CHI_PHI>();
+                    var lst = new List<T_MD_KHOAN_MUC_HANG_HOA>();
                     // add all leaf to temp list item
                     lst.AddRange(from item in lookupElements[code]
-                                 select new T_MD_KHOAN_MUC_CHI_PHI
+                                 select new T_MD_KHOAN_MUC_HANG_HOA
                                  {
                                      CENTER_CODE = ctCode,
                                      C_ORDER = item.Element.C_ORDER,
@@ -3130,18 +3103,17 @@ namespace SMO.Service.BP
                     {
                         level++;
                         // find parents to add into list
-                        var element = allCostElements.FirstOrDefault(x => x.CODE == parentCode);
+                        var element = allOtherKhoanMucHangHoas.FirstOrDefault(x => x.CODE == parentCode);
                         if (element != null)
                         {
                             parentCode = element.PARENT_CODE;
                             element.CENTER_CODE = ctCode;
                             element.LEVEL = level;
                             element.IS_GROUP = true;
-                            lst.Add((T_MD_KHOAN_MUC_CHI_PHI)element.CloneObject());     // must to clone to other object because it reference to other center
+                            lst.Add((T_MD_KHOAN_MUC_HANG_HOA)element.CloneObject());     // must to clone to other object because it reference to other center
                         }
                         else
                         {
-                            level--;
                             break;
                         }
                     }
@@ -3149,6 +3121,7 @@ namespace SMO.Service.BP
                     lst.ForEach(x => x.LEVEL = level - x.LEVEL);
                     pureLstItems.AddRange(lst);
                 }
+
             }
 
             return pureLstItems.OrderBy(x => x.C_ORDER).ToList();
@@ -3157,11 +3130,11 @@ namespace SMO.Service.BP
         /// <summary>
         /// Xem theo template
         /// </summary>
-        /// <param name="detailCostElements"></param>
+        /// <param name="detailOtherKhoanMucHangHoas"></param>
         /// <param name="templateId"></param>
         /// <param name="centerCode"></param>
         /// <returns></returns>
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements,
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas,
             string templateId,
             int year,
             string centerCode = "",
@@ -3169,49 +3142,50 @@ namespace SMO.Service.BP
         {
             templateId = templateId ?? string.Empty;
             var template = GetTemplate(templateId);
-            var currentUserCenterCode = ProfileUtilities.User.ORGANIZE_CODE;
-            var childOrgCosts = GetListOfChildrenCenter(currentUserCenterCode).Select(x => x.CODE);
 
-            if (ignoreAuth || childOrgCosts.Contains(template.ORG_CODE) || currentUserCenterCode.Equals(template.ORG_CODE))
+            var currentUserCenterCode = ProfileUtilities.User.ORGANIZE_CODE;
+            var childOrgOtherCosts = GetListOfChildrenCenter(currentUserCenterCode).Select(x => x.CODE);
+
+            if (ignoreAuth || /*childOrgOtherCosts.Contains(template.ORG_CODE) ||*/ currentUserCenterCode.Equals(template.ORG_CODE) || template.ORG_CODE == centerCode)
             {
-                detailCostElements = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
-                    .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && x.TIME_YEAR == year);
+                detailOtherKhoanMucHangHoas = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE.Equals(templateId) && x.TIME_YEAR == year, x => x.Center);
             }
             else
             {
-                // get details cost elements
+                // get details revenue elements
                 if (string.IsNullOrEmpty(centerCode))
                 {
                     var lstChildCenterCodes = UnitOfWork.Repository<CostCenterRepo>()
                         .GetManyByExpression(x => x.PARENT_CODE == currentUserCenterCode || x.CODE.Equals(currentUserCenterCode))
                         .Select(x => x.CODE);
-                    detailCostElements = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
+                    detailOtherKhoanMucHangHoas = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
                         .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && lstChildCenterCodes.Contains(x.CENTER_CODE) && x.TIME_YEAR == year);
                 }
                 else
                 {
-                    detailCostElements = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
+                    detailOtherKhoanMucHangHoas = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
                         .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && x.CENTER_CODE == centerCode && x.TIME_YEAR == year);
                 }
             }
-            return PreparePureList(detailCostElements, year);
+            return PreparePureList(detailOtherKhoanMucHangHoas, year);
         }
 
         /// <summary>
         /// Xem theo template
         /// </summary>
-        /// <param name="detailCostElements"></param>
+        /// <param name="detailOtherKhoanMucHangHoas"></param>
         /// <param name="templateId"></param>
         /// <returns></returns>
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> PreparePureListForTemplate(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements,
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> PreparePureListForTemplate(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas,
             string templateId,
             int year)
         {
 
-            detailCostElements = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
+            detailOtherKhoanMucHangHoas = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
                 .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(templateId) && x.TIME_YEAR == year);
 
-            return PreparePureList(detailCostElements, year);
+            return PreparePureList(detailOtherKhoanMucHangHoas, year);
         }
 
 
@@ -3219,10 +3193,10 @@ namespace SMO.Service.BP
         /// <summary>
         /// Xem theo center code
         /// </summary>
-        /// <param name="detailCostElements"></param>
+        /// <param name="detailOtherKhoanMucHangHoas"></param>
         /// <param name="centerCodes"></param>
         /// <returns></returns>
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements,
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas,
             IList<string> centerCodes,
             int year)
         {
@@ -3233,25 +3207,25 @@ namespace SMO.Service.BP
             var findKeHoachChiPhi = this.CurrentRepository.GetManyByExpression(
                     x => listTemplateCodes.Contains(x.TEMPLATE_CODE) && !centerCodes.Contains(x.ORG_CODE));
             var lst = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>();
-            detailCostElements = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>();
+            detailOtherKhoanMucHangHoas = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>();
             foreach (var template in listTemplateCodes)
             {
                 lst.AddRange(UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
                     .GetManyByExpression(x => x.TEMPLATE_CODE.Equals(template) && centerCodes.Contains(x.CENTER_CODE) && x.TIME_YEAR == year));
             }
 
-            detailCostElements = lst;
+            detailOtherKhoanMucHangHoas = lst;
 
-            return PreparePureList(detailCostElements, year);
+            return PreparePureList(detailOtherKhoanMucHangHoas, year);
         }
 
         /// <summary>
-        /// Sum up data cost center by center code and year (Tổng hợp dữ liệu tại phòng ban)
+        /// Sum up data revenue center by center code and year (Tổng hợp dữ liệu tại phòng ban)
         /// </summary>
-        /// <param name="KeHoachChiPhi">Output header cost pl</param>
-        /// <param name="centerCode">Cost center code want to sum up</param>
+        /// <param name="revenuePL">Output header revenue pl</param>
+        /// <param name="centerCode">OtherCost center code want to sum up</param>
         /// <param name="year">Year want to sum up</param>
-        public override void SumUpDataCenter(out T_BP_KE_HOACH_CHI_PHI_VERSION KeHoachChiPhi, string centerCode, int year, string kichBan, string phienBan, string hangHangKhong)
+        public override void SumUpDataCenter(out T_BP_KE_HOACH_CHI_PHI_VERSION revenuePL, string centerCode, int year, string kichBan, string phienBan, string CostCenter)
         {
             if (string.IsNullOrEmpty(GetCenter(centerCode).PARENT_CODE))
             {
@@ -3266,29 +3240,29 @@ namespace SMO.Service.BP
             this.CheckPeriodTimeValid(year);
             if (!this.State)
             {
-                KeHoachChiPhi = null;
+                revenuePL = null;
                 return;
             }
 
             var lstData = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
-            KeHoachChiPhi = new T_BP_KE_HOACH_CHI_PHI_VERSION();
+            revenuePL = new T_BP_KE_HOACH_CHI_PHI_VERSION();
 
             try
             {
                 UnitOfWork.BeginTransaction();
                 var sumUpDetailRepo = UnitOfWork.Repository<KeHoachChiPhiSumUpDetailRepo>();
-                var KeHoachChiPhiDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
+                var revenuePLDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
 
-                // get list all children centers in cost center tree
+                // get list all children centers in revenue center tree
                 var lstCostCenters = GetListOfChildrenCenter(centerCode);
 
                 // get all data have approved
-                var KeHoachChiPhiDataApproved = KeHoachChiPhiDataRepo.GetManyByExpression(x => (x.CENTER_CODE == centerCode && !string.IsNullOrEmpty(x.TEMPLATE_CODE)) ||
-                (x.STATUS == Approve_Status.DaPheDuyet &&
+                var revenuePlDataApproved = revenuePLDataRepo.GetManyByExpression(x => x.ORG_CODE == centerCode && !string.IsNullOrEmpty(x.TEMPLATE_CODE) ||
+                x.STATUS == Approve_Status.DaPheDuyet &&
                 x.TIME_YEAR == year &&
-                lstCostCenters.Any(c => c.CODE.Equals(x.CENTER_CODE))));
+                lstCostCenters.Any(c => c.CODE.Equals(x.ORG_CODE)));
 
-                if (KeHoachChiPhiDataApproved.Count == 0)
+                if (revenuePlDataApproved.Count == 0)
                 {
                     // do not have data to sum up
                     State = false;
@@ -3306,9 +3280,10 @@ namespace SMO.Service.BP
                 }
 
                 // sumup element code with the same element code
-                var lookup = KeHoachChiPhiDataApproved.ToLookup(x => x.ELEMENT_CODE);
+                var lookup = revenuePlDataApproved.ToLookup(x => x.KHOAN_MUC_HANG_HOA_CODE);
                 foreach (var code in lookup.Select(x => x.Key))
                 {
+                    // TODO: check if all value of months are equal 0
                     if (lookup[code].Count() == 1)
                     {
                         lstData.Add((T_BP_KE_HOACH_CHI_PHI_DATA)lookup[code].First().CloneObject());
@@ -3317,26 +3292,15 @@ namespace SMO.Service.BP
                     {
                         lstData.Add(new T_BP_KE_HOACH_CHI_PHI_DATA
                         {
-                            VALUE_APR = lookup[code].Sum(x => x.VALUE_APR),
-                            VALUE_AUG = lookup[code].Sum(x => x.VALUE_AUG),
-                            VALUE_DEC = lookup[code].Sum(x => x.VALUE_DEC),
-                            VALUE_FEB = lookup[code].Sum(x => x.VALUE_FEB),
-                            VALUE_JAN = lookup[code].Sum(x => x.VALUE_JAN),
-                            VALUE_JUL = lookup[code].Sum(x => x.VALUE_JUL),
-                            VALUE_JUN = lookup[code].Sum(x => x.VALUE_JUN),
-                            VALUE_MAR = lookup[code].Sum(x => x.VALUE_MAR),
-                            VALUE_MAY = lookup[code].Sum(x => x.VALUE_MAY),
-                            VALUE_NOV = lookup[code].Sum(x => x.VALUE_NOV),
-                            VALUE_OCT = lookup[code].Sum(x => x.VALUE_OCT),
-                            VALUE_SEP = lookup[code].Sum(x => x.VALUE_SEP),
-                            VALUE_SUM_YEAR = lookup[code].Sum(x => x.VALUE_SUM_YEAR),
-                            VALUE_SUM_YEAR_PREVENTIVE = lookup[code].Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE),
-                            ELEMENT_CODE = lookup[code].First().ELEMENT_CODE
+                            QUANTITY = lookup[code].Sum(x => x.QUANTITY),
+                            PRICE = lookup[code].Sum(x => x.PRICE),
+                            AMOUNT = lookup[code].Sum(x => x.AMOUNT),
+                            KHOAN_MUC_HANG_HOA_CODE = lookup[code].First().KHOAN_MUC_HANG_HOA_CODE
                         });
                     }
                 }
 
-                // get current version in cost pl data
+                // get current version in revenue pl data
                 var newestCF = UnitOfWork.Repository<KeHoachChiPhiRepo>()
                     .GetNewestByExpression(x => x.ORG_CODE.Equals(centerCode) && x.TIME_YEAR == year, x => x.CREATE_DATE, true);
                 var currentUser = ProfileUtilities.User?.USER_NAME;
@@ -3348,11 +3312,13 @@ namespace SMO.Service.BP
                     versionPl = newestCF.VERSION;
                     newestCF.UPDATE_BY = currentUser;
                     newestCF.STATUS = Approve_Status.ChuaTrinhDuyet;
+                    newestCF.KICH_BAN = kichBan;
+                    newestCF.PHIEN_BAN = phienBan;
                     CurrentRepository.Update(newestCF);
                 }
                 else
                 {
-                    // create header cost pl
+                    // create header revenue pl
                     CurrentRepository.Create(new T_BP_KE_HOACH_CHI_PHI
                     {
                         PKID = Guid.NewGuid().ToString(),
@@ -3360,6 +3326,8 @@ namespace SMO.Service.BP
                         ORG_CODE = centerCode,
                         TIME_YEAR = year,
                         VERSION = versionPl,
+                        PHIEN_BAN = phienBan,
+                        KICH_BAN = kichBan,
                         FILE_ID = string.Empty,
                         TEMPLATE_CODE = string.Empty,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
@@ -3367,22 +3335,24 @@ namespace SMO.Service.BP
                     });
                 }
 
-                // insert to cost pl version
-                KeHoachChiPhi = new T_BP_KE_HOACH_CHI_PHI_VERSION
+                // insert to revenue pl version
+                revenuePL = new T_BP_KE_HOACH_CHI_PHI_VERSION
                 {
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = centerCode,
                     TEMPLATE_CODE = string.Empty,
+                    KICH_BAN = kichBan,
+                    PHIEN_BAN = phienBan,
                     VERSION = versionPl,
                     TIME_YEAR = year,
                     CREATE_BY = currentUser
                 };
-                UnitOfWork.Repository<KeHoachChiPhiVersionRepo>().Create(KeHoachChiPhi);
+                UnitOfWork.Repository<KeHoachChiPhiVersionRepo>().Create(revenuePL);
 
                 foreach (var item in lstData)
                 {
                     item.ORG_CODE = centerCode;
-                    item.CENTER_CODE = centerCode;
+                    item.CHI_PHI_PROFIT_CENTER_CODE = string.Empty;
                     item.TEMPLATE_CODE = string.Empty;
                     item.PKID = Guid.NewGuid().ToString();
                     item.VERSION = versionPl;
@@ -3392,18 +3362,18 @@ namespace SMO.Service.BP
                     item.CREATE_BY = currentUser;
                 }
 
-                // get all cost pl data current with centercode and year
-                var lstKeHoachChiPhiDataOldVersion = KeHoachChiPhiDataRepo
-                    .GetManyByExpression(x => x.CENTER_CODE.Equals(centerCode) && x.TIME_YEAR == year);
+                // get all revenue pl data current with centercode and year
+                var lstOtherCostPlDataOldVersion = revenuePLDataRepo
+                    .GetManyByExpression(x => x.ORG_CODE.Equals(centerCode) && x.TIME_YEAR == year);
 
                 // delete them from table pl data
                 // TODO: chỉnh sửa câu lệnh sql
-                _ = UnitOfWork.GetSession().CreateSQLQuery($"DELETE FROM T_BP_KE_HOACH_CHI_PHI_DATA WHERE CENTER_CODE = '{centerCode}' AND TIME_YEAR = {year}")
+                _ = UnitOfWork.GetSession().CreateSQLQuery($"DELETE FROM T_BP_KE_HOACH_CHI_PHI_DATA WHERE ORG_CODE = '{centerCode}' AND TIME_YEAR = {year}")
                     .ExecuteUpdate();
 
                 // insert to pl data history
-                UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>().Create((from pl in lstKeHoachChiPhiDataOldVersion
-                                                                       select (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)pl).ToList());
+                UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>().Create((from pl in lstOtherCostPlDataOldVersion
+                                                                           select (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)pl).ToList());
 
                 // insert to pl history
                 UnitOfWork.Repository<KeHoachChiPhiHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_HISTORY
@@ -3416,17 +3386,17 @@ namespace SMO.Service.BP
                     PKID = Guid.NewGuid().ToString(),
                     TIME_YEAR = year,
                     TEMPLATE_CODE = string.Empty,
-                    VERSION = KeHoachChiPhi.VERSION,
+                    VERSION = revenuePL.VERSION,
                 });
 
                 // create new lstData
-                KeHoachChiPhiDataRepo.Create(lstData.ToList());
+                revenuePLDataRepo.Create(lstData.ToList());
 
-                // get list cost pl which have org cost in cost center summary
+                // get list revenue pl which have org revenue in revenue center summary
+                var lstKeHoachChiPhi = revenuePlDataApproved.ToLookup(x => new { OrgCode = x.ORG_CODE, TemplateCode = x.TEMPLATE_CODE, TemplateVersion = x.VERSION });
 
-                var lstSumupDetails = KeHoachChiPhiDataApproved.ToLookup(x => new { OrgCode = x.ORG_CODE, TemplateCode = x.TEMPLATE_CODE, TemplateVersion = x.VERSION });
                 // create list sum up detail
-                sumUpDetailRepo.Create((from c in lstSumupDetails.Select(x => x.Key)
+                sumUpDetailRepo.Create((from c in lstKeHoachChiPhi.Select(x => x.Key)
                                         select new T_BP_KE_HOACH_CHI_PHI_SUM_UP_DETAIL
                                         {
                                             PKID = Guid.NewGuid().ToString(),
@@ -3462,46 +3432,46 @@ namespace SMO.Service.BP
                 State = false;
                 ErrorMessage = e.Message;
                 Exception = e;
-                KeHoachChiPhi = null;
+                revenuePL = null;
             }
         }
 
         /// <summary>
-        /// Summary sum up cost center
+        /// Summary sum up revenue center
         /// </summary>
-        /// <param name="plDataCostElements">List of data cost element output</param>
+        /// <param name="plDataOtherKhoanMucHangHoas">List of data revenue element output</param>
         /// <param name="year">Year want to summary</param>
-        /// <param name="centerCode">Cost center code want to summary</param>
+        /// <param name="centerCode">OtherCost center code want to summary</param>
         /// <param name="version">Version want to summary</param>
-        /// <returns>Returns list of cost element with their value</returns>
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> SummarySumUpCenter(
-            out IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataCostElements,
+        /// <returns>Returns list of revenue element with their value</returns>
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> SummarySumUpCenter(
+            out IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataOtherKhoanMucHangHoas,
             int year,
             string centerCode,
             int? version,
             bool? isHasValue = null,
             string templateId = "")
         {
-            // get newest cost pl data by center code
-            plDataCostElements = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+            // get newest revenue pl data by center code
+            plDataOtherKhoanMucHangHoas = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
                 .GetCFDataByCenterCode(null, new List<string> { centerCode }, year, templateId, version);
-            plDataCostElements = plDataCostElements.Where(x => x.STATUS == Approve_Status.DaPheDuyet).ToList();
-            return SummaryCenter(plDataCostElements, centerCode, year, isHasValue);
+            plDataOtherKhoanMucHangHoas = plDataOtherKhoanMucHangHoas.Where(x => x.STATUS == Approve_Status.DaPheDuyet).ToList();
+            return SummaryCenter(plDataOtherKhoanMucHangHoas, centerCode, year, isHasValue);
         }
 
         /// <summary>
-        /// Calculate data of each cost element with their parents.
+        /// Calculate data of each revenue element with their parents.
         /// Data of parents calculated by sum of all children
         /// </summary>
-        /// <param name="details">List detail cost</param>
+        /// <param name="details">List detail revenue</param>
         /// <param name="pureItems">List elements want to calculate data</param>
         /// <param name="parent_id">Start calculate from which parent. string Empty to the root</param>
         /// <param name="year">Which year of data</param>
         /// <param name="version">Which version of data</param>
-        /// <returns>Returns list of cost element with their data</returns>
-        private IEnumerable<T_MD_KHOAN_MUC_CHI_PHI> GetSumDescendants(
+        /// <returns>Returns list of revenue element with their data</returns>
+        private IEnumerable<T_MD_KHOAN_MUC_HANG_HOA> GetSumDescendants(
             IEnumerable<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> details,
-            IEnumerable<T_MD_KHOAN_MUC_CHI_PHI> pureItems,
+            IEnumerable<T_MD_KHOAN_MUC_HANG_HOA> pureItems,
             string parent_id,
             string templateId,
             int? year = null,
@@ -3510,11 +3480,11 @@ namespace SMO.Service.BP
             var lookupCenter = pureItems.ToLookup(x => x.CENTER_CODE);
             foreach (var centerCode in lookupCenter.Select(x => x.Key))
             {
-                var KeHoachChiPhiData = GetVersionData(templateId, centerCode, year, version);
+                var revenuePlData = GetVersionData(templateId, centerCode, year, version);
                 var items = lookupCenter[centerCode];
 
                 var lookup = items.ToLookup(i => i.PARENT_CODE);
-                Queue<T_MD_KHOAN_MUC_CHI_PHI> st = new Queue<T_MD_KHOAN_MUC_CHI_PHI>(lookup[parent_id]);
+                Queue<T_MD_KHOAN_MUC_HANG_HOA> st = new Queue<T_MD_KHOAN_MUC_HANG_HOA>(lookup[parent_id]);
 
                 while (st.Count > 0)
                 {
@@ -3523,7 +3493,7 @@ namespace SMO.Service.BP
                     // variable to check should return item or not
                     bool shouldReturn = true;
                     // lst to store children of item which have children
-                    var lstHasChild = new List<T_MD_KHOAN_MUC_CHI_PHI>();
+                    var lstHasChild = new List<T_MD_KHOAN_MUC_HANG_HOA>();
                     // loop through items which have parent id = item id
                     foreach (var i in lookup[item.CODE])
                     {
@@ -3551,70 +3521,26 @@ namespace SMO.Service.BP
                                 var detail = details.FirstOrDefault(x => x.ELEMENT_CODE == i.CODE && x.CENTER_CODE == i.CENTER_CODE);
                                 if (detail != null)
                                 {
-                                    detail.CFData = KeHoachChiPhiData.FirstOrDefault(x => x.ELEMENT_CODE == detail.ELEMENT_CODE && x.CENTER_CODE == detail.CENTER_CODE);
+                                    detail.CFData = revenuePlData.FirstOrDefault(x => x.KHOAN_MUC_HANG_HOA_CODE == detail.ELEMENT_CODE && x.CHI_PHI_PROFIT_CENTER_CODE == detail.CENTER_CODE);
                                 }
                                 var treeData = detail?.CFData;
                                 if (treeData != null)
                                 {
-                                    item.Values[0] += treeData.VALUE_JAN ?? 0;
-                                    item.Values[1] += treeData.VALUE_FEB ?? 0;
-                                    item.Values[2] += treeData.VALUE_MAR ?? 0;
-                                    item.Values[3] += treeData.VALUE_APR ?? 0;
-                                    item.Values[4] += treeData.VALUE_MAY ?? 0;
-                                    item.Values[5] += treeData.VALUE_JUN ?? 0;
-                                    item.Values[6] += treeData.VALUE_JUL ?? 0;
-                                    item.Values[7] += treeData.VALUE_AUG ?? 0;
-                                    item.Values[8] += treeData.VALUE_SEP ?? 0;
-                                    item.Values[9] += treeData.VALUE_OCT ?? 0;
-                                    item.Values[10] += treeData.VALUE_NOV ?? 0;
-                                    item.Values[11] += treeData.VALUE_DEC ?? 0;
-                                    item.Values[12] += treeData.VALUE_SUM_YEAR ?? 0;
-                                    item.Values[13] += treeData.VALUE_SUM_YEAR_PREVENTIVE ?? 0;
+                                    item.Values[0] += treeData.QUANTITY ?? 0;
+                                    item.Values[1] += treeData.PRICE ?? 0;
+                                    item.Values[2] += treeData.AMOUNT ?? 0;
                                     item.HasAssignValue = true;
 
-                                    i.Values[0] = treeData.VALUE_JAN ?? 0;
-                                    i.Values[1] = treeData.VALUE_FEB ?? 0;
-                                    i.Values[2] = treeData.VALUE_MAR ?? 0;
-                                    i.Values[3] = treeData.VALUE_APR ?? 0;
-                                    i.Values[4] = treeData.VALUE_MAY ?? 0;
-                                    i.Values[5] = treeData.VALUE_JUN ?? 0;
-                                    i.Values[6] = treeData.VALUE_JUL ?? 0;
-                                    i.Values[7] = treeData.VALUE_AUG ?? 0;
-                                    i.Values[8] = treeData.VALUE_SEP ?? 0;
-                                    i.Values[9] = treeData.VALUE_OCT ?? 0;
-                                    i.Values[10] = treeData.VALUE_NOV ?? 0;
-                                    i.Values[11] = treeData.VALUE_DEC ?? 0;
-                                    i.Values[12] = treeData.VALUE_SUM_YEAR ?? 0;
-                                    i.Values[13] = treeData.VALUE_SUM_YEAR_PREVENTIVE ?? 0;
+                                    i.Values[0] = treeData.QUANTITY ?? 0;
+                                    i.Values[1] = treeData.PRICE ?? 0;
+                                    i.Values[2] = treeData.AMOUNT ?? 0;
                                     i.DESCRIPTION = treeData.DESCRIPTION;
                                 }
                             }
                             yield return i;
                         }
                     }
-                    if (!item.IS_GROUP && item.PARENT_CODE == parent_id)
-                    {
-                        var treeData = KeHoachChiPhiData.Where(x => x.ELEMENT_CODE.Equals(item.CODE));
-                        if (treeData != null && treeData.Count() > 0)
-                        {
-                            item.Values[0] += treeData.Sum(x => x.VALUE_JAN) ?? 0;
-                            item.Values[1] += treeData.Sum(x => x.VALUE_FEB) ?? 0;
-                            item.Values[2] += treeData.Sum(x => x.VALUE_MAR) ?? 0;
-                            item.Values[3] += treeData.Sum(x => x.VALUE_APR) ?? 0;
-                            item.Values[4] += treeData.Sum(x => x.VALUE_MAY) ?? 0;
-                            item.Values[5] += treeData.Sum(x => x.VALUE_JUN) ?? 0;
-                            item.Values[6] += treeData.Sum(x => x.VALUE_JUL) ?? 0;
-                            item.Values[7] += treeData.Sum(x => x.VALUE_AUG) ?? 0;
-                            item.Values[8] += treeData.Sum(x => x.VALUE_SEP) ?? 0;
-                            item.Values[9] += treeData.Sum(x => x.VALUE_OCT) ?? 0;
-                            item.Values[10] += treeData.Sum(x => x.VALUE_NOV) ?? 0;
-                            item.Values[11] += treeData.Sum(x => x.VALUE_DEC) ?? 0;
-                            item.Values[12] += treeData.Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                            item.Values[13] += treeData.Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0;
-                        }
-                        var clone = (T_MD_KHOAN_MUC_CHI_PHI)item.Clone();
-                        yield return clone;
-                    }
+
                     // remove all child of item
                     // include children have child
                     lookup = lookup
@@ -3625,25 +3551,14 @@ namespace SMO.Service.BP
                     {
                         if (item.PARENT_CODE == parent_id && !item.IS_GROUP)
                         {
-                            var data = KeHoachChiPhiData.Where(x => x.ELEMENT_CODE == item.CODE && x.CENTER_CODE == item.CENTER_CODE);
+                            var data = revenuePlData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == item.CODE && x.CHI_PHI_PROFIT_CENTER_CODE == item.CENTER_CODE);
                             if (data != null)
                             {
-                                item.Values = new decimal[14]
+                                item.Values = new decimal[3]
                                 {
-                                data.Sum(x => x.VALUE_JAN) ?? 0,
-                                data.Sum(x => x.VALUE_FEB) ?? 0,
-                                data.Sum(x => x.VALUE_MAR) ?? 0,
-                                data.Sum(x => x.VALUE_APR) ?? 0,
-                                data.Sum(x => x.VALUE_MAY) ?? 0,
-                                data.Sum(x => x.VALUE_JUN) ?? 0,
-                                data.Sum(x => x.VALUE_JUL) ?? 0,
-                                data.Sum(x => x.VALUE_AUG) ?? 0,
-                                data.Sum(x => x.VALUE_SEP) ?? 0,
-                                data.Sum(x => x.VALUE_OCT) ?? 0,
-                                data.Sum(x => x.VALUE_NOV) ?? 0,
-                                data.Sum(x => x.VALUE_DEC) ?? 0,
-                                data.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                data.Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0,
+                                data.Sum(x => x.QUANTITY) ?? 0,
+                                data.Sum(x => x.PRICE) ?? 0,
+                                data.Sum(x => x.AMOUNT) ?? 0
                                 };
                             }
                             yield return item;
@@ -3673,13 +3588,13 @@ namespace SMO.Service.BP
         }
 
         /// <summary>
-        /// Get cost CF data by version
+        /// Get data by version
         /// </summary>
-        /// <param name="templateCode">Template code of CF data</param>
-        /// <param name="orgCode">Center code of CF data</param>
+        /// <param name="templateCode">Template code of PL data</param>
+        /// <param name="orgCode">Center code of PL data</param>
         /// <param name="year">Which year of data</param>
         /// <param name="version">Which version of data</param>
-        /// <returns>Returns Cost CF Data</returns>
+        /// <returns>Returns OtherCost PL Data</returns>
         private IList<T_BP_KE_HOACH_CHI_PHI_DATA> GetVersionData(
             string templateCode,
             string centerCode,
@@ -3692,26 +3607,28 @@ namespace SMO.Service.BP
             // check if orgCode is org code of template or not
             if (template.ORG_CODE.Equals(orgCode))
             {
-                return UnitOfWork.Repository<KeHoachChiPhiDataRepo>().GetCFDataByOrgCode(orgCode, year.Value, templateCode, version);
+                return UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+                    .GetCFDataByOrgCode(orgCode, year.Value, templateCode, version);
             }
             else if (lstChildren.Contains(template.ORG_CODE))
             {
-                return UnitOfWork.Repository<KeHoachChiPhiDataRepo>().GetCFDataByOrgCode(template.ORG_CODE, year.Value, templateCode, version);
+                return UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+                    .GetCFDataByOrgCode(template.ORG_CODE, year.Value, templateCode, version);
             }
             else
             {
-                return UnitOfWork.Repository<KeHoachChiPhiDataRepo>().GetCFDataByCenterCode(template.ORG_CODE, new List<string> { centerCode }, year.Value, templateCode, version);
-                // get 
+                return UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+                    .GetCFDataByCenterCode(template.ORG_CODE, new List<string> { centerCode }, year.Value, templateCode, version);
             }
         }
 
         /// <summary>
         /// Summary data of a center with newest data
         /// </summary>
-        /// <param name="plDataCostElements">List cost pl data want to out</param>
+        /// <param name="plDataOtherKhoanMucHangHoas">List revenue pl data want to out</param>
         /// <param name="centerCode">Center code want to summary data</param>
-        /// <returns>Returns list cost elements with their data</returns>
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> SummaryCenterOut(out IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataCostElements,
+        /// <returns>Returns list revenue elements with their data</returns>
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> SummaryCenterOut(out IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataOtherKhoanMucHangHoas,
                                                               string centerCode,
                                                               int year,
                                                               int? version,
@@ -3719,9 +3636,9 @@ namespace SMO.Service.BP
         {
             if (!version.HasValue)
             {
-                // get newest cost pl data by center code
-                plDataCostElements = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
-                    .GetManyByExpression(x => x.CENTER_CODE.Equals(centerCode) && x.TIME_YEAR == year);
+                // get newest revenue pl data by center code
+                plDataOtherKhoanMucHangHoas = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+                    .GetManyByExpression(x => x.ORG_CODE.Equals(centerCode) && x.TIME_YEAR == year);
             }
             else
             {
@@ -3729,35 +3646,35 @@ namespace SMO.Service.BP
                 if (IsLeaf())
                 {
                     // get all data have approved
-                    plDataCostElements = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
-                        .GetManyByExpression(x => x.CENTER_CODE == centerCode && !string.IsNullOrEmpty(x.TEMPLATE_CODE));
+                    plDataOtherKhoanMucHangHoas = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+                        .GetManyByExpression(x => x.ORG_CODE == centerCode && !string.IsNullOrEmpty(x.TEMPLATE_CODE));
                 }
                 else
                 {
-                    // get list all children centers in cost center tree
+                    // get list all children centers in revenue center tree
                     var lstCostCenters = UnitOfWork.Repository<CostCenterRepo>().GetManyByExpression(x => x.PARENT_CODE == centerCode);
 
                     // get all data have approved
-                    plDataCostElements = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+                    plDataOtherKhoanMucHangHoas = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
                         .GetManyByExpression(x => x.STATUS == Approve_Status.DaPheDuyet && (x.ORG_CODE == centerCode && !string.IsNullOrEmpty(x.TEMPLATE_CODE) ||
                     x.TIME_YEAR == year &&
-                    lstCostCenters.Any(c => c.CODE.Equals(x.CENTER_CODE))));
+                    lstCostCenters.Any(c => c.CODE.Equals(x.ORG_CODE))));
                 }
             }
 
-            return SummaryCenter(plDataCostElements, centerCode, year, isHasValue);
+            return SummaryCenter(plDataOtherKhoanMucHangHoas, centerCode, year, isHasValue);
         }
 
         /// <summary>
         /// Get data has summed up (history)
         /// Lấy dữ liệu đã được tổng hợp lên đơn vị cha theo version
         /// </summary>
-        /// <param name="plDataCostElements">List out data</param>
+        /// <param name="plDataOtherKhoanMucHangHoas">List out data</param>
         /// <param name="centerCode">Org code của đơn vị được tổng hợp</param>
         /// <param name="year">Năm dữ liệu muốn xem</param>
         /// <param name="version">Version của dữ liệu muốn xem. Null thì sẽ lấy mới nhất</param>
         /// <returns></returns>
-        public IList<T_MD_KHOAN_MUC_CHI_PHI> SummaryCenterVersion(out IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataCostElements,
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> SummaryCenterVersion(out IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataOtherKhoanMucHangHoas,
                                                               string centerCode,
                                                               int year,
                                                               int? version,
@@ -3765,14 +3682,14 @@ namespace SMO.Service.BP
         {
             if (isDrillDown)
             {
-                plDataCostElements = GetAllSumUpDetails(centerCode, year, version.Value);
+                plDataOtherKhoanMucHangHoas = GetAllSumUpDetails(centerCode, year, version.Value);
             }
             else
             {
-                plDataCostElements = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+                plDataOtherKhoanMucHangHoas = UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
                     .GetCFDataByOrgCode(centerCode, year, string.Empty, version);
             }
-            return SummaryCenter(plDataCostElements, centerCode, year);
+            return SummaryCenter(plDataOtherKhoanMucHangHoas, centerCode, year);
         }
 
         /// <summary>
@@ -3790,10 +3707,10 @@ namespace SMO.Service.BP
             var lstChildren = GetListOfChildrenCenter(centerCode).Select(x => x.CODE);
             var lstDetails = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
             var lstResult = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
-            var cfDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
+            var plDataRepo = UnitOfWork.Repository<KeHoachChiPhiDataRepo>();
             foreach (var detail in detailsSumUp)
             {
-                var details = cfDataRepo
+                var details = plDataRepo
                     .GetCFDataByCenterCode(
                     detail.FROM_ORG_CODE,
                     lstChildren.ToList(),
@@ -3810,7 +3727,7 @@ namespace SMO.Service.BP
                 lstDetails.AddRange(details);
             }
 
-            var lookupElement = lstDetails.ToLookup(x => x.ELEMENT_CODE);
+            var lookupElement = lstDetails.ToLookup(x => x.KHOAN_MUC_HANG_HOA_CODE);
             foreach (var key in lookupElement.Select(x => x.Key))
             {
                 if (lookupElement[key].Count() == 1)
@@ -3820,7 +3737,7 @@ namespace SMO.Service.BP
                 else
                 {
                     var data = lookupElement[key];
-                    var lookupCenter = data.ToLookup(x => x.CENTER_CODE);
+                    var lookupCenter = data.ToLookup(x => x.ORG_CODE);
                     foreach (var orgCode in lookupCenter.Select(x => x.Key))
                     {
                         if (lookupCenter[orgCode].Count() == 1)
@@ -3833,24 +3750,13 @@ namespace SMO.Service.BP
                             lstResult.Add(new T_BP_KE_HOACH_CHI_PHI_DATA
                             {
                                 ORG_CODE = orgCode,
-                                ELEMENT_CODE = key,
-                                CostElement = lookupCenter[orgCode].First().CostElement,
-                                CostCenter = lookupCenter[orgCode].First().CostCenter,
+                                KHOAN_MUC_HANG_HOA_CODE = key,
+                                KhoanMucHangHoa = lookupCenter[orgCode].First().KhoanMucHangHoa,
+                                ChiPhiProfitCenter = lookupCenter[orgCode].First().ChiPhiProfitCenter,
                                 Organize = lookupCenter[orgCode].First().Organize,
-                                VALUE_JAN = dataOrgCode.Sum(x => x.VALUE_JAN) ?? 0,
-                                VALUE_FEB = dataOrgCode.Sum(x => x.VALUE_FEB) ?? 0,
-                                VALUE_MAR = dataOrgCode.Sum(x => x.VALUE_MAR) ?? 0,
-                                VALUE_APR = dataOrgCode.Sum(x => x.VALUE_APR) ?? 0,
-                                VALUE_MAY = dataOrgCode.Sum(x => x.VALUE_MAY) ?? 0,
-                                VALUE_JUN = dataOrgCode.Sum(x => x.VALUE_JUN) ?? 0,
-                                VALUE_JUL = dataOrgCode.Sum(x => x.VALUE_JUL) ?? 0,
-                                VALUE_AUG = dataOrgCode.Sum(x => x.VALUE_AUG) ?? 0,
-                                VALUE_SEP = dataOrgCode.Sum(x => x.VALUE_SEP) ?? 0,
-                                VALUE_OCT = dataOrgCode.Sum(x => x.VALUE_OCT) ?? 0,
-                                VALUE_NOV = dataOrgCode.Sum(x => x.VALUE_NOV) ?? 0,
-                                VALUE_DEC = dataOrgCode.Sum(x => x.VALUE_DEC) ?? 0,
-                                VALUE_SUM_YEAR = dataOrgCode.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                VALUE_SUM_YEAR_PREVENTIVE = dataOrgCode.Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0,
+                                QUANTITY = dataOrgCode.Sum(x => x.QUANTITY) ?? 0,
+                                PRICE = dataOrgCode.Sum(x => x.PRICE) ?? 0,
+                                AMOUNT = dataOrgCode.Sum(x => x.AMOUNT) ?? 0,
                             });
                         }
                     }
@@ -3860,21 +3766,21 @@ namespace SMO.Service.BP
             return lstResult;
         }
 
-        private IList<T_MD_KHOAN_MUC_CHI_PHI> SummaryCenter(IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataCostElements, string centerCode, int year,
+        private IList<T_MD_KHOAN_MUC_HANG_HOA> SummaryCenter(IList<T_BP_KE_HOACH_CHI_PHI_DATA> plDataOtherKhoanMucHangHoas, string centerCode, int year,
                                                           bool? isHasValue = null)
         {
 
-            // get all cost elements
-            var allCostElement = UnitOfWork.Repository<KhoanMucChiPhiRepo>().GetManyByExpression(x => x.TIME_YEAR == year);
+            // get all revenue elements
+            var allOtherKhoanMucHangHoa = UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetManyByExpression(x => x.TIME_YEAR == year);
             // get all child
             var childrenCodes = GetListOfChildrenCenter(centerCode).Select(x => x.CODE);
             // list store pure items to send to view
-            var pureLstItems = new List<T_MD_KHOAN_MUC_CHI_PHI>();
+            var pureLstItems = new List<T_MD_KHOAN_MUC_HANG_HOA>();
 
-            // lookup cost elements by parent code
-            var lookupElements = plDataCostElements.GroupBy(x => x.ELEMENT_CODE)
+            // lookup revenue elements by parent code
+            var lookupElements = plDataOtherKhoanMucHangHoas.GroupBy(x => x.KHOAN_MUC_HANG_HOA_CODE)
                 .Select(x => x.First())
-                .ToLookup(x => x.CostElement.PARENT_CODE);
+                .ToLookup(x => x.KhoanMucHangHoa.PARENT_CODE);
 
             var childrenCode = GetListOfChildrenCenter(centerCode)
                 .Select(x => x.CODE)
@@ -3890,22 +3796,21 @@ namespace SMO.Service.BP
                 // set level start by 0
                 var level = 0;
                 // temp list
-                var lst = new List<T_MD_KHOAN_MUC_CHI_PHI>();
+                var lst = new List<T_MD_KHOAN_MUC_HANG_HOA>();
                 // add all leaf to temp list item with child = true
                 lst.AddRange(from item in lookupElements[code]
-                             let orgCode = childrenCodes.Contains(item.ORG_CODE) || item.ORG_CODE == centerCode ? item.ORG_CODE : item.CENTER_CODE
-                             select new T_MD_KHOAN_MUC_CHI_PHI
+                             select new T_MD_KHOAN_MUC_HANG_HOA
                              {
-                                 CENTER_CODE = item.CENTER_CODE,
-                                 C_ORDER = item.CostElement.C_ORDER,
-                                 NAME = item.CostElement.NAME,
-                                 PARENT_CODE = item.CostElement.PARENT_CODE,
-                                 CODE = item.CostElement.CODE,
+                                 CENTER_CODE = item.ORG_CODE,
+                                 C_ORDER = item.KhoanMucHangHoa.C_ORDER,
+                                 NAME = item.KhoanMucHangHoa.NAME,
+                                 PARENT_CODE = item.KhoanMucHangHoa.PARENT_CODE,
+                                 CODE = item.KhoanMucHangHoa.CODE,
                                  LEVEL = 0,
                                  IS_GROUP = false,
-                                 ORG_NAME = childrenCode.Contains(item.ORG_CODE) ? item.Organize.NAME : item.CostCenter.NAME,
+                                 ORG_NAME = childrenCode.Contains(item.ORG_CODE) ? item.Organize.NAME : item.ChiPhiProfitCenter.NAME,
                                  TEMPLATE_CODE = item.TEMPLATE_CODE,
-                                 ORG_CODE = orgCode,
+                                 ORG_CODE = item.ORG_CODE,
                                  IsChildren = true
                              });
                 // init parent code = code
@@ -3917,17 +3822,17 @@ namespace SMO.Service.BP
                     // increasing level by 1
                     level++;
                     // find parents to add into list
-                    var element = allCostElement.FirstOrDefault(x => x.CODE == parentCode);
+                    var element = allOtherKhoanMucHangHoa.FirstOrDefault(x => x.CODE == parentCode);
                     if (element != null)
                     {
-                        // if find parent in all cost element
+                        // if find parent in all revenue element
                         parentCode = element.PARENT_CODE;
                         element.CENTER_CODE = centerCode;
                         element.LEVEL = level;
                         element.IS_GROUP = true;
                         element.TEMPLATE_CODE = lookupElements[code].FirstOrDefault().TEMPLATE_CODE;
                         element.ORG_CODE = lookupElements[code].FirstOrDefault().ORG_CODE;
-                        lst.Add((T_MD_KHOAN_MUC_CHI_PHI)element.CloneObject());     // must to clone to other object because it reference to other center
+                        lst.Add((T_MD_KHOAN_MUC_HANG_HOA)element.CloneObject());     // must to clone to other object because it reference to other center
                     }
                     else
                     {
@@ -3936,28 +3841,31 @@ namespace SMO.Service.BP
                     }
                 }
 
+
                 // subtract level so 0 level is root and higher level is child
                 lst.ForEach(x => x.LEVEL = level - x.LEVEL);
+
                 pureLstItems.AddRange(lst);
             }
             // add all leaf where parent is corp to temp list item with child = true
             pureLstItems.AddRange(from item in lookupElements[string.Empty]
-                                  select new T_MD_KHOAN_MUC_CHI_PHI
+                                  select new T_MD_KHOAN_MUC_HANG_HOA
                                   {
                                       CENTER_CODE = item.ORG_CODE,
-                                      C_ORDER = item.CostElement.C_ORDER,
-                                      NAME = item.CostElement.NAME,
+                                      C_ORDER = item.KhoanMucHangHoa.C_ORDER,
+                                      NAME = item.KhoanMucHangHoa.NAME,
                                       PARENT_CODE = string.Empty,
-                                      CODE = item.CostElement.CODE,
+                                      CODE = item.KhoanMucHangHoa.CODE,
                                       LEVEL = 0,
                                       IS_GROUP = false,
-                                      ORG_NAME = childrenCode.Contains(item.ORG_CODE) ? item.Organize.NAME : item.CostCenter.NAME,
+                                      ORG_NAME = childrenCode.Contains(item.ORG_CODE) ? item.Organize.NAME : item.ChiPhiProfitCenter.NAME,
                                       TEMPLATE_CODE = item.TEMPLATE_CODE,
                                       ORG_CODE = item.ORG_CODE,
                                       IsChildren = true
                                   });
+
             // calculate data for all pure list item
-            var sum = GetSumDescendants(plDataCostElements, pureLstItems, parentId: string.Empty).Distinct().ToList();
+            var sum = GetSumDescendants(plDataOtherKhoanMucHangHoas, pureLstItems, parentId: string.Empty).Distinct().ToList();
             if (isHasValue.HasValue)
             {
                 if (isHasValue.Value)
@@ -3977,22 +3885,22 @@ namespace SMO.Service.BP
         }
 
         /// <summary>
-        /// Calculate data for list cost element
+        /// Calculate data for list revenue element
         /// </summary>
-        /// <param name="KeHoachChiPhiData">List cost pl data containt value</param>
-        /// <param name="pureItems">List of cost element want to calculate</param>
+        /// <param name="costCFData">List revenue pl data containt value</param>
+        /// <param name="pureItems">List of revenue element want to calculate</param>
         /// <param name="parentId">Parent id want to start. Empty for root</param>
-        /// <returns>Returns list of cost element has calculated data</returns>
-        private IEnumerable<T_MD_KHOAN_MUC_CHI_PHI> GetSumDescendants(
-            IList<T_BP_KE_HOACH_CHI_PHI_DATA> KeHoachChiPhiData,
-            IList<T_MD_KHOAN_MUC_CHI_PHI> pureItems,
+        /// <returns>Returns list of revenue element has calculated data</returns>
+        private IEnumerable<T_MD_KHOAN_MUC_HANG_HOA> GetSumDescendants(
+            IList<T_BP_KE_HOACH_CHI_PHI_DATA> costCFData,
+            IList<T_MD_KHOAN_MUC_HANG_HOA> pureItems,
             string parentId)
         {
-            var lstResult = new List<T_MD_KHOAN_MUC_CHI_PHI>
+            var lstResult = new List<T_MD_KHOAN_MUC_HANG_HOA>
             {
                 // set tổng năm
                 // tạo element tổng
-                new T_MD_KHOAN_MUC_CHI_PHI
+                new T_MD_KHOAN_MUC_HANG_HOA
                 {
                     NAME = "TỔNG CỘNG",
                     LEVEL = 0,
@@ -4001,27 +3909,16 @@ namespace SMO.Service.BP
                     IsChildren = false,
                     C_ORDER = 0,
                     CODE = string.Empty,
-                    Values = new decimal[14]
+                    Values = new decimal[3]
                     {
-                        KeHoachChiPhiData.Sum(x => x.VALUE_JAN) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_FEB) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_MAR) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_APR) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_MAY) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_JUN) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_JUL) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_AUG) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_SEP) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_OCT) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_NOV) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_DEC) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                        KeHoachChiPhiData.Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0,
+                        costCFData.Sum(x => x.QUANTITY) ?? 0,
+                        costCFData.Sum(x => x.PRICE) ?? 0,
+                        costCFData.Sum(x => x.AMOUNT) ?? 0,
                     }
                 }
             };
             var lookup = pureItems.ToLookup(i => i.PARENT_CODE);
-            Queue<T_MD_KHOAN_MUC_CHI_PHI> st = new Queue<T_MD_KHOAN_MUC_CHI_PHI>(lookup[parentId]);
+            Queue<T_MD_KHOAN_MUC_HANG_HOA> st = new Queue<T_MD_KHOAN_MUC_HANG_HOA>(lookup[parentId]);
             while (st.Count > 0)
             {
                 // get first item in queue
@@ -4029,14 +3926,14 @@ namespace SMO.Service.BP
                 // variable to check should return item or not
                 bool shouldReturn = true;
                 // lst to store children of item which have children
-                var lstCostElements = new List<T_MD_KHOAN_MUC_CHI_PHI>();
+                var lstOtherKhoanMucHangHoas = new List<T_MD_KHOAN_MUC_HANG_HOA>();
                 // loop through items which have parent id = item id
                 foreach (var i in lookup[item.CODE])
                 {
                     if (lookup[i.CODE].Count() > 0)
                     {
                         shouldReturn = false;
-                        lstCostElements.Add(i);
+                        lstOtherKhoanMucHangHoas.Add(i);
                         st.Enqueue(i);
                     }
                     else
@@ -4055,81 +3952,65 @@ namespace SMO.Service.BP
                             // if i does not count total yet
                             // get its datatree then add to total
 
-                            var treeData = KeHoachChiPhiData.Where(x => x.ELEMENT_CODE.Equals(i.CODE));
+                            var treeData = costCFData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Equals(i.CODE));
                             if (treeData != null && treeData.Count() > 0)
                             {
-                                item.Values[0] += treeData.Sum(x => x.VALUE_JAN) ?? 0;
-                                item.Values[1] += treeData.Sum(x => x.VALUE_FEB) ?? 0;
-                                item.Values[2] += treeData.Sum(x => x.VALUE_MAR) ?? 0;
-                                item.Values[3] += treeData.Sum(x => x.VALUE_APR) ?? 0;
-                                item.Values[4] += treeData.Sum(x => x.VALUE_MAY) ?? 0;
-                                item.Values[5] += treeData.Sum(x => x.VALUE_JUN) ?? 0;
-                                item.Values[6] += treeData.Sum(x => x.VALUE_JUL) ?? 0;
-                                item.Values[7] += treeData.Sum(x => x.VALUE_AUG) ?? 0;
-                                item.Values[8] += treeData.Sum(x => x.VALUE_SEP) ?? 0;
-                                item.Values[9] += treeData.Sum(x => x.VALUE_OCT) ?? 0;
-                                item.Values[10] += treeData.Sum(x => x.VALUE_NOV) ?? 0;
-                                item.Values[11] += treeData.Sum(x => x.VALUE_DEC) ?? 0;
-                                item.Values[12] += treeData.Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                                item.Values[13] += treeData.Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0;
+                                item.Values[0] += treeData.Sum(x => x.QUANTITY) ?? 0;
+                                item.Values[1] += treeData.Sum(x => x.PRICE) ?? 0;
+                                item.Values[2] += treeData.Sum(x => x.AMOUNT) ?? 0;
+
                                 item.HasAssignValue = true;
 
                                 foreach (var d in treeData)
                                 {
                                     var values = new decimal[14];
-                                    values[0] = d.VALUE_JAN ?? 0;
-                                    values[1] = d.VALUE_FEB ?? 0;
-                                    values[2] = d.VALUE_MAR ?? 0;
-                                    values[3] = d.VALUE_APR ?? 0;
-                                    values[4] = d.VALUE_MAY ?? 0;
-                                    values[5] = d.VALUE_JUN ?? 0;
-                                    values[6] = d.VALUE_JUL ?? 0;
-                                    values[7] = d.VALUE_AUG ?? 0;
-                                    values[8] = d.VALUE_SEP ?? 0;
-                                    values[9] = d.VALUE_OCT ?? 0;
-                                    values[10] = d.VALUE_NOV ?? 0;
-                                    values[11] = d.VALUE_DEC ?? 0;
-                                    values[12] = d.VALUE_SUM_YEAR ?? 0;
-                                    values[13] = d.VALUE_SUM_YEAR_PREVENTIVE ?? 0;
+                                    values[0] = treeData.Sum(x => x.QUANTITY) ?? 0;
+                                    values[1] = treeData.Sum(x => x.PRICE) ?? 0;
+                                    values[2] = treeData.Sum(x => x.AMOUNT) ?? 0;
+
                                     i.Values = values;
-                                    var clone = (T_MD_KHOAN_MUC_CHI_PHI)i.Clone();
-                                    lstResult.Add(clone);
+                                    var clone = (T_MD_KHOAN_MUC_HANG_HOA)i.Clone();
                                     //yield return clone;
+                                    lstResult.Add(clone);
+                                    break;
                                 }
                             }
                         }
                     }
                 }
 
+                if (!item.IS_GROUP && item.PARENT_CODE == parentId)
+                {
+                    var treeData = costCFData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Equals(item.CODE));
+                    if (treeData != null && treeData.Count() > 0)
+                    {
+                        item.Values[0] += treeData.Sum(x => x.QUANTITY) ?? 0;
+                        item.Values[1] += treeData.Sum(x => x.PRICE) ?? 0;
+                        item.Values[2] += treeData.Sum(x => x.AMOUNT) ?? 0;
+
+                    }
+                    var clone = (T_MD_KHOAN_MUC_HANG_HOA)item.Clone();
+                    lstResult.Add(clone);
+                }
+
                 // remove all child of item
                 // include children have child
                 lookup = lookup
-                    .Where(x => x.Key != item.CODE)
-                    .SelectMany(x => x)
-                    .ToLookup(l => l.PARENT_CODE);
+                .Where(x => x.Key != item.CODE)
+                .SelectMany(x => x)
+                .ToLookup(l => l.PARENT_CODE);
                 if (shouldReturn)
                 {
                     if (item.PARENT_CODE == parentId && !item.IS_GROUP)
                     {
-                        var data = KeHoachChiPhiData.Where(x => x.ELEMENT_CODE == item.CODE && x.CENTER_CODE == item.CENTER_CODE);
+                        var data = costCFData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == item.CODE && x.ORG_CODE == item.CENTER_CODE);
                         if (data != null)
                         {
-                            item.Values = new decimal[14]
+                            item.Values = new decimal[3]
                             {
-                                data.Sum(x => x.VALUE_JAN) ?? 0,
-                                data.Sum(x => x.VALUE_FEB) ?? 0,
-                                data.Sum(x => x.VALUE_MAR) ?? 0,
-                                data.Sum(x => x.VALUE_APR) ?? 0,
-                                data.Sum(x => x.VALUE_MAY) ?? 0,
-                                data.Sum(x => x.VALUE_JUN) ?? 0,
-                                data.Sum(x => x.VALUE_JUL) ?? 0,
-                                data.Sum(x => x.VALUE_AUG) ?? 0,
-                                data.Sum(x => x.VALUE_SEP) ?? 0,
-                                data.Sum(x => x.VALUE_OCT) ?? 0,
-                                data.Sum(x => x.VALUE_NOV) ?? 0,
-                                data.Sum(x => x.VALUE_DEC) ?? 0,
-                                data.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                data.Sum(x => x.VALUE_SUM_YEAR_PREVENTIVE) ?? 0,
+                                data.Sum(x => x.QUANTITY) ?? 0,
+                                data.Sum(x => x.PRICE) ?? 0,
+                                data.Sum(x => x.AMOUNT) ?? 0,
                             };
                         }
                     }
@@ -4138,11 +4019,11 @@ namespace SMO.Service.BP
                 else
                 {
                     // add children of item which have chilren to lookup 
-                    if (lstCostElements.Count > 0)
+                    if (lstOtherKhoanMucHangHoas.Count > 0)
                     {
                         lookup = lookup
                             .SelectMany(l => l)
-                            .Concat(lstCostElements)
+                            .Concat(lstOtherKhoanMucHangHoas)
                             .ToLookup(x => x.PARENT_CODE);
                     }
                     // re-enqueue item to queue
@@ -4155,11 +4036,7 @@ namespace SMO.Service.BP
         #endregion
 
         #region Export excel from data center view
-
- 
-
-        public override void GenerateExportExcel(ref MemoryStream outFileStream,dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
-
+        public override void GenerateExportExcel(ref MemoryStream outFileStream, dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
         {
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
@@ -4168,7 +4045,7 @@ namespace SMO.Service.BP
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
-            workbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachSanLuong));
+            workbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
             fs.Close();
 
 
@@ -4183,9 +4060,7 @@ namespace SMO.Service.BP
                 metaDataMonth.MetaTBody,
                 NUM_CELL_MONTH,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            if(!string.IsNullOrEmpty(htmlYear))
-            {
-                
+
             ISheet sheetYear = workbook.GetSheetAt(1);
             var metaDataYear = ExcelHelper.GetExcelMeta(htmlYear);
             var NUM_CELL_YEAR = 7;
@@ -4197,7 +4072,7 @@ namespace SMO.Service.BP
                 metaDataYear.MetaTBody,
                 NUM_CELL_YEAR,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            }
+
 
 
 
@@ -4205,15 +4080,14 @@ namespace SMO.Service.BP
             workbook.Write(outFileStream);
         }
 
-
         private void InitHeaderFile(ref ISheet sheet, int year, string centerCode, int? version, int NUM_CELL, string templateId, string unit, decimal exchangeRate)
         {
-            var name = "DỮ LIỆU KẾ HOẠCH CHI PHÍ DÒNG TIỀN";
+            var name = "DỮ LIỆU KẾ HOẠCH SẢN LƯỢNG";
             var centerName = GetCenter(centerCode).NAME.ToUpper();
             var template = GetTemplate(templateId);
             var templateName = template != null ? $"Mẫu khai báo: {template.CODE} - {template.NAME}" : "Tổng hợp dữ liệu";
 
-            ExcelHelperBP.InitHeaderFile(ref sheet, year, centerName, version, NUM_CELL, templateName, unit, name, exchangeRate);
+            ExcelHelperBP.InitHeaderFile(ref sheet, year, centerName, version, NUM_CELL, templateName, "Tấn", name, exchangeRate);
         }
 
         #endregion
@@ -4252,7 +4126,31 @@ namespace SMO.Service.BP
 
         public override T_BP_TYPE GetBudgetType()
         {
-            return UnitOfWork.Repository<TypeRepo>().GetFirstWithFetch(x => x.OBJECT_TYPE == TemplateObjectType.Department && x.ELEMENT_TYPE == ElementType.ChiPhi && x.BUDGET_TYPE == BudgetType.DongTien);
+            return UnitOfWork.Repository<TypeRepo>().GetFirstWithFetch(x => x.OBJECT_TYPE == TemplateObjectType.Project && x.ELEMENT_TYPE == ElementType.ChiPhi && x.BUDGET_TYPE == BudgetType.DongTien);
         }
+
+        public T_BP_KE_HOACH_CHI_PHI CheckTemplate(string template, int year, string orgCode)
+        {
+            try
+            {
+                var checkTemplate = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == template && x.TIME_YEAR == year && x.ORG_CODE == orgCode);
+                if (checkTemplate != null)
+                {
+                    return checkTemplate;
+                }
+                else
+                {
+                    return new T_BP_KE_HOACH_CHI_PHI();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return null;
+            }
+
+        }
+
     }
 }

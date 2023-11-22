@@ -1,4 +1,5 @@
-﻿@model SMO.Service.BP.KeHoachChiPhiService
+﻿
+@model SMO.Service.BP.KE_HOACH_CHI_PHI.KeHoachChiPhiService
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     var viewParentId = ViewBag.ViewId as string;
@@ -9,10 +10,12 @@
     <table class="table font-13 table-nowrap">
         <thead>
             <tr>
+                <th class="align-center"></th>
                 <th class="align-center">Version</th>
+                <th class="align-center">Kịch bản</th>
+                <th class="align-center">Phiên bản</th>
                 <th class="align-center">Người dùng</th>
                 <th>Hành động</th>
-                <th class="align-center"></th>
             </tr>
         </thead>
         <tbody>
@@ -20,7 +23,16 @@
             {
                 <tr>
                     <td class="align-center">
+                        @Html.MyButton("cmdBack", "", $"ViewData({item.VERSION}, '{item.ORG_CODE}', {item.TIME_YEAR});", "Alt+N", "search")
+                    </td>
+                    <td class="align-center">
                         <b class="col-deep-orange font-14">@item.VERSION</b>
+                    </td>
+                    <td class="align-center">
+                        <b>@(item.KichBan?.TEXT)</b>
+                    </td>
+                    <td class="align-center">
+                        <b>@(item.PhienBan?.TEXT)</b>
                     </td>
                     <td class="align-center">
                         @item.ACTION_USER
@@ -29,9 +41,6 @@
                     <td class="align-center">
                         @Approve_Action.GetStatusText(item.ACTION)
                         <div>@item.ACTION_DATE.ToString(Global.DateTimeToStringFormat)</div>
-                    </td>
-                    <td class="align-center">
-                        @Html.MyButton("cmdBack", "", $"ViewData({item.VERSION}, '{item.ORG_CODE}', {item.TIME_YEAR});", "Alt+N", "search")
                     </td>
                 </tr>
             }

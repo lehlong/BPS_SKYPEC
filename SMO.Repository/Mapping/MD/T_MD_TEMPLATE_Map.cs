@@ -46,6 +46,15 @@ namespace SMO.Repository.Mapping.MD
             HasMany(x => x.DetailDauTuNgoaiDoanhNghiep)
                         .KeyColumn("TEMPLATE_CODE")
                         .LazyLoad().Inverse().Cascade.Delete();
+            HasMany(x => x.DetailKeHoachVanChuyen)
+                        .KeyColumn("TEMPLATE_CODE")
+                        .LazyLoad().Inverse().Cascade.Delete();
+            HasMany(x => x.DetailSuaChuaLon)
+                        .KeyColumn("TEMPLATE_CODE")
+                        .LazyLoad().Inverse().Cascade.Delete();
+            HasMany(x => x.DetailSuaChuaThuongXuyen)
+                        .KeyColumn("TEMPLATE_CODE")
+                        .LazyLoad().Inverse().Cascade.Delete();
 
         }
     }

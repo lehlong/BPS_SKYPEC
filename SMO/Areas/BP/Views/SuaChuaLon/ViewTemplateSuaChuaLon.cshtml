@@ -1,0 +1,88 @@
+@model IList<T_MD_KHOAN_MUC_SUA_CHUA>
+@using SMO.Core.Entities.MD;
+@using System.Text;
+
+@{
+    var detailOtherCostElements = ViewBag.detailOtherCostElements as IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON>;
+    var viewId = Guid.NewGuid().ToString();
+}
+<div id="@viewId" class="container-fluid child-content">
+    <div class="card">
+        <div class="body" style="padding-top: 0px">
+
+            @if (detailOtherCostElements == null || detailOtherCostElements.Count == 0)
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                </div>
+                <div class="p-t-10">
+                    @{
+                        Html.RenderPartial("_NothingData");
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                    @Html.MyButton("cmdDownloadTemlate",
+                                                "Download mẫu",
+                                                "DownloadTemplate();",
+                                                "Alt+V", "file_download")
+                </div>
+                <div class="p-t-10">
+                    <div class="body-content">
+                        <div class="table-responsive" style="max-height: calc(100vh - 140px)">
+                            <table class="table table-condensed table-bordered table-striped table-pre-whitespace">
+                                <thead>
+                                    <tr class="sticky-row">
+                                        <th>Mã chi nhánh</th>
+                                        <th>Tên chi nhánh</th>
+                                        <th>Mã sân bay</th>
+                                        <th>Tên sân bay</th>
+                                        <th>Mã khoản mục</th>
+                                        <th>Tên khoản mục</th>
+                                        <th>Quy mô</th>
+                                        <th>Kinh phí</th>
+                                        <th>Ghi chú</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var detail in detailOtherCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.CostCenter.CODE))
+                                    {
+                                        foreach (var item in Model
+                                            .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
+                                            .OrderBy(x => x.C_ORDER)
+                                            .GroupBy(x => x.CODE)
+                                            .Select(x => x.First()))
+                                        {
+                                            var space = new StringBuilder();
+                                            for (int i = 0; i < item.LEVEL; i++)
+                                            {
+                                                space.Append("\t");
+                                            }
+                                            var classParent = item.IS_GROUP ? "strong" : string.Empty;
+                                            <tr class="@classParent">
+                                                <td>@(detail.Center.COST_CENTER_CODE)</td>
+                                                <td>@(detail.Center.CostCenter.NAME)</td>
+                                                <td>@(detail.Center.SAN_BAY_CODE)</td>
+                                                <td>@(detail.Center.SanBay.NAME)</td>
+                                                <td>@item.CODE</td>
+                                                <td class=" @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

@@ -1,9 +1,11 @@
 ﻿using SMO.Core.Entities;
+using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Common;
+using SMO.Repository.Interface.BP;
 using SMO.Repository.Interface.BP.KE_HOACH_CHI_PHI;
 using System.Collections.Generic;
 
-namespace SMO.Repository.Implement.BP
+namespace SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI
 {
     public class KeHoachChiPhiRepo : GenericBPRepository<T_BP_KE_HOACH_CHI_PHI>, IKeHoachChiPhiRepo
     {
@@ -20,13 +22,11 @@ namespace SMO.Repository.Implement.BP
             {
                 query = query.Where(x => x.ORG_CODE == objFilter.ORG_CODE);
             }
-
             if (string.IsNullOrWhiteSpace(objFilter.PHIEN_BAN))
             {
                 objFilter.PHIEN_BAN = "PB1";
             }
             query = query.Where(x => x.PHIEN_BAN == objFilter.PHIEN_BAN);
-
             if (string.IsNullOrWhiteSpace(objFilter.KICH_BAN))
             {
                 objFilter.KICH_BAN = "TB";
@@ -36,7 +36,6 @@ namespace SMO.Repository.Implement.BP
             {
                 query = query.Where(x => x.TIME_YEAR == objFilter.TIME_YEAR);
             }
-
 
             query = query.Fetch(x => x.Template).Eager
                 .Fetch(x => x.Organize).Eager;

@@ -1,20 +1,21 @@
-﻿@using SMO.Core.Entities;
+﻿
+@using SMO.Core.Entities;
 
 @{
-    var headerKeHoachChiPhi = ViewBag.Header as T_BP_KE_HOACH_CHI_PHI;
-    if (headerKeHoachChiPhi == null)
+    var headerScl = ViewBag.Header as T_BP_KE_HOACH_CHI_PHI;
+    if (headerScl == null)
     {
-        var headerKeHoachChiPhiVerion = new T_BP_KE_HOACH_CHI_PHI_VERSION();
-        headerKeHoachChiPhiVerion = ViewBag.Header;
+        var headerSclVerion = new T_BP_KE_HOACH_CHI_PHI_VERSION();
+        headerSclVerion = ViewBag.Header;
         var hasVersion = ViewBag.HasVersion as bool?;
-        var templateName = string.IsNullOrEmpty(headerKeHoachChiPhiVerion.TEMPLATE_CODE) ? "Dữ liệu tổng hợp" : $"{headerKeHoachChiPhiVerion.TEMPLATE_CODE} - {headerKeHoachChiPhiVerion.Template.NAME}";
+        var templateName = string.IsNullOrEmpty(headerSclVerion.TEMPLATE_CODE) ? "Dữ liệu tổng hợp" : $"{headerSclVerion.TEMPLATE_CODE} - {headerSclVerion.Template.NAME}";
         <div class="body">
             <div class="table-responsive font-13">
                 <table class="table">
                     <tr>
                         <td>
                             <b>Đơn vị</b>
-                            <div>@(headerKeHoachChiPhiVerion.ORG_CODE) - @(headerKeHoachChiPhiVerion.Organize?.NAME)</div>
+                            <div>@(headerSclVerion.ORG_CODE) - @(headerSclVerion.Organize?.NAME)</div>
                         </td>
                     </tr>
                     <tr>
@@ -26,25 +27,37 @@
                     <tr>
                         <td>
                             <b>Năm kế hoạch</b>
-                            <div>@headerKeHoachChiPhiVerion.TIME_YEAR</div>
+                            <div>@headerSclVerion.TIME_YEAR</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Kịch bản</b>
+                            <div>@(headerSclVerion.KichBan?.TEXT)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Phiên bản</b>
+                            <div>@(headerSclVerion.PhienBan?.TEXT)</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>Version</b>
-                            <div>@headerKeHoachChiPhiVerion.VERSION</div>
+                            <div>@headerSclVerion.VERSION</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>Người tạo</b>
-                            <div>@headerKeHoachChiPhiVerion.CREATE_BY</div>
+                            <div>@headerSclVerion.CREATE_BY</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>Ngày tạo</b>
-                            <div>@(headerKeHoachChiPhiVerion.CREATE_DATE?.ToString(Global.DateTimeToStringFormat))</div>
+                            <div>@(headerSclVerion.CREATE_DATE?.ToString(Global.DateTimeToStringFormat))</div>
                         </td>
                     </tr>
                 </table>
@@ -53,14 +66,14 @@
     }
     else
     {
-        var templateName = string.IsNullOrEmpty(headerKeHoachChiPhi.TEMPLATE_CODE) ? "Dữ liệu tổng hợp" : $"{headerKeHoachChiPhi.TEMPLATE_CODE} - {headerKeHoachChiPhi.Template.NAME}";
+        var templateName = string.IsNullOrEmpty(headerScl.TEMPLATE_CODE) ? "Dữ liệu tổng hợp" : $"{headerScl.TEMPLATE_CODE} - {headerScl.Template.NAME}";
         <div class="body">
             <div class="table-responsive font-13">
                 <table class="table">
                     <tr>
                         <td>
                             <b>Đơn vị</b>
-                            <div>@(headerKeHoachChiPhi.ORG_CODE) - @(headerKeHoachChiPhi.Organize?.NAME)</div>
+                            <div>@(headerScl.ORG_CODE) - @(headerScl.Organize?.NAME)</div>
                         </td>
                     </tr>
                     <tr>
@@ -72,31 +85,43 @@
                     <tr>
                         <td>
                             <b>Năm kế hoạch</b>
-                            <div>@headerKeHoachChiPhi.TIME_YEAR</div>
+                            <div>@headerScl.TIME_YEAR</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>Version</b>
-                            <div>@headerKeHoachChiPhi.VERSION</div>
+                            <div>@headerScl.VERSION</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Kịch bản</b>
+                            <div>@(headerScl.KichBan?.TEXT)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Phiên bản</b>
+                            <div>@(headerScl.PhienBan?.TEXT)</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>Trạng thái</b>
-                            <div>@Approve_Status.GetStatusText(headerKeHoachChiPhi.STATUS)</div>
+                            <div>@Approve_Status.GetStatusText(headerScl.STATUS)</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>Người tạo</b>
-                            <div>@headerKeHoachChiPhi.CREATE_BY</div>
+                            <div>@headerScl.CREATE_BY</div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>Ngày tạo</b>
-                            <div>@(headerKeHoachChiPhi.CREATE_DATE?.ToString(Global.DateTimeToStringFormat))</div>
+                            <div>@(headerScl.CREATE_DATE?.ToString(Global.DateTimeToStringFormat))</div>
                         </td>
                     </tr>
                 </table>

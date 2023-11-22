@@ -1,11 +1,12 @@
 ﻿using SMO.Core.Entities;
+using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Common;
 using SMO.Repository.Interface.BP;
 using SMO.Repository.Interface.BP.KE_HOACH_CHI_PHI;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SMO.Repository.Implement.BP
+namespace SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI
 {
     public class KeHoachChiPhiDataRepo : GenericRepository<T_BP_KE_HOACH_CHI_PHI_DATA>, IKeHoachChiPhiDataRepo
     {
@@ -35,8 +36,8 @@ namespace SMO.Repository.Implement.BP
                     queryOver = queryOver.Where(x => x.TIME_YEAR == year);
                     queryOver = queryOver.Where(x => x.TEMPLATE_CODE != "");
                     queryOver = queryOver.Where(x => x.ORG_CODE == centerCode);
-                    queryOver = queryOver.Fetch(x => x.CostElement).Eager;
-                    queryOver = queryOver.Fetch(x => x.CostCenter).Eager;
+                    queryOver = queryOver.Fetch(x => x.KhoanMucHangHoa).Eager;
+                    queryOver = queryOver.Fetch(x => x.ChiPhiProfitCenter).Eager;
                     return queryOver.List();
                 }
                 else
@@ -45,8 +46,8 @@ namespace SMO.Repository.Implement.BP
                     queryOver = queryOver.Where(x => x.TIME_YEAR == year);
                     queryOver = queryOver.Where(x => x.ORG_CODE == centerCode);
                     queryOver = queryOver.Where(x => x.VERSION == version);
-                    queryOver = queryOver.Fetch(x => x.CostElement).Eager;
-                    queryOver = queryOver.Fetch(x => x.CostCenter).Eager;
+                    queryOver = queryOver.Fetch(x => x.KhoanMucHangHoa).Eager;
+                    queryOver = queryOver.Fetch(x => x.ChiPhiProfitCenter).Eager;
                     return queryOver.List().Select(x => (T_BP_KE_HOACH_CHI_PHI_DATA)x).ToList();
                 }
             }
@@ -62,8 +63,8 @@ namespace SMO.Repository.Implement.BP
                     queryOver = queryOver.Where(x => x.TIME_YEAR == year);
                     queryOver = queryOver.Where(x => x.ORG_CODE == centerCode);
                     queryOver = queryOver.Where(x => x.TEMPLATE_CODE == templateCode);
-                    queryOver = queryOver.Fetch(x => x.CostElement).Eager;
-                    queryOver = queryOver.Fetch(x => x.CostCenter).Eager;
+                    queryOver = queryOver.Fetch(x => x.KhoanMucHangHoa).Eager;
+                    queryOver = queryOver.Fetch(x => x.ChiPhiProfitCenter).Eager;
                     return queryOver.List();
                 }
                 else
@@ -73,8 +74,8 @@ namespace SMO.Repository.Implement.BP
                     queryOver = queryOver.Where(x => x.ORG_CODE == centerCode);
                     queryOver = queryOver.Where(x => x.VERSION == version);
                     queryOver = queryOver.Where(x => x.TEMPLATE_CODE == templateCode);
-                    queryOver = queryOver.Fetch(x => x.CostElement).Eager;
-                    queryOver = queryOver.Fetch(x => x.CostCenter).Eager;
+                    queryOver = queryOver.Fetch(x => x.KhoanMucHangHoa).Eager;
+                    queryOver = queryOver.Fetch(x => x.ChiPhiProfitCenter).Eager;
                     return queryOver.List().Select(x => (T_BP_KE_HOACH_CHI_PHI_DATA)x).ToList();
                 }
             }
@@ -84,10 +85,10 @@ namespace SMO.Repository.Implement.BP
         /// Lấy dữ liệu theo đơn vị được nộp
         /// </summary>
         /// <param name="orgCode">Mã đơn vị nộp</param>
-        /// <param name="centerCodes">Danh sách những đơn vị chịu chi phí</param>
-        /// <param name="year">Năm ngân sách</param>
-        /// <param name="templateCode">Mẫu</param>
-        /// <param name="version">Version dữ liệu</param>
+        /// <param name="centerCode"></param>
+        /// <param name="year"></param>
+        /// <param name="templateCode"></param>
+        /// <param name="version"></param>
         /// <returns></returns>
         public IList<T_BP_KE_HOACH_CHI_PHI_DATA> GetCFDataByCenterCode(string orgCode, IList<string> centerCodes, int year, string templateCode, int? version)
         {
@@ -104,9 +105,9 @@ namespace SMO.Repository.Implement.BP
                         queryOver = queryOver.Where(x => x.ORG_CODE == orgCode);
                     }
                     queryOver = queryOver.Where(x => x.TIME_YEAR == year);
-                    queryOver = queryOver.AndRestrictionOn(x => x.CENTER_CODE).IsIn(centerCodes.ToList());
-                    queryOver = queryOver.Fetch(x => x.CostElement).Eager;
-                    queryOver = queryOver.Fetch(x => x.CostCenter).Eager;
+                    queryOver = queryOver.AndRestrictionOn(x => x.ORG_CODE).IsIn(centerCodes.ToList());
+                    queryOver = queryOver.Fetch(x => x.KhoanMucHangHoa).Eager;
+                    queryOver = queryOver.Fetch(x => x.ChiPhiProfitCenter).Eager;
                     return queryOver.List();
                 }
                 else
@@ -117,10 +118,10 @@ namespace SMO.Repository.Implement.BP
                     {
                         queryOver = queryOver.Where(x => x.ORG_CODE == orgCode);
                     }
-                    queryOver = queryOver.AndRestrictionOn(x => x.CENTER_CODE).IsIn(centerCodes.ToList());
+                    queryOver = queryOver.AndRestrictionOn(x => x.ORG_CODE).IsIn(centerCodes.ToList());
                     queryOver = queryOver.Where(x => x.VERSION == version);
-                    queryOver = queryOver.Fetch(x => x.CostElement).Eager;
-                    queryOver = queryOver.Fetch(x => x.CostCenter).Eager;
+                    queryOver = queryOver.Fetch(x => x.KhoanMucHangHoa).Eager;
+                    queryOver = queryOver.Fetch(x => x.ChiPhiProfitCenter).Eager;
                     return queryOver.List().Select(x => (T_BP_KE_HOACH_CHI_PHI_DATA)x).ToList();
                 }
             }
@@ -138,10 +139,10 @@ namespace SMO.Repository.Implement.BP
                     {
                         queryOver = queryOver.Where(x => x.ORG_CODE == orgCode);
                     }
-                    queryOver = queryOver.AndRestrictionOn(x => x.CENTER_CODE).IsIn(centerCodes.ToList());
+                    queryOver = queryOver.AndRestrictionOn(x => x.ORG_CODE).IsIn(centerCodes.ToList());
                     queryOver = queryOver.Where(x => x.TEMPLATE_CODE == templateCode);
-                    queryOver = queryOver.Fetch(x => x.CostElement).Eager;
-                    queryOver = queryOver.Fetch(x => x.CostCenter).Eager;
+                    queryOver = queryOver.Fetch(x => x.KhoanMucHangHoa).Eager;
+                    queryOver = queryOver.Fetch(x => x.ChiPhiProfitCenter).Eager;
                     return queryOver.List();
                 }
                 else
@@ -152,11 +153,11 @@ namespace SMO.Repository.Implement.BP
                     {
                         queryOver = queryOver.Where(x => x.ORG_CODE == orgCode);
                     }
-                    queryOver = queryOver.AndRestrictionOn(x => x.CENTER_CODE).IsIn(centerCodes.ToList());
+                    queryOver = queryOver.AndRestrictionOn(x => x.ORG_CODE).IsIn(centerCodes.ToList());
                     queryOver = queryOver.Where(x => x.VERSION == version);
                     queryOver = queryOver.Where(x => x.TEMPLATE_CODE == templateCode);
-                    queryOver = queryOver.Fetch(x => x.CostElement).Eager;
-                    queryOver = queryOver.Fetch(x => x.CostCenter).Eager;
+                    queryOver = queryOver.Fetch(x => x.KhoanMucHangHoa).Eager;
+                    queryOver = queryOver.Fetch(x => x.ChiPhiProfitCenter).Eager;
                     return queryOver.List().Select(x => (T_BP_KE_HOACH_CHI_PHI_DATA)x).ToList();
                 }
             }

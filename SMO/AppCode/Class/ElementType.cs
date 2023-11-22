@@ -8,6 +8,9 @@
         public const string DauTuXayDung = "D";
         public const string DauTuTrangThietBi = "E";
         public const string DauTuNgoaiDoanhNghiep = "F";
+        public const string VanChuyen = "G";
+        public const string SuaChuaLon = "H";
+        public const string SuaChuaThuongXuyen = "I";
 
         public static string GetText(string type)
         {
@@ -19,6 +22,12 @@
                     return "Chi phí";
                 case DoanhThu:
                     return "Doanh thu";
+                case VanChuyen:
+                    return "Vận chuyển";
+                case SuaChuaLon:
+                    return "Sửa chữa lớn";
+                case SuaChuaThuongXuyen:
+                    return "Sửa chữa thường xuyên";
                 case DauTuXayDung:
                     return "Đầu tư có xây dựng";
                 case DauTuTrangThietBi:

@@ -48,45 +48,55 @@
                                         <div class="page-function-button m-r-20">
                                             @Html.MyButton("cmdSave", "Lưu lại", string.Format("Forms.SubmitForm('{0}');", @Model.FormId), "Alt+N", "done_all")
                                             @Html.MyButton("cmdViewSample",
-                                                "Xem trước",
-                                                "PreviewTempate();",
-                                                "Alt+V", "search")
+                                            "Xem trước",
+                                            "PreviewTempate();",
+                                            "Alt+V", "search")
                                             @Html.MyButton("cmdDownloadTemlate",
-                                                "Download mẫu",
-                                                "DownloadTemplate();",
-                                                "Alt+V", "file_download")
+                                            "Download mẫu",
+                                            "DownloadTemplate();",
+                                            "Alt+V", "file_download")
                                         </div>
                                     </div>
                                     <div class="row m-t-20">
                                         <div class="col-xs-1"></div>
                                         <div class="col-lg-7 col-xs-10">
+                                            <label>Loại đối tượng chịu kế hoạch</label>
                                             <div class="form-group">
-                                                @Html.HiddenFor(x => x.ObjDetail.IS_BASE)
-                                                <input name="cbxIsBase"
-                                                       class="filled-in"
-                                                       id="cbxIsBase"
-                                                       @(Model.ObjDetail.IS_BASE ? "checked" : "")
-                                                       review-temp-name="checkOne"
-                                                       type="checkbox"
-                                                       disabled
-                                                       value="@Model.ObjDetail.IS_BASE"
-                                                       data-val="true">
-                                                <label for="cbxIsBase" class="p-r-5"></label>
-                                                Là mẫu cơ sở
+                                                <div class="form-line">
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.OBJECT_TYPE, SelectListUtilities.GetTemplateObjectTypes(), new { @disabled = "true" })
+                                                </div>
+                                                @Html.ValidationMessageFor(m => m.ObjDetail.OBJECT_TYPE)
+                                            </div>
+
+                                            <label>Loại khoản mục</label>
+                                            <div class="form-group">
+                                                <div class="form-line">
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.ELEMENT_TYPE, SelectListUtilities.GetElementTypes(), new { @disabled = "true" })
+                                                </div>
+                                                @Html.ValidationMessageFor(m => m.ObjDetail.ELEMENT_TYPE)
+                                            </div>
+
+                                            <label>Loại kế hoạch</label>
+                                            <div class="form-group">
+                                                <div class="form-line">
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.BUDGET_TYPE, SelectListUtilities.GetBudgetTypes(), new { @disabled = "true" })
+                                                </div>
+                                                @Html.ValidationMessageFor(m => m.ObjDetail.BUDGET_TYPE)
                                             </div>
 
                                             @*<label>Đơn vị khai báo dữ liệu</label>
                                                 <div class="form-group">
                                                     @Html.MyDropDownListFor(x => x.ObjDetail.ORG_CODE,
-                                                     SelectListUtilities.GetChildOrg<T_MD_COST_CENTER, CostCenterRepo>(),
-                                                         new
-                                                         {
-                                                             @class = "selectpicker show-tick",
-                                                             @data_live_search = "true",
-                                                             @data_container = "body",
-                                                             @disabled = "true"
-                                                         })
-                                                    @Html.ValidationMessageFor(m => m.ObjDetail.ORG_CODE)
+                                                    SelectListUtilities.GetChildOrg<T_MD_COST_CENTER, CostCenterRepo>
+                                                        (),
+                                                        new
+                                                        {
+                                                        @class = "selectpicker show-tick",
+                                                        @data_live_search = "true",
+                                                        @data_container = "body",
+                                                        @disabled = "true"
+                                                        })
+                                                        @Html.ValidationMessageFor(m => m.ObjDetail.ORG_CODE)
                                                 </div>*@
 
                                             <label>Mã mẫu khai báo</label>
@@ -161,34 +171,59 @@
                                     </div>
                                 </div>
                                 <div class="row m-t-20">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4" id="search-project">
                                         <div class="input-group page-function-search">
                                             <div class="form-line">
-                                                <input class="form-control" id="text-search-center" placeholder="@(Model.ObjDetail.OBJECT_TYPE == TemplateObjectType.Department && Model.ObjDetail.ELEMENT_TYPE != ElementType.DoanhThu ? "Tìm kiếm đơn vị" : "Tìm kiếm hạng mục")" />
+                                                <input class="form-control" id="text-search-project" placeholder="Tìm kiếm sân bay" />
                                             </div>
 
-                                            <span class="input-group-addon" title="Tìm kiếm" onclick="SearchTree('divTree', $('#text-search-center').val().trim().toLowerCase(), '#result-center', true)">
+                                            <span class="input-group-addon" title="Tìm kiếm" onclick="SearchTree('divTree', $('#text-search-project').val().trim().toLowerCase(), '#result-center', true)">
                                                 <i class="material-icons">search</i>
                                             </span>
-                                            <span class="input-group-addon" title="Chuyển đến đơn vị phía trước" onclick="MoveBefore('divTree', '#result-center')">
+                                            <span class="input-group-addon" title="Chuyển đến dự án phía trước" onclick="MoveBefore('divTreeProject', '#result-project')">
                                                 <i class="material-icons">navigate_before</i>
                                             </span>
 
-                                            <span class="input-group-addon" title="Chuyển đến đơn vị tiếp theo" onclick="MoveNext('divTree', '#result-center', true)">
+                                            <span class="input-group-addon" title="Chuyển đến dự án tiếp theo" onclick="MoveNext('divTreeProject', '#result-project', true)">
                                                 <i class="material-icons">navigate_next</i>
                                             </span>
                                             <div class="input-group-addon" style="cursor: default">
-                                                <span id="result-center"></span>
+                                                <span id="result-project"></span>
                                             </div>
                                         </div>
                                         <div class="border-grey">
-                                            <ul id="divTree" class="ztree" style="overflow-x: auto; overflow-y: auto"></ul>
+                                            <ul id="divTreeProject" class="ztree" style="overflow-x: auto; overflow-y: auto"></ul>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 hidden" id="search-element">
+                                    <div class="col-md-4 hidden" id="search-company">
                                         <div class="input-group page-function-search">
                                             <div class="form-line">
-                                                <input class="form-control" id="text-search-element" placeholder="Tìm kiếm khoản mục" />
+                                                <input class="form-control" id="text-search-company" placeholder="Tìm kiếm hãng hàng không" />
+                                            </div>
+
+                                            <span class="input-group-addon" title="Tìm kiếm" onclick="SearchTree('divTreeCompany', $('#text-search-company').val().trim().toLowerCase(), '#result-center', true)">
+                                                <i class="material-icons">search</i>
+                                            </span>
+                                            <span class="input-group-addon" title="Chuyển đến công ty phía trước" onclick="MoveBefore('divTree', '#result-company')">
+                                                <i class="material-icons">navigate_before</i>
+                                            </span>
+
+                                            <span class="input-group-addon" title="Chuyển đến công ty tiếp theo" onclick="MoveNext('divTree', '#result-center', true)">
+                                                <i class="material-icons">navigate_next</i>
+                                            </span>
+                                            <div class="input-group-addon" style="cursor: default">
+                                                <span id="result-company"></span>
+                                            </div>
+                                        </div>
+                                        <div class="border-grey">
+                                            <ul id="divTreeCompany" class="ztree" style="overflow-x: auto; overflow-y: auto"></ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 hidden" id="search-element">
+                                        <div class="input-group page-function-search">
+                                            <div class="form-line">
+                                                <input class="form-control" id="text-search-element" placeholder="Tìm kiếm loại khoản mục" />
                                             </div>
                                             <span class="input-group-addon" title="Tìm kiếm" onclick="SearchTree('divTreeElement', $('#text-search-element').val().trim().toLowerCase(), '#result-element');">
                                                 <i class="material-icons">search</i>
@@ -255,40 +290,32 @@
 
         function BuildTree() {
             var year = $("#TIME_YEAR").val();
+            $('#divTreeProject').html("");
             $('#search-element').addClass("hidden");
-            $('#divTree').html("");
+            $('#search-company').addClass("hidden");
+
             //Forms.ShowLoading();
             var ajaxParams = {
-                url: '@Url.Action("BuildTree")',
+                url: '@Url.Action("BuildTreeKeHoachChiPhi")',
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: { templateId: '@Model.ObjDetail.CODE', type: '@TemplateType.CENTER.ToString()', year },
                 success: function (response) {
-                    //$('#divTreeCostCenter').html(response);
-                    $.fn.zTree.init($("#divTree"), setting, response);
-
-                    //DisableTreeNodes('divTree');
+                    $.fn.zTree.init($("#divTreeProject"), setting, response.projects);
+                    $.fn.zTree.init($("#divTreeCompany"), setting, response.companies);
+                    console.log(response)
                 }
             };
             Forms.Ajax(ajaxParams);
         }
-
-        //function DisableTreeNodes(treeId) {
-        //    var treeObj = $.fn.zTree.getZTreeObj(treeId);
-        //    var nodes = treeObj.getNodes();
-        //    for (var i = 0, l = nodes.length; i < l; i++) {
-        //        console.log(l);
-        //        treeObj.setChkDisabled(nodes[i], true);
-        //    }
-        //}
 
         function BuildTreeElement() {
             var year = $("#TIME_YEAR").val();
             $('#divTreeElement').html("");
             //Forms.ShowLoading();
             var ajaxParams = {
-                url: '@Url.Action("BuildTree")',
+                url: '@Url.Action("BuildTreeKeHoachChiPhi")',
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
@@ -302,58 +329,124 @@
 
         function OnClick(event, treeId, treeNode) {
             var treeObj = $.fn.zTree.getZTreeObj("divTreeElement");
+            var treeObjCompany = $.fn.zTree.getZTreeObj("divTreeCompany");
+            var treeObjProject = $.fn.zTree.getZTreeObj("divTreeProject");
             var year = $("#TIME_YEAR").val();
 
-            if (treeNode.isParent && treeId === "divTree") {
-                // uncheck all node in detail tree
+            if (treeNode.isParent && treeId === "divTreeProject") {
+                // uncheck all node in detail tree element
+                treeObj.checkAllNodes(false);
+                $('#divTreeElement').parent().addClass("hidden");
+                $('#search-element').addClass("hidden");
+
+                // uncheck all node in detail tree company
+                treeObjCompany.checkAllNodes(false);
+                $('#divTreeCompany').parent().addClass("hidden");
+                $('#search-company').addClass("hidden");
+
+                return;
+            } else if (treeNode.isParent && treeId == "divTreeCompany") {
+                // uncheck all node in detail tree element
                 treeObj.checkAllNodes(false);
                 $('#divTreeElement').parent().addClass("hidden");
                 $('#search-element').addClass("hidden");
 
                 return;
             }
-            if (treeNode.type && treeNode.type === "@Budget.COST_CENTER.ToString()" || treeNode.type === "@Budget.PROFIT_CENTER.ToString()" || treeNode.type === "@Budget.INTERNAL_ORDER.ToString()") {
+            if (treeNode.type && treeNode.type === "@Budget.CHI_PHI.ToString()")
+            {
+                if (treeId == "divTreeProject") {
+                    // get detail company
+                    $('#divTreeCompany').parent().removeClass("hidden");
+                    $('#search-company').removeClass("hidden");
+                    $('#text-search-company').val("");
+                    // click on infor tree
+                    // uncheck all node in detail tree
+                    treeObjCompany.checkAllNodes(false);
 
-                $('#divTreeElement').parent().removeClass("hidden");
-                $('#search-element').removeClass("hidden");
-                //$('#text-search-element').val("");
+                    // get detail company
+                    $('#divTreeElement').parent().addClass("hidden");
+                    $('#search-element').addClass("hidden");
+                    $('#search-element').val("");
 
-                // click on infor tree
-                // uncheck all node in detail tree
-                treeObj.checkAllNodes(false);
-                var nodes = treeObj.transformToArray(treeObj.getNodes());
-                $.each(nodes, function (index, value) {
-                    var findNode = treeObj.getNodesByParam("id", nodes[index].id, null);
-                    findNode[0].name = findNode[0].name.replace("<span class='col-red'>","").replace("</span>","");
-                    treeObj.updateNode(findNode[0]);
-                });
+                    var nodes = treeObjCompany.transformToArray(treeObjCompany.getNodes());
+                    $.each(nodes, function (index, value) {
+                        var findNode = treeObjCompany.getNodesByParam("id", nodes[index].id, null);
+                        findNode[0].name = findNode[0].name.replace("<span class='col-red'>", "").replace("</span>", "");
+                        treeObjCompany.updateNode(findNode[0]);
+                    });
 
-                // get detail information
-                //Forms.ShowLoading();
-                var ajaxParams = {
-                    url: '@Url.Action("GetDetailInformation")',
-                    type: "GET",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    data: {
-                        templateId: '@Model.ObjDetail.CODE',
-                        type: treeNode.type,
-                        centerCode: treeNode.id,
-                        year
-                    },
-                    success: function (response) {
-                        $.each(response, function (index, id) {
-                            var node = treeObj.getNodeByParam("id", id, null);
-                            if (node) {
-                                node.name = "<span class='col-red'>" + node.name + "</span>";
-                                treeObj.updateNode(node);
-                                treeObj.checkNode(node, true, true, false);
+                    // get detail information
+                    //Forms.ShowLoading();
+                    var ajaxParams = {
+                        url: '@Url.Action("GetDetailInformationSanBay")',
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: {
+                            templateId: '@Model.ObjDetail.CODE',
+                            type: treeNode.type,
+                            projectCode: `${treeNode.id}`,
+                            year
+                        },
+                        success: function (response) {
+                            $.each(response, function (index, id) {
+                                var node = treeObjCompany.getNodeByParam("id", id, null);
+                                if (node) {
+                                    node.name = "<span class='col-red'>" + node.name + "</span>";
+                                    treeObjCompany.updateNode(node);
+                                    treeObjCompany.checkNode(node, true, true, false);
 
-                            }
-                        });
-                    }
-                };
-                Forms.Ajax(ajaxParams);
+                                }
+                            });
+                            triggerSelectCompany();
+                        }
+                    };
+                    Forms.Ajax(ajaxParams);
+                }
+                else if (treeId == "divTreeCompany") {
+                    $('#divTreeElement').parent().removeClass("hidden");
+                    $('#search-element').removeClass("hidden");
+                    //$('#text-search-element').val("");
+
+                    // click on infor tree
+                    // uncheck all node in detail tree
+                    treeObj.checkAllNodes(false);
+                    var nodes = treeObj.transformToArray(treeObj.getNodes());
+                    $.each(nodes, function (index, value) {
+                        var findNode = treeObj.getNodesByParam("id", nodes[index].id, null);
+                        findNode[0].name = findNode[0].name.replace("<span class='col-red'>", "").replace("</span>", "");
+                        treeObj.updateNode(findNode[0]);
+                    });
+
+                    // get detail information
+                    //Forms.ShowLoading();
+                    var ajaxParams = {
+                        url: '@Url.Action("GetDetailInformationKhoanMucHangHoa")',
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: {
+                            templateId: '@Model.ObjDetail.CODE',
+                            type: treeNode.type,
+                            companyCode: treeNode.id,
+                            projectCode: treeObjProject.getSelectedNodes()[0].id,
+                            year
+                        },
+                        success: function (response) {
+                            $.each(response, function (index, id) {
+                                var node = treeObj.getNodeByParam("id", id, null);
+                                if (node) {
+                                    node.name = "<span class='col-red'>" + node.name + "</span>";
+                                    treeObj.updateNode(node);
+                                    treeObj.checkNode(node, true, true, false);
+
+                                }
+                            });
+                        }
+                    };
+                    Forms.Ajax(ajaxParams);
+                }
             } else {
                 if (treeNode.checked) {
                     treeObj.checkNode(treeNode, false, true, false);
@@ -389,8 +482,12 @@
 
         function saveDetailInformation() {
             var year = $("#TIME_YEAR").val();
-            var treeObj = $.fn.zTree.getZTreeObj("divTree");
+            var treeObj = $.fn.zTree.getZTreeObj("divTreeProject");
             var nodes = treeObj.getSelectedNodes();
+
+            var treeObjCompany = $.fn.zTree.getZTreeObj("divTreeCompany");
+            var nodesCompany = treeObjCompany.getSelectedNodes();
+
             var treeDetailObj = $.fn.zTree.getZTreeObj("divTreeElement");
             var detailNodes = treeDetailObj.getCheckedNodes(true);
             var detailCodes = [];
@@ -399,29 +496,34 @@
                     detailCodes.push(node.id);
                 }
             });
-            if (nodes.length === 0) {
+            if (nodes.length === 0 || nodesCompany.length === 0) {
                 return;
             }
             Forms.ShowLoading();
                 var ajaxParams = {
-                    url: '@Url.Action("UpdateDetailInformation")',
+                    url: '@Url.Action("UpdateDetailInformationOther")',
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     data: {
                         year,
-                        centerCode: nodes[0].id,
+                        projectCode: nodes[0].id,
+                        companyCode: nodesCompany[0].id,
                         template: '@Model.ObjDetail.CODE',
                         detailCodes,
-                        centerType: '@Model.ObjDetail.ELEMENT_TYPE' === 'R'? "@Budget.PROFIT_CENTER.ToString()" : "@Budget.COST_CENTER.ToString()",
+                        centerType: "@Budget.CHI_PHI.ToString()",
                     },
                     success: function (response) {
                         Message.execute(response);
-                        //BuildTree();
-                        //setTimeout(() => treeObj.selectNode(nodes[0], false), 1000);
                         if (detailCodes === [] || detailCodes.length === 0) {
-                            treeObj.checkNode(nodes[0], false, true);
+                            var checkedCompanies = treeObjCompany.getCheckedNodes(true);
+                            var childNodes = checkedCompanies.filter(filterChild).length;
+                            treeObjCompany.checkNode(nodesCompany[0], false, true);
+                            if (childNodes === 1) {
+                                treeObj.checkNode(nodes[0], false, true);
+                            }
                         } else {
+                            treeObjCompany.checkNode(nodesCompany[0], true, true);
                             treeObj.checkNode(nodes[0], true, true);
                         }
                     }
@@ -430,8 +532,32 @@
 
         }
 
-        function triggerSelectCenter() {
-            var treeObj = $.fn.zTree.getZTreeObj("divTree");
+        function triggerSelectProject() {
+            var treeObj = $.fn.zTree.getZTreeObj("divTreeProject");
+            var nodes = treeObj.getNodesByFilter(filter); // search the array of the nodes
+            if (nodes.length === 0) {
+                $('#divTreeElement').parent().addClass("hidden");
+                $('#search-element').addClass("hidden");
+
+                $('#divTreeCompany').parent().addClass("hidden");
+                $('#search-company').addClass("hidden");
+
+                return;
+            }
+            $.each(nodes, function (index, node) {
+                if (!node.isParent) {
+                    treeObj.selectNode(node, false);
+                    OnClick(null, "divTreeProject", node);
+
+                    setTimeout(() => triggerSelectCompany(), 200);
+
+                    return false;
+                }
+            });
+        }
+
+        function triggerSelectCompany() {
+            var treeObj = $.fn.zTree.getZTreeObj("divTreeCompany");
             var nodes = treeObj.getNodesByFilter(filter); // search the array of the nodes
             if (nodes.length === 0) {
                 $('#divTreeElement').parent().addClass("hidden");
@@ -440,12 +566,14 @@
             }
             $.each(nodes, function (index, node) {
                 if (!node.isParent) {
-                    treeObj.selectNode(node, false);
-                    OnClick(null, null, node);
+                    treeObj.selectNode(node);
+                    OnClick(null, "divTreeCompany", node);
                     return false;
                 }
             });
         }
+
+
 
         function filter(node) {
             return node != null && node.checked;
@@ -455,8 +583,13 @@
             return (node.level == 2 && node.name.indexOf("test")>-1);
         }
 
+        function filterChild(node) {
+            return !node.isParent;
+        }
+
         function SetHeightTree() {
-            $("#divTree").height($(window).height() - 325);
+            $("#divTreeCompany").height($(window).height() - 325);
+            $("#divTreeProject").height($(window).height() - 325);
             $("#divTreeElement").height($(window).height() - 325);
         }
 
@@ -476,7 +609,7 @@
                 SearchTree("divTreeElement", filter, "#result-element", false);
             }
         });
-        $(document).on('keydown', '#text-search-center', function (e) {
+        $(document).on('keydown', '#text-search-company', function (e) {
             // get keycode of current keypress event
             var code = (e.keyCode || e.which);
     // do nothing if it's an arrow key
@@ -486,9 +619,23 @@
             if (e.keyCode === 13) {
                 var value = $(this).val();
                 var filter = value.trim().toLowerCase();
-                SearchTree("divTree", filter, "#result-center", true);
+                SearchTree("divTreeCompany", filter, "#result-company", true);
             }
         });
+        $(document).on('keydown', '#text-search-project', function (e) {
+            // get keycode of current keypress event
+            var code = (e.keyCode || e.which);
+    // do nothing if it's an arrow key
+            if (code == 37 || code == 38 || code == 39 || code == 40) {
+                return;
+            }
+            if (e.keyCode === 13) {
+                var value = $(this).val();
+                var filter = value.trim().toLowerCase();
+                SearchTree("divTreeProject", filter, "#result-project", true);
+            }
+        });
+
 
         function SearchTree(treeId, filter, displayResult, isClick) {
             var treeObj = $.fn.zTree.getZTreeObj(treeId);
@@ -570,14 +717,6 @@
             }
         }
 
-        $(function () {
-            BuildTree();
-            BuildTreeElement();
-            setTimeout(() => triggerSelectCenter(), 2000);
-            Forms.CompleteUI();
-            SetHeightTree();
-        });
-
         function ChangeYear(year) {
             if (year) {
                 $("#TIME_YEAR").val(year);
@@ -585,9 +724,17 @@
             } else {
                 BuildTree();
                 BuildTreeElement();
-                setTimeout(() => triggerSelectCenter(), 2000);
+                setTimeout(() => triggerSelectProject(), 2000);
             }
         }
+
+        $(function () {
+            BuildTree();
+            BuildTreeElement();
+            setTimeout(() => triggerSelectProject(), 2000);
+            Forms.CompleteUI();
+            SetHeightTree();
+        });
 
         function CopyTemplate() {
             const inputOptions = {
@@ -635,3 +782,5 @@
         }
     </script>
 </div>
+
+

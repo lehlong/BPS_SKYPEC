@@ -12,10 +12,10 @@ namespace SMO.Repository.Mapping.MD
         public T_MD_CHI_PHI_PROFIT_CENTER_Map()
         {
             Id(x => x.CODE);
-            Map(x => x.HANG_HANG_KHONG_CODE);
+            Map(x => x.COST_CENTER_CODE);
             Map(x => x.SAN_BAY_CODE);
 
-            References(x => x.HangHangKhong, "HANG_HANG_KHONG_CODE")
+            References(x => x.CostCenter, "COST_CENTER_CODE")
                 .Not.Insert()
                 .Not.Update();
             References(x => x.SanBay, "SAN_BAY_CODE")

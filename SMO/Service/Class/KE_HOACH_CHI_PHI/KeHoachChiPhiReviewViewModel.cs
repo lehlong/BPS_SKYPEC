@@ -13,13 +13,13 @@ namespace SMO.Service.Class
         public IList<KeHoachChiPhiElementReview> Elements { get; set; }
     }
 
-    public class KeHoachChiPhiElementReview : T_MD_KHOAN_MUC_CHI_PHI
+    public class KeHoachChiPhiElementReview : T_MD_KHOAN_MUC_HANG_HOA
     {
         public KeHoachChiPhiElementReview()
         {
 
         }
-        public KeHoachChiPhiElementReview(T_MD_KHOAN_MUC_CHI_PHI element, bool? status, int comments, int commentsInOrg)
+        public KeHoachChiPhiElementReview(T_MD_KHOAN_MUC_HANG_HOA element, bool? status, int comments, int commentsInOrg)
         {
             Status = status;
             CENTER_CODE = CENTER_CODE;

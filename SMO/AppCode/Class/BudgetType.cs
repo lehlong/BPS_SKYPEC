@@ -8,6 +8,9 @@
         public const string DauTuXayDung = "D";
         public const string DauTuTrangThietBi = "E";
         public const string DauTuNgoaiDoanhNghiep = "F";
+        public const string VanChuyen = "G";
+        public const string SuaChuaLon = "H";
+        public const string SuaChuaThuongXuyen = "I";
         public const string KinhDoanh = "P";
         public const string DongTien = "M";
 
@@ -21,6 +24,12 @@
                     return "Kinh doanh";
                 case ChiPhi:
                     return "Chi phí";
+                case VanChuyen:
+                    return "Vận chuyển";
+                case SuaChuaLon:
+                    return "Sua chữa lớn";
+                case SuaChuaThuongXuyen:
+                    return "Sua chữa thường xuyên";
                 case DauTuXayDung:
                     return "Đầu tư có xây dựng";
                 case DauTuTrangThietBi:

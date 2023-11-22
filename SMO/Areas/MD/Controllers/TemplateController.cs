@@ -65,6 +65,18 @@ namespace SMO.Areas.MD.Controllers
             {
                 return PartialView("TemplateDauTuNgoaiDoanhNghiep", _service);
             }
+            else if (_service.ObjDetail.OBJECT_TYPE.Trim() == TemplateObjectType.VanChuyen && _service.ObjDetail.ELEMENT_TYPE == ElementType.VanChuyen)
+            {
+                return PartialView("TemplateKeHoachVanChuyen", _service);
+            }
+            else if (_service.ObjDetail.OBJECT_TYPE.Trim() == TemplateObjectType.SuaChuaLon && _service.ObjDetail.ELEMENT_TYPE == ElementType.SuaChuaLon)
+            {
+                return PartialView("TemplateSuaChuaLon", _service);
+            }
+            else if (_service.ObjDetail.OBJECT_TYPE.Trim() == TemplateObjectType.SuaChuaThuongXuyen && _service.ObjDetail.ELEMENT_TYPE == ElementType.SuaChuaThuongXuyen)
+            {
+                return PartialView("TemplateSuaChuaThuongXuyen", _service);
+            }
             else
             {
                 return PartialView(_service);
@@ -100,6 +112,38 @@ namespace SMO.Areas.MD.Controllers
             var nodeDetailElements = _service.GetNodeDetailOtherElement(budget, projectCode, companyCode, year, templateId);
             return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetDetailInformationKhoanMucSuaChua(string templateId, string projectCode, string type, int year, string companyCode)
+        {
+            var isEnum = Enum.TryParse(type, out Budget budget);
+            if (!isEnum)
+            {
+                return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
+            }
+            var nodeDetailElements = _service.GetNodeDetailKhoanMucSuaChua(budget, projectCode, companyCode, year, templateId);
+            return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetDetailInformationKhoanMucHangHoa(string templateId, string projectCode, string type, int year, string companyCode)
+        {
+            var isEnum = Enum.TryParse(type, out Budget budget);
+            if (!isEnum)
+            {
+                return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
+            }
+            var nodeDetailElements = _service.GetNodeDetailKhoanMucHangHoa(budget, projectCode, companyCode, year, templateId);
+            return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetDetailInformationKhoanMucSuaChuaThuongXuyen(string templateId, string projectCode, string type, int year, string companyCode)
+        {
+            var isEnum = Enum.TryParse(type, out Budget budget);
+            if (!isEnum)
+            {
+                return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
+            }
+            var nodeDetailElements = _service.GetNodeDetailKhoanMucSuaChuaThuongXuyen(budget, projectCode, companyCode, year, templateId);
+            return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
+        }
 
         public JsonResult GetDetailInformationKhoanMucSanLuong(string templateId, string projectCode, string type, int year, string companyCode)
         {
@@ -118,7 +162,7 @@ namespace SMO.Areas.MD.Controllers
             {
                 return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
             }
-            var nodeDetailElements = _service.GetNodeDetailKhoanMucChiPhi(budget, projectCode, companyCode, year, templateId);
+            var nodeDetailElements = _service.GetNodeDetailKhoanMucHangHoa(budget, projectCode, companyCode, year, templateId);
             return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetDetailInformationKhoanMucDauTuXayDung(string templateId, string projectCode, string type, int year, string companyCode)
@@ -129,6 +173,17 @@ namespace SMO.Areas.MD.Controllers
                 return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
             }
             var nodeDetailElements = _service.GetNodeDetailKhoanMucDauTuXayDung(budget, projectCode, companyCode, year, templateId);
+            return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetDetailInformationKhoanMucVanChuyen(string templateId, string projectCode, string type, int year, string companyCode)
+        {
+            var isEnum = Enum.TryParse(type, out Budget budget);
+            if (!isEnum)
+            {
+                return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
+            }
+            var nodeDetailElements = _service.GetNodeDetailKhoanMucVanChuyen(budget, projectCode, companyCode, year, templateId);
             return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
         }
 
@@ -164,6 +219,17 @@ namespace SMO.Areas.MD.Controllers
             var nodeDetailElements = _service.GetNodeDetailHangHangKhong(budget, projectCode, year, templateId);
             return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetDetailInformationSanBay(string templateId, string type, int year, string projectCode)
+        {
+            var isEnum = Enum.TryParse(type, out Budget budget);
+            if (!isEnum)
+            {
+                return Json(new List<Node>(), JsonRequestBehavior.AllowGet);
+            }
+            var nodeDetailElements = _service.GetNodeDetailSanBay(budget, projectCode, year, templateId);
+            return Json(nodeDetailElements, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetDetailInformationCompany(string templateId, string type, int year, string projectCode)
         {
             var isEnum = Enum.TryParse(type, out Budget budget);
@@ -192,6 +258,12 @@ namespace SMO.Areas.MD.Controllers
                     return RedirectToAction("ViewTemplate", "../BP/DauTuTrangThietBi", new { templateId, version, year });
                 case TemplateObjectType.DauTuNgoaiDoanhNghiep:
                     return RedirectToAction("ViewTemplate", "../BP/DauTuNgoaiDoanhNghiep", new { templateId, version, year });
+                case TemplateObjectType.VanChuyen:
+                    return RedirectToAction("ViewTemplate", "../BP/KeHoachVanChuyen", new { templateId, version, year });
+                case TemplateObjectType.SuaChuaLon:
+                    return RedirectToAction("ViewTemplate", "../BP/SuaChuaLon", new { templateId, version, year });
+                case TemplateObjectType.SuaChuaThuongXuyen:
+                    return RedirectToAction("ViewTemplate", "../BP/SuaChuaThuongXuyen", new { templateId, version, year });
                 default:
                     return HttpNotFound();
             }
@@ -233,6 +305,12 @@ namespace SMO.Areas.MD.Controllers
                     return RedirectToAction("DownloadTemplate", "../BP/DauTuTrangThietBi", new { templateId, year });
                 case TemplateObjectType.DauTuNgoaiDoanhNghiep:
                     return RedirectToAction("DownloadTemplate", "../BP/DauTuNgoaiDoanhNghiep", new { templateId, year });
+                case TemplateObjectType.VanChuyen:
+                    return RedirectToAction("DownloadTemplate", "../BP/KeHoachVanChuyen", new { templateId, year });
+                case TemplateObjectType.SuaChuaLon:
+                    return RedirectToAction("DownloadTemplate", "../BP/SuaChuaLon", new { templateId, year });
+                case TemplateObjectType.SuaChuaThuongXuyen:
+                    return RedirectToAction("DownloadTemplate", "../BP/SuaChuaThuongXuyen", new { templateId, year });
 
                 default:
                     return HttpNotFound();
@@ -323,13 +401,20 @@ namespace SMO.Areas.MD.Controllers
                         case TemplateObjectType.DoanhThu:
                             return RedirectToAction("BuildTreeByTemplate", "DoanhThuProfitCenter", new { templateId, year });
                         case TemplateObjectType.ChiPhi:
-                            return RedirectToAction("BuildTreeByTemplate", "CostCenter", new { templateId, year });
+                            return RedirectToAction("BuildTreeByTemplate", "ChiPhiProfitCenter", new { templateId, year });
                         case TemplateObjectType.DauTuXayDung:
                             return RedirectToAction("BuildTreeByTemplate", "DauTuXayDungProfitCenter", new { templateId, year });
                         case TemplateObjectType.DauTuTrangThietBi:
                             return RedirectToAction("BuildTreeByTemplate", "DauTuTrangThietBiProfitCenter", new { templateId, year });
                         case TemplateObjectType.DauTuNgoaiDoanhNghiep:
                             return RedirectToAction("BuildTreeByTemplate", "DauTuNgoaiDoanhNghiepProfitCenter", new { templateId, year });
+                        case TemplateObjectType.VanChuyen:
+                            return RedirectToAction("BuildTreeByTemplate", "VanChuyenProfitCenter", new { templateId, year });
+                        case TemplateObjectType.SuaChuaLon:
+                            return RedirectToAction("BuildTreeByTemplate", "SuaChuaProfitCenter", new { templateId, year });
+                        case TemplateObjectType.SuaChuaThuongXuyen:
+                            return RedirectToAction("BuildTreeByTemplate", "SuaChuaThuongXuyenProfitCenter", new { templateId, year });
+
                         default:
                             return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
@@ -344,7 +429,7 @@ namespace SMO.Areas.MD.Controllers
                     }
                     else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.ChiPhi))
                     {
-                        return RedirectToAction("BuildTreeByTemplate", "KhoanMucChiPhi", new { year });
+                        return RedirectToAction("BuildTreeByTemplate", "KhoanMucHangHoa", new { year });
                     }
                     else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.DauTuXayDung))
                     {
@@ -357,6 +442,18 @@ namespace SMO.Areas.MD.Controllers
                     else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.DauTuNgoaiDoanhNghiep))
                     {
                         return RedirectToAction("BuildTreeByTemplate", "KhoanMucDauTu", new { year });
+                    }
+                    else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.VanChuyen))
+                    {
+                        return RedirectToAction("BuildTreeByTemplate", "KhoanMucVanChuyen", new { year });
+                    }
+                    else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.SuaChuaLon))
+                    {
+                        return RedirectToAction("BuildTreeByTemplate", "KhoanMucSuaChua", new { year });
+                    }
+                    else if (_service.ObjDetail.ELEMENT_TYPE.Equals(ElementType.SuaChuaThuongXuyen))
+                    {
+                        return RedirectToAction("BuildTreeByTemplate", "KhoanMucSuaChua", new { year });
                     }
                     else
                     {
@@ -391,6 +488,79 @@ namespace SMO.Areas.MD.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
         }
+        [MyValidateAntiForgeryToken]
+        public ActionResult BuildTreeKeHoachChiPhi(string templateId, string type, int year)
+        {
+            var isEnum = Enum.TryParse(type, out TemplateType templateType);
+            if (!isEnum)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            _service.Get(templateId);
+
+            if (templateType == TemplateType.CENTER)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "ChiPhiProfitCenter", new { templateId, year });
+
+            }
+            else if (templateType == TemplateType.ELEMENT)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "KhoanMucHangHoa", new { year });
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+        }
+        [MyValidateAntiForgeryToken]
+        public ActionResult BuildTreeSuaChuaLon(string templateId, string type, int year)
+        {
+            var isEnum = Enum.TryParse(type, out TemplateType templateType);
+            if (!isEnum)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            _service.Get(templateId);
+
+            if (templateType == TemplateType.CENTER)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "SuaChuaProfitCenter", new { templateId, year });
+
+            }
+            else if (templateType == TemplateType.ELEMENT)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "KhoanMucSuaChua", new { year });
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+        }
+
+        [MyValidateAntiForgeryToken]
+        public ActionResult BuildTreeSuaChuaThuongXuyen(string templateId, string type, int year)
+        {
+            var isEnum = Enum.TryParse(type, out TemplateType templateType);
+            if (!isEnum)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            _service.Get(templateId);
+
+            if (templateType == TemplateType.CENTER)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "SuaChuaThuongXuyenProfitCenter", new { templateId, year });
+
+            }
+            else if (templateType == TemplateType.ELEMENT)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "KhoanMucSuaChua", new { year });
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+        }
 
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTreeKeHoachDoanhThu(string templateId, string type, int year)
@@ -416,32 +586,6 @@ namespace SMO.Areas.MD.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
         }
-
-        [MyValidateAntiForgeryToken]
-        public ActionResult BuildTreeKeHoachChiPhi(string templateId, string type, int year)
-        {
-            var isEnum = Enum.TryParse(type, out TemplateType templateType);
-            if (!isEnum)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            _service.Get(templateId);
-
-            if (templateType == TemplateType.CENTER)
-            {
-                return RedirectToAction("BuildTreeByTemplate", "ChiPhiProfitCenter", new { templateId, year });
-
-            }
-            else if (templateType == TemplateType.ELEMENT)
-            {
-                return RedirectToAction("BuildTreeByTemplate", "KhoanMucChiPhi", new { year });
-            }
-            else
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-        }
-
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTreeDauTuXayDung(string templateId, string type, int year)
         {
@@ -460,6 +604,31 @@ namespace SMO.Areas.MD.Controllers
             else if (templateType == TemplateType.ELEMENT)
             {
                 return RedirectToAction("BuildTreeByTemplate", "KhoanMucDauTu", new { year });
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+        }
+
+        [MyValidateAntiForgeryToken]
+        public ActionResult BuildTreeKeHoachVanChuyen(string templateId, string type, int year)
+        {
+            var isEnum = Enum.TryParse(type, out TemplateType templateType);
+            if (!isEnum)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            _service.Get(templateId);
+
+            if (templateType == TemplateType.CENTER)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "VanChuyenProfitCenter", new { templateId, year });
+
+            }
+            else if (templateType == TemplateType.ELEMENT)
+            {
+                return RedirectToAction("BuildTreeByTemplate", "KhoanMucVanChuyen", new { year });
             }
             else
             {

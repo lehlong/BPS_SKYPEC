@@ -20,6 +20,7 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.QUERY).Nullable();
             Map(x => x.VALUE).Nullable();
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
+            References(x => x.Unit).Column("UNIT_CODE").Not.Insert().Not.Update().LazyLoad();
         }
     }
 }

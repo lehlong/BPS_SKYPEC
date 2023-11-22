@@ -1,0 +1,59 @@
+﻿@model SMO.Models.DataCenterModel
+@using SMO.Models;
+
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                    <table class="table table-condensed table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Chỉ tiêu</th>
+                                <th>Đơn vị tính</th>
+                                <th>Giá trị</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.KeHoachTaiChinhData.Where(x => x.Screen == "KE_HOACH_TAI_CHINH").OrderBy(x => x.Order))
+                            {
+                                <tr>
+                                    <td>@item.ElementName</td>
+                                    <td>@item.UnitCode</td>
+                                    <td>@(item?.Value?.ToStringVN())</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                    <table class="table table-condensed table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Chỉ tiêu</th>
+                                <th>Đơn vị tính</th>
+                                <th>Giá trị</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.KeHoachTaiChinhData.Where(x => x.Screen == "KE_HOACH_TAI_CHINH_2").OrderBy(x => x.Order))
+                            {
+                                <tr>
+                                    <td>@item.ElementName</td>
+                                    <td>@item.UnitCode</td>
+                                    <td>@(item?.Value?.ToStringVN())</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

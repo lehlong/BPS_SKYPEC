@@ -1,8 +1,9 @@
 ﻿using SMO.Core.Common;
+using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 
 namespace SMO.Core.Entities.MD
 {
-    public class T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI : BaseTemplateDetail<T_MD_KHOAN_MUC_CHI_PHI, T_MD_COST_CENTER>
+    public class T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI : BaseTemplateDetail<T_MD_KHOAN_MUC_HANG_HOA, T_MD_CHI_PHI_PROFIT_CENTER>
     {
         public T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI() : base()
         {

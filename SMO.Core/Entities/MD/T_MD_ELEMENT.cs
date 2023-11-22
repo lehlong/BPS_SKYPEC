@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Web.UI.WebControls;
 
 namespace SMO.Core.Entities
 {
@@ -18,5 +19,22 @@ namespace SMO.Core.Entities
         public virtual string QUERY { get; set; }
         public virtual string SCREEN { get; set; }
         public virtual decimal? VALUE { get; set; }
+
+        private T_MD_UNIT _Unit;
+        public virtual T_MD_UNIT Unit
+        {
+            get
+            {
+                if (_Unit == null)
+                {
+                    _Unit = new T_MD_UNIT();
+                }
+                return _Unit;
+            }
+            set
+            {
+                _Unit = value;
+            }
+        }
     }
 }

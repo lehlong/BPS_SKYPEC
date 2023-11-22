@@ -35,8 +35,10 @@
 
     public enum Budget
     {
+        SUA_CHUA,
         SAN_LUONG,
         DOANH_THU,
+        VAN_CHUYEN,
         CHI_PHI,
         DAU_TU_XAY_DUNG,
         DAU_TU_TRANG_THIET_BI,

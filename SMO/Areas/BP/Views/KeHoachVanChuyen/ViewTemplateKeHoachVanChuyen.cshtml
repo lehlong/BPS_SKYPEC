@@ -1,0 +1,89 @@
+﻿@model IList<T_MD_KHOAN_MUC_VAN_CHUYEN>
+@using SMO.Core.Entities.MD;
+@using System.Text;
+
+@{
+    var detailOtherCostElements = ViewBag.detailOtherCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_VAN_CHUYEN>;
+    var viewId = Guid.NewGuid().ToString();
+}
+<div id="@viewId" class="container-fluid child-content">
+    <div class="card">
+        <div class="body" style="padding-top: 0px">
+
+            @if (detailOtherCostElements == null || detailOtherCostElements.Count == 0)
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                </div>
+                <div class="p-t-10">
+                    @{
+                        Html.RenderPartial("_NothingData");
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                    @Html.MyButton("cmdDownloadTemlate",
+                                                "Download mẫu",
+                                                "DownloadTemplate();",
+                                                "Alt+V", "file_download")
+                </div>
+                <div class="p-t-10">
+                    <div class="body-content">
+                        <div class="table-responsive" style="max-height: calc(100vh - 140px)">
+                            <table class="table table-condensed table-bordered table-striped table-pre-whitespace">
+                                <thead>
+                                    <tr class="sticky-row">
+                                        <th rowspan="3" style="text-align:center">Mã</th>
+                                        <th rowspan="3" style="text-align:center">Tuyến đường</th>
+                                        <th rowspan="3" style="text-align:center">Sản lượng <br /> tra nạp <br /> (năm)</th>
+                                        <th rowspan="3" style="text-align:center">Cự ly <br /> vận chuyển <br /> có hàng (Km)</th>
+                                        <th rowspan="3" style="text-align:center">Số chuyến <br /> vận chuyển <br /> (ch/xe/ngày)</th>
+                                        <th colspan="6" style="text-align:center">Kế hoạch sản lượng vận chuyển năm</th>
+                                        <th colspan="2" style="text-align:center">Kế hoạch sản lượng luân chuyển năm</th>
+                                    </tr>
+                                    <tr class="sticky-row">
+                                        <th rowspan="2" style="text-align:center">Tấn</th>
+                                        <th rowspan="2" style="text-align:center">M3</th>
+                                        <th colspan="4" style="text-align:center">Trong đó</th>
+                                        <th rowspan="2" style="text-align:center">Tấn.km</th>
+                                        <th rowspan="2" style="text-align:center">M3.km</th>
+                                    </tr>
+                                    <tr class="sticky-row">
+                                        <th style="text-align:center">Tự vận <br /> trung bình</th>
+                                        <th style="text-align:center">Tự vận <br /> cao</th>
+                                        <th style="text-align:center">Tự vận <br /> thấp</th>
+                                        <th style="text-align:center">Thuê ngoài</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var detail in detailOtherCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.Organize.CODE).ThenBy(x => x.Center.Route.CODE))
+                                    {
+                                        <tr>
+                                            <td>@detail.Center.ROUTE_CODE</td>
+                                            <td>@detail.Center.Route.NAME</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

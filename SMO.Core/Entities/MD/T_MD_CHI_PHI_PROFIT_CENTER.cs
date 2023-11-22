@@ -9,9 +9,9 @@ namespace SMO.Core.Entities.MD
 {
     public class T_MD_CHI_PHI_PROFIT_CENTER : CoreCenter
     {
-        public virtual string HANG_HANG_KHONG_CODE { get; set; }
+        public virtual string COST_CENTER_CODE { get; set; }
         public virtual string SAN_BAY_CODE { get; set; }
-        public virtual T_MD_HANG_HANG_KHONG HangHangKhong { get; set; }
+        public virtual T_MD_COST_CENTER CostCenter { get; set; }
         public virtual T_MD_SAN_BAY SanBay { get; set; }
     }
 }
