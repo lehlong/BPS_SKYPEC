@@ -10,6 +10,7 @@ namespace SMO.Models
         public List<KeHoachGiaThanhData> KeHoachGiaThanhData { get; set; } = new List<KeHoachGiaThanhData> { };
         public List<PreTrungBinhKhoData> PreTrungBinhKhoData { get; set; } = new List<PreTrungBinhKhoData> { };
         public List<KeHoachTaiChinhData> KeHoachTaiChinhData { get; set; } = new List<KeHoachTaiChinhData> { };
+        public List<PreData> PreData { get; set; } = new List<PreData> { };
     }
 
     public class KeHoachGiaThanhData
@@ -45,6 +46,21 @@ namespace SMO.Models
         public decimal PreTrungBinh { get; set; }
         public decimal SanLuong { get; set; }
         public decimal TrungBinh { get; set; }
+
+    }
+
+    public class PreData
+    {
+        public string FirstPoint1 { get; set; }
+        public string FirstPoint2 { get; set; }
+        public string FirstPoint3 { get; set; }
+        public string RouteCode { get; set; }   
+        public string RouteName { get; set; }
+        public string FinalPoint { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal Premium { get; set; }
+        public decimal ChenhLech { get; set; }
+        public decimal Total { get; set; }
 
     }
 

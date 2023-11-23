@@ -343,7 +343,19 @@ namespace SMO.Service.MD
                 }
 
                 //Pre
+                var lstRoute = UnitOfWork.Repository<RouteRepo>().GetAll();
+                foreach (var route in lstRoute)
+                {
+                    var item = new PreData
+                    {
+                        FirstPoint1 = route.FIRST_POINT,
+                        FinalPoint = route.FINAL_POINT,
+                        RouteCode = route.CODE,
+                        RouteName = route.NAME,
 
+                    };
+                    data.PreData.Add(item); 
+                }
 
                 return data;
             }

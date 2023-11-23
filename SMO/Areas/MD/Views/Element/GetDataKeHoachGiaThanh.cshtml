@@ -103,36 +103,45 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 
     <div role="tabpanel" class="tab-pane fade" id="pre">
-        <div class="sticky-table sticky-headers sticky-ltr-cells">
-            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-                <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
-                    <table class="table table-condensed table-bordered table-striped" style="text-align:center">
-                        @*<thead>
-                                    <tr>
-                                        <th style="text-align:center;">Mã kho</th>
-                                        <th style="text-align:center;">Pre trung bình kho/BBL</th>
-                                        <th style="text-align:center;">Sản lượng (m3)</th>
-                                        <th style="text-align:center;">Trung bình</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.PreTrungBinhKhoData)
-                                    {
-                                        <tr>
-                                            <td>@item.Warehouse</td>
-                                            <td>@item.PreTrungBinh.ToStringVN()</td>
-                                            <td>@item.SanLuong.ToStringVN()</td>
-                                            <td>@item.TrungBinh.ToStringVN()</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>*@
-                </div>
+        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center;">Kho <br /> đầu nguồn 1</th>
+                            <th style="text-align:center;">Kho <br /> đầu nguồn 2</th>
+                            <th style="text-align:center;">Kho <br /> đầu nguồn 3</th>
+                            <th style="text-align:center;">Tuyến VC lọc</th>
+                            <th style="text-align:center;">Tên tuyến VC</th>
+                            <th style="text-align:center;">Kho SB1</th>
+                            <th style="text-align:center;">Sản lượng (m3)</th>
+                            <th style="text-align:center;">Premium <br /> đầu nguồn (đ/m3)</th>
+                            <th style="text-align:center;">Đ/c Pre ĐN do <br /> chênh lệch SL</th>
+                            <th style="text-align:center;">Tổng Pre kho <br /> đầu nguồn (đ/m3)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PreData)
+                        {
+                            <tr>
+                                <td>@item.FirstPoint1</td>
+                                <td></td>
+                                <td></td>
+                                <td>@item.RouteCode</td>
+                                <td style="text-align: left">@item.RouteName</td>
+                                <td>@item.FinalPoint</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
