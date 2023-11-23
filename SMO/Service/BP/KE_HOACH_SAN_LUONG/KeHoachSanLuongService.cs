@@ -4286,6 +4286,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             //Mở file Template
             var htmlMonth = table.htmlMonth;
             var htmlYear = table.htmlYear;
+            var module = "KeHoachSanLuong";
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
@@ -4296,14 +4297,14 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             ISheet sheetMonth = workbook.GetSheetAt(0);
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
             var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
-
+            var a = GetTemplate(templateId).IS_BASE;
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetMonth,
                 metaDataMonth.MetaTBody,
                 NUM_CELL_MONTH,
-                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE));
 
             ISheet sheetYear = workbook.GetSheetAt(1);
             var metaDataYear = ExcelHelper.GetExcelMeta(htmlYear);
@@ -4315,7 +4316,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 ref sheetYear,
                 metaDataYear.MetaTBody,
                 NUM_CELL_YEAR,
-                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+                module,
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE));
 
 
 

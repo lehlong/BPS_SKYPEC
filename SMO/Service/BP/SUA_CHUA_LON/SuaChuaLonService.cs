@@ -4017,37 +4017,27 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
             var htmlMonth = table.htmlMonth;
-            var htmlYear = table.htmlYear;
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
             workbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.SuaChuaLon));
             fs.Close();
-
+            var module = "KeHoachSuaChuaLon";
 
             ISheet sheetMonth = workbook.GetSheetAt(0);
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
-            var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
+            var NUM_CELL_MONTH = metaDataMonth.MetaTBody[0].Count;
 
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            ExcelHelperBP.InsertBodyTable(ref workbook,
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertBodyTableByYear(ref workbook,
                 ref sheetMonth,
                 metaDataMonth.MetaTBody,
                 NUM_CELL_MONTH,
-                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+                module,
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE)
+                );
 
-            ISheet sheetYear = workbook.GetSheetAt(1);
-            var metaDataYear = ExcelHelper.GetExcelMeta(htmlYear);
-            var NUM_CELL_YEAR = 7;
-
-            InitHeaderFile(ref sheetYear, year, centerCode, version, NUM_CELL_YEAR, templateId, "Tấn", exchangeRate);
-            //ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetYear, metaDataYear.MetaTHead, NUM_CELL_YEAR, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            ExcelHelperBP.InsertBodyTableByYear(ref workbook,
-                ref sheetYear,
-                metaDataYear.MetaTBody,
-                NUM_CELL_YEAR,
-                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
 
 
 

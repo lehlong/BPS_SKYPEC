@@ -4342,6 +4342,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             var htmlDoanhThuTong = table.htmlDoanhThuTong;
             var htmlDoanhThuNoiDia = table.htmlDoanhThuNoiDia;
             var htmlDoanhThuQuocTe = table.htmlDoanhThuQuocTe;
+            var module = "KeHoachDoanhThu";
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
@@ -4354,7 +4355,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             var NUM_CELL_KE_HOACH_TONG = string.IsNullOrEmpty(templateId) ? 18 : 18;
 
             InitHeaderFile(ref sheetKeHoachTong, year, centerCode, version, NUM_CELL_KE_HOACH_TONG, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetKeHoachTong, metaDataKeHoachTong.MetaTHead, NUM_CELL_KE_HOACH_TONG, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetKeHoachTong, metaDataKeHoachTong.MetaTHead, NUM_CELL_KE_HOACH_TONG,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetKeHoachTong,
                 metaDataKeHoachTong.MetaTBody,
@@ -4378,7 +4379,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             var NUM_CELL_DOANH_THU_QUOC_TE = 18;
 
             InitHeaderFile(ref sheetTraNapQuocTe, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetTraNapQuocTe, metaDataTraNapQuocTe.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetTraNapQuocTe, metaDataTraNapQuocTe.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetTraNapQuocTe,
                 metaDataTraNapQuocTe.MetaTBody,
@@ -4389,7 +4390,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             var metaDataDoanhThuTong = ExcelHelper.GetExcelMeta(htmlDoanhThuTong);
             var NUM_CELL_DOANH_THU_TONG = 10;
             InitHeaderFile(ref sheetDoanhThuTong, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuTong, metaDataDoanhThuTong.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuTong, metaDataDoanhThuTong.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetDoanhThuTong,
                 metaDataDoanhThuTong.MetaTBody,
@@ -4400,7 +4401,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             var metaDataDoanhThuNoiDia = ExcelHelper.GetExcelMeta(htmlDoanhThuNoiDia);
 
             InitHeaderFile(ref sheetDoanhThuNoiDia, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuNoiDia, metaDataDoanhThuNoiDia.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuNoiDia, metaDataDoanhThuNoiDia.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetDoanhThuNoiDia,
                 metaDataDoanhThuNoiDia.MetaTBody,
@@ -4411,7 +4412,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             var metaDataDoanhThuQuocTe = ExcelHelper.GetExcelMeta(htmlDoanhThuQuocTe);
 
             InitHeaderFile(ref sheetDoanhThuQuocTe, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuNoiDia, metaDataDoanhThuNoiDia.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetDoanhThuNoiDia, metaDataDoanhThuNoiDia.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetDoanhThuQuocTe,
                 metaDataDoanhThuQuocTe.MetaTBody,

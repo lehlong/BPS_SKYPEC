@@ -324,7 +324,7 @@ namespace SMO.Areas.BP.Controllers
                 var fileName = $"{exportExcelTemplate}_{exportExcelYear}_{kichBan}_V{exportExcelVersion}_{moduleType}";
                 return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
             }
-            else
+            else if(moduleType == "KeHoachDoanhThu")
             {
                 var htmlKeHoachTong = HttpUtility.UrlDecode(Request.Form["htmlKeHoachTong"]);
                 var htmlTraNapNoiDia = HttpUtility.UrlDecode(Request.Form["htmlTraNapNoiDia"]);
@@ -357,6 +357,61 @@ namespace SMO.Areas.BP.Controllers
                 }
 
                 var path = Server.MapPath("~/TemplateExcel/" + "DuLieuDoanhThu.xlsx");
+                MemoryStream outFileStream = new MemoryStream();
+                _service.GenerateExportExcel(ref outFileStream, obj, path, exportExcelYear, exportExcelCenterCode, exportExcelVersion, exportExcelTemplate, exportExcelUnit, exportExcelExchangeRate);
+
+                var fileName = $"{exportExcelTemplate}_{exportExcelYear}_{kichBan}_V{exportExcelVersion}_{moduleType}";
+                return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+            }
+            else if (moduleType.Trim() == "KeHoachSuaChuaLon")
+            {
+                var htmlMonth = HttpUtility.UrlDecode(Request.Form["htmlMonth"]);
+                if (htmlMonth is null)
+                {
+                    throw new ArgumentNullException(nameof(htmlMonth));
+                }
+                var obj = new
+                {
+                    htmlMonth= htmlMonth,
+                };
+                if (exportExcelCenterCode is null)
+                {
+                    throw new ArgumentNullException(nameof(exportExcelCenterCode));
+                }
+
+                if (exportExcelTemplate is null)
+                {
+                    throw new ArgumentNullException(nameof(exportExcelTemplate));
+                }
+                var path = Server.MapPath("~/TemplateExcel/" + "DuLieuSuaChuaLon.xlsx");
+                MemoryStream outFileStream = new MemoryStream();
+                _service.GenerateExportExcel(ref outFileStream, obj, path, exportExcelYear, exportExcelCenterCode, exportExcelVersion, exportExcelTemplate, exportExcelUnit, exportExcelExchangeRate);
+
+                var fileName = $"{exportExcelTemplate}_{exportExcelYear}_{kichBan}_V{exportExcelVersion}_{moduleType}";
+                return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+            }
+
+            else
+            {
+                var htmlMonth = HttpUtility.UrlDecode(Request.Form["htmlMonth"]);
+                if (htmlMonth is null)
+                {
+                    throw new ArgumentNullException(nameof(htmlMonth));
+                }
+                var obj = new
+                {
+                    htmlMonth = htmlMonth,
+                };
+                if (exportExcelCenterCode is null)
+                {
+                    throw new ArgumentNullException(nameof(exportExcelCenterCode));
+                }
+
+                if (exportExcelTemplate is null)
+                {
+                    throw new ArgumentNullException(nameof(exportExcelTemplate));
+                }
+                var path = Server.MapPath("~/TemplateExcel/" + "DuLieuSuaChuaLon.xlsx");
                 MemoryStream outFileStream = new MemoryStream();
                 _service.GenerateExportExcel(ref outFileStream, obj, path, exportExcelYear, exportExcelCenterCode, exportExcelVersion, exportExcelTemplate, exportExcelUnit, exportExcelExchangeRate);
 

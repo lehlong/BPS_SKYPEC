@@ -1,4 +1,6 @@
 ﻿using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XWPF.UserModel;
 using SMO.AppCode.Class;
 
 using System;
@@ -137,16 +139,21 @@ namespace SMO.Helper
             ref ISheet sheet,
             IList<IList<ExcelCellMeta>> metaTBody,
             int NUM_CELL,
-            bool ignoreFirstColumn)
+            string module,
+            bool ignoreFirstColumn
+            )
         {
 
             ICellStyle styleCellNumber = workbook.CreateCellStyle();
-            styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,##0.00");
+            styleCellNumber.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
+
+            ICellStyle styleCellFirst = workbook.CreateCellStyle();
+            styleCellFirst.CloneStyleFrom(sheet.GetRow(10).Cells[0].CellStyle);
 
             var startRow = 9;
             for (int i = 0; i < metaTBody.Count(); i++)
             {
-                if (metaTBody[i].Count == 7)
+                if (module.Trim() == "KeHoachSanLuong")
                 {
                     IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                     rowCur.Cells[0].SetCellValue(metaTBody[i][0]?.Content?.ToString());
@@ -162,6 +169,34 @@ namespace SMO.Helper
                     rowCur.Cells[5].CellStyle = styleCellNumber;
                     rowCur.Cells[6].CellStyle = styleCellNumber;
                 }
+                else if (module.Trim() == "KeHoachSuaChuaLon" || module.Trim() == "SuaChuaThuongXuyen")
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                    for(int j = 0; j < NUM_CELL; j++)
+                    {
+                        if(j == 0 || j == NUM_CELL-1)
+                        {
+                            rowCur.Cells[0].CellStyle = styleCellFirst;
+                            if (j == 0)
+                            {
+                                rowCur.Cells[j].SetCellValue(metaTBody[i][0]?.Content?.ToString());
+                                rowCur.Cells[j].CellStyle = styleCellNumber;
+                            }
+                            else
+                            {
+                                rowCur.Cells[j].SetCellValue(metaTBody[i][j]?.Content?.ToString());
+                                rowCur.Cells[j].CellStyle = styleCellNumber;
+                            }
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][j]?.Content.Trim().Replace(".", "").Replace(",", ".")));
+                            rowCur.Cells[j].CellStyle = styleCellNumber;
+                        }
+
+                    }
+                }
+                
                 else
                 {
                     IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
@@ -186,6 +221,7 @@ namespace SMO.Helper
             ref ISheet sheet,
             IList<IList<ExcelCellMeta>> metaTHeader,
             int NUM_CELL,
+            string module,
             bool ignoreFirstColumn)
         {
             ICellStyle styleCellHeader = workbook.CreateCellStyle();
@@ -193,23 +229,71 @@ namespace SMO.Helper
             styleCellHeader.WrapText = true;
 
             var numRowCur = 7;
+            var rowStart = 0;
             foreach (var row in metaTHeader)
             {
                 var tempIgnoreColumn = ignoreFirstColumn;
                 var columns = 0;
                 //ReportUtilities.CopyRow(ref sheet, 8, numRowCur);
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
-                foreach (var cell in row)
+                if (module.Trim() == "KeHoachSuaChuaLon" || module.Trim() == "SuaChuaThuongXuyen")
                 {
-                    if (tempIgnoreColumn)
+                
+                    if (rowStart == 1)
                     {
-                        tempIgnoreColumn = false;
-                        continue;
+                        columns = 2;
+
+                        foreach (var cell in row)
+                        {
+                            rowCur.Height = -1;
+                            rowCur.Cells[columns].CellStyle = styleCellHeader;
+                            rowCur.Cells[columns].SetCellValue(cell.Content);
+                            columns++;
+                        }
+                        //merge
+                        
                     }
-                    rowCur.Height = -1;
-                    rowCur.Cells[columns].CellStyle = styleCellHeader;
-                    rowCur.Cells[columns].SetCellValue(cell.Content);
-                    columns++;
+
+                    else
+                    {
+                        for(int i = 0; i< NUM_CELL; i++)
+                        {
+                            if(i == NUM_CELL - 1)
+                            {
+                                rowCur.Height = -1;
+                                ICellStyle styleCellMerge = workbook.CreateCellStyle();
+                                styleCellMerge.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+                                styleCellMerge.WrapText = true;
+                                rowCur.Cells[NUM_CELL-1].CellStyle = styleCellMerge;
+                                rowCur.Cells[NUM_CELL - 1].SetCellValue(row[row.Count-1].Content);
+                            }
+                            else
+                            {
+                                rowCur.Height = -1;
+                                rowCur.Cells[i].CellStyle = styleCellHeader;
+                                if(i > row.Count - 2)
+                                {
+                                    continue;
+                                }
+                                rowCur.Cells[i].SetCellValue(row[i].Content);
+                            }
+                        }
+                        sheet.AddMergedRegion(new CellRangeAddress(7, 7, 2, NUM_CELL - 2));
+
+                        sheet.AddMergedRegion(new CellRangeAddress(7, 8, NUM_CELL - 1, NUM_CELL - 1));
+                    } 
+                    rowStart++;  
+                }
+                else
+                {
+                    foreach (var cell in row)
+                    {
+
+                        rowCur.Height = -1;
+                        rowCur.Cells[columns].CellStyle = styleCellHeader;
+                        rowCur.Cells[columns].SetCellValue(cell.Content);
+                        columns++;
+                    }
                 }
                 numRowCur++;
             }

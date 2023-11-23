@@ -3850,6 +3850,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             //Mở file Template
             var htmlMonth = table.htmlMonth;
             var htmlYear = table.htmlYear;
+            var module = "DauTuXayDung";
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
@@ -3862,7 +3863,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
 
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetMonth,
                 metaDataMonth.MetaTBody,
@@ -3879,6 +3880,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 ref sheetYear,
                 metaDataYear.MetaTBody,
                 NUM_CELL_YEAR,
+                module,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
 
 
