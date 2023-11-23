@@ -314,7 +314,7 @@ namespace SMO.Service.MD
                     pretbkho.WarehouseCode = item.WarehouseCode;
                     pretbkho.Warehouse = item.Warehouse;
 
-                    if (item.WarehouseCode == "KHO1003" || item.WarehouseCode == "KHO2001")
+                    if (item.WarehouseCode == "LCH" || item.WarehouseCode == "DQU")
                     {
                         pretbkho.PreTrungBinh = item.U0008;
                     }
@@ -325,10 +325,10 @@ namespace SMO.Service.MD
                         pretbkho.PreTrungBinh = a == 0 || b == 0 ? 0 : a / b;
                     }
 
-                    if (item.WarehouseCode == "KHO1005")
+                    if (item.WarehouseCode == "CLA")
                     {
                         var c = data.KeHoachGiaThanhData.Where(x => x.Warehouse == item.Warehouse).Sum(x => x.S0002);
-                        pretbkho.SanLuong = c == 0 ? 0 : c / lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE - data.KeHoachGiaThanhData.Where(x => x.WarehouseCode == "KHO1003").Sum(x => x.S0002);
+                        pretbkho.SanLuong = c == 0 ? 0 : c / lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE - data.KeHoachGiaThanhData.Where(x => x.WarehouseCode == "LCH").Sum(x => x.S0002);
                     }
                     else
                     {
@@ -339,11 +339,15 @@ namespace SMO.Service.MD
                     var e = pretbkho.PreTrungBinh;
                     pretbkho.TrungBinh = e == 0 ? 0 : e * lstSharedData.FirstOrDefault(x => x.CODE == "2").VALUE / lstSharedData.FirstOrDefault(x => x.CODE == "4").VALUE;
 
+
+                    var f = pretbkho.PreTrungBinh * lstSharedData.FirstOrDefault(x => x.CODE == "2").VALUE * 1000;
+                    pretbkho.PreDN1 = f == 0 ? 0 : f / lstSharedData.FirstOrDefault(x => x.CODE == "4").VALUE;
                     data.PreTrungBinhKhoData.Add(pretbkho);
                 }
 
                 //Pre
                 var lstRoute = UnitOfWork.Repository<RouteRepo>().GetAll();
+                var elementSL = UnitOfWork.Repository<ElementRepo>().Queryable().FirstOrDefault(x => x.CODE == "S0008");
                 foreach (var route in lstRoute)
                 {
                     var item = new PreData
@@ -352,11 +356,37 @@ namespace SMO.Service.MD
                         FinalPoint = route.FINAL_POINT,
                         RouteCode = route.CODE,
                         RouteName = route.NAME,
-
+                        Quantity = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{elementSL.QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        Premium = data.PreTrungBinhKhoData.FirstOrDefault(x => x.WarehouseCode.Trim() == route.FIRST_POINT.Trim()) == null ?0 : data.PreTrungBinhKhoData.FirstOrDefault(x => x.WarehouseCode.Trim() == route.FIRST_POINT.Trim()).PreDN1
                     };
                     data.PreData.Add(item); 
                 }
 
+                var lstSanBay = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != null && x.OTHER_PM_CODE != "").ToList();
+
+                //Cung ứng
+                foreach (var sb in lstSanBay)
+                {
+                    var item = new CungUngData
+                    {
+                        SanBayCode = sb.CODE,
+                    };
+                    data.CungUngData.Add(item);
+                }
+
+                //Mua hàng cung ứng tra nạp
+                foreach (var sb in lstSanBay)
+                {
+                    var lstSb = data.PreData.Where(x => x.FinalPoint == sb.CODE).ToList();
+                    var a = lstSb.Sum(x => x.Quantity * x.Premium);
+                    var b = lstSb.Sum(x => x.Quantity);
+                    var item = new MuaHangCungUngTraNapData
+                    {
+                        SanBayCode = sb.CODE,
+                        Premium = a == 0 || b == 0 ? 0 : a / b / lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE,
+                    };
+                    data.MuaHangCungUngTraNapData.Add(item);
+                }
                 return data;
             }
             catch (Exception ex)

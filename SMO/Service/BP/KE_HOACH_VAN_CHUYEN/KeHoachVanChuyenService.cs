@@ -1921,19 +1921,19 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                     var costData = new T_BP_KE_HOACH_VAN_CHUYEN_DATA();
 
 
-                    var value6001 = Convert.ToDecimal(tableData.Rows[i][2] ?? 0);
-                    var value6002 = Convert.ToDecimal(tableData.Rows[i][3] ?? 0);
-                    var value6003 = Convert.ToDecimal(tableData.Rows[i][4] ?? 0);
+                    var value6001 = tableData.Rows[i][2].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][2]);
+                    var value6002 = tableData.Rows[i][3].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][3]);
+                    var value6003 = tableData.Rows[i][4].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][4]);
 
-                    var value6005 = Convert.ToDecimal(tableData.Rows[i][5] ?? 0);
-                    var value6006 = Convert.ToDecimal(tableData.Rows[i][6] ?? 0);
-                    var value6007 = Convert.ToDecimal(tableData.Rows[i][7] ?? 0);
-                    var value6008 = Convert.ToDecimal(tableData.Rows[i][8] ?? 0);
-                    var value6009 = Convert.ToDecimal(tableData.Rows[i][9] ?? 0);
-                    var value6010 = Convert.ToDecimal(tableData.Rows[i][10] ?? 0);
+                    var value6005 = tableData.Rows[i][5].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][5]);
+                    var value6006 = tableData.Rows[i][6].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][6]);
+                    var value6007 = tableData.Rows[i][7].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][7]);
+                    var value6008 = tableData.Rows[i][8].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][8]);
+                    var value6009 = tableData.Rows[i][9].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][9]);
+                    var value6010 = tableData.Rows[i][10].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][10]);
 
-                    var value6012 = Convert.ToDecimal(tableData.Rows[i][11] ?? 0);
-                    var value6013 = Convert.ToDecimal(tableData.Rows[i][12] ?? 0);
+                    var value6012 = tableData.Rows[i][11].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][11]);
+                    var value6013 = tableData.Rows[i][12].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][12]);
                     foreach (var ele in lstElement.Where(x => x.CENTER_CODE == centerCode))
                     {
                         costData = new T_BP_KE_HOACH_VAN_CHUYEN_DATA()
@@ -3833,7 +3833,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
             var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
 
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetMonth,
                 metaDataMonth.MetaTBody,

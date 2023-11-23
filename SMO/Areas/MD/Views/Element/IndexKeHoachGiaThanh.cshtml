@@ -18,7 +18,7 @@
                 <div class="page-function">
                     <div class="page-function-button m-r-20" style="float:left">
                         @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
-                        @Html.MyButton("cmdAdd", "Xuất Excel", "CalculateValue();", "Alt+N", "file_download")
+                        @Html.MyButton("cmdAdd", "Xuất Excel", "DownloadData();", "Alt+N", "file_download")
                     </div>
                     <div class="input-group page-function-search">
                         <select id="TIME_YEAR" class="form-control selectpicker show-tick" data_live_search="true" data_container="body" onchange="onChangeTimeYear(this.value)">
@@ -39,6 +39,14 @@
     <script type="text/javascript">
         function SubmitIndex() {
             Forms.SubmitForm('@Model.FormId');
+        }
+
+        function DownloadData() {
+            Swal.fire({
+                title: "Oppsss?",
+                text: "Đang trong quá trình code! Đừng bấm nữa?",
+                icon: "warning"
+            });
         }
 
         function GetDataKeHoachGiaThanh(value) {
