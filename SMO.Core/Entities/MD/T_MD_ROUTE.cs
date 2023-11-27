@@ -17,8 +17,8 @@ namespace SMO.Core.Entities.MD
         public virtual string NAME { get; set; }
         public virtual string FIRST_POINT { get; set; }
         public virtual string FINAL_POINT { get; set; }
-        public virtual int KM_CO_HANG { get; set; }
-        public virtual int KM_KHONG_HANG { get; set; }
+        public virtual decimal KM_CO_HANG { get; set; }
+        public virtual decimal KM_KHONG_HANG { get; set; }
         public virtual decimal HE_SO_HAO_HUT { get; set; }
         public virtual string PARENT_LEVEL_ID { get; set; }
     }

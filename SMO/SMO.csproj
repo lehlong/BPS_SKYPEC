@@ -560,6 +560,7 @@
     <Compile Include="Areas\MD\Controllers\ContractTypeController.cs" />
     <Compile Include="Areas\MD\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\MD\Controllers\DataController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuNgoaiDoanhNghiepProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuTrangThietBiProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuXayDungProfitCenterController.cs" />
@@ -820,6 +821,7 @@
     <Compile Include="Service\MD\ContractPhaseService.cs" />
     <Compile Include="Service\MD\ContractTypeService.cs" />
     <Compile Include="Service\MD\CustomerService.cs" />
+    <Compile Include="Service\MD\DataService.cs" />
     <Compile Include="Service\MD\DauTuNgoaiDoanhNghiepProfitCenterService.cs" />
     <Compile Include="Service\MD\DauTuTrangThietBiProfitCenterService.cs" />
     <Compile Include="Service\MD\DauTuXayDungProfitCenterService.cs" />
@@ -1992,6 +1994,8 @@
     <Content Include="Areas\MD\Views\KhoanMucHangHoa\BuildTreeKhoanMucChung.cshtml" />
     <Content Include="Areas\MD\Views\KhoanMucHangHoa\Create.cshtml" />
     <Content Include="Areas\MD\Views\KhoanMucHangHoa\Edit.cshtml" />
+    <Content Include="Areas\MD\Views\Data\Index.cshtml" />
+    <Content Include="Areas\MD\Views\Data\GetDataByTimeYear.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -46,12 +46,12 @@ namespace SMO.Core.Entities.MD
                 TEMPLATE_CODE = v.TEMPLATE_CODE + v.CHI_PHI_PROFIT_CENTER_CODE,
                 TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
                 ORG_CODE = v.ORG_CODE,
-                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Sân bay: {v.ChiPhiProfitCenter.SanBay.NAME}\nChỉ tiêu: {v.ChiPhiProfitCenter.CostCenter.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
+                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Sân bay: {v.ChiPhiProfitCenter.SanBay.NAME}\nChi nhánh: {v.ChiPhiProfitCenter.CostCenter.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
                 CENTER_CODE = v.ORG_CODE,
                 Values = new decimal[3]
                 {
-                    v.PRICE ?? 0,
                     v.QUANTITY ?? 0,
+                    v.PRICE ?? 0,
                     v.AMOUNT ?? 0,
                 },
                 VERSION = v.VERSION,
@@ -123,9 +123,9 @@ namespace SMO.Core.Entities.MD
                 ValuesBaseString = new string[1]
                 {
                     HandleValueBaseString(quantity: v.QUANTITY, price: v.PRICE, amount: v.AMOUNT, time: v.TIME),
-
                 },
             };
         }
+
     }
 }

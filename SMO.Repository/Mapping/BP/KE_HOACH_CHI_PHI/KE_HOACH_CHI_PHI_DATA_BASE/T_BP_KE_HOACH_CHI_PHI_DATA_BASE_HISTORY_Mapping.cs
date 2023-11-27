@@ -16,7 +16,7 @@ namespace SMO.Repository.Mapping.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
             Map(x => x.ORG_CODE);
             Map(x => x.CHI_PHI_PROFIT_CENTER_CODE);
             Map(x => x.SAN_BAY_CODE);
-            Map(x => x.CHI_PHI_CODE);
+            Map(x => x.COST_CENTER_CODE);
             Map(x => x.TEMPLATE_CODE);
             Map(x => x.KHOAN_MUC_HANG_HOA_CODE);
             Map(x => x.VERSION);
@@ -37,7 +37,7 @@ namespace SMO.Repository.Mapping.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
                 .Not.Insert().Not.Update();
             References(x => x.SanBay, "SAN_BAY_CODE")
                 .Not.Insert().Not.Update();
-            References(x => x.ChiPhi, "CHI_PHI_CODE")
+            References(x => x.CostCenter, "COST_CENTER_CODE")
                 .Not.Insert().Not.Update();
             References(x => x.Organize, "ORG_CODE")
                 .Not.Insert().Not.Update();

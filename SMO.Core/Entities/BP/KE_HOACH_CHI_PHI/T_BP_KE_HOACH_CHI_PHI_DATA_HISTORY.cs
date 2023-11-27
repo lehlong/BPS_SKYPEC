@@ -11,8 +11,8 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
         public virtual string KHOAN_MUC_HANG_HOA_CODE { get; set; }
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
-        public virtual decimal? PRICE { get; set; }
         public virtual decimal? QUANTITY { get; set; }
+        public virtual decimal? PRICE { get; set; }
         public virtual decimal? AMOUNT { get; set; }
         public virtual string QUY_MO { get; set; }
         public virtual string DESCRIPTION { get; set; }
@@ -38,7 +38,6 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
                 QUANTITY = history.QUANTITY,
                 PRICE = history.PRICE,
                 AMOUNT = history.AMOUNT,
-
 
                 DESCRIPTION = history.DESCRIPTION,
                 ACTIVE = history.ACTIVE,

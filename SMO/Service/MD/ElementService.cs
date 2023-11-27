@@ -291,6 +291,8 @@ namespace SMO.Service.MD
                 var lstWarehouse = UnitOfWork.Repository<WarehouseRepo>().GetAll().ToList();
                 var lstDeliveryConditions = UnitOfWork.Repository<DeliveryConditionsRepo>().GetAll().ToList();
                 var lstSharedData = UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
+                var lstRoute = UnitOfWork.Repository<RouteRepo>().GetAll().ToList();
+                var lstElement = UnitOfWork.Repository<ElementRepo>().GetAll().ToList();
 
                 //Pre kho 1
                 foreach (var warehouse in lstWarehouse)
@@ -346,7 +348,6 @@ namespace SMO.Service.MD
                 }
 
                 //Pre
-                var lstRoute = UnitOfWork.Repository<RouteRepo>().GetAll();
                 var elementSL = UnitOfWork.Repository<ElementRepo>().Queryable().FirstOrDefault(x => x.CODE == "S0008");
                 foreach (var route in lstRoute)
                 {
@@ -363,6 +364,71 @@ namespace SMO.Service.MD
                 }
 
                 var lstSanBay = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != null && x.OTHER_PM_CODE != "").ToList();
+
+                //Dữ liệu
+                foreach (var route in lstRoute)
+                {
+                    var item = new DuLieuData
+                    {
+                        RouteCode = route.CODE,
+                        RouteName = route.NAME,
+                        FinalPoint = route.FINAL_POINT,
+                        FirstPoint = route.FIRST_POINT,
+                        KmCoHang = route.KM_CO_HANG,
+                        Quantity = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0008").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        TN = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0011").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        BR = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0012").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        BQ = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0013").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        HHKhoGoc = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0014").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        TauNoi = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0015").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        CongHH = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0016").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        DGVTTND = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0017").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        DCDGVTT = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0018").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        DGVTTNDSDC = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0019").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        DN1 = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0020").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        DN2 = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0021").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        DNTotal = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0022").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        DNOther = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0023").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                        DNKSDC = Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{lstElement.FirstOrDefault(x => x.CODE == "S0024").QUERY.Replace("[ROUTE_CODE]", route.CODE).Replace("[YEAR]", year.ToString())}").List()[0]),
+                    };
+                    var g = item.KmCoHang * lstSharedData.FirstOrDefault(x => x.CODE == "16").VALUE;
+                    item.HaoHutVC = g == 0 ? 0 : g / 10000;
+                    data.DuLieuData.Add(item);
+                }
+
+                //Đơn giá kho đầu nguồn
+                foreach (var wh in lstWarehouse)
+                {
+                    var lstWhs = data.DuLieuData.Where(x => x.FinalPoint == wh.CODE).ToList();
+                    var a = lstWhs.Sum(x => x.Quantity * x.HaoHutVC);
+                    var b = lstWhs.Sum(x => x.Quantity);
+                    var c = lstWhs.Sum(x => x.Quantity * x.CongHH);
+                    var d = lstWhs.Sum(x => x.Quantity * x.DGVTTNDSDC);
+                    var e = lstWhs.Sum(x => x.Quantity * x.DNKSDC);
+                    var item = new DonGiaKhoDauNguonData
+                    {
+                        WarehouseCode = wh.CODE,
+                        WarehouseName = wh.TEXT,
+                        VanChuyenDuongBo = a == 0 || b == 0 ? 0 : a / b * 100,
+                        Other = c == 0 || b == 0 ? 0 : c / b,
+                        DonGiaTauNoi = d == 0 || b == 0 ? 0 : d / b /lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE,
+                        DonGiaKhoDauNguon = e == 0 || b == 0 ? 0 : e/b /lstSharedData.FirstOrDefault(x => x.CODE == "5").VALUE,
+                    };
+                    item.TongHaoHut = item.VanChuyenDuongBo + item.Other;
+                    data.DonGiaKhoDauNguonData.Add(item);
+                }
+
+
+                //Kho đầu nguồn
+                foreach (var wh in lstWarehouse)
+                {
+                    var item = new KhoDauNguonData
+                    {
+                        WarehouseCode = wh.CODE,
+                        WarehouseName = wh.TEXT
+                    };
+                    data.KhoDauNguonData.Add(item);
+                }
 
                 //Cung ứng
                 foreach (var sb in lstSanBay)

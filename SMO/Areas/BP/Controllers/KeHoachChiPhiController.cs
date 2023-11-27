@@ -25,19 +25,7 @@ namespace SMO.Areas.BP.Controllers
         public override FileContentResult DownloadTemplate(string templateId, int year)
         {
             var template = _service.GetTemplate(templateId);
-            //string path;
             MemoryStream outFileStream = new MemoryStream();
-            //if (template.IS_BASE)
-            //{
-            //    path = Server.MapPath("~/TemplateExcel/" + "Template_Base_KeHoachChiPhi.xlsx");
-            //    _service.GenerateTemplateBase(ref outFileStream, path, templateId, year);
-            //}
-            //else
-            //{
-            //    path = Server.MapPath("~/TemplateExcel/" + "Template_KeHoachChiPhi.xlsx");
-            //    _service.GenerateTemplate(ref outFileStream, path, templateId, year);
-            //}
-
             string path = Server.MapPath("~/TemplateExcel/" + "Template_KeHoachChiPhi.xlsx");
             _service.GenerateTemplate(ref outFileStream, path, templateId, year);
             var fileName = template.NAME;
@@ -52,15 +40,6 @@ namespace SMO.Areas.BP.Controllers
                 var dataCost = _service.PreparePureListForTemplate(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherCostElements, templateId, year);
                 ViewBag.detailOtherCostElements = detailOtherCostElements;
                 return PartialView("ViewTemplateKeHoachChiPhi", dataCost);
-                //var isBaseTemplate = _service.GetTemplate(templateId).IS_BASE;
-                //if (isBaseTemplate)
-                //{
-                //    return PartialView("ViewTemplateBaseKeHoachChiPhi", dataCost);
-                //}
-                //else
-                //{
-                //    return PartialView("ViewTemplateKeHoachChiPhi", dataCost);
-                //}
             }
             else
             {

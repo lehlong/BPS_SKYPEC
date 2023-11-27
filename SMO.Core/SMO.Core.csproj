@@ -283,6 +283,7 @@
     <Compile Include="Entities\MD\T_MD_COUNTRY.cs" />
     <Compile Include="Entities\MD\T_MD_CURRENCY.cs" />
     <Compile Include="Entities\MD\T_MD_CUSTOMER.cs" />
+    <Compile Include="Entities\MD\T_MD_DATA.cs" />
     <Compile Include="Entities\MD\T_MD_DAU_TU_NGOAI_DOANH_NGHIEP_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER.cs" />

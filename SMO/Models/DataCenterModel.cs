@@ -10,7 +10,10 @@ namespace SMO.Models
         public List<KeHoachGiaThanhData> KeHoachGiaThanhData { get; set; } = new List<KeHoachGiaThanhData> { };
         public List<PreTrungBinhKhoData> PreTrungBinhKhoData { get; set; } = new List<PreTrungBinhKhoData> { };
         public List<KeHoachTaiChinhData> KeHoachTaiChinhData { get; set; } = new List<KeHoachTaiChinhData> { };
+        public List<KhoDauNguonData> KhoDauNguonData { get; set; } = new List<KhoDauNguonData> { };
         public List<PreData> PreData { get; set; } = new List<PreData> { };
+        public List<DonGiaKhoDauNguonData> DonGiaKhoDauNguonData { get; set; } = new List<DonGiaKhoDauNguonData> { };
+        public List<DuLieuData> DuLieuData { get; set; } = new List<DuLieuData> { };
         public List<CungUngData> CungUngData { get; set; } = new List<CungUngData> { };
         public List<MuaHangCungUngTraNapData> MuaHangCungUngTraNapData { get; set; } = new List<MuaHangCungUngTraNapData> { };
     }
@@ -49,6 +52,63 @@ namespace SMO.Models
         public decimal SanLuong { get; set; }
         public decimal PreDN1 { get; set; }
         public decimal TrungBinh { get; set; }
+
+    }
+
+    public class DonGiaKhoDauNguonData
+    {
+        public string WarehouseCode { get; set; }
+        public string WarehouseName { get; set; }
+        public decimal VanChuyenDuongBo { get; set; }
+        public decimal Other { get; set; }
+        public decimal TongHaoHut { get; set; }
+        public decimal DonGiaTauNoi { get; set; }
+        public decimal DonGiaKhoDauNguon { get; set; }
+        public decimal SanLuongSanBay { get; set; }
+        public decimal GiaKhoDNSauDC { get; set; }
+
+    }
+
+    public class DuLieuData
+    {
+        public string RouteName { get; set; }
+        public string RouteCode { get; set; }
+        public string FirstPoint { get; set; }
+        public string FinalPoint { get; set; }
+        public decimal KmCoHang { get; set; }
+        public decimal HaoHutVC { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal TN { get; set; }
+        public decimal BR { get; set; }
+        public decimal BQ { get; set; }
+        public decimal HHKhoGoc { get; set; }
+        public decimal TauNoi { get; set; }
+        public decimal CongHH { get; set; }
+        public decimal DGVTTND { get; set; }
+        public decimal DCDGVTT { get; set; }
+        public decimal DGVTTNDSDC { get; set; }
+        public decimal DN1 { get; set; }
+        public decimal DN2 { get; set; }
+        public decimal DNTotal { get; set; }
+        public decimal DNOther { get; set; }
+        public decimal DNKSDC { get; set; }
+
+    }
+
+    public class KhoDauNguonData
+    {
+        public string WarehouseCode { get; set; }
+        public string WarehouseName { get; set; }
+        public string Type { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal Price { get; set; }
+        public decimal HeSoDieuChinh { get; set; }
+        public decimal ThueKho { get; set; }
+        public decimal PhiMatNuoc { get; set; }
+        public decimal HDKTotal { get; set; }
+        public decimal GiamDinhHaiQuan { get; set; }
+        public decimal Total { get; set; }
+        public decimal KhoDauNguonPrice { get; set; }
 
     }
 

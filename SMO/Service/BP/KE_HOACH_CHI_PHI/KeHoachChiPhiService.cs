@@ -1658,8 +1658,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             for (int i = this.StartRowData; i < dataTable.Rows.Count; i++)
             {
                 var projectCode = ObjDetail.TYPE_UPLOAD == "01" ? dataTable.Rows[i][0].ToString().Trim() : dataTable.Rows[i][5].ToString().Trim();
-                var companyCode = ObjDetail.TYPE_UPLOAD == "01" ? dataTable.Rows[i][2].ToString().Trim() : dataTable.Rows[i][7].ToString().Trim();
-                var elementCodeInExcel = dataTable.Rows[i][4].ToString().Trim();
+                var companyCode = ObjDetail.TYPE_UPLOAD == "01" ? dataTable.Rows[i][1].ToString().Trim() : dataTable.Rows[i][7].ToString().Trim();
+                var elementCodeInExcel = dataTable.Rows[i][2].ToString().Trim();
                 if (string.IsNullOrWhiteSpace(projectCode))
                 {
                     this.State = false;
@@ -1720,25 +1720,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 return;
             }
 
-            //Kiếm tra có đúng mẫu hay không
-            //Kiếm tra có đúng mẫu hay không
-            if (isDataBase)
-            {
-                for (int i = 0; i < ListColumnNameDataBase.Count; i++)
-                {
-                    if (dataTable.Rows[this.StartRowData - 1][i].ToString().ToUpper() != this.ListColumnNameDataBase[i])
-                    {
-                        this.State = false;
-                        this.ErrorMessage = "File excel không đúng theo mẫu thiết kế!";
-                        return;
-                    }
-                }
-                this.ConvertData(dataTable, lstElement.ToList(), startColumn: 8, endColumn: ListColumnNameDataBase.Count - 5, isDataBase);
-
-            }
-            else
-            {
-
+           
                 if (ObjDetail.TYPE_UPLOAD == "01")
                 {
                     //for (int i = 0; i < ListColumnName.Count; i++)
@@ -1755,8 +1737,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     for (int i = StartRowData; i < dataTable.Rows.Count; i++)
                     {
                         var projectCode = dataTable.Rows[i][0].ToString().Trim();
-                        var companyCode = dataTable.Rows[i][2].ToString().Trim();
-                        var elementCodeInExcel = dataTable.Rows[i][4].ToString().Trim();
+                        var companyCode = dataTable.Rows[i][1].ToString().Trim();
+                        var elementCodeInExcel = dataTable.Rows[i][2].ToString().Trim();
                         var foundItem = lstDetailTemplate
                             .FirstOrDefault(x => x.ELEMENT_CODE == elementCodeInExcel
                             && x.Center.COST_CENTER_CODE == projectCode
@@ -1779,13 +1761,13 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 // Kiểm tra dữ liệu có phải là số hay không
                 if (ObjDetail.TYPE_UPLOAD == "01")
                 {
-                    this.ConvertData(dataTable, lstElement.ToList(), startColumn: 6, endColumn: 9, isDataBase);
+                    this.ConvertData(dataTable, lstElement.ToList(), startColumn: 4, endColumn: 6, isDataBase);
                 }
                 else
                 {
                     this.ConvertData(dataTable, lstElement.ToList(), startColumn: 11, endColumn: 23, isDataBase);
                 }
-            }
+            
             if (this.InvalidCellsList.Count > 0)
             {
                 this.State = false;
@@ -1851,7 +1833,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     var yearAmount = 0m;
                     bool isValid = true;
                     bool isEmptyValues = true;
-                    var elementCodeInExcel = dataTable.Rows[i][4].ToString().Trim();
+                    var elementCodeInExcel = dataTable.Rows[i][2].ToString().Trim();
                     var findElement = lstElement.FirstOrDefault(x => x.CODE == elementCodeInExcel);
                     if (findElement == null || findElement.IS_GROUP)
                     {
@@ -2051,7 +2033,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
                         centerCode = allChiPhiProfitCenters.FirstOrDefault(
-                                                x => x.SAN_BAY_CODE == tableData.Rows[i][2].ToString().Trim() &&
+                                                x => x.SAN_BAY_CODE == tableData.Rows[i][1].ToString().Trim() &&
                                                 x.COST_CENTER_CODE == tableData.Rows[i][0].ToString().Trim())?.CODE;
                     }
 
@@ -2074,14 +2056,15 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             TIME_YEAR = ObjDetail.TIME_YEAR,
                             STATUS = Approve_Status.ChuaTrinhDuyet,
                             VERSION = versionNext,
-                            KHOAN_MUC_HANG_HOA_CODE = tableData.Rows[i][4].ToString().Trim(),
-                           
-                            QUANTITY = tableData.Rows[i][6] as decimal? == null ? 0 : tableData.Rows[i][6] as decimal?,
-                            PRICE = tableData.Rows[i][7] as decimal? == null ? 0 : tableData.Rows[i][7] as decimal?,
+                            KHOAN_MUC_HANG_HOA_CODE = tableData.Rows[i][2].ToString().Trim(),
+                            
+                            QUANTITY = tableData.Rows[i][4] as decimal? == null ? 0 : tableData.Rows[i][4] as decimal?,
+                            PRICE = tableData.Rows[i][5] as decimal? == null ? 0 : tableData.Rows[i][5] as decimal?,
 
-                            DESCRIPTION = tableData.Rows[i][9].ToString(),
+                            DESCRIPTION = tableData.Rows[i][7].ToString(),
                             CREATE_BY = currentUser
                         };
+
                         costData.AMOUNT = costData.QUANTITY * costData.PRICE;
                     }
 
@@ -2316,7 +2299,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = orgCode,
                         SAN_BAY_CODE = tableData.Rows[i][0].ToString().Trim(),
-                        //COST_CENTER_CODE = tableData.Rows[i][2].ToString().Trim(),
+                        COST_CENTER_CODE = tableData.Rows[i][2].ToString().Trim(),
                         CHI_PHI_PROFIT_CENTER_CODE = centerCode,
                         TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                         TIME_YEAR = ObjDetail.TIME_YEAR,
@@ -2630,7 +2613,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 //Số hàng và số cột hiện tại
                 int numRowCur = 0;
-                int NUM_CELL = 21;
+                int NUM_CELL = 7;
 
                 //Style cần dùng
                 ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
@@ -2669,7 +2652,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
                 rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
                 rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
-                rowHeader2.Cells[18].SetCellValue(rowHeader2.Cells[18].StringCellValue + $" {year}");
+                //rowHeader2.Cells[18].SetCellValue(rowHeader2.Cells[18].StringCellValue + $" {year}");
 
                 var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
 
@@ -2704,50 +2687,33 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
                         rowCur.Height = -1;
 
-                        rowCur.Cells[2].SetCellValue(detail.Center.SAN_BAY_CODE);
-                        rowCur.Cells[2].CellStyle = styleCellDetail;
-
-                        rowCur.Cells[3].SetCellValue(detail.Center.SanBay.NAME);
-                        rowCur.Cells[3].CellStyle = styleCellDetail;
+                        rowCur.Cells[1].SetCellValue(detail.Center.SAN_BAY_CODE);
+                        rowCur.Cells[1].CellStyle = styleCellDetail;
 
                         rowCur.Cells[0].SetCellValue(detail.Center.COST_CENTER_CODE);
                         rowCur.Cells[0].CellStyle = styleCellDetail;
 
-                        rowCur.Cells[1].SetCellValue(detail.Center.CostCenter.NAME);
-                        rowCur.Cells[1].CellStyle = styleCellDetail;
+                        rowCur.Cells[2].SetCellValue(item.CODE);
+                        rowCur.Cells[2].CellStyle = styleCellDetail;
 
-                        rowCur.Cells[4].SetCellValue(item.CODE);
-                        rowCur.Cells[4].CellStyle = styleCellDetail;
-
-                        rowCur.Cells[5].SetCellValue($"{space}{item.NAME}");
+                        rowCur.Cells[3].SetCellValue($"{space}{item.NAME}");
                         if (item.IS_GROUP)
                         {
-                            rowCur.Cells[5].CellStyle = styleCellBold;
-                            rowCur.Cells[5].CellStyle.SetFont(fontBold);
+                            rowCur.Cells[3].CellStyle = styleCellBold;
+                            rowCur.Cells[3].CellStyle.SetFont(fontBold);
                         }
                         else
                         {
-                            rowCur.Cells[5].CellStyle = styleCellDetail;
+                            rowCur.Cells[3].CellStyle = styleCellDetail;
                         }
 
-                        for (int i = 6; i < 18; i++)
+                        for (int i = 4; i < 6; i++)
                         {
                             rowCur.Cells[i].SetCellValue(string.Empty);
                             rowCur.Cells[i].SetCellType(CellType.Numeric);
                             rowCur.Cells[i].CellStyle = styleCellNumber;
                         }
 
-                        rowCur.Cells[18].SetCellFormula($"SUM(G{numRowCur + 1}:R{numRowCur + 1})");
-                        rowCur.Cells[18].CellStyle = styleCellNumberColor;
-                        rowCur.Cells[18].SetCellType(CellType.Formula);
-
-                        rowCur.Cells[19].SetCellFormula($"S{numRowCur + 1}/12");
-                        rowCur.Cells[19].CellStyle = styleCellNumberColor;
-                        rowCur.Cells[19].SetCellType(CellType.Formula);
-
-                        rowCur.Cells[20].SetCellValue(string.Empty);
-                        rowCur.Cells[20].CellStyle = styleCellDetail;
-
                         numRowCur++;
                         number++;
                     }
@@ -2771,194 +2737,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             }
         }
 
-        /// <summary>
-        /// generate excel file template base and store in path
-        /// </summary>
-        /// <param name="outFileStream"></param>
-        /// <param name="path"></param>
-        /// <param name="templateId"></param>
-        /// <param name="year"></param>
-        public override void GenerateTemplateBase(ref MemoryStream outFileStream, string path, string templateId, int year)
-        {
-            var dataOtherCost = PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailKhoanMucHangHoas, templateId, year, ignoreAuth: true);
-
-            if (dataOtherCost.Count == 0 || detailKhoanMucHangHoas.Count == 0)
-            {
-                State = false;
-                ErrorMessage = "Không tìm thấy dữ liệu";
-                return;
-            }
-
-            try
-            {
-                //Mở file Template
-                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-                IWorkbook templateWorkbook;
-                templateWorkbook = new XSSFWorkbook(fs);
-                templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
-                fs.Close();
-                ISheet sheet = templateWorkbook.GetSheetAt(0);
-
-                //Số hàng và số cột hiện tại
-                int numRowCur = 0;
-                int NUM_CELL = ListColumnNameDataBase.Count;
-
-                //Style cần dùng
-                ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
-                styleCellHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
-                styleCellHeader.WrapText = true;
-
-                ICellStyle styleCellDetail = templateWorkbook.CreateCellStyle();
-                styleCellDetail.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
-                styleCellDetail.WrapText = true;
-
-                ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
-                styleCellNumber.CloneStyleFrom(styleCellDetail);
-                styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0.00");
-
-                ICellStyle styleCellNumberColor = templateWorkbook.CreateCellStyle();
-                styleCellNumberColor.CloneStyleFrom(styleCellNumber);
-                styleCellNumberColor.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Yellow.Index;
-                styleCellNumberColor.FillPattern = FillPattern.SolidForeground;
-
-                ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
-                styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
-                styleCellBold.WrapText = true;
-                var fontBold = templateWorkbook.CreateFont();
-                fontBold.Boldweight = (short)FontBoldWeight.Bold;
-                fontBold.FontHeightInPoints = 11;
-                fontBold.FontName = "Times New Roman";
-
-                #region Header
-                var template = UnitOfWork.Repository<TemplateRepo>().Get(templateId);
-                var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 0, NUM_CELL);
-                ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
-                rowHeader1.Cells[0].SetCellValue(template.Organize?.Parent?.NAME.ToUpper());
-
-                var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
-
-                ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
-                rowHeader2.Cells[0].SetCellValue(template.Organize.NAME.ToUpper());
-                rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
-                rowHeader2.Cells[8].SetCellValue(rowHeader2.Cells[8].StringCellValue + $" {year}");
-
-                var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
-
-                ReportUtilities.CreateCell(ref rowHeader3, NUM_CELL);
-                rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
-                #endregion
-
-                #region Details
-
-                numRowCur = 6;
-                var number = 1;
-                var rowHeightDetail = sheet.GetRow(6).Height;
-                foreach (var detail in detailKhoanMucHangHoas.GroupBy(x => x.CENTER_CODE)
-                    .Select(x => x.First())
-                    .OrderByDescending(x => x.CENTER_CODE))
-                {
-                    foreach (var item in dataOtherCost
-                            .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
-                            .OrderBy(x => x.C_ORDER)
-                            .GroupBy(x => x.CODE)
-                            .Select(x => x.First()))
-                    {
-                        var space = new StringBuilder();
-                        for (int i = 0; i < item.LEVEL; i++)
-                        {
-                            space.Append("\t");
-                        }
-
-                        //ReportUtilities.CreateRow(ref sheet, numRowCur, 50);
-                        ReportUtilities.CopyRow(ref sheet, 7, numRowCur);
-                        IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
-                        rowCur.Height = -1;
-                        int j = 0;
-                        rowCur.Cells[j].SetCellValue(detail.Center.SAN_BAY_CODE);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
-                        j++;
-
-                        rowCur.Cells[j].SetCellValue(detail.Center.SanBay.NAME);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
-                        j++;
-
-                        rowCur.Cells[j].SetCellValue(detail.Center.COST_CENTER_CODE);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
-                        j++;
-
-                        rowCur.Cells[j].SetCellValue(detail.Center.CostCenter.NAME);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
-                        j++;
-
-                        rowCur.Cells[j].SetCellValue(item.CODE);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
-                        j++;
-
-                        rowCur.Cells[j].SetCellValue($"{space}{item.NAME}");
-                        if (item.IS_GROUP)
-                        {
-                            rowCur.Cells[j].CellStyle = styleCellBold;
-                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
-                        }
-                        else
-                        {
-                            rowCur.Cells[j].CellStyle = styleCellDetail;
-                        }
-                        j++;
-                        rowCur.Cells[j].SetCellValue(string.Empty);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
-                        j++;
-
-                        rowCur.Cells[j].SetCellValue(string.Empty);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
-                        j++;
-
-                        for (; j < NUM_CELL - 1; j++)
-                        {
-                            rowCur.Cells[j].SetCellValue(string.Empty);
-                            if (j < NUM_CELL - 5 && (j - 7) % 4 == 2)
-                            {
-                                rowCur.Cells[j].CellStyle = styleCellDetail;
-                            }
-                            else
-                            {
-                                if (j >= NUM_CELL - 5)
-                                {
-                                    rowCur.Cells[j].CellStyle = styleCellNumberColor;
-                                }
-                                else
-                                {
-                                    rowCur.Cells[j].CellStyle = styleCellNumber;
-                                }
-                                rowCur.Cells[j].SetCellType(CellType.Numeric);
-                            }
-                        }
-
-                        rowCur.Cells[j].SetCellValue(string.Empty);
-                        rowCur.Cells[j].CellStyle = styleCellDetail;
-
-                        numRowCur++;
-                        number++;
-                    }
-                }
-
-                //Xóa dòng thừa cuối cùng khi tạo các dòng cho detail
-                IRow rowLastDetail = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
-                ReportUtilities.DeleteRow(ref sheet, rowLastDetail);
-
-                rowLastDetail = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
-                ReportUtilities.DeleteRow(ref sheet, rowLastDetail);
-                #endregion
-
-                templateWorkbook.Write(outFileStream);
-            }
-            catch (Exception ex)
-            {
-                this.State = false;
-                this.ErrorMessage = "Có lỗi xảy ra trong quá trình tạo file excel!";
-                this.Exception = ex;
-            }
-        }
+        public override void GenerateTemplateBase(ref MemoryStream outFileStream, string path, string templateId, int year){}
 
         public override IList<NodeDataFlow> BuildDataFlowTree(string orgCode, int year, int? version, int? sumUpVersion)
         {
@@ -3521,9 +3300,9 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 var detail = details.FirstOrDefault(x => x.ELEMENT_CODE == i.CODE && x.CENTER_CODE == i.CENTER_CODE);
                                 if (detail != null)
                                 {
-                                    detail.CFData = revenuePlData.FirstOrDefault(x => x.KHOAN_MUC_HANG_HOA_CODE == detail.ELEMENT_CODE && x.CHI_PHI_PROFIT_CENTER_CODE == detail.CENTER_CODE);
+                                    detail.PLData = revenuePlData.FirstOrDefault(x => x.KHOAN_MUC_HANG_HOA_CODE == detail.ELEMENT_CODE && x.CHI_PHI_PROFIT_CENTER_CODE == detail.CENTER_CODE);
                                 }
-                                var treeData = detail?.CFData;
+                                var treeData = detail?.PLData;
                                 if (treeData != null)
                                 {
                                     item.Values[0] += treeData.QUANTITY ?? 0;
@@ -3912,8 +3691,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     Values = new decimal[3]
                     {
                         costCFData.Sum(x => x.QUANTITY) ?? 0,
-                        costCFData.Sum(x => x.PRICE) ?? 0,
-                        costCFData.Sum(x => x.AMOUNT) ?? 0,
+                         costCFData.Sum(x => x.PRICE) ?? 0,
+                          costCFData.Sum(x => x.AMOUNT) ?? 0,
                     }
                 }
             };
@@ -3958,12 +3737,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 item.Values[0] += treeData.Sum(x => x.QUANTITY) ?? 0;
                                 item.Values[1] += treeData.Sum(x => x.PRICE) ?? 0;
                                 item.Values[2] += treeData.Sum(x => x.AMOUNT) ?? 0;
-
                                 item.HasAssignValue = true;
 
                                 foreach (var d in treeData)
                                 {
-                                    var values = new decimal[14];
+                                    var values = new decimal[3];
                                     values[0] = treeData.Sum(x => x.QUANTITY) ?? 0;
                                     values[1] = treeData.Sum(x => x.PRICE) ?? 0;
                                     values[2] = treeData.Sum(x => x.AMOUNT) ?? 0;
@@ -3987,7 +3765,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         item.Values[0] += treeData.Sum(x => x.QUANTITY) ?? 0;
                         item.Values[1] += treeData.Sum(x => x.PRICE) ?? 0;
                         item.Values[2] += treeData.Sum(x => x.AMOUNT) ?? 0;
-
                     }
                     var clone = (T_MD_KHOAN_MUC_HANG_HOA)item.Clone();
                     lstResult.Add(clone);
@@ -4041,39 +3818,27 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
             var htmlMonth = table.htmlMonth;
-            var htmlYear = table.htmlYear;
-            var module = "KeHoachChiPhi";
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
             workbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
             fs.Close();
-
+            var module = "KeHoachKeHoachChiPhi";
 
             ISheet sheetMonth = workbook.GetSheetAt(0);
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
-            var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
+            var NUM_CELL_MONTH = metaDataMonth.MetaTBody[0].Count;
 
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            ExcelHelperBP.InsertBodyTable(ref workbook,
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertBodyTableByYear(ref workbook,
                 ref sheetMonth,
                 metaDataMonth.MetaTBody,
                 NUM_CELL_MONTH,
-                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-
-            ISheet sheetYear = workbook.GetSheetAt(1);
-            var metaDataYear = ExcelHelper.GetExcelMeta(htmlYear);
-            var NUM_CELL_YEAR = 7;
-
-            InitHeaderFile(ref sheetYear, year, centerCode, version, NUM_CELL_YEAR, templateId, "Tấn", exchangeRate);
-            //ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetYear, metaDataYear.MetaTHead, NUM_CELL_YEAR, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            ExcelHelperBP.InsertBodyTableByYear(ref workbook,
-                ref sheetYear,
-                metaDataYear.MetaTBody,
-                NUM_CELL_YEAR,
                 module,
-                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE)
+                );
+
 
 
 

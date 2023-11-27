@@ -15,6 +15,12 @@
         <a title="Kế hoạch theo năm" data-toggle="tab" href="#kho-dau-nguon">Kho ĐN</a>
     </li>
     <li role="presentation" style="cursor: pointer;">
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#du-lieu">Dữ liệu</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#dgkdn">Đơn giá kho ĐN</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
         <a title="Kế hoạch theo năm" data-toggle="tab" href="#cung-ung">CƯ</a>
     </li>
     <li role="presentation" style="cursor: pointer;">
@@ -104,7 +110,7 @@
                         {
                             <tr>
                                 <td>@item.WarehouseCode</td>
-                                <td>@item.Warehouse</td>
+                                <td style="text-align:left">@item.Warehouse</td>
                                 <td>@item.PreTrungBinh.ToStringVN()</td>
                                 <td>@item.PreDN1.ToStringVN()</td>
                                 <td>@item.SanLuong.ToStringVN()</td>
@@ -181,22 +187,133 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        @foreach (var item in Model.KhoDauNguonData)
+                        {
+                            <tr>
+                                <td>@item.WarehouseCode</td>
+                                <td style="text-align:left">@item.WarehouseName</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="du-lieu">
+        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                    <thead>
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <th style="text-align:center;" rowspan="2">Tuyến CNVT</th>
+                            <th style="text-align:center;" rowspan="2">Kho đầu nguồn 2</th>
+                            <th style="text-align:center;" rowspan="2">Tuyến VC lọc</th>
+                            <th style="text-align:center;" rowspan="2">Tuyến VC</th>
+                            <th style="text-align:center;" rowspan="2">Km có hàng</th>
+                            <th style="text-align:center;" rowspan="2">Hao hụt VC</th>
+                            <th style="text-align:center;" rowspan="2">Sản lượng (m3)</th>
+
+                            <th style="text-align:center;" colspan="5">Hao hụt các khâu</th>
+                            <th style="text-align:center;" rowspan="2">Cộng HH</th>
+                            <th style="text-align:center;" rowspan="2">ĐG vận tải<br />  thủy nội địa</th>
+                            <th style="text-align:center;" rowspan="2">Đ/c ĐG vận tải thủy</th>
+                            <th style="text-align:center;" rowspan="2">ĐG VT thủy <br /> nội địa sau <br /> điều chỉnh</th>
+                            <th style="text-align:center;" colspan="5">CP kho Đầu nguồn</th>
                         </tr>
-                        
+                        <tr>
+                            <th>TN</th>
+                            <th>BR</th>
+                            <th>BQ</th>
+                            <th>HH kho gốc</th>
+                            <th>Tàu nội</th>
+                            <th>ĐN 1</th>
+                            <th>ĐN 2</th>
+                            <th>Cộng</th>
+                            <th>Đ/c do khác SL</th>
+                            <th>ĐG kho sau ĐC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.DuLieuData)
+                        {
+                            <tr>
+                                <td style="text-align:left">@item.RouteName</td>
+                                <td>@item.FirstPoint</td>
+                                <td>@item.RouteCode</td>
+                                <td>@item.FinalPoint</td>
+                                <td>@item.KmCoHang</td>
+                                <td>@item.HaoHutVC.ToString("0.0000000")</td>
+                                <td>@item.Quantity.ToStringVN()</td>
+                                <td>@item.TN.ToStringVN()</td>
+                                <td>@item.BR.ToStringVN()</td>
+                                <td>@item.BQ.ToStringVN()</td>
+                                <td>@item.HHKhoGoc.ToStringVN()</td>
+                                <td>@item.TauNoi.ToStringVN()</td>
+                                <td>@item.CongHH.ToStringVN()</td>
+                                <td>@item.DGVTTND.ToStringVN()</td>
+                                <td>@item.DCDGVTT.ToStringVN()</td>
+                                <td>@item.DGVTTNDSDC.ToStringVN()</td>
+                                <td>@item.DN1.ToStringVN()</td>
+                                <td>@item.DN2.ToStringVN()</td>
+                                <td>@item.DNTotal.ToStringVN()</td>
+                                <td>@item.DNOther.ToStringVN()</td>
+                                <td>@item.DNKSDC.ToStringVN()</td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="dgkdn">
+        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center;" rowspan="2">Mã kho</th>
+                            <th style="text-align:center;" colspan="2">Hao hụt cung ứng</th>
+                            <th style="text-align:center;" rowspan="2">Tổng HH</th>
+                            <th style="text-align:center;" rowspan="2">Đơn giá tàu nội (Đ/tấn)</th>
+                            <th style="text-align:center;" rowspan="2">Đơn giá kho đầu nguồn</th>
+                            <th style="text-align:center;" rowspan="2">SL sân bay</th>
+                            <th style="text-align:center;" rowspan="2">Giá kho ĐN sau Đ/c</th>
+                        </tr>
+                        <tr>
+                            <th style="text-align:center;">V/c đ.bộ</th>
+                            <th style="text-align:center;">Khác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.DonGiaKhoDauNguonData)
+                        {
+                            <tr>
+                                <td>@item.WarehouseCode</td>
+                                <td>@item.VanChuyenDuongBo.ToString("0.000") %</td>
+                                <td>@item.Other.ToString("0.000") %</td>
+                                <td>@item.TongHaoHut.ToString("0.000") %</td>
+                                <td>@item.DonGiaTauNoi.ToStringVN()</td>
+                                <td>@item.DonGiaKhoDauNguon.ToStringVN()</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>

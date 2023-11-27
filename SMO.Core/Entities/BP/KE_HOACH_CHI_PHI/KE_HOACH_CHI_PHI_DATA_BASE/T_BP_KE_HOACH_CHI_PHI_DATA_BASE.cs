@@ -6,9 +6,8 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
     public class T_BP_KE_HOACH_CHI_PHI_DATA_BASE : BaseEntity
     {
         public virtual string PKID { get; set; }
-
         public virtual string ORG_CODE { get; set; }
-        public virtual string CHI_PHI_CODE { get; set; }
+        public virtual string COST_CENTER_CODE { get; set; }
         public virtual string SAN_BAY_CODE { get; set; }
         public virtual string CHI_PHI_PROFIT_CENTER_CODE { get; set; }
         public virtual string TEMPLATE_CODE { get; set; }
@@ -31,7 +30,7 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
         public virtual T_MD_KHOAN_MUC_HANG_HOA KhoanMucHangHoa { get; set; }
         public virtual T_MD_CHI_PHI_PROFIT_CENTER ChiPhiProfitCenter { get; set; }
         public virtual T_MD_SAN_BAY SanBay { get; set; }
-        public virtual T_MD_KHOAN_MUC_CHI_PHI ChiPhi { get; set; }
+        public virtual T_MD_COST_CENTER CostCenter { get; set; }
         public virtual T_MD_COST_CENTER Organize { get; set; }
     }
 }

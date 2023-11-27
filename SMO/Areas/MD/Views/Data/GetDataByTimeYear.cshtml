@@ -1,0 +1,122 @@
+﻿@model List<SMO.Core.Entities.T_MD_DATA>
+
+<style>
+    .input-paste {
+        border: none;
+        background: none;
+        width: 100%
+    }
+</style>
+<div>
+    <table class="table table-condensed table-bordered table-striped" id="table-data">
+        <thead>
+            <tr>
+                <th rowspan="2">Mã VT</th>
+                <th rowspan="2">Tên</th>
+                <th colspan="5" style="text-align:center">Hao hụt các khâu</th>
+                <th rowspan="2">Cộng HH</th>
+                <th rowspan="2">ĐG vận tải<br />  thủy nội địa</th>
+                <th rowspan="2">Đ/c ĐG vận tải thủy</th>
+                <th rowspan="2">ĐG VT thủy <br /> nội địa sau <br /> điều chỉnh</th>
+                <th colspan="5" style="text-align:center">CP kho Đầu nguồn</th>
+            </tr>
+            <tr>
+                <th>TN</th>
+                <th>BR</th>
+                <th>BQ</th>
+                <th>HH kho gốc</th>
+                <th>Tàu nội</th>
+                <th>ĐN 1</th>
+                <th>ĐN 2</th>
+                <th>Cộng</th>
+                <th>Đ/c do khác SL</th>
+                <th>ĐG kho sau ĐC</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><input class="ROUTE_CODE" value="@item.ROUTE_CODE" disabled style="background:none; border:none" /></td>
+                    <td><input class="ROUTE" value="@item.ROUTE" disabled style="background:none; border:none" /></td>
+                    <td><input class="input-paste S0011" value="@(item.S0011?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0012" value="@(item.S0012?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0013" value="@(item.S0013?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0014" value="@(item.S0014?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0015" value="@(item.S0015?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0016" value="@(item.S0016?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0017" value="@(item.S0017?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0018" value="@(item.S0018?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0019" value="@(item.S0019?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0020" value="@(item.S0020?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0021" value="@(item.S0021?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0022" value="@(item.S0022?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0023" value="@(item.S0023?.ToString("G29"))" /></td>
+                    <td><input class="input-paste S0024" value="@(item.S0024?.ToString("G29"))" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $('.input-paste').on('paste', function (e) {
+        var $this = $(this);
+        $.each(e.originalEvent.clipboardData.items, function (i, v) {
+            if (v.type === 'text/plain') {
+                v.getAsString(function (text) {
+                    var x = $this.closest('td').index(),
+                        y = $this.closest('tr').index(),
+                        obj = {};
+                    text = text.trim('\r\n');
+                    $.each(text.split('\r\n'), function (i2, v2) {
+                        $.each(v2.split('\t'), function (i3, v3) {
+                            var row = y + i2 + 1, col = x + i3;
+                            obj['cell-' + row + '-' + col] = v3;
+                            $this.closest('table').find('tr:eq(' + row + ') td:eq(' + col + ') .input-paste').val(v3);
+                        });
+                    });
+                });
+            }
+        });
+        return false;
+    });
+
+    function savePurchaseData() {
+        var year = $("#TIME_YEAR").val();
+        var data = [];
+        $('#table-data > tbody  > tr').each(function (index, tr) {
+            row = $(this);
+            data.push({
+                ROUTE_CODE: row.find(".ROUTE_CODE").val(),
+                ROUTE: row.find(".ROUTE").val(),
+                TIME_YEAR: year,
+                S0011: String(row.find(".S0011").val()).replaceAll("%", ""),
+                S0012: String(row.find(".S0012").val()).replaceAll("%", ""),
+                S0013: String(row.find(".S0013").val()).replaceAll("%", ""),
+                S0014: String(row.find(".S0014").val()).replaceAll("%", ""),
+                S0015: String(row.find(".S0015").val()).replaceAll("%", ""),
+                S0016: String(row.find(".S0016").val()).replaceAll("%", ""),
+                S0017: String(row.find(".S0017").val()).replaceAll("%", ""),
+                S0018: String(row.find(".S0018").val()).replaceAll("%", ""),
+                S0019: String(row.find(".S0019").val()).replaceAll("%", ""),
+                S0020: String(row.find(".S0020").val()).replaceAll("%", ""),
+                S0021: String(row.find(".S0021").val()).replaceAll("%", ""),
+                S0022: String(row.find(".S0022").val()).replaceAll("%", ""),
+                S0023: String(row.find(".S0023").val()).replaceAll("%", ""),
+                S0024: String(row.find(".S0024").val()).replaceAll("%", ""),
+            })
+        });
+        var ajaxParams = {
+            url: "@Url.Action("Update")",
+            type: "POST",
+            data: {
+                data: JSON.stringify(data)
+            },
+            dataType: 'json',
+            success: function (response) {
+                Message.execute(response);
+            }
+        }
+        Forms.Ajax(ajaxParams)
+    }
+</script>

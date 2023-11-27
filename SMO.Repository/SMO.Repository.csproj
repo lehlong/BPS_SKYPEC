@@ -250,6 +250,7 @@
     <Compile Include="Implement\MD\CountryRepo.cs" />
     <Compile Include="Implement\MD\CurrencyRepo.cs" />
     <Compile Include="Implement\MD\CustomerRepo.cs" />
+    <Compile Include="Implement\MD\DataRepo.cs" />
     <Compile Include="Implement\MD\DauTuNgoaiDoanhNghiepProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\DauTuTrangThietBiProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\DauTuXayDungProfitCenterRepo.cs" />
@@ -491,6 +492,7 @@
     <Compile Include="Interface\MD\ICountryRepo.cs" />
     <Compile Include="Interface\MD\ICurrencyRepo.cs" />
     <Compile Include="Interface\MD\ICustomerRepo.cs" />
+    <Compile Include="Interface\MD\IDataRepo.cs" />
     <Compile Include="Interface\MD\IDauTuNgoaiDoanhNghiepProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IDauTuTrangThietBiProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IDauTuXayDungProfitCenterRepo.cs" />
@@ -745,6 +747,7 @@
     <Compile Include="Mapping\MD\T_MD_COUNTRY_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_CURRENCY_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_CUSTOMER_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_DATA_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DAU_TU_NGOAI_DOANH_NGHIEP_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER_Map.cs" />

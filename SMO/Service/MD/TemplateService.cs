@@ -1,5 +1,5 @@
 ﻿using NHibernate;
-
+using NHibernate.Linq;
 using SMO.Core.Common;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
@@ -754,6 +754,10 @@ namespace SMO.Service.MD
                                 SAN_BAY_CODE = projectCode,
                             });
                         }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                        }
                         
                         switch (ObjDetail.BUDGET_TYPE.Trim())
                         {
@@ -811,6 +815,21 @@ namespace SMO.Service.MD
                                     break;
                             }
                         }
+                        else
+                        {
+                            switch (ObjDetail.BUDGET_TYPE.Trim())
+                            {
+                                case BudgetType.SuaChuaLon:
+                                    UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                                    break;
+                                case BudgetType.SuaChuaThuongXuyen:
+                                    UnitOfWork.Repository<TemplateDetailSuaChuaThuongXuyenRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
                         
                         switch (ObjDetail.BUDGET_TYPE.Trim())
                         {
@@ -858,6 +877,10 @@ namespace SMO.Service.MD
                                 SAN_BAY_CODE = projectCode,
                             });
                         }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                        }
                         
                         switch (ObjDetail.BUDGET_TYPE.Trim())
                         {
@@ -900,6 +923,10 @@ namespace SMO.Service.MD
                                 COST_CENTER_CODE = projectCode,
                             });
                         }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                        }
                         
                         switch (ObjDetail.BUDGET_TYPE.Trim())
                         {
@@ -941,6 +968,10 @@ namespace SMO.Service.MD
                                 PROJECT_CODE = projectCode,
                             });
                         }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                        }
                         
                         switch (ObjDetail.BUDGET_TYPE.Trim())
                         {
@@ -980,6 +1011,10 @@ namespace SMO.Service.MD
                                 ORG_CODE = companyCode,
                                 PROJECT_CODE = projectCode,
                             });
+                        }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
                         }
                         
                         switch (ObjDetail.BUDGET_TYPE.Trim())
@@ -1021,6 +1056,10 @@ namespace SMO.Service.MD
                                 PROJECT_CODE = projectCode,
                             });
                         }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailDauTuNgoaiDoanhNghiepRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                        }
                         
                         switch (ObjDetail.BUDGET_TYPE.Trim())
                         {
@@ -1061,6 +1100,10 @@ namespace SMO.Service.MD
                                 ORG_CODE = companyCode,
                                 ROUTE_CODE = projectCode,
                             });
+                        }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailKeHoachVanChuyenRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
                         }
                         
                         switch (ObjDetail.BUDGET_TYPE.Trim())

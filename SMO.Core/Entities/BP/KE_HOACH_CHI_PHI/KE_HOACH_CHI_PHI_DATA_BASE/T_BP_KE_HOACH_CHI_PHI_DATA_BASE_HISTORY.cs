@@ -8,7 +8,7 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
 
         public virtual string ORG_CODE { get; set; }
         public virtual string SAN_BAY_CODE { get; set; }
-        public virtual string CHI_PHI_CODE { get; set; }
+        public virtual string COST_CENTER_CODE { get; set; }
         public virtual string CHI_PHI_PROFIT_CENTER_CODE { get; set; }
         public virtual string TEMPLATE_CODE { get; set; }
         public virtual string KHOAN_MUC_HANG_HOA_CODE { get; set; }
@@ -29,7 +29,7 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
         public virtual T_MD_KHOAN_MUC_HANG_HOA KhoanMucHangHoa { get; set; }
         public virtual T_MD_CHI_PHI_PROFIT_CENTER ChiPhiProfitCenter { get; set; }
         public virtual T_MD_SAN_BAY SanBay { get; set; }
-        public virtual T_MD_KHOAN_MUC_CHI_PHI ChiPhi { get; set; }
+        public virtual T_MD_COST_CENTER CostCenter { get; set; }
         public virtual T_MD_COST_CENTER Organize { get; set; }
 
         public static explicit operator T_BP_KE_HOACH_CHI_PHI_DATA_BASE_HISTORY(T_BP_KE_HOACH_CHI_PHI_DATA_BASE v)
@@ -39,7 +39,7 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.KE_HOACH_CHI_PHI_DATA_BASE
                 PKID = v.PKID,
                 ORG_CODE = v.ORG_CODE,
                 SAN_BAY_CODE = v.SAN_BAY_CODE,
-                CHI_PHI_CODE = v.CHI_PHI_CODE,
+                COST_CENTER_CODE = v.COST_CENTER_CODE,
                 CHI_PHI_PROFIT_CENTER_CODE = v.CHI_PHI_PROFIT_CENTER_CODE,
                 TEMPLATE_CODE = v.TEMPLATE_CODE,
                 KHOAN_MUC_HANG_HOA_CODE = v.KHOAN_MUC_HANG_HOA_CODE,
