@@ -10,7 +10,7 @@
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
 
     var lstSanBay = SelectListUtilities.GetListSanBay();
-    var query = from a in lstSanBay
+    var query = from a in lstSanBay.Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null)
                 join b in detailCostElements on a.CODE equals b.Center.SanBay.CODE
                 select new
                 {
@@ -21,7 +21,7 @@
                     Value = Model.FirstOrDefault(x => x.CENTER_CODE == b.Center.CODE && x.CODE == b.Element.CODE)?.Values[12]
                 };
     IList<ViewDataYearModel> dataYear = new List<ViewDataYearModel>();
-    foreach (var item in lstSanBay)
+    foreach (var item in lstSanBay.Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null))
     {
         dataYear.Add(new ViewDataYearModel
         {
