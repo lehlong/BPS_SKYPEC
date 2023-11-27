@@ -156,18 +156,20 @@ namespace SMO.Helper
                 if (module.Trim() == "KeHoachSanLuong")
                 {
                     IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                    rowCur.Cells[0].SetCellValue(metaTBody[i][0]?.Content?.ToString());
-                    rowCur.Cells[1].SetCellValue(metaTBody[i][1]?.Content?.ToString());
-                    rowCur.Cells[2].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][2]?.Content.Trim().Replace(".", "").Replace(",", ".")));
-                    rowCur.Cells[3].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][3]?.Content.Trim().Replace(".", "").Replace(",", ".")));
-                    rowCur.Cells[4].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][4]?.Content.Trim().Replace(".", "").Replace(",", ".")));
-                    rowCur.Cells[5].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][5]?.Content.Trim().Replace(".", "").Replace(",", ".")));
-                    rowCur.Cells[6].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][6]?.Content.Trim().Replace(".", "").Replace(",", ".")));
-                    rowCur.Cells[2].CellStyle = styleCellNumber;
-                    rowCur.Cells[3].CellStyle = styleCellNumber;
-                    rowCur.Cells[4].CellStyle = styleCellNumber;
-                    rowCur.Cells[5].CellStyle = styleCellNumber;
-                    rowCur.Cells[6].CellStyle = styleCellNumber;
+                    for (int j = 0; j< NUM_CELL - 1; j++)
+                    {
+                        if (j == 0 || j == 1)
+                        {
+                            rowCur.Cells[j].SetCellValue(metaTBody[i][j]?.Content?.ToString());
+                            rowCur.Cells[j].CellStyle = styleCellNumber;
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][j]?.Content.Trim().Replace(".", "").Replace(",", ".")));
+                            rowCur.Cells[j].CellStyle = styleCellNumber;
+                        }
+                    }
+                    
                 }
                 else if (module.Trim() == "KeHoachSuaChuaLon" || module.Trim() == "SuaChuaThuongXuyen")
                 {
