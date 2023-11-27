@@ -3919,5 +3919,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
         }
 
+        public T_MD_KHOAN_MUC_CHI_PHI GetKMChiPhi(string code)
+        {
+            var KMChiPhi = UnitOfWork.Repository<KhoanMucChiPhiRepo>()
+                .Queryable()
+                .FirstOrDefault(x => x.CODE == code);
+
+            return KMChiPhi;
+        }
+
     }
 }

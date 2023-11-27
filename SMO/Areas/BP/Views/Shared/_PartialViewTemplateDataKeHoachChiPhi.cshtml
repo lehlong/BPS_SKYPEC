@@ -58,10 +58,11 @@ else
                 <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
                     <tbody>
                         <tr class="sticky-row strong" data-xls-row="header">
+                            <td class="sticky-cell pre-whitespace" rowspan="3" style="z-index:11"><div class="resize-col">COMMENT</div></td>
                             <td class="pre-whitespace" rowspan="3" style="text-align:center">MÃ</td>
                             <td class="pre-whitespace" rowspan="3" style="text-align:center">CHỈ TIÊU</td>
                             <td class="pre-whitespace" rowspan="3" style="text-align:center">ĐVT</td>
-                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 5)" style="text-align:center">KẾ HOẠCH GIAO ĐẦU NĂM</td>                     
+                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 5)" style="text-align:center">KẾ HOẠCH GIAO ĐẦU NĂM</td>
                         </tr>
                         <tr class="sticky-row strong" data-xls-row="header">
                             <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 1)" style="text-align:center">SỐ LƯỢNG</td>
@@ -94,6 +95,13 @@ else
                             var classParent = item.IS_GROUP ? "strong" : string.Empty;
                             var isEdit = item.IS_GROUP ? "disabled" : "";
                             <tr class="@classParent">
+                                @if (item.CODE != "")
+                                {
+                                    <td class="btn sticky-cell pre-whitespace" data-toggle="modal" data-target="#exampleModal" style="display:flex; justify-content:center;" onclick="ShowComment('@item.CODE')">
+                                        <i href="" class="material-icons " id="@item.CODE" style="text-decoration:none; color:#555;">comment</i>
+                                    </td>
+                                }
+
                                 <td class="pre-whitespace">@(item.CODE)</td>
                                 <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                 <td class="pre-whitespace"></td>
@@ -116,10 +124,43 @@ else
                                 <td class="pre-whitespace"></td>
                                 <td>@item.DESCRIPTION</td>
                             </tr>
+                            
                         }
 
                     </tbody>
                 </table>
+            </div>
+        </div>
+        @*Modal*@
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="MaKhoanMuc" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="MaKhoanMuc" value=""></h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group" style="margin-bottom:0px;">
+                            <div class="form-line">
+                                <input type="text" id="txtContent"
+                                       Org_Code="@dataCenterModel.ORG_CODE"
+                                       Reference_code="@dataCenterModel.TEMPLATE_CODE"
+                                       year="@dataCenterModel.YEAR"
+                                       version="@dataCenterModel.VERSION"
+                                       placeholder="Type a comment" style="padding: 10px 10px;width:100%;" />
+                            </div>
+                            <span class="input-group-addon" onclick="SendComment()">
+                                <i class="material-icons" style="font-size: 35px; cursor: pointer;">send</i>
+                            </span>
+                        </div>
+
+                        <div id="commentList">
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -128,6 +169,119 @@ else
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
         function mask(e) {
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+
+        function GetCommentAll() {
+            $.ajax({
+                url: '@Url.Action("List","CommentDetails")',
+                type: "GET",
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    for (let i = 0; i < response.length; i++) {
+                        var item = response[i];
+                        var code = item.ELEMENT_CODE;
+                        if (!$('#' + code).hasClass('col-fecon')) {
+                            $('#' + code).addClass('col-fecon');
+                        }
+                    }
+                },
+                error: Forms.AjaxErrorHandler
+            });
+        }
+        GetCommentAll();
+
+        function ShowComment(code) {
+            $('#txtContent').val('');
+            $.ajax({
+                url: '@Url.Action("CommentKM")',
+                type: "POST",
+                data: {
+                    code: code,
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.khoanmuc != null) {
+                        $('#MaKhoanMuc').val(response.khoanmuc.CODE);
+                        $('#MaKhoanMuc').text(response.khoanmuc.CODE + "-" + response.khoanmuc.TEXT)
+                    }
+                    else {
+                        $('#MaKhoanMuc').text("Comment tổng");
+                    }
+                    GetListComment(response.khoanmuc.CODE);
+                },
+                error: Forms.AjaxErrorHandler
+            });
+        }
+
+        function SendComment() {
+            var code = $('#MaKhoanMuc').val();
+            var content = $('#txtContent').val();
+            var orgCode = $("#txtContent").attr("Org_Code");
+            var referenceCode = $("#txtContent").attr("Reference_code");
+            var year = $("#txtContent").attr("year");
+            var version = $("#txtContent").attr("version");
+            if (content == "") {
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("Create", "CommentDetails")',
+                type: "POST",
+                data: {
+                    code: code,
+                    content: content,
+                    orgCode: orgCode,
+                    referenceCode: referenceCode,
+                    year: year,
+                    version: version
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.code) {
+                        GetListComment(response.code);
+                        GetCommentAll();
+                    }
+                    else return;
+                },
+                error: Forms.AjaxErrorHandler
+            });
+            $('#txtContent').val('');
+        }
+        function GetListComment(code) {
+            $.ajax({
+                url: '@Url.Action("List","CommentDetails")',
+                type: "POST",
+                data: {
+                    code: code
+                },
+                dataType: 'json',
+                success: function (response) {
+                    $('#commentList').html('');
+                    for (let i = 0; i < response.length; i++) {
+                        var item = response[i];
+                        var timestamp = parseInt(item.CREATE_DATE.match(/\d+/)[0]);
+                        var createDate = new Date(timestamp); // Tạo đối tượng ngày từ số milliseconds
+
+                        // Định dạng ngày giờ thành chuỗi "dd/MM/yyyy HH:mm:ss"
+                        var formattedDate = createDate.toLocaleString("vi-VN", { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                        var html = `
+                        <div class="row-comment">
+                        <label>${item.CREATE_BY}</label>
+                        <div class="comment-time">
+                        <span>${formattedDate}</span>
+                            <br>
+                             <span>Version: ${item.VERSION}</span>
+                            </div>
+                            <br />
+                            <span class="comment-content">${item.CONTENT}</span>
+                        </div>
+                     `
+                        $('#commentList').append(html);
+
+                    }
+                },
+                error: Forms.AjaxErrorHandler
+            })
         }
     </script>
 }

@@ -511,6 +511,7 @@
     <Compile Include="Areas\BP\Controllers\BudgetPeriodController.cs" />
     <Compile Include="Areas\BP\Controllers\CommentController.cs" />
     <Compile Include="Areas\BP\Controllers\Base\IBPController.cs" />
+    <Compile Include="Areas\BP\Controllers\CommentDetailsController.cs" />
     <Compile Include="Areas\BP\Controllers\DauTuNgoaiDoanhNghiepController.cs" />
     <Compile Include="Areas\BP\Controllers\DauTuNgoaiDoanhNghiepReviewCommentController.cs" />
     <Compile Include="Areas\BP\Controllers\DauTuNgoaiDoanhNghiepReviewController.cs" />
@@ -803,6 +804,7 @@
     <Compile Include="Service\Class\T_EB_BID_SPEC_SYSTEM_SCORE.cs" />
     <Compile Include="Service\Class\ViewDataCenterModel.cs" />
     <Compile Include="Service\Class\WF\ConfigSendViewModel.cs" />
+    <Compile Include="Service\CM\CommentDetailsService.cs" />
     <Compile Include="Service\CM\FileUploadService.cs" />
     <Compile Include="Service\CM\SmsHistoryService.cs" />
     <Compile Include="Service\CM\CommentService.cs" />
@@ -2142,6 +2144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\BP\Views\CommentDetails\" />
     <Folder Include="Areas\MD\Views\ChiPhiProfitCenter\" />
     <Folder Include="Areas\MD\Views\DauTuNgoaiDoanhNghiepProfitCenter\" />
     <Folder Include="Areas\MD\Views\PurcharseData\" />

@@ -130,5 +130,16 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
+
+        public ActionResult CommentKM(string code)
+        {
+            var khoanmuc = _service.GetKMChiPhi(code);
+            var resultData = new
+            {
+                khoanmuc = khoanmuc
+            };
+
+            return Json(resultData, JsonRequestBehavior.AllowGet);
+        }
     }
 }
