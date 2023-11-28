@@ -3823,7 +3823,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             workbook = new XSSFWorkbook(fs);
             workbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
             fs.Close();
-            var module = "KeHoachKeHoachChiPhi";
+            var module = "KeHoachChiPhi";
 
             ISheet sheetMonth = workbook.GetSheetAt(0);
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
@@ -3849,7 +3849,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
         private void InitHeaderFile(ref ISheet sheet, int year, string centerCode, int? version, int NUM_CELL, string templateId, string unit, decimal exchangeRate)
         {
-            var name = "DỮ LIỆU KẾ HOẠCH SẢN LƯỢNG";
+            var name = "DỮ LIỆU KẾ HOẠCH CHI PHÍ";
             var centerName = GetCenter(centerCode).NAME.ToUpper();
             var template = GetTemplate(templateId);
             var templateName = template != null ? $"Mẫu khai báo: {template.CODE} - {template.NAME}" : "Tổng hợp dữ liệu";

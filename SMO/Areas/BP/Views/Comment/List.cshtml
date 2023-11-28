@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<SMO.Core.Entities.T_CM_COMMENT>
-@using SMO.Core.Entities.BP.REVENUE_PL;
+@using SMO.Core.Entities.CM;
 @{
-    var header = ViewBag.Header as T_BP_REVENUE_PL_REVIEW_COMMENT;
+    var header = ViewBag.Header as T_CM_HEADER_BP_COMMENT;
 }
 @if (Model != null)
 {
@@ -14,7 +14,7 @@
                 @if (header != null)
                 {
                     <br>
-                    <span>Version: @header.DATA_VERSION</span>
+                    <span>Version: @header.VERSION</span>
                 }
             </div>
             <br />

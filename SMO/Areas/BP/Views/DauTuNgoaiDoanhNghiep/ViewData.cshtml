@@ -83,7 +83,6 @@
             <div class="hidden">
                 <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("exportExcel")">
                     @Html.Hidden("htmlMonth")
-                    @Html.Hidden("htmlYear")
                     @Html.Hidden("exportExcelYear", Model.YEAR)
                     @Html.Hidden("exportExcelVersion", Model.VERSION)
                     @Html.Hidden("exportExcelTemplate", Model.TEMPLATE_CODE)
@@ -116,10 +115,7 @@
             if (htmlMonth === '') {
                 return;
             }
-            var htmlYear = $('<div>').append($('#divExportRight_@viewId #table_year').clone()).html().trim();
-            if (htmlYear === '') {
-                return;
-            }
+            
             $('#@inputIdExportExcel').remove();
             $('#@formIdExportExcel').append(`<input id="@inputIdExportExcel" name="html" type="hidden" />`);
             $('#@formIdExportExcel #exportExcelCenterCode').val($('#@formId #ORG_CODE').val());
@@ -132,8 +128,7 @@
             $('#@formIdExportExcel #kichBan').val($('#@formId #KICH_BAN').val());
             $('#@formIdExportExcel #phienBan').val($('#@formId #PHIEN_BAN').val());
             $('#@formIdExportExcel #moduleType').val("DauTuNgoaiDoanhNghiep");
-            $('#@formIdExportExcel #htmlMonth').val(htmlMonth);
-            $('#@formIdExportExcel #htmlYear').val(htmlYear);
+            $('#@formIdExportExcel #htmlMonth').val(encodeURIComponent(htmlMonth));
             $('#@formIdExportExcel').submit();
         }
 

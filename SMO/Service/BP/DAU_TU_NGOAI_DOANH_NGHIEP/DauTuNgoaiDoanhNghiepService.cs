@@ -4175,7 +4175,6 @@ namespace SMO.Service.BP.DAU_TU_NGOAI_DOANH_NGHIEP
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
             var htmlMonth = table.htmlMonth;
-            var htmlYear = table.htmlYear;
             var module = "DauTuDoanhNgiep";
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
@@ -4196,30 +4195,13 @@ namespace SMO.Service.BP.DAU_TU_NGOAI_DOANH_NGHIEP
                 NUM_CELL_MONTH,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
 
-            ISheet sheetYear = workbook.GetSheetAt(1);
-            var metaDataYear = ExcelHelper.GetExcelMeta(htmlYear);
-            var NUM_CELL_YEAR = 7;
-
-            InitHeaderFile(ref sheetYear, year, centerCode, version, NUM_CELL_YEAR, templateId, "Tấn", exchangeRate);
-            //ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetYear, metaDataYear.MetaTHead, NUM_CELL_YEAR, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            ExcelHelperBP.InsertBodyTableByYear(ref workbook,
-                ref sheetYear,
-                metaDataYear.MetaTBody,
-                NUM_CELL_YEAR,
-                module,
-                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE)
-                );
-
-
-
-
             // Save the Excel spreadsheet to a MemoryStream and return it to the client
             workbook.Write(outFileStream);
         }
 
         private void InitHeaderFile(ref ISheet sheet, int year, string centerCode, int? version, int NUM_CELL, string templateId, string unit, decimal exchangeRate)
         {
-            var name = "DỮ LIỆU KẾ HOẠCH SẢN LƯỢNG";
+            var name = "DỮ LIỆU KẾ HOẠCH ĐẦU TƯ NGOÀI DOANH NGHIỆP";
             var centerName = GetCenter(centerCode).NAME.ToUpper();
             var template = GetTemplate(templateId);
             var templateName = template != null ? $"Mẫu khai báo: {template.CODE} - {template.NAME}" : "Tổng hợp dữ liệu";

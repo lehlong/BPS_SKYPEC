@@ -151,6 +151,10 @@ namespace SMO.Helper
             styleCellFirst.CloneStyleFrom(sheet.GetRow(10).Cells[0].CellStyle);
 
             var startRow = 9;
+            if(module.Trim() == "KeHoachChiPhi")
+            {
+                startRow = 10;
+            }
             for (int i = 0; i < metaTBody.Count(); i++)
             {
                 if (module.Trim() == "KeHoachSanLuong")
@@ -217,6 +221,15 @@ namespace SMO.Helper
 
                     }
                 }
+                else if(module.Trim() == "KeHoachChiPhi")
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                    for(int j = 1; j < NUM_CELL; j++)
+                    {
+                        rowCur.Cells[j-1].SetCellValue(metaTBody[i][j].Content);
+                        rowCur.Cells[j - 1].CellStyle = styleCellFirst;
+                    }
+                }
                 
                 else
                 {
@@ -248,6 +261,7 @@ namespace SMO.Helper
             ICellStyle styleCellHeader = workbook.CreateCellStyle();
             styleCellHeader.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
             styleCellHeader.WrapText = true;
+            styleCellHeader.Alignment = HorizontalAlignment.Center;
 
             var numRowCur = 7;
             var rowStart = 0;
@@ -305,6 +319,76 @@ namespace SMO.Helper
                     } 
                     rowStart++;  
                 }
+                else if(module.Trim() == "KeHoachChiPhi")
+                {
+                    var cellstart = 4;
+                    var sanbay = metaTHeader[2].Count / 2;
+                    var CellSum = cellstart + sanbay + 1;
+                    for (int cell = 0; cell < NUM_CELL; cell++)
+                    {
+                        rowCur.Cells[cell].CellStyle = styleCellHeader;
+                    }
+                    if (rowStart == 0)
+                    {
+                        
+                        for(int cell = 1; cell< row.Count; cell++)
+                        {
+                            rowCur.Cells[cell-1].SetCellValue(row[cell]?.Content);
+                            rowCur.Cells[cell-1].CellStyle = styleCellHeader;
+                        }
+                    }
+                    else if(rowStart == 1)
+                    {
+                        for(int cell =  cellstart-1; cell < NUM_CELL; cell++)
+                        {
+                            if(cell == cellstart-1)
+                            {
+                                rowCur.Cells[cell].SetCellValue(row[0]?.Content);
+                                rowCur.Cells[cell].CellStyle = styleCellHeader;
+                            }
+
+                            if(cell == CellSum-1)
+                            {
+                                rowCur.Cells[cell].SetCellValue(row[1]?.Content);
+                                rowCur.Cells[cell+1].SetCellValue(row[2]?.Content);
+                                rowCur.Cells[cell+2].SetCellValue(row[3]?.Content);
+
+                                rowCur.Cells[cell].CellStyle = styleCellHeader;
+                                rowCur.Cells[cell+1].CellStyle = styleCellHeader;
+                                rowCur.Cells[cell+2].CellStyle = styleCellHeader;
+                            }
+
+                            if(cell == NUM_CELL - 2)
+                            {
+                                rowCur.Cells[cell].SetCellValue(row[4]?.Content);
+                                rowCur.Cells[cell + 1].SetCellValue(row[5]?.Content);
+                                rowCur.Cells[cell].CellStyle = styleCellHeader;
+                                rowCur.Cells[cell+1].CellStyle = styleCellHeader;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var indexRow = 0;
+                        for(int cell = cellstart-1; cell < CellSum-1; cell++){
+                            rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
+                            indexRow++;
+                        }
+                        for(int cell = CellSum+2-1; cell < NUM_CELL - 2; cell++)
+                        {
+                            rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
+                            indexRow++;
+                        }
+                        sheet.AddMergedRegion(new CellRangeAddress(7, 9, 0, 0));
+                        sheet.AddMergedRegion(new CellRangeAddress(7, 9, 1, 1));
+                        sheet.AddMergedRegion(new CellRangeAddress(7, 9, 2, 2));
+                        sheet.AddMergedRegion(new CellRangeAddress(7, 7, 3, NUM_CELL - 1));
+                        sheet.AddMergedRegion(new CellRangeAddress(8, 8, 3, CellSum - 2));
+                        sheet.AddMergedRegion(new CellRangeAddress(8, 8, CellSum + 1, NUM_CELL - 3));
+                    }
+                    
+                    rowStart++;
+                }
                 else
                 {
                     foreach (var cell in row)
@@ -330,7 +414,7 @@ namespace SMO.Helper
             var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
             ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
             rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {centerName}");
-            rowHeader1.Cells[3].SetCellValue(name);
+            rowHeader1.Cells[1].SetCellValue(name);
 
             var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
             ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
