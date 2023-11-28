@@ -297,7 +297,7 @@ else
                                 <td class="pre-whitespace" style="z-index:11">HKNN</td>
                                 <td class="pre-whitespace" style="z-index:11">TỔNG NĂM</td>
                             </tr>
-                            @foreach (var sb in lstSanBay)
+                            @foreach (var sb in lstSanBay.Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null))
                             {
                                 var data = Model.Where(x => x.ProfitCenter.SAN_BAY_CODE == sb.CODE).Where(x => x.CODE == "2001");
                                 <tr>
@@ -333,7 +333,7 @@ else
                                 <td class="pre-whitespace" style="z-index:11">HKNN</td>
                                 <td class="pre-whitespace" style="z-index:11">TỔNG NĂM</td>
                             </tr>
-                            @foreach (var sb in lstSanBay)
+                            @foreach (var sb in lstSanBay.Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null))
                             {
                                 var data = Model.Where(x => x.ProfitCenter.SAN_BAY_CODE == sb.CODE).Where(x => x.CODE == "2002");
                                 <tr>
