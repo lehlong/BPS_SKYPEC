@@ -4175,7 +4175,7 @@ namespace SMO.Service.BP.DAU_TU_NGOAI_DOANH_NGHIEP
             // Create a new workbook and a sheet named "User Accounts"
             //Mở file Template
             var htmlMonth = table.htmlMonth;
-            var module = "DauTuDoanhNgiep";
+            var module = "DauTuNgoaiDoanhNghiep";
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
@@ -4185,14 +4185,15 @@ namespace SMO.Service.BP.DAU_TU_NGOAI_DOANH_NGHIEP
 
             ISheet sheetMonth = workbook.GetSheetAt(0);
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
-            var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
+            var NUM_CELL_MONTH = metaDataMonth.MetaTBody[0].Count;
 
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
             ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
-            ExcelHelperBP.InsertBodyTable(ref workbook,
+            ExcelHelperBP.InsertBodyTableByYear(ref workbook,
                 ref sheetMonth,
                 metaDataMonth.MetaTBody,
                 NUM_CELL_MONTH,
+                module,
                 ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
 
             // Save the Excel spreadsheet to a MemoryStream and return it to the client

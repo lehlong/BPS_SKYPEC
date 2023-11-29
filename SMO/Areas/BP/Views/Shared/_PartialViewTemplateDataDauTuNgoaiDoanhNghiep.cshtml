@@ -56,18 +56,18 @@ else
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
                         <tbody>
-                            <tr class="sticky-row">
-                                <th class="align-center">Mã dự án</th>
-                                <th class="align-center">Tên dự án</th>
-                                <th class="align-center">Mã khoản mục</th>
-                                <th class="align-center">Tên khoản mục</th>
-                                <th class="align-center">Giá trị đầu tư thời điểm đầu năm</th>
-                                <th class="align-center">Kế hoạch tăng/giảm trong năm</th>
-                                <th class="align-center">Giá trị đầu tư thời điểm cuối năm</th>
-                                <th class="align-center">Tỷ lệ vốn góp (%) đến cuối năm</th>
-                                <th class="align-center">Kế hoạch cổ tức / lợi nhuận được chia</th>
-                                <th class="align-center">Tỷ lệ LN được chia trên vốn đầu tư</th>
-                                <th class="align-center">Ghi chú</th>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="align-center">Mã dự án</td>
+                                <td class="align-center">Tên dự án</td>
+                                <td class="align-center">Mã khoản mục</td>
+                                <td class="align-center">Tên khoản mục</td>
+                                <td class="align-center">Giá trị đầu tư thời điểm đầu năm</td>
+                                <td class="align-center">Kế hoạch tăng/giảm trong năm</td>
+                                <td class="align-center">Giá trị đầu tư thời điểm cuối năm</td>
+                                <td class="align-center">Tỷ lệ vốn góp (%) đến cuối năm</td>
+                                <td class="align-center">Kế hoạch cổ tức / lợi nhuận được chia</td>
+                                <td class="align-center">Tỷ lệ LN được chia trên vốn đầu tư</td>
+                                <td class="align-center">Ghi chú</td>
                             </tr>
 
                             @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()))

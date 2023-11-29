@@ -101,6 +101,12 @@ else
                                         <i href="" class="material-icons " id="@item.CODE" style="text-decoration:none; color:#555;">comment</i>
                                     </td>
                                 }
+                                else
+                                {
+                                    <td class="btn sticky-cell pre-whitespace" data-toggle="modal" data-target="#exampleModal" style="display:flex; justify-content:center;" onclick="ShowComment('@item.CODE')">
+                                        
+                                    </td>
+                                }
 
                                 <td class="pre-whitespace">@(item.CODE)</td>
                                 <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>

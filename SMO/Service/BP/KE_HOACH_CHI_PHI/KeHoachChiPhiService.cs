@@ -3827,7 +3827,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
             ISheet sheetMonth = workbook.GetSheetAt(0);
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
-            var NUM_CELL_MONTH = metaDataMonth.MetaTBody[0].Count;
+            var NUM_CELL_MONTH = metaDataMonth.MetaTBody[1].Count;
 
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
             ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE));

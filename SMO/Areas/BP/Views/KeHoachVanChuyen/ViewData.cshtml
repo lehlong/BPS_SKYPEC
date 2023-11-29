@@ -128,7 +128,7 @@
             $('#@formIdExportExcel #kichBan').val($('#@formId #KICH_BAN').val());
             $('#@formIdExportExcel #phienBan').val($('#@formId #PHIEN_BAN').val());
             $('#@formIdExportExcel #moduleType').val("KeHoachVanChuyen");
-            $('#@formIdExportExcel #htmlMonth').val(htmlMonth);
+            $('#@formIdExportExcel #htmlMonth').val(encodeURIComponent(htmlMonth));
             $('#@formIdExportExcel').submit();
         }
 
