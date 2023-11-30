@@ -1,6 +1,7 @@
 ﻿@{ 
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var lstPhienBan = SelectListUtilities.GetAllPhienBan();
+    var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
 }
 <div class="container-fluid child-content">
     <div class="card border-grey">
@@ -19,9 +20,17 @@
                     <div class="input-group page-function-search row" style="margin-bottom: 7px !important">
                         <div class="col-md-6">
                             <select class="form-control selectpicker show-tick" id="time-year">
-                                @foreach (var item in lstTimeYear)
+                                @foreach (var temp in lstTimeYear)
                                 {
-                                    <option value="@item.Value">@(item.Text)</option>
+                                    if (temp.Value == yearDefault)
+                                    {
+                                        <option value="@temp.Value" selected>@temp.Text</option>
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
                                 }
                             </select>
                         </div>
@@ -61,6 +70,12 @@
         };
         Forms.LoadAjax(ajaxParams);
     }
+
+    $(function () {
+        Forms.CompleteUI();
+        ViewData();
+    });
+
     function ExportData() {
         var year = $("#time-year").val();
         var kichBan = $("#phien-ban").val();

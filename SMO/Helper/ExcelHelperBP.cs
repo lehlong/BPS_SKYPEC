@@ -231,13 +231,14 @@ namespace SMO.Helper
                     IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                     for(int j = 0; j < NUM_CELL; j++)
                     {
-                        rowCur.Cells[j].CellStyle = styleCellFirst;
+                        rowCur.Cells[j].CellStyle = styleCellNumber;
                     }
                     for(int j = 1; j < NUM_CELL; j++)
                     {
                         if(j == NUM_CELL - 1)
                         {
                             rowCur.Cells[NUM_CELL - 1].SetCellValue(metaTBody[i][j]?.Content);
+                            rowCur.Cells[NUM_CELL - 1].CellStyle = styleCellNumber;
                             break;
                         }
                         rowCur.Cells[j-1].SetCellValue(metaTBody[i][j].Content);
@@ -314,7 +315,7 @@ namespace SMO.Helper
             styleCellHeader.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
             styleCellHeader.WrapText = true;
             styleCellHeader.Alignment = HorizontalAlignment.Center;
-
+            
             var numRowCur = 7;
             var rowStart = 0;
             foreach (var row in metaTHeader)
@@ -424,11 +425,13 @@ namespace SMO.Helper
                         var indexRow = 0;
                         for(int cell = cellstart-1; cell < CellSum-1; cell++){
                             rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
+                            rowCur.Cells[cell].CellStyle = styleCellHeader;
                             indexRow++;
                         }
                         for(int cell = CellSum+2-1; cell < NUM_CELL - 3; cell++)
                         {
                             rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
+                            rowCur.Cells[cell].CellStyle = styleCellHeader;
                             indexRow++;
                         }
                         sheet.AddMergedRegion(new CellRangeAddress(7, 9, 0, 0));

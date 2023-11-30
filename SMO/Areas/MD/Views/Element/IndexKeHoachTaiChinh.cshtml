@@ -3,6 +3,7 @@
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+    var yearDefault = Convert.ToString(lstTimeYear.SelectedValue);
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
 
@@ -24,7 +25,14 @@
                         <select id="TIME_YEAR" class="form-control selectpicker show-tick" data_live_search="true" data_container="body" onchange="onChangeTimeYear(this.value)">
                             @foreach (var temp in lstTimeYear)
                             {
-                                <option value="@temp.Value">@temp.Text</option>
+                                if (temp.Value == yearDefault)
+                                {
+                                    <option value="@temp.Value" selected>@temp.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@temp.Value">@temp.Text</option>
+                                }
                             }
                         </select>
                     </div>
@@ -56,6 +64,11 @@
         function onChangeTimeYear(value) {
             GetDataKeHoachTaiChinh(value);
         }
+
+        $(function () {
+            Forms.CompleteUI();
+            onChangeTimeYear($("#TIME_YEAR").val())
+        });
 
         $(function () {
             Forms.SubmitForm('@Model.FormId');
