@@ -66,7 +66,6 @@ else
                         </tr>
                         <tr class="sticky-row strong" data-xls-row="header">
                             <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 1)" style="text-align:center">SỐ LƯỢNG</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">CỘNG</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">ĐƠN GIÁ</td>
                             <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count())" style="text-align:center">THÀNH TIỀN</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">CỘNG</td>
@@ -119,7 +118,6 @@ else
                                 }
 
                                 <td class="pre-whitespace"></td>
-                                <td class="pre-whitespace"></td>
                                 <td class="pre-whitespace">@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())</td>
 
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
@@ -128,7 +126,7 @@ else
                                 }
 
                                 <td class="pre-whitespace"></td>
-                                <td>@item.DESCRIPTION</td>
+                                <td class="pre-whitespace">@item.DESCRIPTION</td>
                             </tr>
                             
                         }

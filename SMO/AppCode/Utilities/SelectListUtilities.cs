@@ -402,7 +402,7 @@ namespace SMO
                 lstData.Add(new Data { Value = obj.TIME_YEAR.ToString(), Text = obj.TIME_YEAR.ToString() });
             }
             // selected value phải để dạng số vì trong 1 số màn hình sử dụng giá trị này làm giá trị mặc định
-            return new SelectList(lstData, "Value", "Text", selectedValue: lstPeriod.FirstOrDefault(x => x.IS_DEFAULT)?.TIME_YEAR.ToString(),
+            return new SelectList(lstData, "Value", "Text", selectedValue: lstPeriod.FirstOrDefault(x => x.IS_DEFAULT)?.TIME_YEAR,
                 disabledValues: lstPeriod.Where(x => x.IS_CLOSE).Select(x => x.TIME_YEAR));
         }
         /// <summary>

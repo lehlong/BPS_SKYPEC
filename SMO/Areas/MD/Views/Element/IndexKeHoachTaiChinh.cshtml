@@ -19,7 +19,7 @@
                 <div class="page-function">
                     <div class="page-function-button m-r-20" style="float:left">
                         @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
-                        @Html.MyButton("cmdAdd", "Xuất Excel", "CalculateValue();", "Alt+N", "file_download")
+                        @Html.MyButton("cmdAdd", "Xuất Excel", "DownloadData();", "Alt+N", "file_download")
                     </div>
                     <div class="input-group page-function-search">
                         <select id="TIME_YEAR" class="form-control selectpicker show-tick" data_live_search="true" data_container="body" onchange="onChangeTimeYear(this.value)">
@@ -63,6 +63,25 @@
 
         function onChangeTimeYear(value) {
             GetDataKeHoachTaiChinh(value);
+        }
+
+        function DownloadData() {
+            var year = $('#TIME_YEAR').val();
+            
+            $.ajax({
+                url: "@Url.Action("GetDataKeHoachTaiChinh")",
+                method: 'POST',             
+                dataType: 'json',
+                data: {
+                    year: year,
+                },
+                success: function (data) {
+                    console.log('Dữ liệu tải về:', data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Lỗi khi tải dữ liệu:', status, error);
+                }
+            });
         }
 
         $(function () {

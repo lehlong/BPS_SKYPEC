@@ -147,10 +147,10 @@ namespace SMO.Helper
 
             ICellStyle styleCellNumber = workbook.CreateCellStyle();
             styleCellNumber.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
-
+            styleCellNumber.WrapText = true;
             ICellStyle styleCellFirst = workbook.CreateCellStyle();
             styleCellFirst.CloneStyleFrom(sheet.GetRow(10).Cells[0].CellStyle);
-
+            styleCellFirst.WrapText = true;
             var startRow = 9;
             if(module.Trim() == "KeHoachChiPhi" || module.Trim() == "DauTuTrangThietBi" || module.Trim() == "KeHoachVanChuyen")
             {
@@ -204,7 +204,7 @@ namespace SMO.Helper
                     IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                     for(int j = 0; j < NUM_CELL; j++)
                     {
-                        if(j == 0 || j == NUM_CELL-1)
+                        if(j == 0 ||j == 1 || j == 2 || j == NUM_CELL-1)
                         {
                             rowCur.Cells[0].CellStyle = styleCellFirst;
                             if (j == 0)
@@ -228,21 +228,35 @@ namespace SMO.Helper
                 }
                 else if(module.Trim() == "KeHoachChiPhi")
                 {
+                    var startCell = 4;
+                    var sanbay = (NUM_CELL - 8)/2;
+                    var cellsum = startCell + sanbay +1;
                     IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                    for(int j = 0; j < NUM_CELL; j++)
+                    for(int j = 0; j < NUM_CELL-1; j++)
                     {
-                        rowCur.Cells[j].CellStyle = styleCellNumber;
+                        rowCur.Cells[j].CellStyle = styleCellFirst;
                     }
                     for(int j = 1; j < NUM_CELL; j++)
                     {
                         if(j == NUM_CELL - 1)
                         {
-                            rowCur.Cells[NUM_CELL - 1].SetCellValue(metaTBody[i][j]?.Content);
-                            rowCur.Cells[NUM_CELL - 1].CellStyle = styleCellNumber;
+                            rowCur.Cells[NUM_CELL - 2].SetCellValue(metaTBody[i][j]?.Content);
                             break;
                         }
-                        rowCur.Cells[j-1].SetCellValue(metaTBody[i][j].Content);
-                        
+                        else if(j > startCell -1 && j < cellsum-1)
+                        {
+                            rowCur.Cells[j - 1].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][j]?.Content.Trim().Replace(".", "").Replace(",", ".")));
+
+                        }
+                        else if(j > cellsum-1 && j < cellsum+ sanbay+1)
+                        {
+                            rowCur.Cells[j - 1].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][j]?.Content.Trim().Replace(".", "").Replace(",", ".")));
+                        }
+                        else
+                        {
+                            rowCur.Cells[j - 1].SetCellValue(metaTBody[i][j].Content);
+                        }
+
                     }
                 }
                 else if (module.Trim() == "DauTuXayDung" || module.Trim() == "DauTuTrangThietBi")
@@ -253,12 +267,12 @@ namespace SMO.Helper
                         if(cell==0||cell == 1|| cell == 4 || cell == NUM_CELL-1)
                         {
                             rowCur.Cells[cell].SetCellValue(metaTBody[i][cell]?.Content);
-                            rowCur.Cells[cell].CellStyle = styleCellNumber;
+                            rowCur.Cells[cell].CellStyle = styleCellFirst;
                         }
                         else
                         {
                             rowCur.Cells[cell].SetCellValue(UtilsCore.StringToDouble(metaTBody[i][cell]?.Content.Trim().Replace(".", "").Replace(",", ".")));
-                            rowCur.Cells[cell].CellStyle = styleCellNumber;
+                            rowCur.Cells[cell].CellStyle = styleCellFirst;
 
                         }
                     }
@@ -280,7 +294,7 @@ namespace SMO.Helper
                     for (int cell = 0; cell < NUM_CELL; cell++)
                     {
                         rowCur.Cells[cell].SetCellValue(metaTBody[i][cell]?.Content);
-                        rowCur.Cells[cell].CellStyle = styleCellNumber;
+                        rowCur.Cells[cell].CellStyle = styleCellFirst;
                     }
                 }
                 
@@ -326,7 +340,18 @@ namespace SMO.Helper
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
                 if (module.Trim() == "KeHoachSuaChuaLon" || module.Trim() == "SuaChuaThuongXuyen")
                 {
-                
+                    for(int cell = 0; cell < NUM_CELL; cell++)
+                    {
+                        rowCur.Cells[cell].CellStyle = styleCellHeader;
+                        if (cell == 0)
+                        {
+                            sheet.SetColumnWidth(cell, 8000);
+                        }
+                        else
+                        {
+                            sheet.SetColumnWidth(cell, 5000);
+                        }
+                    }
                     if (rowStart == 1)
                     {
                         columns = 2;
@@ -334,7 +359,6 @@ namespace SMO.Helper
                         foreach (var cell in row)
                         {
                             rowCur.Height = -1;
-                            rowCur.Cells[columns].CellStyle = styleCellHeader;
                             rowCur.Cells[columns].SetCellValue(cell.Content);
                             columns++;
                         }
@@ -377,7 +401,7 @@ namespace SMO.Helper
                     var cellstart = 4;
                     var sanbay = metaTHeader[2].Count / 2;
                     var CellSum = cellstart + sanbay + 1;
-                    for (int cell = 0; cell < NUM_CELL; cell++)
+                    for (int cell = 0; cell < NUM_CELL-1; cell++)
                     {
                         rowCur.Cells[cell].CellStyle = styleCellHeader;
                     }
@@ -404,17 +428,15 @@ namespace SMO.Helper
                             {
                                 rowCur.Cells[cell].SetCellValue(row[1]?.Content);
                                 rowCur.Cells[cell+1].SetCellValue(row[2]?.Content);
-                                rowCur.Cells[cell+2].SetCellValue(row[3]?.Content);
 
                                 rowCur.Cells[cell].CellStyle = styleCellHeader;
                                 rowCur.Cells[cell+1].CellStyle = styleCellHeader;
-                                rowCur.Cells[cell+2].CellStyle = styleCellHeader;
                             }
 
-                            if(cell == NUM_CELL - 2)
+                            if(cell == NUM_CELL - 3)
                             {
-                                rowCur.Cells[cell].SetCellValue(row[4]?.Content);
-                                rowCur.Cells[cell + 1].SetCellValue(row[5]?.Content);
+                                rowCur.Cells[cell].SetCellValue(row[3]?.Content);
+                                rowCur.Cells[cell + 1].SetCellValue(row[4]?.Content);
                                 rowCur.Cells[cell].CellStyle = styleCellHeader;
                                 rowCur.Cells[cell+1].CellStyle = styleCellHeader;
                             }
@@ -423,12 +445,23 @@ namespace SMO.Helper
                     else
                     {
                         var indexRow = 0;
+                        for(int cell = 0; cell < NUM_CELL; cell++)
+                        {
+                            if(cell == 1)
+                            {
+                                sheet.SetColumnWidth(cell, 8000);
+                            }
+                            else
+                            {
+                                sheet.SetColumnWidth(cell, 5000);
+                            }
+                        }
                         for(int cell = cellstart-1; cell < CellSum-1; cell++){
                             rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
                             rowCur.Cells[cell].CellStyle = styleCellHeader;
                             indexRow++;
                         }
-                        for(int cell = CellSum+2-1; cell < NUM_CELL - 3; cell++)
+                        for(int cell = CellSum; cell < NUM_CELL - 3; cell++)
                         {
                             rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
                             rowCur.Cells[cell].CellStyle = styleCellHeader;
@@ -437,9 +470,12 @@ namespace SMO.Helper
                         sheet.AddMergedRegion(new CellRangeAddress(7, 9, 0, 0));
                         sheet.AddMergedRegion(new CellRangeAddress(7, 9, 1, 1));
                         sheet.AddMergedRegion(new CellRangeAddress(7, 9, 2, 2));
-                        sheet.AddMergedRegion(new CellRangeAddress(7, 7, 3, NUM_CELL - 1));
+                        sheet.AddMergedRegion(new CellRangeAddress(8, 9, CellSum-1, CellSum - 1));
+                        sheet.AddMergedRegion(new CellRangeAddress(8, 9, NUM_CELL - 3, NUM_CELL - 3));
+                        sheet.AddMergedRegion(new CellRangeAddress(8, 9, NUM_CELL - 2, NUM_CELL - 2));
+                        sheet.AddMergedRegion(new CellRangeAddress(7, 7, 3, NUM_CELL - 2));
                         sheet.AddMergedRegion(new CellRangeAddress(8, 8, 3, CellSum - 2));
-                        sheet.AddMergedRegion(new CellRangeAddress(8, 8, CellSum + 1, NUM_CELL - 3));
+                        sheet.AddMergedRegion(new CellRangeAddress(8, 8, CellSum, NUM_CELL - 4));
                     }
                     
                     rowStart++;
@@ -478,6 +514,10 @@ namespace SMO.Helper
                     }
                     else
                     {
+                        for(int cell = 2; cell < NUM_CELL; cell++)
+                        {
+                            sheet.SetColumnWidth(cell, 5000);
+                        }
                         var indexRow = 0;
                         for (int i = cellInfor; i< cellValue; i++)
                         {
@@ -512,6 +552,10 @@ namespace SMO.Helper
                     var cellInfor = 2;
                     var cellValue = 5;
                     var cellGiaiNgan = 10;
+                    for (int cell = 0; cell < NUM_CELL; cell++)
+                    {
+                        rowCur.Cells[cell].CellStyle = styleCellHeader;
+                    }
                     if (rowStart == 0)
                     {
                         for (int i = 0; i < NUM_CELL; i++)
@@ -559,6 +603,10 @@ namespace SMO.Helper
                     }
                     else
                     {
+                        for (int cell = 2; cell < NUM_CELL; cell++)
+                        {
+                            sheet.SetColumnWidth(cell, 5000);
+                        }
                         var indexRow = 0;
 
                         for(int cell = cellValue + 1; cell < cellValue + 4; cell++)
@@ -588,15 +636,25 @@ namespace SMO.Helper
                 }
                  else if(module.Trim() == "DauTuNgoaiDoanhNghiep")
                 {
-                    for(int cell = 0; cell < NUM_CELL; cell++)
+                    for (int cell = 0; cell < NUM_CELL - 1; cell++)
                     {
+                        rowCur.Cells[cell].CellStyle = styleCellHeader;
+                    }
+                    for (int cell = 0; cell < NUM_CELL; cell++)
+                    {
+                        sheet.SetColumnWidth(cell, 5000);
+
                         rowCur.Cells[cell].CellStyle = styleCellHeader;
                         rowCur.Cells[cell].SetCellValue(row[cell]?.Content);
                     }
                 }
                 else if(module.Trim() == "KeHoachVanChuyen")
                 {
-                    if(rowStart == 0)
+                    for (int cell = 0; cell < NUM_CELL; cell++)
+                    {
+                        rowCur.Cells[cell].CellStyle = styleCellHeader;
+                    }
+                    if (rowStart == 0)
                     {
                         for (int cell = 0; cell < 6; cell++)
                         {
@@ -604,7 +662,6 @@ namespace SMO.Helper
                             rowCur.Cells[cell].CellStyle = styleCellHeader;
                         }
                         rowCur.Cells[NUM_CELL - 2].SetCellValue(row[6]?.Content);
-                        rowCur.Cells[NUM_CELL - 2].CellStyle = styleCellHeader;
                     }
                     else if(rowStart == 1)
                     {
@@ -612,23 +669,24 @@ namespace SMO.Helper
                         for (int cell = 5; cell< 8; cell++)
                         {
                             rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
-                            rowCur.Cells[cell].CellStyle = styleCellHeader;
                             indexRow++;
                         }
                         for(int cell = NUM_CELL - 2; cell < NUM_CELL; cell++)
                         {
                             rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
-                            rowCur.Cells[cell].CellStyle = styleCellHeader;
                             indexRow++;
                         }
                     }
                     else
                     {
                         var indexRow = 0;
-                        for(int cell = 7; cell < NUM_CELL - 2; cell++)
+                        for (int cell = 2; cell < NUM_CELL; cell++)
+                        {
+                            sheet.SetColumnWidth(cell, 5000);
+                        }
+                        for (int cell = 7; cell < NUM_CELL - 2; cell++)
                         {
                             rowCur.Cells[cell].SetCellValue(row[indexRow]?.Content);
-                            rowCur.Cells[cell].CellStyle = styleCellHeader;
                             indexRow++;
                         }
                         sheet.AddMergedRegion(new CellRangeAddress(7, 9, 0, 0));
@@ -652,7 +710,6 @@ namespace SMO.Helper
                     {
 
                         rowCur.Height = -1;
-                        rowCur.Cells[columns].CellStyle = styleCellHeader;
                         rowCur.Cells[columns].SetCellValue(cell.Content);
                         columns++;
                     }

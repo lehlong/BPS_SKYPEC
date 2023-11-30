@@ -790,7 +790,9 @@ namespace SMO.Service.MD
                         UnitOfWork.BeginTransaction();
                         var profitCenter = UnitOfWork.Repository<SuaChuaProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == companyCode && x.COST_CENTER_CODE == projectCode);
                         var centerCode = profitCenter == null ? Guid.NewGuid().ToString() : profitCenter.CODE;
-                        if (profitCenter == null)
+                        var profitCenterTX = UnitOfWork.Repository<SuaChuaThuongXuyenProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == companyCode && x.COST_CENTER_CODE == projectCode);
+                        var centerCodeTX = profitCenterTX == null ? Guid.NewGuid().ToString() : profitCenterTX.CODE;
+                        if (profitCenter == null && profitCenterTX == null)
                         {
                             switch (ObjDetail.BUDGET_TYPE.Trim())
                             {
@@ -805,7 +807,7 @@ namespace SMO.Service.MD
                                 case BudgetType.SuaChuaThuongXuyen:
                                     UnitOfWork.Repository<SuaChuaThuongXuyenProfitCenterRepo>().Create(new T_MD_SUA_CHUA_THUONG_XUYEN_PROFIT_CENTER
                                     {
-                                        CODE = centerCode,
+                                        CODE = centerCodeTX,
                                         SAN_BAY_CODE = companyCode,
                                         COST_CENTER_CODE = projectCode,
                                     });
@@ -823,7 +825,7 @@ namespace SMO.Service.MD
                                     UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
                                     break;
                                 case BudgetType.SuaChuaThuongXuyen:
-                                    UnitOfWork.Repository<TemplateDetailSuaChuaThuongXuyenRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                                    UnitOfWork.Repository<TemplateDetailSuaChuaThuongXuyenRepo>().Queryable().Where(x => x.CENTER_CODE == centerCodeTX && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
                                     break;
 
                                 default:
@@ -843,7 +845,7 @@ namespace SMO.Service.MD
                             case BudgetType.SuaChuaThuongXuyen:
                                 var detailsCost = from d in detailCodes
                                                   select new T_MD_TEMPLATE_DETAIL_SUA_CHUA_THUONG_XUYEN
-                                                  (Guid.NewGuid().ToString(), template, d, centerCode, year);
+                                                  (Guid.NewGuid().ToString(), template, d, centerCodeTX, year);
 
                                 UnitOfWork.Repository<TemplateDetailSuaChuaThuongXuyenRepo>().Create(detailsCost.ToList());
                                 break;
