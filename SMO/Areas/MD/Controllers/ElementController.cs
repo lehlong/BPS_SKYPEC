@@ -1,5 +1,7 @@
 ﻿using SMO.Repository.Implement.MD;
 using SMO.Service.MD;
+using System;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -112,6 +114,22 @@ namespace SMO.Areas.MD.Controllers
                 SMOUtilities.GetMessage("1005", service, result);
             }
             return result.ToJsonResult();
+        }
+        [HttpPost]
+        public FileContentResult DownloadData(string year)
+        {
+            if(year== null || year == "")
+            {
+                throw new ArgumentNullException(nameof(year));
+            }
+            var yearKH = Convert.ToInt32(year);
+            var data =  _service.GetDataKeHoachTaiChinh(yearKH);
+            var path = Server.MapPath("~/TemplateExcel/" + "DuLieuKeHoachTaiChinh.xlsx");
+            MemoryStream outFileStream = new MemoryStream();
+            _service.DowloadExcel(ref outFileStream, data, year, path);
+
+            var fileName = $"KẾ-HOẠCH-TÀI-CHÍNH-NĂM-{yearKH}";
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
 
     }

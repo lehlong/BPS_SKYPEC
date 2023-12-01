@@ -1,9 +1,11 @@
-﻿using NPOI.SS.UserModel;
+﻿using Microsoft.Office.Interop.Excel;
+using NHibernate.Mapping;
+using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
 using SMO.AppCode.Class;
-
+using SMO.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -776,6 +778,46 @@ namespace SMO.Helper
                 rowHeader5.Cells[0].SetCellValue($"Đơn vị ({unit}): {exchangeRate.ToStringVnWithoutDecimal(true)}");
             }
 
+        }
+
+        public static void insertBodyKeHoachTaiChinh(ref IWorkbook workbook, List<KeHoachTaiChinhData> dataDetails,string module, ref ISheet sheet, int NUM_CELL)
+        {
+            int startRow = 6;
+            ICellStyle styleCellNumber = workbook.CreateCellStyle();
+            styleCellNumber.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleCellNumber.WrapText = true;
+            if (module.Trim() == "KeHoachTaiChinh")
+            {
+                foreach (var item in dataDetails.Where(x => x.Screen == "KE_HOACH_TAI_CHINH").OrderBy(x => x.Order))
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                    rowCur.Cells[0].SetCellValue(item.ElementName);
+                    rowCur.Cells[1].SetCellValue(item.UnitCode);
+                    rowCur.Cells[2].SetCellValue(UtilsCore.StringToDouble(item?.Value?.ToStringVN().Trim().Replace(".", "").Replace(",", ".")));
+                    rowCur.Cells[0].CellStyle = styleCellNumber;
+                    rowCur.Cells[1].CellStyle = styleCellNumber;
+                    rowCur.Cells[2].CellStyle = styleCellNumber;
+                }
+            } 
+            else {
+                foreach (var item in dataDetails.Where(x => x.Screen == "KE_HOACH_TAI_CHINH_2").OrderBy(x => x.Order))
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                    rowCur.Cells[0].SetCellValue(item.ElementName);
+                    rowCur.Cells[1].SetCellValue(item.UnitCode);
+                    rowCur.Cells[2].SetCellValue(UtilsCore.StringToDouble(item?.Value?.ToStringVN().Trim().Replace(".", "").Replace(",", ".")));
+                    rowCur.Cells[0].CellStyle = styleCellNumber;
+                    rowCur.Cells[1].CellStyle = styleCellNumber;
+                    rowCur.Cells[2].CellStyle = styleCellNumber;
+                }
+            }
+        }
+
+        public static void InsertHeaderKeHoachTaiChinh(ref IWorkbook workbook, string year, string module, ref ISheet sheet, int NUM_CELL)
+        {
+            IRow rowCur = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
+            var yearKH = $"Năm ngân sách: {year}";
+            rowCur.Cells[0].SetCellValue(yearKH);
         }
 
     }

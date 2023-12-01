@@ -6,6 +6,7 @@
     Model.FormId = Guid.NewGuid().ToString();
     Model.ObjDetail.IS_BASE = true;
     var lstTemplate = SelectListUtilities.GetTemplateOfOrg(ProfileUtilities.User.ORGANIZE_CODE, BudgetType.SanLuong, ElementType.SanLuong, TemplateObjectType.SanLuong);
+
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
     @using (Ajax.BeginForm("Create", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
@@ -90,7 +91,23 @@
                             </div>
                             <label>Copy từ năm theo biểu mẫu</label>
                             <div class="form-group">
-                                @Html.MyDropDownListFor(m => m.TIME_YEAR, SelectListUtilities.GetTimeYear(false), new { @class = "selectpicker show-tick", @data_live_search = "true" })
+                                <select class= " form-control selectpicker show-tick" data-live-search="true" id="TIME_YEAR" name="TIME_YEAR">
+                                    @{
+                                        var timeYearList = SelectListUtilities.GetTimeYear(false);
+                                        var yearDefaut = Convert.ToString(timeYearList.SelectedValue);
+                                        foreach (var item in timeYearList)
+                                        {
+                                            if (item.Value == yearDefaut)
+                                            {
+                                                <option value="@item.Value" selected>@item.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        }
+                                    }
+                                </select>
                                 @Html.ValidationMessageFor(m => m.TIME_YEAR)
                             </div>
 

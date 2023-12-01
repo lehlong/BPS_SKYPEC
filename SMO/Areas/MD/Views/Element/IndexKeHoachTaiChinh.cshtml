@@ -4,6 +4,7 @@
     Model.FormId = Guid.NewGuid().ToString();
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var yearDefault = Convert.ToString(lstTimeYear.SelectedValue);
+    var formIdExportExcel = Guid.NewGuid().ToString();
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
 
@@ -41,6 +42,11 @@
                 <div id="divResult">
 
                 </div>
+                <div class="hidden">
+                    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("DownloadData")">
+                        @Html.Hidden("year")
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -67,21 +73,8 @@
 
         function DownloadData() {
             var year = $('#TIME_YEAR').val();
-            
-            $.ajax({
-                url: "@Url.Action("GetDataKeHoachTaiChinh")",
-                method: 'POST',             
-                dataType: 'json',
-                data: {
-                    year: year,
-                },
-                success: function (data) {
-                    console.log('Dữ liệu tải về:', data);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Lỗi khi tải dữ liệu:', status, error);
-                }
-            });
+            $('#@formIdExportExcel #year').val(year);
+             $('#@formIdExportExcel').submit();
         }
 
         $(function () {

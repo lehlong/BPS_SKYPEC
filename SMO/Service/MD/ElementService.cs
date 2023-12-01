@@ -1,13 +1,17 @@
 ﻿using iTextSharp.text;
 using Microsoft.Office.Interop.Excel;
 using NHibernate.Criterion;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using SMO.Core.Entities;
+using SMO.Helper;
 using SMO.Models;
 using SMO.Repository.Implement.MD;
 
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -505,6 +509,29 @@ namespace SMO.Service.MD
                 UnitOfWork.Rollback();
                 return new DataCenterModel();
             }
+        }
+
+        public void DowloadExcel(ref MemoryStream outFileStream, DataCenterModel data,string year, string path)
+        {
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook workbook;
+            workbook = new XSSFWorkbook(fs);
+            workbook.SetSheetName(0, ModulType.GetTextSheetName("Kế-hoạch-tài-chính"));
+            fs.Close();
+
+            ISheet sheetYear = workbook.GetSheetAt(0);
+            var NUM_CELL = 3;
+            var module = "KeHoachTaiChinh";
+            List<KeHoachTaiChinhData> dataDetails = data.KeHoachTaiChinhData;
+            ExcelHelperBP.InsertHeaderKeHoachTaiChinh(ref workbook, year, module, ref sheetYear, NUM_CELL);
+            ExcelHelperBP.insertBodyKeHoachTaiChinh(ref workbook,dataDetails,module, ref sheetYear, NUM_CELL);
+            workbook.SetSheetName(1, ModulType.GetTextSheetName("Kế-hoạch-tài-chính-2"));
+            ISheet sheetKHTC2 = workbook.GetSheetAt(1);
+            var module2 = "KeHoachTaiChinh2";
+            ExcelHelperBP.InsertHeaderKeHoachTaiChinh(ref workbook, year, module, ref sheetKHTC2, NUM_CELL);
+
+            ExcelHelperBP.insertBodyKeHoachTaiChinh(ref workbook, dataDetails,module2, ref sheetKHTC2, NUM_CELL);
+            workbook.Write(outFileStream);
         }
     }
 }
