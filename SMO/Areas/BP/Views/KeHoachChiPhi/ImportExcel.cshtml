@@ -99,7 +99,6 @@
             return;
         }
         var formData = new FormData($('#@Model.FormId')[0]);
-        console.log(formData)
         Forms.ShowLoading();
         $.ajax({
             type: "POST",

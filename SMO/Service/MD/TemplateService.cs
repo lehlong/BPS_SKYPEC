@@ -1,4 +1,5 @@
 ﻿using NHibernate;
+using NHibernate.Dialect;
 using NHibernate.Linq;
 using SMO.Core.Common;
 using SMO.Core.Entities;
@@ -48,50 +49,445 @@ namespace SMO.Service.MD
                 MesseageCode = "1101";
                 return;
             }
-            var lstDetail = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
-            if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+            
+            if(ObjDetail.ELEMENT_TYPE == ElementType.SanLuong)
             {
-                State = false;
-                ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
-                return;
-            }
-            try
-            {
-                if (!CheckExist(x => x.CODE == ObjDetail.CODE))
-                {
-                    ObjDetail.ACTIVE = true;
-                    base.Create();
-                }
-                else
+                var lstDetail = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
                 {
                     State = false;
-                    MesseageCode = "1101";
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
                 }
-                if (this.TEMPLATE_REFERENCE != "-")
+                try
                 {
-                    UnitOfWork.BeginTransaction();
-                    foreach (var item in lstDetail)
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
                     {
-                        UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
-                        {
-                            PKID = Guid.NewGuid().ToString(),
-                            CENTER_CODE = item.CENTER_CODE,
-                            ELEMENT_CODE = item.ELEMENT_CODE,
-                            TEMPLATE_CODE = this.ObjDetail.CODE,
-                            TIME_YEAR = this.TIME_YEAR,
-                        });
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
                     }
-                    UnitOfWork.Commit();
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
+                }
+            }
+            else if(ObjDetail.ELEMENT_TYPE == ElementType.DoanhThu)
+            {
+                var lstDetail = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+                {
+                    State = false;
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
+                }
+                try
+                {
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                    {
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
+                    }
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Create(new T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
+                }
+                
+            }
+            else if (ObjDetail.ELEMENT_TYPE == ElementType.ChiPhi)
+            {
+                
+                var lstDetail = UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+                {
+                    State = false;
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
+                }
+                try
+                {
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                    {
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
+                    }
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>().Create(new T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
                 }
 
             }
-            catch (Exception ex)
+
+            else if (ObjDetail.ELEMENT_TYPE == ElementType.VanChuyen)
             {
-                State = false;
-                Exception = ex;
+
+                var lstDetail = UnitOfWork.Repository<TemplateDetailKeHoachVanChuyenRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+                {
+                    State = false;
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
+                }
+                try
+                {
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                    {
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
+                    }
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailKeHoachVanChuyenRepo>().Create(new T_MD_TEMPLATE_DETAIL_KE_HOACH_VAN_CHUYEN
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
+                }
+
+            }
+
+            else if (ObjDetail.ELEMENT_TYPE == ElementType.DauTuXayDung)
+            {
+
+                var lstDetail = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+                {
+                    State = false;
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
+                }
+                try
+                {
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                    {
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
+                    }
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Create(new T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
+                }
+
+            }
+
+            else if (ObjDetail.ELEMENT_TYPE == ElementType.DauTuTrangThietBi)
+            {
+
+                var lstDetail = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+                {
+                    State = false;
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
+                }
+                try
+                {
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                    {
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
+                    }
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Create(new T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
+                }
+
+            }
+
+            else if (ObjDetail.ELEMENT_TYPE == ElementType.DauTuNgoaiDoanhNghiep)
+            {
+
+                var lstDetail = UnitOfWork.Repository<TemplateDetailDauTuNgoaiDoanhNghiepRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+                {
+                    State = false;
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
+                }
+                try
+                {
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                    {
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
+                    }
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailDauTuNgoaiDoanhNghiepRepo>().Create(new T_MD_TEMPLATE_DETAIL_DAU_TU_NGOAI_DOANH_NGHIEP
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
+                }
+
+            }
+
+            else if (ObjDetail.ELEMENT_TYPE == ElementType.SuaChuaLon)
+            {
+
+                var lstDetail = UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+                {
+                    State = false;
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
+                }
+                try
+                {
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                    {
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
+                    }
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Create(new T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
+                }
+
+            }
+
+            else if (ObjDetail.ELEMENT_TYPE == ElementType.SuaChuaThuongXuyen)
+            {
+
+                var lstDetail = UnitOfWork.Repository<TemplateDetailSuaChuaThuongXuyenRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+
+                if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
+                {
+                    State = false;
+                    ErrorMessage = "Biểu mẫu nguồn cần copy không có dữ liệu!";
+                    return;
+                }
+                try
+                {
+                    if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                    {
+                        ObjDetail.ACTIVE = true;
+                        base.Create();
+                    }
+                    else
+                    {
+                        State = false;
+                        MesseageCode = "1101";
+                    }
+                    if (this.TEMPLATE_REFERENCE != "-")
+                    {
+                        UnitOfWork.BeginTransaction();
+                        foreach (var item in lstDetail)
+                        {
+                            UnitOfWork.Repository<TemplateDetailSuaChuaThuongXuyenRepo>().Create(new T_MD_TEMPLATE_DETAIL_SUA_CHUA_THUONG_XUYEN
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                CENTER_CODE = item.CENTER_CODE,
+                                ELEMENT_CODE = item.ELEMENT_CODE,
+                                TEMPLATE_CODE = this.ObjDetail.CODE,
+                                TIME_YEAR = this.TIME_YEAR,
+                            });
+                        }
+                        UnitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    State = false;
+                    Exception = ex;
+                }
+
             }
         }
 
+        
         public override void Search()
         {
             if (!AuthorizeUtilities.IGNORE_USERS.Contains(ProfileUtilities.User.USER_NAME))
@@ -1366,5 +1762,4 @@ namespace SMO.Service.MD
             }
         }
     }
-
 }

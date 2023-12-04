@@ -5,7 +5,7 @@
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
     Model.ObjDetail.IS_BASE = true;
-    var lstTemplate = SelectListUtilities.GetTemplateOfOrg(ProfileUtilities.User.ORGANIZE_CODE, BudgetType.SanLuong, ElementType.SanLuong, TemplateObjectType.SanLuong);
+    var lstTemplate = SelectListUtilities.GetTemplateOfOrg(ProfileUtilities.User.ORGANIZE_CODE, Model.ObjDetail.BUDGET_TYPE, Model.ObjDetail.ELEMENT_TYPE, Model.ObjDetail.OBJECT_TYPE);
 
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
