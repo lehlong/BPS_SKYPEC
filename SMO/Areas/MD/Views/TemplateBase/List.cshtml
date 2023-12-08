@@ -1,3 +1,8 @@
 ﻿@model SMO.Service.MD.TemplateBaseService
-
 @{Html.RenderPartial("ListFile", Model.ObjList.Select(x => x.FileUpload).ToList());}
+@{ 
+    var templateCode = Model.ObjDetail.TEMPLATE_CODE;
+    var year = Model.ObjDetail.TIME_YEAR;
+}
+
+

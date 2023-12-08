@@ -15,37 +15,37 @@
     }
 }
 
-    <div id='@Model.ViewId'>
-        <script src="~/Scripts/D2SCoreJS/UploadFile.js"></script>
+<div id='@Model.ViewId'>
+    <script src="~/Scripts/D2SCoreJS/UploadFile.js"></script>
 
-        @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = @frmIndexId }))
+    @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = @frmIndexId }))
+    {
+        @Html.HiddenFor(m => m.ObjDetail.TEMPLATE_CODE)
+        @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR)
+
+        if (templateService.ObjDetail.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE)
         {
-            @Html.HiddenFor(m => m.ObjDetail.TEMPLATE_CODE)
-            @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR)
+            @Html.MyButton("cmdFileHoSo", "Chọn file", "UploadFile.InsertFile();", "", "attach_file")
+            @Html.MyButton("cmdAdd", "Upload file", "SubmitFile();", "Alt+N", "cloud_upload")
 
-            if (templateService.ObjDetail.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE)
-            {
-                @Html.MyButton("cmdFileHoSo", "Chọn file", "UploadFile.InsertFile();", "", "attach_file")
-                @Html.MyButton("cmdAdd", "Upload file", "SubmitFile();", "Alt+N", "cloud_upload")
-
-                <div id="divPreviewFile">
-
-                </div>
-                <hr />
-            }
-            <div id="divResult">
+            <div id="divPreviewFile">
 
             </div>
+            <hr />
         }
+        <div id="divResult">
 
-        @using (Ajax.BeginForm("UploadFile", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = frmUploadId }))
-        {
-            @Html.HiddenFor(m => m.ObjDetail.TEMPLATE_CODE)
-            @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR)
+        </div>
+    }
 
-        }
+    @using (Ajax.BeginForm("UploadFile", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = frmUploadId }))
+    {
+        @Html.HiddenFor(m => m.ObjDetail.TEMPLATE_CODE)
+        @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR)
 
-        <script type="text/javascript">
+    }
+
+<script type="text/javascript">
             function SubmitIndexTemplateBase() {
                 Forms.SubmitForm('@frmIndexId');
             }
@@ -96,10 +96,42 @@
                     },
                     error: Forms.AjaxErrorHandler
                 });
+        }
+
+        function RemoveFile(obj, fileId) {
+        Swal.fire({
+                title: 'Xóa file?',
+                text: "Bạn có chắc chắn xóa file này!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Huỷ',
+                confirmButtonText: 'Xóa!'
+        }).then((result) => {
+                if (!result.isConfirmed) {
+                    return;
             }
+                $.ajax({
+            type: "POST",
+            url: '@Url.Action("DeleteFile", "TemplateBase")',
+            data: {file_id: fileId},
+            success: function (response) {
+                Message.execute(response);
+                Forms.SubmitForm('@frmIndexId');
+                Forms.HideLoading();
+            },
+            error: Forms.AjaxErrorHandler
+        });
+            })
+    }
+
+    $(function () {
+        Forms.CompleteUI();
+    });
 
             $(function () {
                 SubmitIndexTemplateBase();
             })
-        </script>
-    </div>
+</script>
+</div>

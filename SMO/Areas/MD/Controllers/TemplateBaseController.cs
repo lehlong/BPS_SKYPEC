@@ -1,6 +1,7 @@
 ﻿using SMO.Service.MD;
 
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace SMO.Areas.MD.Controllers
 {
@@ -14,7 +15,6 @@ namespace SMO.Areas.MD.Controllers
             _service = new TemplateBaseService();
         }
 
-        [MyValidateAntiForgeryToken]
         public ActionResult Index(string templateCode, int year)
         {
             _service.ObjDetail.TEMPLATE_CODE = templateCode;
@@ -25,6 +25,7 @@ namespace SMO.Areas.MD.Controllers
         public ActionResult List(TemplateBaseService service)
         {
             service.Search();
+            ViewBag.isRemoveFile = true;
             return PartialView(service);
         }
 
@@ -43,6 +44,24 @@ namespace SMO.Areas.MD.Controllers
             {
                 result.Type = TransferType.AlertDanger;
                 SMOUtilities.GetMessage("1005", service, result);
+            }
+            return result.ToJsonResult();
+        }
+        [HttpPost]
+        public ActionResult DeleteFile(string file_id)
+        {
+            var result = new TransferObject();
+            result.Type = TransferType.AlertSuccess;
+            _service.DeleteFile(file_id);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndexTemplateBase();UploadFile.ClearFile();$('#divPreviewFile').html('');";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
             }
             return result.ToJsonResult();
         }
