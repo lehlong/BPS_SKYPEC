@@ -58,17 +58,21 @@ else
                 <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
                     <tbody>
                         <tr class="sticky-row strong" data-xls-row="header">
-                            <td class="sticky-cell pre-whitespace" rowspan="3" style="z-index:11"><div class="resize-col">COMMENT</div></td>
+                            <td class="sticky-cell pre-whitespace" rowspan="3" style="z-index:11"></td>
                             <td class="pre-whitespace" rowspan="3" style="text-align:center">MÃ</td>
                             <td class="pre-whitespace" rowspan="3" style="text-align:center">CHỈ TIÊU</td>
                             <td class="pre-whitespace" rowspan="3" style="text-align:center">ĐVT</td>
-                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 5)" style="text-align:center">KẾ HOẠCH GIAO ĐẦU NĂM</td>
+                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 3)" style="text-align:center">KẾ HOẠCH GIAO ĐẦU NĂM</td>
+                            <td class="pre-whitespace" colspan="4" style="text-align:center">Ý KIẾN PHÒNG KỸ THUẬT</td>
                         </tr>
                         <tr class="sticky-row strong" data-xls-row="header">
                             <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 1)" style="text-align:center">SỐ LƯỢNG</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">ĐƠN GIÁ</td>
                             <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count())" style="text-align:center">THÀNH TIỀN</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">CỘNG</td>
+                            <td class="pre-whitespace" rowspan="2" style="text-align:center">SỐ LƯỢNG</td>
+                            <td class="pre-whitespace" rowspan="2" style="text-align:center">ĐƠN GIÁ</td>
+                            <td class="pre-whitespace" rowspan="2" style="text-align:center">THÀNH TIỀN</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">GHI CHÚ</td>
                         </tr>
                         <tr class="sticky-row strong" data-xls-row="header">
@@ -103,7 +107,6 @@ else
                                 else
                                 {
                                     <td>
-                                        
                                     </td>
                                 }
 
@@ -125,6 +128,9 @@ else
                                     <td class="pre-whitespace">@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[2].ToStringVN())</td>
                                 }
 
+                                <td class="pre-whitespace"></td>
+                                <td class="pre-whitespace"></td>
+                                <td class="pre-whitespace"></td>
                                 <td class="pre-whitespace"></td>
                                 <td class="pre-whitespace">@item.DESCRIPTION</td>
                             </tr>
