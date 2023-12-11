@@ -1440,7 +1440,9 @@ namespace SMO.Service.BU
             var parent = this.CurrentRepository.Get(this.ObjDetail.PARENT);
             this.ObjDetail.NAME_PARENT = parent.NAME;
             this.ObjDetail.NAME = parent.NAME;
+            this.ObjDetail.CONTRACT_NUMBER = parent.CONTRACT_NUMBER;
             this.ObjDetail.CONTRACT_TYPE = parent.CONTRACT_TYPE;
+            this.ObjDetail.CUSTOMER = parent.CUSTOMER;
             this.ObjDetail.SIGN_DAY = parent.SIGN_DAY;
             this.ObjDetail.START_DATE = parent.START_DATE;
             this.ObjDetail.FINISH_DATE = parent.FINISH_DATE;
@@ -1449,6 +1451,7 @@ namespace SMO.Service.BU
             this.ObjDetail.REPRESENT_B = parent.REPRESENT_B;
             this.ObjDetail.DEPARTMENT = parent.DEPARTMENT;
             this.ObjDetail.CONTRACT_MANAGER = parent.CONTRACT_MANAGER;
+            this.ObjDetail.CONTRACT_VALUE = parent.CONTRACT_VALUE;
             this.ObjDetail.APPROVER = parent.APPROVER;
             this.ObjDetail.ParentContract.CONTRACT_NUMBER = parent.CONTRACT_NUMBER;
             this.ObjDetail.ParentContract.NAME = parent.NAME;

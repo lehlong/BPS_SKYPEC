@@ -89,7 +89,7 @@ namespace SMO.Areas.BU.Controllers
             return result.ToJsonResult();
         }
         public ActionResult CreateContractChild(string id)
-        {
+       {
             _service.ObjDetail.PARENT = id;
             _service.GetParent();
             return PartialView(_service);

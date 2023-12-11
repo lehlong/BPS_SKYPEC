@@ -10,8 +10,7 @@
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.FormId)
         @Html.HiddenFor(m => m.ObjDetail.PARENT)
-        @Html.HiddenFor(m => m.ObjDetail.CUSTOMER)
-        @Html.HiddenFor(m => m.ObjDetail.DEPARTMENT)
+        
         <div class="row clearfix">
             <div class="col-xs-12 col-sm-7">
                 <div class="card border-grey">
@@ -72,13 +71,13 @@
                                                 <div class="col-md-3">
                                                     <label>Loại hợp đồng</label>
                                                     @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_TYPE, SelectListUtilities.GetContractType(),
-            new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false, @disabled = "disabled" })
+            new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <label>Khách hàng</label>
                                                     @Html.MyDropDownListFor(m => m.ObjDetail.CUSTOMER, SelectListUtilities.GetCustomer(),
-             new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false, @disabled = "disabled" })
+             new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false})
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label>Phòng ban phụ trách</label>

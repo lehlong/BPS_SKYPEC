@@ -44,6 +44,10 @@
 }
 
 <style>
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
     .header-year {
         background-color: #FFFFFF !important;
     }
@@ -69,35 +73,45 @@
     .full-screen-table {
         height: calc(100vh -100px) !important;
     }
+
+    .sticky-col {
+        position: sticky;
+        left: 0;
+        background-color: inherit;
+    }
+    .sticky-row {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa;
+    }
 </style>
 
 <div class="container-fluid">
-    <div class="table-container sticky-table table-screen table ">
-        <table style="" id="@gridId" class="table-condensed table-striped table-bordered table-striped font-13 table-zoom">
-            <thead>
-                <tr>
-                    <th class="sticky-col pre-whitespace">ID Contract</th>
-                    <th class="sticky-col pre-whitespace">STT</th>
-                    <th class="sticky-col pre-whitespace">Tên hợp đồng</th>
-                    <th class="pre-whitespace">Số hợp đồng</th>
-                    <th class="pre-whitespace">Loại hợp đồng</th>
-                    <th class="pre-whitespace">Ngày còn lại</th>
-                    <th class="pre-whitespace">Tên khách hàng</th>
-                    <th class="pre-whitespace">Quản lý hợp đồng</th>
-                    <th class="pre-whitespace">Phòng ban</th>
-                    <th class="pre-whitespace">Giá trị (chưa VAT)</th>
-                    <th class="pre-whitespace">Ngày bắt đầu</th>
-                    <th class="pre-whitespace">Ngày kết thúc</th>
-                    <th class="pre-whitespace">Ngày ký kết</th>
-                    <th class="pre-whitespace">Trạng thái</th>
-                    <th class="pre-whitespace">Giai đoạn</th>
-                    <th class="pre-whitespace">Version</th>
-                    <th class="pre-whitespace">Tiến độ thanh toán</th>
-                    <th class="pre-whitespace">Create Contract</th>
-                    <th class="pre-whitespace">File</th>
-                </tr>
-            </thead>
+    <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+        <table id="@gridId" class="table-container table-condensed table-striped table-bordered table-striped font-13 table-zoomtable-condensed table-bordered table-striped font-13 table-zoom">
             <tbody>
+                <tr class="strong" data-xls-row="header">
+                    <th class="sticky-row sticky-col" style="z-index:11;"></th>
+                    <th class="pre-whitespace sticky-row sticky-col" style="z-index:11;">STT</th>
+                    <th class="pre-whitespace sticky-row sticky-col" style="z-index:11;">Tên hợp đồng</th>
+                    <th class="pre-whitespace sticky-row ">Số hợp đồng</th>
+                    <th class="pre-whitespace sticky-row ">Loại hợp đồng</th>
+                    <th class="pre-whitespace sticky-row ">Ngày còn lại</th>
+                    <th class="pre-whitespace sticky-row ">Tên khách hàng</th>
+                    <th class="pre-whitespace sticky-row ">Quản lý hợp đồng</th>
+                    <th class="pre-whitespace sticky-row ">Phòng ban</th>
+                    <th class="pre-whitespace sticky-row ">Giá trị (chưa VAT)</th>
+                    <th class="pre-whitespace sticky-row ">Ngày bắt đầu</th>
+                    <th class="pre-whitespace sticky-row ">Ngày kết thúc</th>
+                    <th class="pre-whitespace sticky-row ">Ngày ký kết</th>
+                    <th class="pre-whitespace sticky-row ">Trạng thái</th>
+                    <th class="pre-whitespace sticky-row ">Giai đoạn</th>
+                    <th class="pre-whitespace sticky-row ">Version</th>
+                    <th class="pre-whitespace sticky-row ">Tiến độ thanh toán</th>
+                    <th class="pre-whitespace sticky-row "></th>
+                    <th class="pre-whitespace sticky-row ">File</th>
+                </tr>
+            
                 <!-- Add your rows here -->
                 @foreach (var item in jsonData)
                 {
@@ -106,14 +120,14 @@
 <tr>
     @if (item.isChild != true)
     {
-        <td></td>
+        <td class="sticky-col"></td>
     }
     else
     {
-        <td class="sticky-col"><i class="material-icons swap-icon-drill-down" data-action="open" data-row-id="@item.idContract" data-id="@item.createContract" onclick="addDataToRows(this)">unfold_more</i></td>
+        <td class="sticky-col" style="text-align:center"><i class="material-icons swap-icon-drill-down" data-action="open" data-row-id="@item.idContract" data-stt="@item.stt" data-id="@item.createContract" onclick="addDataToRows(this)">unfold_more</i></td>
     }
-    <td class="sticky-col">@item.stt</td>
-    <td class="sticky-col"><a class="" href="" onclick="DetailContract(event, '@item.idContract')">@item.nameContract</a></td>
+    <td class="pre-whitespace sticky-col">@item.stt</td>
+    <td class="pre-whitespace sticky-col"><a class="" href="" onclick="DetailContract(event, '@item.idContract')">@item.nameContract</a></td>
     <td>@item.numberContract</td>
     <td>@item.typeContract</td>
 
@@ -209,12 +223,7 @@
         color: #CDAD00;
     }
 
-    .sticky-col {
-        position: sticky;
-        left: 0;
-        background-color: #f8f9fa;
-        z-index: 1;
-    }
+    
 </style>
 <script>
     const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
@@ -236,11 +245,11 @@
     }
 
     function addDataToRows(element) {
-        console.log(element);
     var action = element.getAttribute("data-action");
     var rowId = element.getAttribute("data-row-id");
     var id = element.getAttribute("data-id");
-    var indexRowAction = $("#@gridId").find('tr').length - 1;
+    var stt = element.getAttribute("data-stt");
+    var indexRowAction = Number.parseInt(stt);
 
         console.log(action);
     if (action == "open") {
@@ -259,7 +268,8 @@
             dataType: "json",
             success: function (data) {
                 var dataAdd = calculateSTT(data, indexRowAction);
-
+                
+                dataAdd = dataAdd.reverse();
                 // Lặp qua dữ liệu và thêm vào bảng
                 for (var i = 0; i < dataAdd.length; i++) {
                     var rowData = dataAdd[i];
