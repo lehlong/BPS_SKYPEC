@@ -41,6 +41,8 @@
             remainingDays = (x.FINISH_DATE - DateTime.Now).Days + 1
         };
     }).ToList();
+    var lstStatus = SelectListUtilities.GetContractStatus().ToList();
+    var lstPhase = SelectListUtilities.GetContractPhase().ToList();
 }
 
 <style>
@@ -50,9 +52,6 @@
     }
     .header-year {
         background-color: #FFFFFF !important;
-    }
-    th, td{
-        width:200px;
     }
 
     td {
@@ -84,6 +83,11 @@
         top: 0;
         background-color: #f8f9fa;
     }
+
+    .padding-right{
+        padding-right:20px;
+    }
+
 </style>
 
 <div class="container-fluid">
@@ -93,23 +97,117 @@
                 <tr class="strong" data-xls-row="header">
                     <th class="sticky-row sticky-col" style="z-index:11;"></th>
                     <th class="pre-whitespace sticky-row sticky-col" style="z-index:11;">STT</th>
-                    <th class="pre-whitespace sticky-row sticky-col" style="z-index:11;">Tên hợp đồng</th>
-                    <th class="pre-whitespace sticky-row ">Số hợp đồng</th>
-                    <th class="pre-whitespace sticky-row ">Loại hợp đồng</th>
-                    <th class="pre-whitespace sticky-row ">Ngày còn lại</th>
-                    <th class="pre-whitespace sticky-row ">Tên khách hàng</th>
-                    <th class="pre-whitespace sticky-row ">Quản lý hợp đồng</th>
-                    <th class="pre-whitespace sticky-row ">Phòng ban</th>
+                    <th class="pre-whitespace sticky-row sticky-col padding-right" style="z-index:11;">Tên hợp đồng</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Số hợp đồng</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Loại hợp đồng</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Ngày còn lại</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Tên khách hàng</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Quản lý hợp đồng</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Phòng ban</th>
                     <th class="pre-whitespace sticky-row ">Giá trị (chưa VAT)</th>
-                    <th class="pre-whitespace sticky-row ">Ngày bắt đầu</th>
-                    <th class="pre-whitespace sticky-row ">Ngày kết thúc</th>
-                    <th class="pre-whitespace sticky-row ">Ngày ký kết</th>
-                    <th class="pre-whitespace sticky-row ">Trạng thái</th>
-                    <th class="pre-whitespace sticky-row ">Giai đoạn</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Ngày bắt đầu</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Ngày kết thúc</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Ngày ký kết</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Trạng thái</th>
+                    <th class="pre-whitespace sticky-row " style="padding-right: 50px;">Giai đoạn</th>
                     <th class="pre-whitespace sticky-row ">Version</th>
                     <th class="pre-whitespace sticky-row ">Tiến độ thanh toán</th>
                     <th class="pre-whitespace sticky-row "></th>
                     <th class="pre-whitespace sticky-row ">File</th>
+                </tr>
+                <tr class="strong" data-xls-row="header">
+                    <th class=" sticky-col" style="z-index:10; top:40px;"></th>
+                    <th class="pre-whitespace sticky-col" style="z-index:10;"></th>
+                    <th class="sticky-col" style="z-index:10;">
+                        <div class="input-group page-function-search">
+                            <div class="form-line">
+                                @Html.MyTextBoxFor(m => m.ObjDetail.NAME, new { placeholder = "", @class = "align-center", @data_val = false,@data_column = 2, @oninput= "HandleSearch(this)" })
+                            </div>
+                            <span class="input-group-addon" title="Tìm kiếm">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group page-function-search">
+                            <div class="form-line">
+                                @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_NUMBER, new { placeholder = "", @class = "align-center", @data_val = false, @data_column = 3, @oninput = "HandleSearch(this)" })
+                            </div>
+                            <span class="input-group-addon" title="Tìm kiếm">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group page-function-search">
+                            <div class="form-line">
+                                @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_TYPE, new { placeholder = "", @class = "align-center", @data_val = false, @data_column = 4, @oninput = "HandleSearch(this)" })
+                            </div>
+                            <span class="input-group-addon" title="Tìm kiếm">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group page-function-search">
+                            <div class="form-line">
+                                @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_NUMBER, new { placeholder = "", @class = "align-center", @data_val = false, @data_column = 5, @oninput = "HandleSearch(this)" })
+                            </div>
+                            <span class="input-group-addon" title="Tìm kiếm">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group page-function-search">
+                            <div class="form-line">
+                                @Html.MyTextBoxFor(m => m.ObjDetail.CUSTOMER, new { placeholder = "", @class = "align-center", @data_val = false, @data_column = 6, @oninput = "HandleSearch(this)"  })
+                            </div>
+                            <span class="input-group-addon" title="Tìm kiếm">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group page-function-search">
+                            <div class="form-line">
+                                @Html.MyTextBoxFor(m => m.ObjDetail.CONTRACT_MANAGER, new { placeholder = "", @class = "align-center", @data_val = false, @data_column = 7, @oninput = "HandleSearch(this)" })
+                            </div>
+                            <span class="input-group-addon" title="Tìm kiếm">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group page-function-search">
+                            <div class="form-line">
+                                @Html.MyTextBoxFor(m => m.ObjDetail.DEPARTMENT, new { placeholder = "", @class = "align-center", @data_val = false, @data_column = 8, @oninput = "HandleSearch(this)" })
+                            </div>
+                            <span class="input-group-addon" title="Tìm kiếm">
+                                <i class="material-icons">search</i>
+                            </span>
+                        </div>
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        <div class="form-group">
+                            @Html.MyDropDownListFor(m => m.ObjDetail.STATUS, SelectListUtilities.GetContractStatus(),
+                            new { @data_live_search = "true", @class = "selectpicker form-control status", @data_val = false, @data_column=13, onchange = "HandlerSearchSelect(13, this)" })
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-group">
+                            @Html.MyDropDownListFor(m => m.ObjDetail.CONTRACT_PHASE, SelectListUtilities.GetContractPhase(),
+                            new { @data_live_search = "true", @class = "selectpicker form-control phase", @data_val = false, @data_column = 14, onchange = "HandlerSearchSelect(14, this)" })
+                        </div>
+                    </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                 </tr>
             
                 <!-- Add your rows here -->
@@ -268,7 +366,7 @@
             dataType: "json",
             success: function (data) {
                 var dataAdd = calculateSTT(data, indexRowAction);
-                
+
                 dataAdd = dataAdd.reverse();
                 // Lặp qua dữ liệu và thêm vào bảng
                 for (var i = 0; i < dataAdd.length; i++) {
@@ -364,7 +462,60 @@
         function CreateChildContract(event,id) {
             event.preventDefault();
             Forms.LoadAjax('@Url.Action("CreateContractChild")' + '?id=' + id);
+    }
+
+    function HandleSearch(inputElement) {
+        var value = inputElement.value;
+        var filter = value.toLowerCase();
+        var table = document.getElementById('@gridId');
+        var tr = table.getElementsByTagName('tr');
+        var indexCell = Number.parseInt(inputElement.getAttribute('data-column'));
+
+        for (let i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[indexCell];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                }
+                else {
+                    tr[i].style.display = 'none';
+                }
+            }
         }
+
+    }
+
+    function HandlerSearchSelect(indexCell, element) {
+        var table = document.getElementById('@gridId');
+        var tr = table.getElementsByTagName('tr');
+        var value = element.value;
+        var filter = "";
+        var lstStatus = @Html.Raw(Json.Encode(lstStatus));
+        if (indexCell == 14) {
+            lstStatus = @Html.Raw(Json.Encode(lstPhase));
+        }
+        for (let i = 0; i < lstStatus.length; i++) {
+            if (i == Number.parseInt(value)) {
+                filter = lstStatus[i].Text;
+                break;
+            }
+        }
+        var filter = filter.toLowerCase();
+        console.log(filter);
+        for (let i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[indexCell];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                }
+                else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    }
 
 </script>
 <script>

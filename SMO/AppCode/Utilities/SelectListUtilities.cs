@@ -1157,7 +1157,7 @@ namespace SMO
             var lstDomain = UnitOfWork.Repository<ContractTypeRepo>().GetAll();
             foreach (var obj in lstDomain)
             {
-                lstData.Add(new Data { Value = obj.CODE, Text = obj.TEXT });
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.TEXT});
             }
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
