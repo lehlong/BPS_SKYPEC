@@ -227,6 +227,7 @@
     <Compile Include="Implement\BU\ContractVersionRepo.cs" />
     <Compile Include="Implement\BU\FileUploadRepo.cs" />
     <Compile Include="Implement\BU\LinkUploadRepo.cs" />
+    <Compile Include="Implement\BU\PaymentProgressRepo.cs" />
     <Compile Include="Implement\BU\PaymentRepo.cs" />
     <Compile Include="Implement\CF\ConfigTableauRepo.cs" />
     <Compile Include="Implement\CF\ConfigTemplateNotifyRepo.cs" />
@@ -470,6 +471,7 @@
     <Compile Include="Interface\BU\IContractVersionRepo.cs" />
     <Compile Include="Interface\BU\IFileUploadRepo.cs" />
     <Compile Include="Interface\BU\ILinkUploadRepo.cs" />
+    <Compile Include="Interface\BU\IPaymentProgress.cs" />
     <Compile Include="Interface\BU\IPaymentRepo.cs" />
     <Compile Include="Interface\CF\IConfigTableauRepo.cs" />
     <Compile Include="Interface\CF\IConfigTemplateNotify.cs" />
@@ -715,6 +717,7 @@
     <Compile Include="Mapping\BU\T_BU_FILE_UPLOAD_Map.cs" />
     <Compile Include="Mapping\BU\T_BU_LINK_UPLOAD_Map.cs" />
     <Compile Include="Mapping\BU\T_BU_PAYMENT_Map.cs" />
+    <Compile Include="Mapping\BU\T_BU_PAYMENT_PROGRESS_Map.cs" />
     <Compile Include="Mapping\CF\T_CF_TABLEAU_Map.cs" />
     <Compile Include="Mapping\CF\T_CF_TEMPLATE_NOTIFY_Map.cs" />
     <Compile Include="Mapping\CM\T_CM_COMMENT_DETAILS_Map.cs" />

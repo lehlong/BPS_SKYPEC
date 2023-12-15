@@ -42,6 +42,9 @@ namespace SMO.Core.Entities.BU
         public const string XoaDotThanhToan = "30";
         public const string TaoVersionMoi = "33";
         public const string SuaNgayKyKet = "32";
+        public const string ThemTienDoThanhToan = "34";
+        public const string XoaTienDoThanhToan = "35";
+        public const string ChinhSuaTienDoThanhToan = "36";
 
 
         public static string convertPhaseToString(string action)
@@ -59,6 +62,7 @@ namespace SMO.Core.Entities.BU
                     return "";
             }
         }
+
         public static string convertStringToPhase(string action)
         {
             switch (action)
@@ -73,6 +77,37 @@ namespace SMO.Core.Entities.BU
                     return "";
             }
         }
+
+        public static string convertStringToProgress(string action)
+        {
+            switch (action)
+            {
+                case "Đã thanh toán":
+                    return "01";
+                case "Đã thanh toán một phần":
+                    return "02";
+                case "Chưa thanh toán":
+                    return "03";
+                default:
+                    return "";
+            }
+        }
+
+        public static string convertProgressToString(string action)
+        {
+            switch (action)
+            {
+                case "01":
+                    return "Đã thanh toán";
+                case "02":
+                    return "Đã thanh toán một phần";
+                case "03":
+                    return "Chưa thanh toán";
+                default:
+                    return "";
+            }
+        }
+
         public static string convertStatusToString(string action)
         {
             switch (action)

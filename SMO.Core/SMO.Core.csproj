@@ -255,6 +255,7 @@
     <Compile Include="Entities\BU\T_BU_FILE_UPLOAD.cs" />
     <Compile Include="Entities\BU\T_BU_LINK_UPLOAD.cs" />
     <Compile Include="Entities\BU\T_BU_PAYMENT.CS" />
+    <Compile Include="Entities\BU\T_BU_PAYMENT_PROGRESS.cs" />
     <Compile Include="Entities\CF\T_CF_TABLEAU.cs" />
     <Compile Include="Entities\CF\T_CF_TEMPLATE_NOTIFY.cs" />
     <Compile Include="Entities\CM\T_CM_COMMENT.cs" />

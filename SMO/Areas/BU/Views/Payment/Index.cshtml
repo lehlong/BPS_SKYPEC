@@ -32,6 +32,9 @@
                         <li role="presentation">
                             <a onclick="ThongTinHopDong()" style="padding-left: 0px; cursor: pointer">THÔNG TIN HỢP ĐỒNG</a>
                         </li>
+                        <li role="presentation" style="margin-left:30px;">
+                            <a onclick="TienDoThanhToan()" style="padding-left: 0px; cursor: pointer">TIẾN ĐỘ THANH TOÁN</a>
+                        </li>
                         <li role="presentation" style="margin-left:30px;" class="active">
                             <a onclick="DotThanhToan()" style="padding-left: 0px; cursor: pointer">ĐỢT THANH TOÁN</a>
                         </li>
@@ -86,6 +89,10 @@
             Forms.LoadAjax("Bu/Contract/Detail?id=" + '@Model.contract.NAME_CONTRACT' + "&version=" + '@Model.contract.VERSION');
             Forms.Close('@Model.ViewId');
 
+    }
+        function TienDoThanhToan() {
+            Forms.LoadAjax("Bu/PaymentProgress/Index?nameContract=" + '@Model.contract.NAME_CONTRACT' + "&version=" + '@Model.contract.VERSION');
+            Forms.Close('@Model.ViewId');
         }
         function DotThanhToan() {
             Forms.LoadAjax("Bu/Payment/Index?nameContract=" + '@Model.contract.NAME_CONTRACT' + "&version=" + '@Model.contract.VERSION');

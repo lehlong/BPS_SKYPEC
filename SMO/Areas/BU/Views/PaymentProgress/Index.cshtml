@@ -1,0 +1,125 @@
+﻿@model SMO.Service.BU.PaymentProgressService
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+    var totalPayment = Model.contract.CONTRACT_VALUE_VAT;
+}
+
+<div id='@Model.ViewId' class="container-fluid child-content">
+    <style>
+        .iconCss {
+            vertical-align: middle;
+        }
+    </style>
+    @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.FormId)
+        @Html.HiddenFor(m => m.ObjDetail.NAME_CONTRACT)
+        @Html.HiddenFor(m => m.ObjDetail.VERSION)
+        <div class="card border-grey">
+            <div class="body" style="padding-top: 0px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> HỢP ĐỒNG: @Model.contract.NAME.ToUpper()</a>
+                    </li>
+                    <li class="title-close" style="float: right; margin: 10px 10px 0 0; cursor: pointer; " title="Đóng màn hình" onclick="@string.Format("Forms.Close('{0}');", @Model.ViewId)">
+                        <i class="material-icons">close</i>
+                    </li>
+                </ul>
+                <div class="" style="margin-top:20px">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation">
+                            <a onclick="ThongTinHopDong()" style="padding-left: 0px; cursor: pointer">THÔNG TIN HỢP ĐỒNG</a>
+                        </li>
+                        <li role="presentation" class="active" style="margin-left:30px;">
+                            <a onclick="TienDoThanhToan()" style="padding-left: 0px; cursor: pointer">TIẾN ĐỘ THANH TOÁN</a>
+                        </li>
+                        <li role="presentation" style="margin-left:30px;">
+                            <a onclick="DotThanhToan()" style="padding-left: 0px; cursor: pointer">ĐỢT THANH TOÁN</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row" style="margin-top:20px">
+                    <div style="padding-left:12px">
+                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdSave", "Lưu lại", string.Format("Create();"), "Alt+N", "done_all")
+                        @Html.MyButton("cmdAdd", "Thêm đợt thanh toán", "ShowCreate();", "Alt+N", "add")
+                    </div>
+
+                </div>
+                <hr>
+
+                <div id="divResult">
+
+                </div>
+
+ 
+            </div>
+        </div>
+
+}
+<script type="text/javascript">
+        $(function () {
+            Forms.SubmitForm('@Model.FormId');
+            Forms.CompleteUI();
+        });
+        function ShowCreate() {
+        var form = document.querySelector(".form-create");
+        form.style.display = '';
+    }
+
+    function HideCreate() {
+        var form = document.querySelector(".form-create");
+        form.style.display = 'none';
+    }
+        function ThongTinHopDong() {
+                Forms.LoadAjax("Bu/Contract/Detail?id=" + '@Model.contract.NAME_CONTRACT' + "&version=" + '@Model.contract.VERSION');
+                Forms.Close('@Model.ViewId');
+        }
+        function TienDoThanhToan() {
+            Forms.LoadAjax("Bu/PaymentProgress/Index?nameContract=" + '@Model.contract.NAME_CONTRACT' + "&version=" + '@Model.contract.VERSION');
+            Forms.Close('@Model.ViewId');
+    }
+        function DotThanhToan() {
+            Forms.LoadAjax("Bu/Payment/Index?nameContract=" + '@Model.contract.NAME_CONTRACT' + "&version=" + '@Model.contract.VERSION');
+            Forms.Close('@Model.ViewId');
+    }
+        function cacullateValue(element) {
+            var progress = Number.parseInt(element.value);
+            var totalPayment = Number.parseInt('@totalPayment');
+            var valueBatch = progress * totalPayment / 100;
+            document.getElementById('ObjDetail_PAYMENT_VALUE').value = Math.round(valueBatch);
+    }
+        function cacullateProgress(element) {
+            var valueBatch = Number.parseInt(element.value);
+            var totalPayment = Number.parseInt('@totalPayment');
+            var progress = valueBatch / totalPayment * 100;
+            console.log(progress)
+            document.getElementById('ObjDetail_PROGRESS').value = Math.round(progress);
+
+        }
+        function Create() {
+            var headers = {
+                        'RequestVerificationToken': $('#antiForgeryToken').val(),
+                    };
+            var form = document.getElementById("@Model.FormId");
+            var formData = new FormData(form);
+            $.ajax({
+                  type: "POST",
+                  url: "@Url.Action("Create")",
+                  data: formData,
+                  headers: headers,
+                  contentType: false,
+                  processData: false,
+                  success: function (response) {
+                      Message.execute(response);
+                      Forms.HideLoading();
+                      TienDoThanhToan();
+                  },
+                  error: Forms.AjaxErrorHandler
+                    });
+        }
+</script>
+</div>
+

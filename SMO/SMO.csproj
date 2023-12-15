@@ -545,6 +545,7 @@
     <Compile Include="Areas\BU\Controllers\ContractController.cs" />
     <Compile Include="Areas\BU\Controllers\FileUploadController.cs" />
     <Compile Include="Areas\BU\Controllers\PaymentController.cs" />
+    <Compile Include="Areas\BU\Controllers\PaymentProgressController.cs" />
     <Compile Include="Areas\CF\CFAreaRegistration.cs" />
     <Compile Include="Areas\CF\Controllers\ConfigTableauController.cs" />
     <Compile Include="Areas\CF\Controllers\ConfigTemplateNotifyController.cs" />
@@ -756,6 +757,7 @@
     <Compile Include="Service\BU\ContractService.cs" />
     <Compile Include="Service\BU\FileUploadService.cs" />
     <Compile Include="Service\BU\LinkUploadService.cs" />
+    <Compile Include="Service\BU\PaymentProgressService.cs" />
     <Compile Include="Service\BU\PaymentService.cs" />
     <Compile Include="Service\CF\ConfigTableauService.cs" />
     <Compile Include="Service\CF\ConfigTemplateNotifyService.cs" />
@@ -1998,6 +2000,8 @@
     <Content Include="Areas\MD\Views\KhoanMucHangHoa\Edit.cshtml" />
     <Content Include="Areas\MD\Views\Data\Index.cshtml" />
     <Content Include="Areas\MD\Views\Data\GetDataByTimeYear.cshtml" />
+    <Content Include="Areas\BU\Views\PaymentProgress\Index.cshtml" />
+    <Content Include="Areas\BU\Views\PaymentProgress\List.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
