@@ -37,10 +37,9 @@ namespace SMO.Areas.BU.Controllers
             result.Type = TransferType.AlertSuccessAndJsCommand;
             service.getContract();
             service.Create(Request);
-            if (service.State)
+            if (_service.State)
             {
                 SMOUtilities.GetMessage("1001", service, result);
-                result.ExtData = $"SubmitIndex();Forms.Close('{service.ViewId}');Forms.LoadAjax({{url:'{Url.Action("List")}'}});";
             }
             else
             {
@@ -58,7 +57,6 @@ namespace SMO.Areas.BU.Controllers
             if (_service.State)
             {
                 SMOUtilities.GetMessage("7005", service, result);
-                result.ExtData = $"SubmitIndex();Forms.Close('{service.ViewId}');Forms.LoadAjax({{url:'{Url.Action("List")}'}});";
             }
             else
             {
