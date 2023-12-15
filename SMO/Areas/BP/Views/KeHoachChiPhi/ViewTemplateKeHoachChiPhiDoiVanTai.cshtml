@@ -1,0 +1,102 @@
+﻿@model IList<T_MD_KHOAN_MUC_HANG_HOA>
+@using SMO.Core.Entities.MD;
+@using System.Text;
+
+@{
+    var detailOtherCostElements = ViewBag.detailOtherCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>;
+    var viewId = Guid.NewGuid().ToString();
+}
+<div id="@viewId" class="container-fluid child-content">
+    <div class="card">
+        <div class="body" style="padding-top: 0px">
+
+            @if (detailOtherCostElements == null || detailOtherCostElements.Count == 0)
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                </div>
+                <div class="p-t-10">
+                    @{
+                        Html.RenderPartial("_NothingData");
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="p-t-10">
+                    @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
+                    @Html.MyButton("cmdDownloadTemlate",
+                                                "Download mẫu",
+                                                "DownloadTemplate();",
+                                                "Alt+V", "file_download")
+                </div>
+                <div class="p-t-10">
+                    <div class="body-content">
+                        <div class="table-responsive" style="max-height: calc(100vh - 140px)">
+                            <table class="table table-condensed table-bordered table-striped table-pre-whitespace">
+                                <thead>
+                                    <tr class="sticky-row">
+                                        <th rowspan="3" class="align-center">Mã khoản mục</th>
+                                        <th rowspan="3" class="align-center">Tên khoản mục chi phí</th>
+                                        <th colspan="11" class="align-center">Kế hoạch chi tiết</th>
+                                        <th rowspan="3" class="align-center">Ghi chú</th>
+                                    </tr>
+                                    <tr class="sticky-row">
+                                        <th colspan="4" class="align-center">Số lượng</th>
+                                        <th rowspan="2" class="align-center">Cộng</th>
+                                        <th rowspan="2" class="align-center">Đơn giá</th>
+                                        <th colspan="4" class="align-center">Thành tiền</th>
+                                        <th rowspan="2" class="align-center">Cộng</th>
+                                    </tr>
+                                    <tr class="sticky-row">
+                                        <th class="align-center">VPCN</th>
+                                        <th class="align-center">VTMB</th>
+                                        <th class="align-center">VTMT</th>
+                                        <th class="align-center">VTMN</th>
+
+                                        <th class="align-center">VPCN</th>
+                                        <th class="align-center">VTMB</th>
+                                        <th class="align-center">VTMT</th>
+                                        <th class="align-center">VTMN</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                    @foreach (var item in Model.GroupBy(x => x.CODE)
+                                        .Select(x => x.First()))
+                                    {
+                                        var space = new StringBuilder();
+                                        for (int i = 0; i < item.LEVEL; i++)
+                                        {
+                                            space.Append("\t");
+                                        }
+                                        var classParent = item.IS_GROUP ? "strong" : string.Empty;
+                                        <tr class="@classParent">
+                                            <td>@item.CODE</td>
+                                            <td class=" @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

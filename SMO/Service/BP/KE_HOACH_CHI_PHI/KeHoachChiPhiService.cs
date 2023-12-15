@@ -1720,54 +1720,54 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 return;
             }
 
-           
-                if (ObjDetail.TYPE_UPLOAD == "01")
+
+            if (ObjDetail.TYPE_UPLOAD == "01")
+            {
+                //for (int i = 0; i < ListColumnName.Count; i++)
+                //{
+                //    if (dataTable.Rows[this.StartRowData - 1][i].ToString().ToUpper() != this.ListColumnName[i])
+                //    {
+                //        this.State = false;
+                //        this.ErrorMessage = "File excel không đúng theo mẫu thiết kế!";
+                //        return;
+                //    }
+                //}
+                // kiểm tra xem có 2 hàng dữ liệu của cùng 1 khoản mục hay không
+                var dictionary = lstDetailTemplate.ToDictionary(x => x.PKID, x => true);
+                for (int i = StartRowData; i < dataTable.Rows.Count; i++)
                 {
-                    //for (int i = 0; i < ListColumnName.Count; i++)
-                    //{
-                    //    if (dataTable.Rows[this.StartRowData - 1][i].ToString().ToUpper() != this.ListColumnName[i])
-                    //    {
-                    //        this.State = false;
-                    //        this.ErrorMessage = "File excel không đúng theo mẫu thiết kế!";
-                    //        return;
-                    //    }
-                    //}
-                    // kiểm tra xem có 2 hàng dữ liệu của cùng 1 khoản mục hay không
-                    var dictionary = lstDetailTemplate.ToDictionary(x => x.PKID, x => true);
-                    for (int i = StartRowData; i < dataTable.Rows.Count; i++)
+                    var projectCode = dataTable.Rows[i][0].ToString().Trim();
+                    var companyCode = dataTable.Rows[i][1].ToString().Trim();
+                    var elementCodeInExcel = dataTable.Rows[i][2].ToString().Trim();
+                    var foundItem = lstDetailTemplate
+                        .FirstOrDefault(x => x.ELEMENT_CODE == elementCodeInExcel
+                        && x.Center.COST_CENTER_CODE == projectCode
+                        && x.Center.SAN_BAY_CODE == companyCode);
+                    if (foundItem != null && dictionary[foundItem.PKID])
                     {
-                        var projectCode = dataTable.Rows[i][0].ToString().Trim();
-                        var companyCode = dataTable.Rows[i][1].ToString().Trim();
-                        var elementCodeInExcel = dataTable.Rows[i][2].ToString().Trim();
-                        var foundItem = lstDetailTemplate
-                            .FirstOrDefault(x => x.ELEMENT_CODE == elementCodeInExcel
-                            && x.Center.COST_CENTER_CODE == projectCode
-                            && x.Center.SAN_BAY_CODE == companyCode);
-                        if (foundItem != null && dictionary[foundItem.PKID])
-                        {
-                            dictionary[foundItem.PKID] = false;
-                        }
-                        else if (foundItem != null)
-                        {
-                            this.State = false;
-                            this.ErrorMessage = $"Mã khoản mục [{foundItem.ELEMENT_CODE}] tại dòng {i + 1} bị lặp lại!";
-                            return;
-                        }
+                        dictionary[foundItem.PKID] = false;
+                    }
+                    else if (foundItem != null)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = $"Mã khoản mục [{foundItem.ELEMENT_CODE}] tại dòng {i + 1} bị lặp lại!";
+                        return;
                     }
                 }
+            }
 
 
 
-                // Kiểm tra dữ liệu có phải là số hay không
-                if (ObjDetail.TYPE_UPLOAD == "01")
-                {
-                    this.ConvertData(dataTable, lstElement.ToList(), startColumn: 4, endColumn: 6, isDataBase);
-                }
-                else
-                {
-                    this.ConvertData(dataTable, lstElement.ToList(), startColumn: 11, endColumn: 23, isDataBase);
-                }
-            
+            // Kiểm tra dữ liệu có phải là số hay không
+            if (ObjDetail.TYPE_UPLOAD == "01")
+            {
+                this.ConvertData(dataTable, lstElement.ToList(), startColumn: 4, endColumn: 6, isDataBase);
+            }
+            else
+            {
+                this.ConvertData(dataTable, lstElement.ToList(), startColumn: 11, endColumn: 23, isDataBase);
+            }
+
             if (this.InvalidCellsList.Count > 0)
             {
                 this.State = false;
@@ -2057,7 +2057,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             STATUS = Approve_Status.ChuaTrinhDuyet,
                             VERSION = versionNext,
                             KHOAN_MUC_HANG_HOA_CODE = tableData.Rows[i][2].ToString().Trim(),
-                            
+
                             QUANTITY = tableData.Rows[i][4] as decimal? == null ? 0 : tableData.Rows[i][4] as decimal?,
                             PRICE = tableData.Rows[i][5] as decimal? == null ? 0 : tableData.Rows[i][5] as decimal?,
 
@@ -2616,25 +2616,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 int NUM_CELL = 7;
 
                 //Style cần dùng
-                ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
-                styleCellHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
-                styleCellHeader.WrapText = true;
-
-                ICellStyle styleCellDetail = templateWorkbook.CreateCellStyle();
-                styleCellDetail.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
-                styleCellDetail.WrapText = true;
 
                 ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
-                styleCellNumber.CloneStyleFrom(styleCellDetail);
                 styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
 
-                ICellStyle styleCellNumberColor = templateWorkbook.CreateCellStyle();
-                styleCellNumberColor.CloneStyleFrom(styleCellNumber);
-                styleCellNumberColor.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Yellow.Index;
-                styleCellNumberColor.FillPattern = FillPattern.SolidForeground;
-
                 ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
-                styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
                 styleCellBold.WrapText = true;
                 var fontBold = templateWorkbook.CreateFont();
                 fontBold.Boldweight = (short)FontBoldWeight.Bold;
@@ -2652,71 +2638,43 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
                 rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
                 rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
-                //rowHeader2.Cells[18].SetCellValue(rowHeader2.Cells[18].StringCellValue + $" {year}");
 
                 var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
 
                 ReportUtilities.CreateCell(ref rowHeader3, NUM_CELL);
                 rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
-                //rowHeader2.Cells[14].SetCellValue(string.Concat(rowHeader2.Cells[14].StringCellValue, " ", template.));
                 #endregion
 
                 #region Details
 
-                numRowCur = 6;
+                numRowCur = 8;
                 var number = 1;
-                var rowHeightDetail = sheet.GetRow(6).Height;
-                foreach (var detail in detailOtherKhoanMucHangHoas.GroupBy(x => x.CENTER_CODE)
-                    .Select(x => x.First())
-                    .OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.SanBay.CODE))
+                var data = dataOtherCost.GroupBy(x => x.CODE).ToList();
+
+                foreach (var item in data.Select(x => x.First()))
                 {
-                    foreach (var item in dataOtherCost
-                            .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
-                            .OrderBy(x => x.C_ORDER)
-                            .GroupBy(x => x.CODE)
-                            .Select(x => x.First()))
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+
+                    rowCur.Cells[0].SetCellValue(item.CODE);
+                    rowCur.Cells[1].SetCellValue(item.NAME);
+                    
+                    if (item.IS_GROUP)
                     {
-                        var space = new StringBuilder();
-                        for (int i = 0; i < item.LEVEL; i++)
-                        {
-                            space.Append("\t");
-                        }
-
-                        //ReportUtilities.CreateRow(ref sheet, numRowCur, 50);
-                        ReportUtilities.CopyRow(ref sheet, 7, numRowCur);
-                        IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
-                        rowCur.Height = -1;
-
-                        rowCur.Cells[1].SetCellValue(detail.Center.SAN_BAY_CODE);
-                        rowCur.Cells[1].CellStyle = styleCellDetail;
-
-                        rowCur.Cells[0].SetCellValue(detail.Center.COST_CENTER_CODE);
-                        rowCur.Cells[0].CellStyle = styleCellDetail;
-
-                        rowCur.Cells[2].SetCellValue(item.CODE);
-                        rowCur.Cells[2].CellStyle = styleCellDetail;
-
-                        rowCur.Cells[3].SetCellValue($"{space}{item.NAME}");
-                        if (item.IS_GROUP)
-                        {
-                            rowCur.Cells[3].CellStyle = styleCellBold;
-                            rowCur.Cells[3].CellStyle.SetFont(fontBold);
-                        }
-                        else
-                        {
-                            rowCur.Cells[3].CellStyle = styleCellDetail;
-                        }
-
-                        for (int i = 4; i < 6; i++)
-                        {
-                            rowCur.Cells[i].SetCellValue(string.Empty);
-                            rowCur.Cells[i].SetCellType(CellType.Numeric);
-                            rowCur.Cells[i].CellStyle = styleCellNumber;
-                        }
-
-                        numRowCur++;
-                        number++;
+                        rowCur.Cells[0].CellStyle = styleCellBold;
+                        rowCur.Cells[0].CellStyle.SetFont(fontBold);
+                        rowCur.Cells[1].CellStyle = styleCellBold;
+                        rowCur.Cells[1].CellStyle.SetFont(fontBold);
                     }
+
+                    //for (int i = 4; i < 6; i++)
+                    //{
+                    //    rowCur.Cells[i].SetCellValue(string.Empty);
+                    //    rowCur.Cells[i].SetCellType(CellType.Numeric);
+                    //    rowCur.Cells[i].CellStyle = styleCellNumber;
+                    //}
+
+                    numRowCur++;
+                    number++;
                 }
 
                 //Xóa dòng thừa cuối cùng khi tạo các dòng cho detail
@@ -2737,7 +2695,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             }
         }
 
-        public override void GenerateTemplateBase(ref MemoryStream outFileStream, string path, string templateId, int year){}
+        public override void GenerateTemplateBase(ref MemoryStream outFileStream, string path, string templateId, int year) { }
 
         public override IList<NodeDataFlow> BuildDataFlowTree(string orgCode, int year, int? version, int? sumUpVersion)
         {
@@ -3152,7 +3110,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 // insert to pl data history
                 UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>().Create((from pl in lstOtherCostPlDataOldVersion
-                                                                           select (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)pl).ToList());
+                                                                              select (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)pl).ToList());
 
                 // insert to pl history
                 UnitOfWork.Repository<KeHoachChiPhiHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_HISTORY

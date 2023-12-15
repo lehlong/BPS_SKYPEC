@@ -1819,7 +1819,7 @@
     <Content Include="Areas\BP\Views\KeHoachChiPhi\SummaryDataCenter.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewData.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewTemplateBaseKeHoachChiPhi.cshtml" />
-    <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewTemplateKeHoachChiPhi.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewTemplateKeHoachChiPhiMienBac.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhiReviewComment\FilterCommentCenter.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhiReviewComment\Index.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhiReviewComment\ReviewData.cshtml" />
@@ -2000,8 +2000,14 @@
     <Content Include="Areas\MD\Views\KhoanMucHangHoa\Edit.cshtml" />
     <Content Include="Areas\MD\Views\Data\Index.cshtml" />
     <Content Include="Areas\MD\Views\Data\GetDataByTimeYear.cshtml" />
+<<<<<<< Updated upstream
     <Content Include="Areas\BU\Views\PaymentProgress\Index.cshtml" />
     <Content Include="Areas\BU\Views\PaymentProgress\List.cshtml" />
+=======
+    <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewTemplateKeHoachChiPhiMienTrung.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewTemplateKeHoachChiPhiMienNam.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewTemplateKeHoachChiPhiDoiVanTai.cshtml" />
+>>>>>>> Stashed changes
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

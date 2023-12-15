@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace SMO.Areas.BP.Controllers
 {
@@ -26,7 +27,25 @@ namespace SMO.Areas.BP.Controllers
         {
             var template = _service.GetTemplate(templateId);
             MemoryStream outFileStream = new MemoryStream();
-            string path = Server.MapPath("~/TemplateExcel/" + "Template_KeHoachChiPhi.xlsx");
+            var templateExcel = "";
+            if(template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
+            {
+                templateExcel = "Template_KeHoachChiPhiMienBac.xlsx";
+            }
+            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
+            {
+                templateExcel = "Template_KeHoachChiPhiMienTrung.xlsx";
+            }
+            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
+            {
+                templateExcel = "Template_KeHoachChiPhiMienNam.xlsx";
+            }
+            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
+            {
+                templateExcel = "Template_KeHoachChiPhiDoiVanTai.xlsx";
+            }
+
+            string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
             _service.GenerateTemplate(ref outFileStream, path, templateId, year);
             var fileName = template.NAME;
 
@@ -39,7 +58,27 @@ namespace SMO.Areas.BP.Controllers
             {
                 var dataCost = _service.PreparePureListForTemplate(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherCostElements, templateId, year);
                 ViewBag.detailOtherCostElements = detailOtherCostElements;
-                return PartialView("ViewTemplateKeHoachChiPhi", dataCost);
+                
+                if (detailOtherCostElements.Any(x => x.Center.COST_CENTER_CODE == "100002"))
+                {
+                    return PartialView("ViewTemplateKeHoachChiPhiMienBac", dataCost);
+                }
+                else if (detailOtherCostElements.Any(x => x.Center.COST_CENTER_CODE == "100003"))
+                {
+                    return PartialView("ViewTemplateKeHoachChiPhiMienTrung", dataCost);
+                }
+                else if (detailOtherCostElements.Any(x => x.Center.COST_CENTER_CODE == "100004"))
+                {
+                    return PartialView("ViewTemplateKeHoachChiPhiMienNam", dataCost);
+                }
+                else if(detailOtherCostElements.Any(x => x.Center.COST_CENTER_CODE == "100005"))
+                {
+                    return PartialView("ViewTemplateKeHoachChiPhiDoiVanTai", dataCost);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(ExportData), new { version, year, orgCode = centerCode, templateCode = string.Empty });
+                }
             }
             else
             {

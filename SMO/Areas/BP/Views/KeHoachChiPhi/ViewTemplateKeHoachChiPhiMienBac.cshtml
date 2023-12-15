@@ -36,26 +36,40 @@
                             <table class="table table-condensed table-bordered table-striped table-pre-whitespace">
                                 <thead>
                                     <tr class="sticky-row">
-                                        <th>Mã chi nhánh</th>
-                                        <th>Tên chi nhánh</th>
-                                        <th>Mã sân bay</th>
-                                        <th>Tên sân bay</th>
-                                        <th>Mã khoản mục</th>
-                                        <th>Tên khoản mục</th>
-                                        <th>Số lượng</th>
-                                        <th>Đơn giá</th>
-                                        <th>Thành tiền</th>
-                                        <th>Ghi chú</th>
+                                        <th rowspan="3" class="align-center">Mã khoản mục</th>
+                                        <th rowspan="3" class="align-center">Tên khoản mục chi phí</th>
+                                        <th colspan="17" class="align-center">Kế hoạch chi tiết</th>
+                                        <th rowspan="3" class="align-center">Ghi chú</th>
+                                    </tr>
+                                    <tr class="sticky-row">
+                                        <th colspan="7" class="align-center">Số lượng</th>
+                                        <th rowspan="2" class="align-center">Cộng</th>
+                                        <th rowspan="2" class="align-center">Đơn giá</th>
+                                        <th colspan="7" class="align-center">Thành tiền</th>
+                                        <th rowspan="2" class="align-center">Cộng</th>
+                                    </tr>
+                                    <tr class="sticky-row">
+                                        <th class="align-center">VPCN</th>
+                                        <th class="align-center">HAN</th>
+                                        <th class="align-center">HPH</th>
+                                        <th class="align-center">THD</th>
+                                        <th class="align-center">VII</th>
+                                        <th class="align-center">VDH</th>
+                                        <th class="align-center">VDO</th>
+
+                                        <th class="align-center">VPCN</th>
+                                        <th class="align-center">HAN</th>
+                                        <th class="align-center">HPH</th>
+                                        <th class="align-center">THD</th>
+                                        <th class="align-center">VII</th>
+                                        <th class="align-center">VDH</th>
+                                        <th class="align-center">VDO</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
-                                    @foreach (var detail in detailOtherCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.CostCenter.CODE))
-                                    {
-                                        foreach (var item in Model
-                                            .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
-                                            .OrderBy(x => x.C_ORDER)
-                                            .GroupBy(x => x.CODE)
+                                    
+                                        @foreach (var item in Model.GroupBy(x => x.CODE)
                                             .Select(x => x.First()))
                                         {
                                             var space = new StringBuilder();
@@ -65,19 +79,29 @@
                                             }
                                             var classParent = item.IS_GROUP ? "strong" : string.Empty;
                                             <tr class="@classParent">
-                                                <td>@(detail.Center.COST_CENTER_CODE)</td>
-                                                <td>@(detail.Center.CostCenter.NAME)</td>
-                                                <td>@(detail.Center.SAN_BAY_CODE)</td>
-                                                <td>@(detail.Center.SanBay.NAME)</td>
                                                 <td>@item.CODE</td>
                                                 <td class=" @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                         }
-                                    }
+                                    
                                 </tbody>
                             </table>
                         </div>
