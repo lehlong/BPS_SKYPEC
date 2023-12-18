@@ -59,14 +59,13 @@ else
                     <tbody>
                         <tr class="sticky-row strong" data-xls-row="header">
                             <td class="sticky-cell pre-whitespace" rowspan="3" style="z-index:11"></td>
-                            <td class="pre-whitespace" rowspan="3" style="text-align:center">MÃ</td>
-                            <td class="pre-whitespace" rowspan="3" style="text-align:center">CHỈ TIÊU</td>
-                            <td class="pre-whitespace" rowspan="3" style="text-align:center">ĐVT</td>
+                            <td rowspan="3" style="text-align:center;width:32px;">CHỈ TIÊU</td>
                             <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 3)" style="text-align:center">KẾ HOẠCH GIAO ĐẦU NĂM</td>
                             <td class="pre-whitespace" colspan="4" style="text-align:center">Ý KIẾN PHÒNG KỸ THUẬT</td>
                         </tr>
                         <tr class="sticky-row strong" data-xls-row="header">
-                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 1)" style="text-align:center">SỐ LƯỢNG</td>
+                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count())" style="text-align:center">SỐ LƯỢNG</td>
+                            <td class="pre-whitespace" rowspan="2" style="text-align:center">CỘNG</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">ĐƠN GIÁ</td>
                             <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count())" style="text-align:center">THÀNH TIỀN</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">CỘNG</td>
@@ -78,12 +77,11 @@ else
                         <tr class="sticky-row strong" data-xls-row="header">
                             @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                             {
-                                <td class="pre-whitespace">@sb.Center.SanBay.NAME</td>
+                                <td class="pre-whitespace">@sb.Center.SanBay.CODE</td>
                             }
-                            <td class="pre-whitespace">Điều chỉnh</td>
                             @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                             {
-                                <td class="pre-whitespace">@sb.Center.SanBay.NAME</td>
+                                <td class="pre-whitespace">@sb.Center.SanBay.CODE</td>
                             }
                         </tr>
 
@@ -110,10 +108,7 @@ else
                                     </td>
                                 }
 
-                                <td class="pre-whitespace">@(item.CODE)</td>
-                                <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
-                                <td class="pre-whitespace"></td>
-
+                                <td class="pre-whitespace @classParent" style="width:320px">@($"{space.ToString()}{item.NAME}")</td>
 
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
