@@ -37,7 +37,7 @@ namespace SMO.Areas.BU.Controllers
             result.Type = TransferType.AlertSuccessAndJsCommand;
             service.getContract();
             service.Create(Request);
-            if (_service.State)
+            if (service.State)
             {
                 SMOUtilities.GetMessage("1001", service, result);
             }
@@ -54,7 +54,7 @@ namespace SMO.Areas.BU.Controllers
             var result = new TransferObject();
             result.Type = TransferType.AlertSuccessAndJsCommand;
             service.Delete(Request);
-            if (_service.State)
+            if (service.State)
             {
                 SMOUtilities.GetMessage("7005", service, result);
             }

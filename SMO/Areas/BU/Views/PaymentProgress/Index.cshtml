@@ -135,7 +135,40 @@
                     confirmDelete(element);
                 }
             })
-        }
+    }
+        function EditPharse(element) {
+            var row = element.closest('tr');
+            console.log(row);
+            var originalContent = row.outerHTML;
+            console.log(originalContent);
+            // Hiển thị trường chỉnh sửa hoặc thực hiện các thao tác chỉnh sửa tùy thuộc vào yêu cầu của bạn
+            var batch = row.querySelector('td:nth-child(1)').innerText.trim();
+            var progress = row.querySelector('td:nth-child(2)').innerText.trim();
+            var paymentValue = row.querySelector('td:nth-child(3)').innerText.trim();
+            var paymentDescription = row.querySelector('td:nth-child(4)').innerText.trim();
+            var profile = row.querySelector('td:nth-child(5)').innerText.trim();
+            var date = row.querySelector('td:nth-child(6)').innerText.trim();
+            var status = row.querySelector('td:nth-child(7)').innerText.trim();
+            row.innerHTML = '';
+            // Hiển thị các trường chỉnh sửa (ví dụ: input fields) và gán giá trị từ dòng hiện tại
+            row.innerHTML = `
+             <td><input type="text" value="${batch}" /></td>
+            <td><input type="text" value="${progress}" /></td>
+            <td><input type="text" value="${paymentValue}" /></td>
+            <td><input type="text" value="${paymentDescription}" /></td>
+            <td><input type="text" value="${profile}" /></td>
+            <td><input type="text" value="${date}" /></td>
+            <td><input type="text" value="${status}" /></td>
+            <td style="text-align:center;">
+                <button type="button" class="btn" style="margin-left:5px;" onclick="HideEdit(this, originalContent)"><i class="material-icons col-fecon">remove</i></button>
+            </td>
+        `;
+    }
+
+    function HideEdit(element,content) {
+        var row = element.closest('tr');
+        row.innerHTML = content;
+    }
         function confirmDelete(element) {
             var data_id = element.closest('td').getAttribute('data-id');
             console.log(data_id);

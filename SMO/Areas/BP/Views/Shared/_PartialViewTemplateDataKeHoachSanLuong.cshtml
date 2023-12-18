@@ -70,12 +70,56 @@
 @if (Model == null || Model.Count == 0 ||
     detailCostElements == null || detailCostElements.Count == 0 || costCFHeader == null)
 {
+
     Html.RenderPartial("_NothingData");
+
 }
 else
 {
+    List<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG> lstDetail = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG>();
+    if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.HANG_HANG_KHONG_CODE != null)
+    {
+        var flat = 0;
+        if(dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.HANG_HANG_KHONG_CODE != null)
+        {
+            foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
+            {
+                if (detail.Center.SAN_BAY_CODE == dataCenterModel.SAN_BAY_CODE && detail.Center.HANG_HANG_KHONG_CODE == dataCenterModel.HANG_HANG_KHONG_CODE)
+                {
+                    lstDetail.Add(detail);
+                    flat++;
+                }
+            }
+        }
+        else if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.HANG_HANG_KHONG_CODE != null)
+        {
+            foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
+            {
+                if (detail.Center.SAN_BAY_CODE == dataCenterModel.SAN_BAY_CODE)
+                {
+                    lstDetail.Add(detail);
+
+                    flat++;
+                }
+                else if (detail.Center.HANG_HANG_KHONG_CODE == dataCenterModel.HANG_HANG_KHONG_CODE)
+                {
+                    lstDetail.Add(detail);
+
+                    flat++;
+                }
+            }
+        }
+        if (flat == 0)
+        {
+            Html.RenderPartial("_NothingData");
+            return;
+        }
+    }
+
     Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
-    <div class="export-left-tab">
+
+
+<div class="export-left-tab">
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active" style="cursor: pointer; left: 0;">
                 <a href="#month" title="Kế hoạch theo tháng" data-toggle="tab">Kế hoạch theo tháng</a>
@@ -116,37 +160,115 @@ else
                             </tr>
 
                             @{
-                                var sumElement = Model.FirstOrDefault(x => string.IsNullOrEmpty(x.CODE));
-                                if (sumElement != null)
+                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null)
                                 {
-                                    <tr class="strong">
-                                        <td class="sticky-cell pre-whitespace"></td>
-                                        <td class="sticky-cell pre-whitespace"></td>
-                                        <td class="sticky-cell pre-whitespace"></td>
-                                        <td class="sticky-cell pre-whitespace"></td>
-                                        <td level="0" class="sticky-cell"></td>
-                                        <td class="sticky-cell pre-whitespace strong">@(sumElement.NAME)</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[0].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[1].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[2].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[3].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[4].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[5].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[6].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[7].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[8].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[9].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[10].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[11].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[12].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@sumElement.Values[13].ToStringVN()</td>
-                                        <td class="align-right pre-whitespace">@((sumElement.Values[12] / 12).ToStringVN())</td>
-                                        <td></td>
-                                    </tr>
+                                    List<T_MD_KHOAN_MUC_SAN_LUONG> lstItem = new List<T_MD_KHOAN_MUC_SAN_LUONG>();
+                                    foreach (var detail in lstDetail.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
+                                    {
+                                        foreach (var item in Model
+                                            .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
+                                            .OrderBy(x => x.C_ORDER)
+                                            .GroupBy(x => x.CODE)
+                                            .Select(x => x.First()))
+                                        {
+                                            if (item.IS_GROUP && item.HasAssignValue)
+                                            {
+                                                lstItem.Add(item);
+                                            }
+                                        }
+                                    }
+                                    decimal[] sum = new decimal[14];
+                                    for (int i = 0; i < lstItem.Count(); i++)
+                                    {
+                                        for (int j = 0; j < 14; j++)
+                                        {
+                                            sum[j] += lstItem[i].Values[j];
+                                        }
+                                    }
+
+                                                        <tr class="strong">
+                                                            <td class="sticky-cell pre-whitespace"></td>
+                                                            <td class="sticky-cell pre-whitespace"></td>
+                                                            <td class="sticky-cell pre-whitespace"></td>
+                                                            <td class="sticky-cell pre-whitespace"></td>
+                                                            <td level="0" class="sticky-cell"></td>
+                                                            <td class="sticky-cell pre-whitespace strong">Tổng cộng</td>
+                                                            <td class="align-right pre-whitespace">@sum[0].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[1].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[2].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[3].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[4].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[5].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[6].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[7].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[8].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[9].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[10].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[11].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[12].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@sum[13].ToStringVN()</td>
+                                                            <td class="align-right pre-whitespace">@((sum[12]/12).ToStringVN())</td>
+                                                            <td></td>
+                                                        </tr>
+                                }
+                                else
+                                {
+                                    var sumElement = Model.FirstOrDefault(x => string.IsNullOrEmpty(x.CODE));
+                                    if (sumElement != null)
+                                    {
+                                        <tr class="strong">
+                                            <td class="sticky-cell pre-whitespace"></td>
+                                            <td class="sticky-cell pre-whitespace"></td>
+                                            <td class="sticky-cell pre-whitespace"></td>
+                                            <td class="sticky-cell pre-whitespace"></td>
+                                            <td level="0" class="sticky-cell"></td>
+                                            <td class="sticky-cell pre-whitespace strong">@(sumElement.NAME)</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[0].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[1].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[2].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[3].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[4].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[5].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[6].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[7].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[8].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[9].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[10].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[11].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[12].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@sumElement.Values[13].ToStringVN()</td>
+                                            <td class="align-right pre-whitespace">@((sumElement.Values[12] / 12).ToStringVN())</td>
+                                            <td></td>
+                                        </tr>
+                                    }
                                 }
                             }
                             @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
                             {
+                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null)
+                                {
+                                    if (dataCenterModel.HANG_HANG_KHONG_CODE != null && dataCenterModel.SAN_BAY_CODE != null)
+                                    {
+                                        if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE || detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    else if (dataCenterModel.HANG_HANG_KHONG_CODE != null)
+                                    {
+                                        if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    else if (dataCenterModel.SAN_BAY_CODE != null)
+                                    {
+                                        if (detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                }
                                 foreach (var item in Model
                                     .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
                                     .OrderBy(x => x.C_ORDER)
@@ -211,6 +333,13 @@ else
 
                             @foreach (var item in dataYear)
                             {
+                                if (dataCenterModel.SAN_BAY_CODE!= null)
+                                {
+                                    if(dataCenterModel.SAN_BAY_CODE != item.SAN_BAY_CODE)
+                                    {
+                                        continue;
+                                    }
+                                }
                                 <tr class="sticky-row">
                                     <td class="pre-whitespace" style="text-align:center">@item.SAN_BAY_CODE</td>
                                     <td class="pre-whitespace">@item.SAN_BAY_NAME</td>

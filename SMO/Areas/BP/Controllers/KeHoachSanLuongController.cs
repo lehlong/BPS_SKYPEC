@@ -79,6 +79,7 @@ namespace SMO.Areas.BP.Controllers
                 ViewBag.dataCenterModel = model;
                 return PartialView(dataCost);
             }
+            
             dataCost = dataCost.Distinct().ToList();
             // chuyển đơn vị tiền tệ 
             if (model.EXCHANGE_RATE.HasValue && model.EXCHANGE_RATE != 1)

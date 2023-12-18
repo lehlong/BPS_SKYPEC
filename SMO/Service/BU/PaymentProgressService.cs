@@ -52,13 +52,24 @@ namespace SMO.Service.BU
                     return;
                 }
                 decimal progressTotal = 0;
+                DateTime datePayment = DateTime.MinValue;
                 foreach(var item in this.ObjList)
                 {
                     progressTotal += item.PROGRESS;
+                    if(item.DATE > datePayment)
+                    {
+                        datePayment = item.DATE;
+                    }
                 }
                 if((progressTotal+this.ObjDetail.PROGRESS) > 100)
                 {
                     ErrorMessage = "Tổng tiến độ lớn hơn 100!";
+                    State = false;
+                    return;
+                }
+                if(this.ObjDetail.DATE < datePayment)
+                {
+                    ErrorMessage = "Ngày thanh toán hiện tại nhỏ hơn ngày thanh toán đợt trước!";
                     State = false;
                     return;
                 }

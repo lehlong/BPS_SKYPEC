@@ -349,7 +349,7 @@ else
             Forms.Ajax(ajaxParams);
         }
 
-        function OnChangeYear(version, submitForm) {
+    function OnChangeYear(version, submitForm) {
             // clear data in the right div
             $("#divExportRight_@viewId").html("");
             var year = $("#@viewId #YEAR").val();
@@ -357,6 +357,8 @@ else
             var templateId = $("#@viewId #TEMPLATE_CODE").val();
             var kichBan = $("#@viewId #KICH_BAN").val();
             var phienBan = $("#@viewId #PHIEN_BAN").val();
+            var sanbay = $("#@viewId #SAN_BAY_CODE").val();
+            var hanghangkhong = $("#@viewId #HANG_HANG_KHONG_CODE").val();
             if (year === undefined) {
                 return;
             }
@@ -366,7 +368,7 @@ else
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                data: { orgCode, year, templateId, kichBan, phienBan },
+                data: { orgCode, year, templateId, kichBan, phienBan, sanbay, hanghangkhong },
                 success: function (response) {
                     var lstVersion = $('#@viewId #VERSION');
                     lstVersion.html('');
