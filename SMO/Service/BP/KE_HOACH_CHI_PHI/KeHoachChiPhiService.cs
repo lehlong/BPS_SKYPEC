@@ -2073,21 +2073,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var centerCodeTBB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "TBB" && x.COST_CENTER_CODE == "100003");
                         var centerCodeVDH = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VDH" && x.COST_CENTER_CODE == "100003");
                         var centerCodeVCL = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VCL" && x.COST_CENTER_CODE == "100003");
-                        if (centerCodeVPCN == null
-                            || centerCodeDAD == null
-                            || centerCodeHUI == null
-                            || centerCodeUIH == null
-                            || centerCodeBMV == null
-                            || centerCodePXU == null
-                            || centerCodeCXR == null
-                            || centerCodeDLI == null
-                            || centerCodeVII == null
-                            || centerCodeTBB == null
-                            || centerCodeVDH == null
-                            || centerCodeVCL == null)
+                        if (centerCodeVPCN == null || centerCodeDAD == null || centerCodeHUI == null || centerCodeUIH == null || centerCodeBMV == null || centerCodePXU == null || centerCodeCXR == null || centerCodeDLI == null || centerCodeVII == null || centerCodeTBB == null || centerCodeVDH == null || centerCodeVCL == null)
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                         }
+                        
                         //VPCN
                         var costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA()
@@ -2129,8 +2119,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataDAD);
 
                         //HUI
-                        var costDataHUI= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataHUI= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataHUI = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataHUI = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2147,9 +2137,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataHUI.AMOUNT = costDataHUI.QUANTITY * costDataHUI.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHUI);
+
                         //UIH
-                        var costDataUIH= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataUIH= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataUIH = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataUIH = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2166,9 +2157,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataUIH.AMOUNT = costDataUIH.QUANTITY * costDataUIH.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataUIH);
+                        
                         //BMV
-                        var costDataBMV= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataBMV= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataBMV = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataBMV = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2185,9 +2177,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataBMV.AMOUNT = costDataBMV.QUANTITY * costDataBMV.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataBMV);
+                        
                         //PXU
-                        var costDataPXU= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataPXU= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataPXU = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataPXU = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2204,9 +2197,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataPXU.AMOUNT = costDataPXU.QUANTITY * costDataPXU.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataPXU);
+                        
                         //CXR
-                        var costDataCXR= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataCXR= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataCXR = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataCXR = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2223,9 +2217,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataCXR.AMOUNT = costDataCXR.QUANTITY * costDataCXR.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataCXR);
+                        
                         //DLI
-                        var costDataDLI= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataDLI= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataDLI = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataDLI = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2242,9 +2237,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataDLI.AMOUNT = costDataDLI.QUANTITY * costDataDLI.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataDLI);
+                        
                         //VII
-                        var costDataVII= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVII= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVII = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVII = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2261,9 +2257,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVII.AMOUNT = costDataVII.QUANTITY * costDataVII.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVII);
+                        
                         //TBB
-                        var costDataTBB= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataTBB= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataTBB = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataTBB = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2280,9 +2277,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataTBB.AMOUNT = costDataTBB.QUANTITY * costDataTBB.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataTBB);
+                        
                         //VDH
-                        var costDataVDH= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVDH= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVDH = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVDH = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2299,9 +2297,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVDH.AMOUNT = costDataVDH.QUANTITY * costDataVDH.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVDH);
+                        
                         //VCL
-                        var costDataVCL= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVCL= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVCL = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVCL = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2322,27 +2321,21 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
                     {
                         var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100004");
-                        var centerCodeSGN= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "SGN" && x.COST_CENTER_CODE == "100004");
-                        var centerCodeVCS= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VCS" && x.COST_CENTER_CODE == "100004");
-                        var centerCodeCAH= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "CAH" && x.COST_CENTER_CODE == "100004");
-                        var centerCodeVCA= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VCA" && x.COST_CENTER_CODE == "100004");
-                        var centerCodeVKG= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VKG" && x.COST_CENTER_CODE == "100004");
-                        var centerCodePQC= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "PQC" && x.COST_CENTER_CODE == "100004");
-                        var centerCodeTAP= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "TAP" && x.COST_CENTER_CODE == "100004");
-                        if (centerCodeVPCN == null
-                            ||centerCodeSGN == null
-                            ||centerCodeVCS == null
-                            ||centerCodeCAH == null
-                            ||centerCodeVCA == null
-                            ||centerCodeVKG == null
-                            ||centerCodePQC == null
-                            ||centerCodeTAP == null)
+                        var centerCodeSGN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "SGN" && x.COST_CENTER_CODE == "100004");
+                        var centerCodeVCS = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VCS" && x.COST_CENTER_CODE == "100004");
+                        var centerCodeCAH = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "CAH" && x.COST_CENTER_CODE == "100004");
+                        var centerCodeVCA = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VCA" && x.COST_CENTER_CODE == "100004");
+                        var centerCodeVKG = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VKG" && x.COST_CENTER_CODE == "100004");
+                        var centerCodePQC = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "PQC" && x.COST_CENTER_CODE == "100004");
+                        var centerCodeTAP = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "TAP" && x.COST_CENTER_CODE == "100004");
+                        if (centerCodeVPCN == null || centerCodeSGN == null || centerCodeVCS == null || centerCodeCAH == null || centerCodeVCA == null || centerCodeVKG == null || centerCodePQC == null || centerCodeTAP == null)
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                         }
+                        
                         //VPCN
-                        var costDataVPCN= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVPCN= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2361,8 +2354,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                         //SGN
-                        var costDataSGN= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataSGN= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataSGN = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataSGN = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2379,9 +2372,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataSGN.AMOUNT = costDataSGN.QUANTITY * costDataSGN.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataSGN);
+                        
                         //VCS
-                        var costDataVCS= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVCS= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVCS = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVCS = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2398,9 +2392,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVCS.AMOUNT = costDataVCS.QUANTITY * costDataVCS.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCS);
+                        
                         //CAH
-                        var costDataCAH= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataCAH= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataCAH = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataCAH = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2417,9 +2412,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataCAH.AMOUNT = costDataCAH.QUANTITY * costDataCAH.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataCAH);
+                        
                         //VCA
-                        var costDataVCA= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVCA= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVCA = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVCA = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2436,9 +2432,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVCA.AMOUNT = costDataVCA.QUANTITY * costDataVCA.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCA);
+                        
                         //VKG
-                        var costDataVKG= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVKG= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVKG = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVKG = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2455,9 +2452,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVKG.AMOUNT = costDataVKG.QUANTITY * costDataVKG.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVKG);
+                        
                         //PQC
-                        var costDataPQC= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataPQC= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataPQC = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataPQC = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2474,9 +2472,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataPQC.AMOUNT = costDataPQC.QUANTITY * costDataPQC.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataPQC);
+                        
                         //TAP
-                        var costDataTAP= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataTAP= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataTAP = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataTAP = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2498,20 +2497,17 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
                     {
                         var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100005");
-                        var centerCodeVTMB= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMB" && x.COST_CENTER_CODE == "100005");
-                        var centerCodeVTMT= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMT" && x.COST_CENTER_CODE == "100005");
-                        var centerCodeVTMN= allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMN" && x.COST_CENTER_CODE == "100005");
-                        if (centerCodeVPCN==null
-                            ||centerCodeVTMB==null
-                            ||centerCodeVTMT==null
-                            ||centerCodeVTMN==null
-                            )
+                        var centerCodeVTMB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMB" && x.COST_CENTER_CODE == "100005");
+                        var centerCodeVTMT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMT" && x.COST_CENTER_CODE == "100005");
+                        var centerCodeVTMN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMN" && x.COST_CENTER_CODE == "100005");
+                        if (centerCodeVPCN == null || centerCodeVTMB == null || centerCodeVTMT == null || centerCodeVTMN == null)
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                         }
+                        
                         //VPCN
-                        var costDataVPCN= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVPCN= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2528,9 +2524,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * costDataVPCN.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
+                        
                         //VTMB
-                        var costDataVTMB= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVTMB= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVTMB = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVTMB = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2547,9 +2544,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVTMB.AMOUNT = costDataVTMB.QUANTITY * costDataVTMB.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMB);
+                        
                         //VTMT
-                        var costDataVTMT= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVTMT= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVTMT = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVTMT = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -2566,9 +2564,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVTMT.AMOUNT = costDataVTMT.QUANTITY * costDataVTMT.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMT);
+                        
                         //VTMN
-                        var costDataVTMN= new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVTMN= new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        var costDataVTMN = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVTMN = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
@@ -3784,8 +3783,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 var treeData = detail?.PLData;
                                 if (treeData != null)
                                 {
-                                    item.Values[0] += treeData.QUANTITY ?? 0;
-                                    item.Values[1] += treeData.PRICE ?? 0;
                                     item.Values[2] += treeData.AMOUNT ?? 0;
                                     item.HasAssignValue = true;
 

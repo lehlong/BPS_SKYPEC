@@ -12,25 +12,8 @@
 }
 
 <style>
-    .header-year {
-        background-color: #FFFFFF !important;
-    }
-
-    td {
-        overflow: hidden;
-    }
-
-    .resize-col {
-        resize: horizontal;
-        overflow: hidden;
-        display: block;
-    }
-
-    td .input-edit {
-        border: none;
-        background: border-box;
-        width: 100%;
-        text-align: right;
+    .icon-function {
+        cursor: pointer;
     }
 
     .table-screen {
@@ -57,31 +40,30 @@ else
             <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                 <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
                     <tbody>
-                        <tr class="sticky-row strong" data-xls-row="header">
-                            <td class="sticky-cell pre-whitespace" rowspan="3" style="z-index:11"></td>
-                            <td rowspan="3" style="text-align:center;width:32px;">CHỈ TIÊU</td>
-                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 3)" style="text-align:center">KẾ HOẠCH GIAO ĐẦU NĂM</td>
-                            <td class="pre-whitespace" colspan="4" style="text-align:center">Ý KIẾN PHÒNG KỸ THUẬT</td>
+                        <tr class="sticky-row strong align-center" data-xls-row="header">
+                            <td rowspan="3" colspan="3">CHỈ TIÊU</td>
+                            <td colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 3)">KẾ HOẠCH CHI TIẾT</td>
+                            <td colspan="4">Ý KIẾN PHÒNG KỸ THUẬT</td>
                         </tr>
-                        <tr class="sticky-row strong" data-xls-row="header">
-                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count())" style="text-align:center">SỐ LƯỢNG</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">CỘNG</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">ĐƠN GIÁ</td>
-                            <td class="pre-whitespace" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count())" style="text-align:center">THÀNH TIỀN</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">CỘNG</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">SỐ LƯỢNG</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">ĐƠN GIÁ</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">THÀNH TIỀN</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">GHI CHÚ</td>
+                        <tr class="sticky-row strong align-center" data-xls-row="header">
+                            <td colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count())">SỐ LƯỢNG</td>
+                            <td rowspan="2">CỘNG</td>
+                            <td rowspan="2">ĐƠN GIÁ</td>
+                            <td colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count())">THÀNH TIỀN</td>
+                            <td rowspan="2">CỘNG</td>
+                            <td rowspan="2">SỐ LƯỢNG</td>
+                            <td rowspan="2">ĐƠN GIÁ</td>
+                            <td rowspan="2">THÀNH TIỀN</td>
+                            <td rowspan="2">GHI CHÚ</td>
                         </tr>
-                        <tr class="sticky-row strong" data-xls-row="header">
+                        <tr class="sticky-row strong align-center" data-xls-row="header">
                             @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                             {
-                                <td class="pre-whitespace">@sb.Center.SanBay.CODE</td>
+                                <td>@sb.Center.SanBay.CODE</td>
                             }
                             @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                             {
-                                <td class="pre-whitespace">@sb.Center.SanBay.CODE</td>
+                                <td>@sb.Center.SanBay.CODE</td>
                             }
                         </tr>
 
@@ -96,40 +78,46 @@ else
                             var classParent = item.IS_GROUP ? "strong" : string.Empty;
                             var isEdit = item.IS_GROUP ? "disabled" : "";
                             <tr class="@classParent">
-                                @if (item.CODE != "")
+                                @if (!string.IsNullOrEmpty(item.CODE))
                                 {
-                                    <td class="btn sticky-cell pre-whitespace" data-toggle="modal" data-target="#exampleModal" style="display:flex; justify-content:center;" onclick="ShowComment('@item.CODE')">
-                                        <i href="" class="material-icons " id="@item.CODE" style="text-decoration:none; color:#555;">comment</i>
-                                    </td>
+                                    <td><i class="material-icons icon-function" data-toggle="modal" data-target="#exampleModal" id="@item.CODE" onclick="ShowComment('@item.CODE')">comment</i></td>
                                 }
                                 else
                                 {
-                                    <td>
-                                    </td>
+                                    <td></td>
+                                }
+                                @if (!string.IsNullOrEmpty(item.CODE))
+                                {
+                                    <td><i class="material-icons icon-function">group_add</i></td>
+                                }
+                                else
+                                {
+                                    <td></td>
                                 }
 
-                                <td class="pre-whitespace @classParent" style="width:320px">@($"{space.ToString()}{item.NAME}")</td>
+                                <td style="max-width:360px"><div class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</div></td>
 
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
-                                    <td class="pre-whitespace">@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())</td>
+                                    var value = Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN();
+                                    <td class="align-right">@(value == "0" ? "" : value)</td>
                                 }
 
-                                <td class="pre-whitespace"></td>
-                                <td class="pre-whitespace">@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())</td>
+                                <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN() == "0" ? "" : Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN())</td>
+                                <td class="align-right">@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())</td>
 
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
-                                    <td class="pre-whitespace">@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[2].ToStringVN())</td>
+                                    <td class="align-right">@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[2].ToStringVN())</td>
                                 }
 
-                                <td class="pre-whitespace"></td>
-                                <td class="pre-whitespace"></td>
-                                <td class="pre-whitespace"></td>
-                                <td class="pre-whitespace"></td>
-                                <td class="pre-whitespace">@item.DESCRIPTION</td>
+                                <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]).ToStringVN())</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>@item.DESCRIPTION</td>
                             </tr>
-                            
+
                         }
 
                     </tbody>
