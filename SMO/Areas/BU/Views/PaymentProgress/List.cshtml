@@ -18,6 +18,7 @@
         <tbody>
             @foreach (var item in Model.ObjList)
             {
+                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Update", new { id = item.ID }));
                 <tr>
                     <td>
                         @item.BATCH
@@ -52,39 +53,89 @@
                         }
                     </td>
                     <td style="display:flex;justify-content:center;" data-id="@item.ID">
-                        <button type="button" class="btn" onclick="EditPharse(this)"><i class="material-icons col-fecon">edit</i></button>
+                        <button type="button" class="btn" onclick="@vdbclickAction"><i class="material-icons col-fecon">edit</i></button>
                         <button type="button" class="btn" style="margin-left:5px;" onclick="DeletePharse(this)"><i class="material-icons col-fecon">delete</i></button>
                     </td>
                 </tr>
             }
             <tr style="display:none;" class="form-create">
-                <td>@Html.MyTextBoxFor(m => m.ObjDetail.BATCH)</td>
                 <td>
-                    <div style="display:flex;">
-                        @Html.MyTextBoxFor(m => m.ObjDetail.PROGRESS, new { type = "number", min = "0",oninput = "cacullateValue(this)" })<span style="display:flex; align-items:center;">%</span>
+                    <div class="input-group page-function-search">
+                        <div class="form-line">
+                            @Html.MyTextBoxFor(m => m.ObjDetail.BATCH)
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ObjDetail.BATCH)
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group page-function-search">
+                        <div class="form-line">
+                            @Html.MyTextBoxFor(m => m.ObjDetail.PROGRESS, new { type = "number", min = "0", oninput = "cacullateValue(this)" })
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ObjDetail.PROGRESS)
+                        <span class="input-group-addon">
+                            %
+                        </span>
                     </div>
 
                 </td>
                 <td>
-                    <div style="display:flex;">
-                        @Html.MyTextBoxFor(m => m.ObjDetail.PAYMENT_VALUE, new { type = "number", min = "0", oninput = "cacullateProgress(this)" }) <span style="display:flex; align-items:center;">VNĐ</span>
+                    <div class="input-group page-function-search">
+                        <div class="form-line">
+                            @Html.MyTextBoxFor(m => m.ObjDetail.PAYMENT_VALUE, new { type = "number", min = "0", oninput = "cacullateProgress(this)" })
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ObjDetail.PAYMENT_VALUE)
+                        <span class="input-group-addon">
+                            VNĐ
+                        </span>
+                    </div>
+                    
+                </td>
+                <td>
+                    <div class="form-group">
+                        <div class="form-line">
+                            @Html.MyTextAreaFor(m => m.ObjDetail.PAYMENT_DESCRIPTION, new { style = "width: 100%;", @required = true })
+
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ObjDetail.PAYMENT_DESCRIPTION)
                     </div>
                 </td>
-                <td>@Html.TextAreaFor(m => m.ObjDetail.PAYMENT_DESCRIPTION, new { style = "width: 100%;", @required = true})</td>
-                <td>@Html.TextAreaFor(m => m.ObjDetail.PROFILE, new { style = "width: 100%;", required = "required" })</td>
                 <td>
-                    @Html.TextBoxFor(m => m.ObjDetail.DATE, new { type = "date", @Value = DateTime.Now.ToString("yyyy-MM-dd") })
+                    <div class="form-group">
+                        <div class="form-line">
+                            @Html.MyTextAreaFor(m => m.ObjDetail.PROFILE, new { style = "width: 100%;", @required = true })
+
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ObjDetail.PROFILE)
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group page-function-search">
+                        <div class="form-line">
+                            @Html.MyTextBoxFor(m => m.ObjDetail.DATE, new { type = "date", @Value = DateTime.Now.ToString("yyyy-MM-dd") })
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ObjDetail.DATE)
+                        
+                    </div>
+                    
                 </td>
 
                 <td>
-                    @Html.DropDownListFor(m => m.ObjDetail.STATUS,
-                                          new List<SelectListItem>
-                                          {
-                                              new SelectListItem { Value = "01", Text = "Đã thanh toán" },
-                                              new SelectListItem { Value = "02", Text = "Đã thanh toán một phần" },
-                                              new SelectListItem { Value = "03", Text = "Chưa thanh toán" }
-                                          },
-                                          new { style = "padding: 3px 0;" })
+                    <div class="form-group">
+                        <div class="form-line">
+                            @Html.MyDropDownListFor(m => m.ObjDetail.STATUS,
+                            new List<SelectListItem>
+                                {
+                                new SelectListItem { Value = "01", Text = "Đã thanh toán" },
+                                new SelectListItem { Value = "02", Text = "Đã thanh toán một phần" },
+                                new SelectListItem { Value = "03", Text = "Chưa thanh toán" }
+                                },
+                                new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ObjDetail.STATUS)
+                    </div>
+       
                 </td>
             <td style="text-align:center;">
                 <button type="button" class="btn" style="margin-left:5px;" onclick="HideCreate()"><i class="material-icons col-fecon">remove</i></button>

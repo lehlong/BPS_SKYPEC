@@ -160,5 +160,10 @@ namespace SMO.Service.BU
                 this.Exception = ex;
             }
         }
+
+        public void Edit(HttpRequestBase request)
+        {
+
+        }
     }
 }

@@ -20,6 +20,11 @@ namespace SMO.Areas.BU.Controllers
             _service.ObjDetail.NAME_CONTRACT = nameContract;
             _service.ObjDetail.VERSION = version;
             _service.getContract();
+            bool isEdit = TempData["IsEdit"] as bool? ?? false;
+            if (isEdit)
+            {
+                ViewBag.isEdit = true;
+            }
             return View(_service);
         }
 
@@ -65,5 +70,15 @@ namespace SMO.Areas.BU.Controllers
             }
             return result.ToJsonResult();
         }
+        [MyValidateAntiForgeryToken]
+        public ActionResult Update(string id)
+        {
+            _service.Get(id);
+            string nameContract = _service.ObjDetail.NAME_CONTRACT;
+            int version = _service.ObjDetail.VERSION;
+            TempData["isEdit"] = true;
+            return RedirectToAction("Index", new {nameContract, version });
+        }
     }
-}
+        
+    }
