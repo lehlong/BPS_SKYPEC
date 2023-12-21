@@ -1,9 +1,11 @@
-﻿using SMO.Service.BU;
+﻿using SMO.Repository.Implement.BU;
+using SMO.Service.BU;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace SMO.Areas.BU.Controllers
 {
@@ -20,31 +22,32 @@ namespace SMO.Areas.BU.Controllers
             _service.ObjDetail.NAME_CONTRACT = nameContract;
             _service.ObjDetail.VERSION = version;
             _service.getContract();
-            bool isEdit = TempData["IsEdit"] as bool? ?? false;
-            if (isEdit)
-            {
-                ViewBag.isEdit = true;
-            }
             return View(_service);
         }
-
         [ValidateAntiForgeryToken]
         public ActionResult List(PaymentProgressService service)
         {
             service.Search();
             return PartialView(service);
         }
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(PaymentProgressService service)
+        [MyValidateAntiForgeryToken]
+        public ActionResult Create(string nameContract, int version)
         {
-            service.Search();
+            _service.ObjDetail.VERSION = version;
+            _service.ObjDetail.NAME_CONTRACT = nameContract;
+            _service.contract = _service.UnitOfWork.Repository<ContractRepo>().Queryable().FirstOrDefault(x => x.NAME_CONTRACT == nameContract);
+            return PartialView(_service);
+        }
+        [ValidateAntiForgeryToken]
+        public ActionResult CreatePaymentProgress(PaymentProgressService service)
+        {
             var result = new TransferObject();
             result.Type = TransferType.AlertSuccessAndJsCommand;
-            service.getContract();
             service.Create(Request);
             if (service.State)
             {
                 SMOUtilities.GetMessage("1001", service, result);
+                result.ExtData = $"SubmitIndex();Forms.Close('{service.ViewId}');Forms.LoadAjax({{url:'{Url.Action("List")}'}});";
             }
             else
             {
@@ -53,15 +56,23 @@ namespace SMO.Areas.BU.Controllers
             }
             return result.ToJsonResult();
         }
-        [HttpPost]
-        public ActionResult DeletePharse(PaymentProgressService service)
+        [MyValidateAntiForgeryToken]
+        public ActionResult Update(string id)
+        {
+            _service.Get(id);
+            _service.contract = _service.UnitOfWork.Repository<ContractRepo>().Queryable().FirstOrDefault(x => x.NAME_CONTRACT == _service.ObjDetail.NAME_CONTRACT);
+            return PartialView(_service);
+        }
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdatePaymentProgress(PaymentProgressService service)
         {
             var result = new TransferObject();
             result.Type = TransferType.AlertSuccessAndJsCommand;
-            service.Delete(Request);
+            service.Update(Request);
             if (service.State)
             {
                 SMOUtilities.GetMessage("7005", service, result);
+                result.ExtData = $"SubmitIndex();Forms.Close('{service.ViewId}');Forms.LoadAjax({{url:'{Url.Action("List")}'}});";
             }
             else
             {
@@ -70,15 +81,23 @@ namespace SMO.Areas.BU.Controllers
             }
             return result.ToJsonResult();
         }
-        [MyValidateAntiForgeryToken]
-        public ActionResult Update(string id)
+        [HttpPost]
+        public ActionResult DeletePaymentProgress(PaymentProgressService service)
         {
-            _service.Get(id);
-            string nameContract = _service.ObjDetail.NAME_CONTRACT;
-            int version = _service.ObjDetail.VERSION;
-            TempData["isEdit"] = true;
-            return RedirectToAction("Index", new {nameContract, version });
+            var result = new TransferObject();
+            result.Type = TransferType.AlertSuccessAndJsCommand;
+            service.DeletePaymentProgress();
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("7005", service, result);
+                result.ExtData = $"SubmitIndex();Forms.Close('{service.ViewId}');Forms.LoadAjax({{url:'{Url.Action("List")}'}});";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("7004", service, result);
+            }
+            return result.ToJsonResult();
         }
     }
-        
-    }
+}

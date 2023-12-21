@@ -19,7 +19,9 @@ using SMO.ServiceInterface.BP.KeHoachSanLuong;
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -4492,9 +4494,202 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 this.State = false;
                 this.Exception = ex;
                 return null;
-            }
-            
+            }        
         }
 
+        public void SynchronizeData()
+        {
+            string connection = ConfigurationManager.ConnectionStrings["SKYPEC"].ConnectionString;
+            DataTable tableData = new DataTable();
+            using (SqlConnection con = new SqlConnection(connection))
+            {
+                SqlCommand cmd = new SqlCommand($"SELECT * FROM SKYPECLGS_KHBAY WHERE TranYear = '{ObjDetail.TIME_YEAR}'", con);
+                cmd.CommandType = CommandType.Text;
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                try
+                {
+                    adapter.Fill(tableData);
+                }
+                catch (Exception ex)
+                {
+                    this.State = false;
+                    this.Exception = ex;
+                }
+            }
+
+            try
+            {
+                var orgCode = ProfileUtilities.User.ORGANIZE_CODE;
+                var KeHoachSanLuongCurrent = CurrentRepository.Queryable().FirstOrDefault(x => x.ORG_CODE == orgCode && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE);
+                if (KeHoachSanLuongCurrent != null && !(KeHoachSanLuongCurrent.STATUS == Approve_Status.TuChoi || KeHoachSanLuongCurrent.STATUS == Approve_Status.ChuaTrinhDuyet))
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Mẫu khai báo này không ở trạng thái Từ chối hoặc Chưa trình duyệt!";
+                    return;
+                }
+                var versionNext = 1;
+                if (KeHoachSanLuongCurrent != null)
+                {
+                    versionNext = KeHoachSanLuongCurrent.VERSION + 1;
+                }
+                var dataCurrent = new List<T_BP_KE_HOACH_SAN_LUONG_DATA>();
+                if (KeHoachSanLuongCurrent != null)
+                {
+                    dataCurrent = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode
+                        && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).ToList();
+                }
+
+                var currentUser = ProfileUtilities.User?.USER_NAME;
+                
+                int actualRows = tableData.Rows.Count;
+                if(actualRows == 0)
+                {
+                    this.State = false;
+                    this.ErrorMessage = $"Dữ liệu năm {ObjDetail.TIME_YEAR} từ hệ thống khác không có dữ liệu! Vui lòng kiểm tra lại!";
+                    return;
+                }
+                UnitOfWork.BeginTransaction();
+
+                // Cập nhật version
+                if (KeHoachSanLuongCurrent != null)
+                {
+                    // Cập nhật next version vào bảng chính
+                    KeHoachSanLuongCurrent.VERSION = versionNext;
+                    KeHoachSanLuongCurrent.IS_DELETED = false;
+                    CurrentRepository.Update(KeHoachSanLuongCurrent);
+                }
+                else
+                {
+                    // Tạo mới bản ghi revenue pl
+                    CurrentRepository.Create(new T_BP_KE_HOACH_SAN_LUONG()
+                    {
+                        PKID = Guid.NewGuid().ToString(),
+                        ORG_CODE = orgCode,
+                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                        KICH_BAN = ObjDetail.KICH_BAN,
+                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
+                        TIME_YEAR = ObjDetail.TIME_YEAR,
+                        VERSION = versionNext,
+                        STATUS = Approve_Status.ChuaTrinhDuyet,
+                        IS_DELETED = false,
+                        IS_SUMUP = false,
+                        CREATE_BY = currentUser
+                    });
+                }
+
+                // Đưa next version vào bảng log
+                UnitOfWork.Repository<KeHoachSanLuongVersionRepo>().Create(new T_BP_KE_HOACH_SAN_LUONG_VERSION()
+                {
+                    PKID = Guid.NewGuid().ToString(),
+                    ORG_CODE = orgCode,
+                    TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                    VERSION = versionNext,
+                    KICH_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.KICH_BAN : KeHoachSanLuongCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachSanLuongCurrent.PHIEN_BAN,
+                    TIME_YEAR = ObjDetail.TIME_YEAR,
+                    CREATE_BY = currentUser
+                });
+
+                // Tạo mới bản ghi log trạng thái
+                UnitOfWork.Repository<KeHoachSanLuongHistoryRepo>().Create(new T_BP_KE_HOACH_SAN_LUONG_HISTORY()
+                {
+                    PKID = Guid.NewGuid().ToString(),
+                    ORG_CODE = orgCode,
+                    TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                    KICH_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.KICH_BAN : KeHoachSanLuongCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachSanLuongCurrent.PHIEN_BAN,
+                    VERSION = versionNext,
+                    TIME_YEAR = ObjDetail.TIME_YEAR,
+                    ACTION = Approve_Action.NhapDuLieu,
+                    ACTION_DATE = DateTime.Now,
+                    ACTION_USER = currentUser,
+                    CREATE_BY = currentUser
+                });
+
+
+                // Insert data vào history
+                foreach (var item in dataCurrent)
+                {
+                    var revenueDataHis = (T_BP_KE_HOACH_SAN_LUONG_DATA_HISTORY)item;
+                    UnitOfWork.Repository<KeHoachSanLuongDataHistoryRepo>().Create(revenueDataHis);
+                    UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Delete(item);
+                }
+
+                var allSanLuongProfitCenters = UnitOfWork.Repository<SanLuongProfitCenterRepo>().GetAll();
+                // Insert dữ liệu vào bảng data
+                for (int i = 0; i < actualRows; i++)
+                {
+                    var percentagePreventive = GetPreventive(orgCode, year: ObjDetail.TIME_YEAR)?.PERCENTAGE;
+                    if (percentagePreventive == null)
+                    {
+                        percentagePreventive = 1;
+                    }
+                    else
+                    {
+                        percentagePreventive = 1 + percentagePreventive / 100;
+                    }
+
+                    var centerCode = allSanLuongProfitCenters.FirstOrDefault(
+                                                x => x.SanBay.OTHER_PM_CODE == tableData.Rows[i][15].ToString().Trim() &&
+                                                x.HangHangKhong.OTHER_PM_CODE == tableData.Rows[i][16].ToString().Trim())?.CODE;
+                    if (centerCode == null)
+                    {
+                        throw new Exception($"Biểu mẫu chưa khai báo đủ sân bay và hãng hàng không! Vui lòng kiểm tra lại!");
+                    }
+
+                    var costData = new T_BP_KE_HOACH_SAN_LUONG_DATA();
+
+
+                    costData = new T_BP_KE_HOACH_SAN_LUONG_DATA()
+                    {
+                        PKID = Guid.NewGuid().ToString(),
+                        ORG_CODE = orgCode,
+                        SAN_LUONG_PROFIT_CENTER_CODE = centerCode,
+                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                        TIME_YEAR = ObjDetail.TIME_YEAR,
+                        STATUS = Approve_Status.ChuaTrinhDuyet,
+                        VERSION = versionNext,
+                        KHOAN_MUC_SAN_LUONG_CODE = (tableData.Rows[i][17].ToString().Trim() == "0") ? "10010" : "10020",
+                        VALUE_JAN = tableData.Rows[i][20] as decimal? == null ? 0 : tableData.Rows[i][20] as decimal?,
+                        VALUE_FEB = tableData.Rows[i][21] as decimal? == null ? 0 : tableData.Rows[i][21] as decimal?,
+                        VALUE_MAR = tableData.Rows[i][22] as decimal? == null ? 0 : tableData.Rows[i][22] as decimal?,
+                        VALUE_APR = tableData.Rows[i][23] as decimal? == null ? 0 : tableData.Rows[i][23] as decimal?,
+                        VALUE_MAY = tableData.Rows[i][24] as decimal? == null ? 0 : tableData.Rows[i][24] as decimal?,
+                        VALUE_JUN = tableData.Rows[i][25] as decimal? == null ? 0 : tableData.Rows[i][25] as decimal?,
+                        VALUE_JUL = tableData.Rows[i][26] as decimal? == null ? 0 : tableData.Rows[i][26] as decimal?,
+                        VALUE_AUG = tableData.Rows[i][27] as decimal? == null ? 0 : tableData.Rows[i][27] as decimal?,
+                        VALUE_SEP = tableData.Rows[i][28] as decimal? == null ? 0 : tableData.Rows[i][28] as decimal?,
+                        VALUE_OCT = tableData.Rows[i][29] as decimal? == null ? 0 : tableData.Rows[i][29] as decimal?,
+                        VALUE_NOV = tableData.Rows[i][30] as decimal? == null ? 0 : tableData.Rows[i][30] as decimal?,
+                        VALUE_DEC = tableData.Rows[i][31] as decimal? == null ? 0 : tableData.Rows[i][31] as decimal?,
+                        DESCRIPTION = "",
+                        CREATE_BY = currentUser
+                    };
+                    costData.VALUE_SUM_YEAR = costData.VALUE_JAN + costData.VALUE_FEB + costData.VALUE_MAR + costData.VALUE_APR + costData.VALUE_MAY + costData.VALUE_JUN + costData.VALUE_JUL + costData.VALUE_AUG + costData.VALUE_SEP + costData.VALUE_OCT + costData.VALUE_NOV + costData.VALUE_DEC;
+
+                    costData.VALUE_SUM_YEAR_PREVENTIVE = costData.VALUE_SUM_YEAR * percentagePreventive;
+
+                    UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Create(costData);
+                }
+                UnitOfWork.Commit();
+                NotifyUtilities.CreateNotify(
+                    new NotifyPara()
+                    {
+                        Activity = Activity.AC_NHAP_DU_LIEU,
+                        OrgCode = orgCode,
+                        TemplateCode = ObjDetail.TEMPLATE_CODE,
+                        TimeYear = ObjDetail.TIME_YEAR,
+                        ModulType = ModulType.KeHoachSanLuong,
+                        UserSent = currentUser
+                    });
+
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                State = false;
+                Exception = ex;
+            }
+        }
     }
 }

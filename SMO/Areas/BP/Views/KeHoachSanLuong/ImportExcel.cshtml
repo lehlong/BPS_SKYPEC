@@ -21,6 +21,7 @@
                         <div class="page-function-button m-r-20">
                             @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
                             @Html.MyButton("cmdSave", "Nhập dữ liệu", "SubmitImportExcel();", "Alt+N", "done_all")
+                            @Html.MyButton("cmdSave", "Đồng bộ từ hệ thống khác", "SynchronizeData();", "Alt+N", "sync")
                         </div>
                     </div>
 
@@ -104,6 +105,23 @@
         $.ajax({
             type: "POST",
             url: '@Url.Action("ImportExcel")',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+            },
+            error: Forms.AjaxErrorHandler
+        });
+    }
+
+    function SynchronizeData() {
+        var formData = new FormData($('#@Model.FormId')[0]);
+        Forms.ShowLoading();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SynchronizeData")',
             data: formData,
             contentType: false,
             processData: false,

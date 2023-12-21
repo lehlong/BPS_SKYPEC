@@ -5,6 +5,7 @@ using SMO.Core.Entities.MD;
 using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.BP;
+using SMO.Service.BP.KE_HOACH_CHI_PHI;
 using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.Class;
 
@@ -179,6 +180,28 @@ namespace SMO.Areas.BP.Controllers
             {
                 result.Type = TransferType.AlertDangerAndJsCommand;
                 SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        public ActionResult SynchronizeData(KeHoachSanLuongService service)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+
+            service.SynchronizeData();
+
+            if (service.State)
+            {
+                SMOUtilities.GetMessage("1002", service, result);
+                result.ExtData = "try{RefreshData();}catch(e){};";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", service, result);
             }
             return result.ToJsonResult();
         }

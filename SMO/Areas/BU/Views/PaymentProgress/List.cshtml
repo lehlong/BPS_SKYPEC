@@ -1,10 +1,15 @@
-﻿
-@model SMO.Service.BU.PaymentProgressService
-
+﻿@model SMO.Service.BU.PaymentProgressService
+@{
+    var number = 0;
+}
 <div class="table-responsive">
-    <table class="table table-condensed table-striped table-bordered">
+    <table class="table table-condensed table-bordered table-striped">
         <thead>
             <tr>
+                <th width="20px" class="align-center">
+                    <label for="chkAll">#</label>
+                </th>
+                <th style="max-width: 120px;">STT</th>
                 <th>Đợt thanh toán</th>
                 <th>Tiến độ</th>
                 <th>Giá trị</th>
@@ -12,142 +17,39 @@
                 <th>Hồ sơ thanh toán</th>
                 <th>Ngày thanh toán</th>
                 <th>Trạng thái</th>
-                <th>Thao tác</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.ObjList)
             {
-                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Update", new { id = item.ID }));
+                number++;
+                var vdbclickAction = string.Format("Forms.LoadAjaxModal('{0}', this);", Url.Action("Update", new { id = item.ID }));
                 <tr>
                     <td>
-                        @item.BATCH
+                        <input type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.ID)" value="@item.ID" modelId="@item.ID" style="margin:0;" />
+                        <label for="@("chkItem" + item.ID)"></label>
                     </td>
-                    <td>
-                        @item.PROGRESS %
+                    <td ondblclick="@vdbclickAction">@number</td>
+                    <td ondblclick="@vdbclickAction">
+                        <a href="#" onclick="@vdbclickAction">@item.BATCH</a>
                     </td>
-                    <td>
-                        @item.PAYMENT_VALUE VNĐ
-                    </td>
-                    <td>
-                        @item.PAYMENT_DESCRIPTION
-                    </td>
-                    <td>
-                        @item.PROFILE
-                    </td>
-                    <td>
-                        @item.DATE
-                    </td>
-                    <td>
-                        @if (item.STATUS == "01")
-                        {
-                            <span style="background-color: #4CAF50;padding:5px;">@SMO.Core.Entities.BU.ConstContract.convertProgressToString(item.STATUS)</span>
-                        }
-                        else if (item.STATUS == "02")
-                        {
-                            <span style="background-color: #ffd800;padding:5px;">@SMO.Core.Entities.BU.ConstContract.convertProgressToString(item.STATUS)</span>
-                        }
-                        else
-                        {
-                            <span style="background-color: #ff0000;padding:5px;">@SMO.Core.Entities.BU.ConstContract.convertProgressToString(item.STATUS)</span>
-                        }
-                    </td>
-                    <td style="display:flex;justify-content:center;" data-id="@item.ID">
-                        <button type="button" class="btn" onclick="@vdbclickAction"><i class="material-icons col-fecon">edit</i></button>
-                        <button type="button" class="btn" style="margin-left:5px;" onclick="DeletePharse(this)"><i class="material-icons col-fecon">delete</i></button>
-                    </td>
+                    <td ondblclick="@vdbclickAction">@item.PROGRESS %</td>
+                    <td ondblclick="@vdbclickAction">@item.PAYMENT_VALUE.ToStringVN() VNĐ</td>
+                    <td ondblclick="@vdbclickAction">@item.PAYMENT_DESCRIPTION</td>
+                    <td ondblclick="@vdbclickAction">@item.PROFILE</td>
+                    <td ondblclick="@vdbclickAction">@item.DATE.ToString("dd/MM/yyyy")</td>
+                    <td ondblclick="@vdbclickAction">@item.STATUS</td>
                 </tr>
             }
-            <tr style="display:none;" class="form-create">
-                <td>
-                    <div class="input-group page-function-search">
-                        <div class="form-line">
-                            @Html.MyTextBoxFor(m => m.ObjDetail.BATCH)
-                        </div>
-                        @Html.ValidationMessageFor(m => m.ObjDetail.BATCH)
-                    </div>
-                </td>
-                <td>
-                    <div class="input-group page-function-search">
-                        <div class="form-line">
-                            @Html.MyTextBoxFor(m => m.ObjDetail.PROGRESS, new { type = "number", min = "0", oninput = "cacullateValue(this)" })
-                        </div>
-                        @Html.ValidationMessageFor(m => m.ObjDetail.PROGRESS)
-                        <span class="input-group-addon">
-                            %
-                        </span>
-                    </div>
-
-                </td>
-                <td>
-                    <div class="input-group page-function-search">
-                        <div class="form-line">
-                            @Html.MyTextBoxFor(m => m.ObjDetail.PAYMENT_VALUE, new { type = "number", min = "0", oninput = "cacullateProgress(this)" })
-                        </div>
-                        @Html.ValidationMessageFor(m => m.ObjDetail.PAYMENT_VALUE)
-                        <span class="input-group-addon">
-                            VNĐ
-                        </span>
-                    </div>
-                    
-                </td>
-                <td>
-                    <div class="form-group">
-                        <div class="form-line">
-                            @Html.MyTextAreaFor(m => m.ObjDetail.PAYMENT_DESCRIPTION, new { style = "width: 100%;", @required = true })
-
-                        </div>
-                        @Html.ValidationMessageFor(m => m.ObjDetail.PAYMENT_DESCRIPTION)
-                    </div>
-                </td>
-                <td>
-                    <div class="form-group">
-                        <div class="form-line">
-                            @Html.MyTextAreaFor(m => m.ObjDetail.PROFILE, new { style = "width: 100%;", @required = true })
-
-                        </div>
-                        @Html.ValidationMessageFor(m => m.ObjDetail.PROFILE)
-                    </div>
-                </td>
-                <td>
-                    <div class="input-group page-function-search">
-                        <div class="form-line">
-                            @Html.MyTextBoxFor(m => m.ObjDetail.DATE, new { type = "date", @Value = DateTime.Now.ToString("yyyy-MM-dd") })
-                        </div>
-                        @Html.ValidationMessageFor(m => m.ObjDetail.DATE)
-                        
-                    </div>
-                    
-                </td>
-
-                <td>
-                    <div class="form-group">
-                        <div class="form-line">
-                            @Html.MyDropDownListFor(m => m.ObjDetail.STATUS,
-                            new List<SelectListItem>
-                                {
-                                new SelectListItem { Value = "01", Text = "Đã thanh toán" },
-                                new SelectListItem { Value = "02", Text = "Đã thanh toán một phần" },
-                                new SelectListItem { Value = "03", Text = "Chưa thanh toán" }
-                                },
-                                new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-
-                        </div>
-                        @Html.ValidationMessageFor(m => m.ObjDetail.STATUS)
-                    </div>
-       
-                </td>
-            <td style="text-align:center;">
-                <button type="button" class="btn" style="margin-left:5px;" onclick="HideCreate()"><i class="material-icons col-fecon">remove</i></button>
-            </td>
-            </tr>
         </tbody>
     </table>
-    <script>
-
-        $(function () {
-            Forms.CompleteUI();
-        });
-    </script>
 </div>
-
+@{ Html.RenderPartial("Paging", Model); }
+<script>
+    $(function () {
+        Forms.CompleteUI();
+    })
+    function CallFIle(id, version) {
+        Forms.LoadAjaxModal("/BU/FileUpload/GetListFiles?id=" + id + "&version=" + version);
+    }
+</script>

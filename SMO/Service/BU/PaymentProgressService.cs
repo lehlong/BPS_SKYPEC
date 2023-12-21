@@ -1,7 +1,10 @@
 ﻿using SMO.Core.Entities.BU;
 using SMO.Repository.Implement.BU;
+using SMO.Service.Class;
+using SMO.Service.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -10,16 +13,18 @@ namespace SMO.Service.BU
     public class PaymentProgressService : GenericService<T_BU_PAYMENT_PROGRESS, PaymentProgressRepo>
     {
         public T_BU_CONTRACT contract { get; set; }
-        public PaymentProgressService()
+        public decimal amount { get; set; }
+        public List<string> deletePaymentProgress { get; set; }
+        public PaymentProgressService() : base()
         {
             contract = new T_BU_CONTRACT();
+            deletePaymentProgress = new List<string>();
+            amount = 0;
         }
-
         public override void Search()
         {
-            this.ObjList = this.CurrentRepository.Queryable().Where(x => x.NAME_CONTRACT == this.ObjDetail.NAME_CONTRACT && x.VERSION == this.ObjDetail.VERSION && x.IS_DELETE != true).OrderBy(x=>x.CREATE_DATE).ToList();
+            this.ObjList = this.CurrentRepository.Queryable().Where(x => x.NAME_CONTRACT == this.ObjDetail.NAME_CONTRACT && x.VERSION == this.ObjDetail.VERSION && x.IS_DELETE != true).ToList();
         }
-
         public void getContract()
         {
             var contractCheck = UnitOfWork.Repository<ContractRepo>().Queryable().Where(x => x.NAME_CONTRACT == this.ObjDetail.NAME_CONTRACT).FirstOrDefault();
@@ -31,85 +36,88 @@ namespace SMO.Service.BU
             {
                 var contractOld = UnitOfWork.Repository<ContractVersionRepo>().Queryable().Where(x => x.NAME_CONTRACT == this.ObjDetail.NAME_CONTRACT && x.VERSION == this.ObjDetail.VERSION).FirstOrDefault();
                 contract = ContractService.ConvertContractToContractVersion(contractOld);
-            } 
+            }
+            Search();
         }
-
         public void Create(HttpRequestBase Request)
         {
             try
             {
-                ErrorMessage = "";
-                if (string.IsNullOrEmpty(this.ObjDetail.BATCH))
+                var lstContractVersion = UnitOfWork.Repository<ContractRepo>().Queryable().Where(x => x.NAME_CONTRACT == ObjDetail.NAME_CONTRACT);
+                var version = lstContractVersion.Max(x => x.VERSION);
+                var contract = lstContractVersion.FirstOrDefault(x => x.VERSION == version);
+                var paymentProgress = UnitOfWork.Repository<PaymentProgressRepo>().Queryable().Where(x => x.NAME_CONTRACT == ObjDetail.NAME_CONTRACT && x.VERSION == version).ToList();
+                
+                if (paymentProgress.Sum(x => x.PAYMENT_VALUE) > contract.CONTRACT_VALUE_VAT)
                 {
-                    ErrorMessage = "Vui lòng nhập đợt thanh toán!";
-                    State = false;
+                    this.State = false;
+                    this.ErrorMessage = "Tổng số tiền các đợt thanh toán lớn hơn giá trị hợp đồng!";
                     return;
                 }
-                if (this.ObjDetail.PROGRESS <= 0)
+                if (paymentProgress.Count() != 0)
                 {
-                    ErrorMessage = "Vui lòng nhập tiến độ hợp đồng!";
-                    State = false;
-                    return;
-                }
-                decimal progressTotal = 0;
-                DateTime datePayment = DateTime.MinValue;
-                foreach(var item in this.ObjList)
-                {
-                    progressTotal += item.PROGRESS;
-                    if(item.DATE > datePayment)
+                    var dayMax = paymentProgress.Max(x => x.DATE);
+                    if (ObjDetail.DATE < dayMax)
                     {
-                        datePayment = item.DATE;
+                        this.State = false;
+                        this.ErrorMessage = "Ngày thanh toán đợt này phải lớn hơn ngày thanh toán của các đợt khác!";
+                        return;
                     }
                 }
-                if((progressTotal+this.ObjDetail.PROGRESS) > 100)
+                // lưu file
+                var lstFileStream = new List<FILE_STREAM>();
+                for (int i = 0; i < Request.Files.AllKeys.Length; i++)
                 {
-                    ErrorMessage = "Tổng tiến độ lớn hơn 100!";
-                    State = false;
-                    return;
+                    var file = Request.Files[i];
+                    lstFileStream.Add(new FILE_STREAM()
+                    {
+                        PKID = Guid.NewGuid().ToString(),
+                        FILE_OLD_NAME = file.FileName,
+                        FILE_NAME = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
+                        FILE_EXT = Path.GetExtension(file.FileName),
+                        FILE_SIZE = file.ContentLength,
+                        FILESTREAM = Request.Files[i]
+                    });
                 }
-                if(this.ObjDetail.DATE < datePayment)
-                {
-                    ErrorMessage = "Ngày thanh toán hiện tại nhỏ hơn ngày thanh toán đợt trước!";
-                    State = false;
-                    return;
-                }
-                decimal totalValue = 0;
-                foreach(var item in this.ObjList)
-                {
-                    totalValue += item.PAYMENT_VALUE;
-                }
-                if(totalValue > this.contract.CONTRACT_VALUE_VAT)
-                {
-                    ErrorMessage = "Tổng giá trị lớn hơn giá trị sau thuế!";
-                    State = false;
-                    return;
-                }
-                if (this.ObjDetail.PAYMENT_VALUE <= 0)
-                {
-                    ErrorMessage = "Vui lòng nhập giá trị đợt thanh toán";
-                    State = false;
-                    return;
-                }
-
-                if (this.ObjDetail.DATE == DateTime.MinValue)
-                {
-                    ErrorMessage = "Vui lòng nhập ngày thanh toán!";
-                    State = false;
-                    return;
-                }
-
-                var id = Guid.NewGuid().ToString();
+                FileStreamService.InsertFile(lstFileStream);
+                // hết lưu file
+                // bắt đàu lưu vào db
                 UnitOfWork.BeginTransaction();
+                string idFileChild = Guid.NewGuid().ToString();
+                string id = Guid.NewGuid().ToString();
+                // lưu file vào db
+                foreach (var item in lstFileStream)
+                {
+                    var fileUpload = new T_BU_FILE_UPLOAD()
+                    {
+                        ID = item.PKID,
+                        //CONNECTION_ID = systemConfigService.ObjDetail.CURRENT_CONNECTION,
+                        //DATABASE_NAME = systemConfigService.ObjDetail.CURRENT_DATABASE_NAME,                           
+                        FILE_EXT = item.FILE_EXT,
+                        FILE_NAME = item.FILE_NAME,
+                        FILE_OLD_NAME = item.FILE_OLD_NAME,
+                        FILE_SIZE = item.FILE_SIZE,
+                        DIRECTORY_PATH = item.DIRECTORY_PATH,
+                        FULL_PATH = item.FULL_PATH,
+                        PARENT = idFileChild,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        IS_DELETE = false,
+                        VERSION = this.ObjDetail.VERSION,
+                    };
+                    UnitOfWork.Repository<Repository.Implement.BU.FileUploadRepo>().Create(fileUpload);
+                }
                 this.ObjDetail.ID = id;
                 this.ObjDetail.CREATE_BY = ProfileUtilities.User.USER_NAME;
                 this.ObjDetail.UPDATE_HUMAN = ProfileUtilities.User.FULL_NAME;
                 this.ObjDetail.UPDATE_TIME = DateTime.Now;
                 this.ObjDetail.IS_DELETE = false;
+                this.ObjDetail.PROGRESS = this.ObjDetail.PAYMENT_VALUE / contract.CONTRACT_VALUE_VAT * 100;
                 this.CurrentRepository.Create(this.ObjDetail);
+                // tạo lịch sử
                 var history = new T_BU_CONTRACT_HISTORY()
                 {
                     ID = Guid.NewGuid().ToString(),
-                    ACTION = ConstContract.ThemTienDoThanhToan,
+                    ACTION = ConstContract.TaoDotThanhToan,
                     CREATE_BY = ProfileUtilities.User.USER_NAME,
                     VERSION = this.ObjDetail.VERSION,
                     NAME_CONTRACT = this.ObjDetail.NAME_CONTRACT,
@@ -117,34 +125,54 @@ namespace SMO.Service.BU
                 };
                 UnitOfWork.Repository<ContractHistoryRepo>().Create(history);
                 UnitOfWork.Commit();
+
             }
             catch (Exception ex)
             {
                 UnitOfWork.Rollback();
-                throw ex;
+                this.State = false;
+                this.Exception = ex;
             }
         }
-
-        public void Update()
-        {
-
-        }
-
-        public void Delete(HttpRequestBase request)
+        public void Update(HttpRequestBase Request)
         {
             try
             {
+                var lstContractVersion = UnitOfWork.Repository<ContractRepo>().Queryable().Where(x => x.NAME_CONTRACT == ObjDetail.NAME_CONTRACT);               
+                var version = lstContractVersion.Max(x => x.VERSION);
+                var contract = lstContractVersion.FirstOrDefault(x => x.VERSION == version);
+                var paymentProgress = UnitOfWork.Repository<PaymentProgressRepo>().Queryable().Where(x => x.NAME_CONTRACT == ObjDetail.NAME_CONTRACT && x.VERSION == version).ToList();
+                               
+                if (paymentProgress.Sum(x => x.PAYMENT_VALUE) > contract.CONTRACT_VALUE_VAT)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Tổng số tiền các đợt thanh toán lớn hơn giá trị hợp đồng!";
+                    return;
+                }
+                if (paymentProgress.Count() != 0)
+                {
+                    var dayMax = paymentProgress.Max(x => x.DATE);
+                    if (ObjDetail.DATE < dayMax)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Ngày thanh toán đợt này phải lớn hơn ngày thanh toán của các đợt khác!";
+                        return;
+                    }
+                }
+
+                UnitOfWork.Clear();
                 UnitOfWork.BeginTransaction();
-                var id = request.Form["id"];
-                var itemdelete = this.CurrentRepository.Get(request.Form["id"]);
-                /*this.CurrentRepository.Get();*/
-                itemdelete.IS_DELETE = true;
-                itemdelete.UPDATE_TIME = DateTime.Today;
-                this.CurrentRepository.Update(itemdelete);
+                
+                this.ObjDetail.UPDATE_HUMAN = ProfileUtilities.User.FULL_NAME;
+                this.ObjDetail.UPDATE_TIME = DateTime.Now;
+                this.ObjDetail.IS_DELETE = false;
+                this.ObjDetail.PROGRESS = this.ObjDetail.PAYMENT_VALUE / contract.CONTRACT_VALUE_VAT * 100;
+                this.CurrentRepository.Update(this.ObjDetail);
+                // tạo lịch sử
                 var history = new T_BU_CONTRACT_HISTORY()
                 {
                     ID = Guid.NewGuid().ToString(),
-                    ACTION = ConstContract.XoaTienDoThanhToan,
+                    ACTION = ConstContract.SuaDotThanhToan,
                     CREATE_BY = ProfileUtilities.User.USER_NAME,
                     VERSION = this.ObjDetail.VERSION,
                     NAME_CONTRACT = this.ObjDetail.NAME_CONTRACT,
@@ -152,6 +180,41 @@ namespace SMO.Service.BU
                 };
                 UnitOfWork.Repository<ContractHistoryRepo>().Create(history);
                 UnitOfWork.Commit();
+
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+        public void DeletePaymentProgress()
+        {
+            try
+            {
+
+                UnitOfWork.BeginTransaction();
+                foreach (var item in deletePaymentProgress)
+                {
+                    var itemDelete = this.CurrentRepository.Get(item);
+                    itemDelete.IS_DELETE = true;
+                    itemDelete.UPDATE_TIME = DateTime.Today;
+                    this.CurrentRepository.Update(itemDelete);
+                }
+                // tạo lịch sử
+                var history = new T_BU_CONTRACT_HISTORY()
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    ACTION = ConstContract.XoaDotThanhToan,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    VERSION = this.ObjDetail.VERSION,
+                    NAME_CONTRACT = this.ObjDetail.NAME_CONTRACT,
+
+                };
+                UnitOfWork.Repository<ContractHistoryRepo>().Create(history);
+                UnitOfWork.Commit();
+
             }
             catch (Exception ex)
             {
@@ -161,9 +224,6 @@ namespace SMO.Service.BU
             }
         }
 
-        public void Edit(HttpRequestBase request)
-        {
 
-        }
     }
 }

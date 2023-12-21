@@ -23,9 +23,6 @@
                     <li role="presentation" class="active">
                         <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> HỢP ĐỒNG: @Model.contract.NAME.ToUpper()</a>
                     </li>
-                    <li class="title-close" style="float: right; margin: 10px 10px 0 0; cursor: pointer; " title="Đóng màn hình" onclick="@string.Format("Forms.Close('{0}');", @Model.ViewId)">
-                        <i class="material-icons">close</i>
-                    </li>
                 </ul>
                 <div class="" style="margin-top:20px">
                     <ul class="nav nav-tabs" role="tablist">
@@ -42,6 +39,7 @@
                 </div>
                 <div class="row" style="margin-top:20px">
                     <div style="padding-left:12px">
+                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
                         <div onclick="CreatePayment()" class="btn btn-default"><i class="material-icons col-fecon">credit_card</i> Tạo mới đợt thanh toán</div>
                         <div onclick="DeletePayment()" class="btn btn-default"> <i class="material-icons col-fecon">delete</i> Xóa đợt thanh toán</div>
                     </div>

@@ -1,0 +1,145 @@
+﻿@model SMO.Service.BU.PaymentProgressService
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+    Model.ObjDetail.DATE = DateTime.Now;
+}
+<div id='@Model.ViewId' class="container-fluid" style="padding: 1px 20px 20px 20px;">
+    @using (Ajax.BeginForm("CreateContract", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.FormId)
+        @Html.HiddenFor(m => m.ObjDetail.NAME_CONTRACT)
+        @Html.HiddenFor(m => m.ObjDetail.VERSION)
+        <div class="row clearfix">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> TẠO MỚI TIẾN ĐỘ THANH TOÁN</a>
+                </li>
+            </ul>
+            <div class="page-function" style="margin-top:10px">
+                <div class="page-function-button m-r-20">
+                    <button class="btn btn-default close-modal" data-dismiss="modal"><i class="col-fecon material-icons">close</i> Đóng</button>
+                    @Html.MyButton("cmdSave", "Tạo mới", string.Format("Create();"), "Alt+N", "done_all")
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card border-grey">
+                    <div class="body">
+                        <div class="tab-content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Đợt thanh toán</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.MyTextBoxFor(m => m.ObjDetail.BATCH)
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.ObjDetail.BATCH)
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Tiến độ</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.MyTextBoxFor(m => m.ObjDetail.PROGRESS, new { @type = "number", @id = "progress", @disabled = "disabled" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.ObjDetail.PROGRESS)
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Số tiền thanh toán</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.MyTextBoxFor(m => m.ObjDetail.PAYMENT_VALUE, new { @type = "number", @id = "value", @onkeyup="CalValue()" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.ObjDetail.PAYMENT_VALUE)
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Diễn giải</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.MyTextBoxFor(m => m.ObjDetail.PAYMENT_DESCRIPTION)
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.ObjDetail.PAYMENT_DESCRIPTION)
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Hồ sơ</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.MyTextBoxFor(m => m.ObjDetail.PROFILE)
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.ObjDetail.PROFILE)
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label>Ngày thanh toán</label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.MyTextBoxFor(m => m.ObjDetail.DATE, new { @class = "datepicker", @autocomplete = "on" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.ObjDetail.DATE)
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Trạng thái </label>
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            @Html.MyTextBoxFor(m => m.ObjDetail.STATUS)
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.ObjDetail.STATUS)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script src="~/Scripts/D2SCoreJS/UploadFile.js"></script>
+
+    <script type="text/javascript">
+        function Create() {
+                var headers = {
+                    'RequestVerificationToken': $('#antiForgeryToken').val(),
+                };
+                var form = document.getElementById("@Model.FormId");
+                var formData = new FormData(form);
+                for (var i = 0; i < UploadFile.ListFile.length; i++) {
+                    formData.append("files", UploadFile.ListFile[i].DataFile);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("CreatePaymentProgress")",
+                    data: formData,
+                    headers: headers,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        Message.execute(response);
+                        Forms.HideLoading();
+                        if (response.State == true) {
+                            $(".close-modal").click();
+                            TienDoThanhToan();
+                        }                        
+                    },
+                });
+        }
+        $(function () {
+            Forms.CompleteUI();
+        });
+
+        var contractValue = Number('@Model.contract.CONTRACT_VALUE_VAT')
+        function CalValue() {
+            var value = Number($("#value").val());
+            var progress = value / contractValue * 100;
+            $("#progress").val(progress.toFixed(2))
+        }
+
+    </script>
+</div>

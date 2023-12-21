@@ -131,9 +131,6 @@
                         <li role="presentation" class="active">
                             <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> HỢP ĐỒNG: @Model.ObjDetail.NAME.ToUpper()</a>
                         </li>
-                        <li class="title-close" style="float: right; margin: 10px 10px 0 0; cursor: pointer; " title="Đóng màn hình" onclick="@string.Format("Forms.Close('{0}');", @Model.ViewId)">
-                            <i class="material-icons">close</i>
-                        </li>
                     </ul>
                     <div class="tab-content">
                         <div class="">
@@ -152,6 +149,7 @@
                         <div class="tab-content">
                             <div class="page-function" style="margin-top:15px;">
                                 <div class="page-function-button m-r-20">
+                                    @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
                                     @if (checkTrinhDuyet)
                                     {
                                         <div class="btn-default btn" onclick='TrinhDuyet("@Model.ObjDetail.ID");' title=""> <i class="material-icons col-fecon">send</i><span>Trình duyệt</span></div>
