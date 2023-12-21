@@ -1066,35 +1066,76 @@ namespace SMO.Service.BP.SUA_CHUA_LON
         public override void GetListOfChild()
         {
             var orgCode = ProfileUtilities.User.ORGANIZE_CODE;
-            // Tìm tất cả đơn vị con
-            var lstChildOrg = this.UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(
+            if(orgCode == "1000")
+            {
+                var lstOrg = this.UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(
                     x => x.PARENT_CODE == orgCode
                 ).Select(x => x.CODE).ToList();
-            // Tìm ra tất cả các mẫu đã nộp của đơn vị con
-
-            this.ObjList = this.CurrentRepository.Queryable().Where(
+                List<string> lstChildOrg = new List<string>();
+                foreach (var org in lstOrg)
+                {
+                    var lstChild = this.UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(
+                    x => x.PARENT_CODE == org
+                    ).Select(x => x.CODE).ToList();
+                    lstChildOrg.AddRange(lstChild);
+                }
+                this.ObjList = this.CurrentRepository.Queryable().Where(
                     x => lstChildOrg.Contains(x.ORG_CODE) && x.TIME_YEAR == this.ObjDetail.TIME_YEAR
                 ).ToList();
 
-            // Tìm mẫu nộp hộ
-            var listTemplateCode = this.UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Queryable().Where(
-                    x => lstChildOrg.Contains(x.CENTER_CODE) && x.TIME_YEAR == this.ObjDetail.TIME_YEAR
-                    && x.TIME_YEAR == (ObjDetail.TIME_YEAR == 0 ? DateTime.Now.Year : ObjDetail.TIME_YEAR)
-                ).Select(x => x.TEMPLATE_CODE).Distinct().ToList();
-            var findSuaChuaLon = this.CurrentRepository.Queryable().Where(
-                    x => listTemplateCode.Contains(x.TEMPLATE_CODE) && !lstChildOrg.Contains(x.ORG_CODE) && x.TIME_YEAR == this.ObjDetail.TIME_YEAR
-                );
+                // Tìm mẫu nộp hộ
+                var listTemplateCode = this.UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Queryable().Where(
+                        x => lstChildOrg.Contains(x.CENTER_CODE) && x.TIME_YEAR == this.ObjDetail.TIME_YEAR
+                        && x.TIME_YEAR == (ObjDetail.TIME_YEAR == 0 ? DateTime.Now.Year : ObjDetail.TIME_YEAR)
+                    ).Select(x => x.TEMPLATE_CODE).Distinct().ToList();
+                var findSuaChuaLon = this.CurrentRepository.Queryable().Where(
+                        x => listTemplateCode.Contains(x.TEMPLATE_CODE) && !lstChildOrg.Contains(x.ORG_CODE) && x.TIME_YEAR == this.ObjDetail.TIME_YEAR
+                    );
 
-            this.ObjList.AddRange(findSuaChuaLon);
-            if (string.IsNullOrEmpty(ObjDetail.KICH_BAN))
-            {
-                ObjDetail.KICH_BAN = "TB";
+                this.ObjList.AddRange(findSuaChuaLon);
+                if (string.IsNullOrEmpty(ObjDetail.KICH_BAN))
+                {
+                    ObjDetail.KICH_BAN = "TB";
+                }
+                if (string.IsNullOrEmpty(ObjDetail.PHIEN_BAN))
+                {
+                    ObjDetail.PHIEN_BAN = "PB1";
+                }
+                this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
             }
-            if (string.IsNullOrEmpty(ObjDetail.PHIEN_BAN))
+            else
             {
-                ObjDetail.PHIEN_BAN = "PB1";
+                // Tìm tất cả đơn vị con
+                var lstChildOrg = this.UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(
+                        x => x.PARENT_CODE == orgCode
+                    ).Select(x => x.CODE).ToList();
+                // Tìm ra tất cả các mẫu đã nộp của đơn vị con
+
+                this.ObjList = this.CurrentRepository.Queryable().Where(
+                        x => lstChildOrg.Contains(x.ORG_CODE) && x.TIME_YEAR == this.ObjDetail.TIME_YEAR
+                    ).ToList();
+
+                // Tìm mẫu nộp hộ
+                var listTemplateCode = this.UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Queryable().Where(
+                        x => lstChildOrg.Contains(x.CENTER_CODE) && x.TIME_YEAR == this.ObjDetail.TIME_YEAR
+                        && x.TIME_YEAR == (ObjDetail.TIME_YEAR == 0 ? DateTime.Now.Year : ObjDetail.TIME_YEAR)
+                    ).Select(x => x.TEMPLATE_CODE).Distinct().ToList();
+                var findSuaChuaLon = this.CurrentRepository.Queryable().Where(
+                        x => listTemplateCode.Contains(x.TEMPLATE_CODE) && !lstChildOrg.Contains(x.ORG_CODE) && x.TIME_YEAR == this.ObjDetail.TIME_YEAR
+                    );
+
+                this.ObjList.AddRange(findSuaChuaLon);
+                if (string.IsNullOrEmpty(ObjDetail.KICH_BAN))
+                {
+                    ObjDetail.KICH_BAN = "TB";
+                }
+                if (string.IsNullOrEmpty(ObjDetail.PHIEN_BAN))
+                {
+                    ObjDetail.PHIEN_BAN = "PB1";
+                }
+                this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
             }
-            this.ObjList = this.ObjList.Where(x=> x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+            
         }
 
         /// <summary>
@@ -3140,6 +3181,10 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             var template = GetTemplate(templateId);
             
             var currentUserCenterCode = ProfileUtilities.User.ORGANIZE_CODE;
+            if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
+            {
+                currentUserCenterCode = "100001";
+            }
             var childOrgOtherCosts = GetListOfChildrenCenter(currentUserCenterCode).Select(x => x.CODE);
 
             if (ignoreAuth || /*childOrgOtherCosts.Contains(template.ORG_CODE) ||*/ currentUserCenterCode.Equals(template.ORG_CODE) || template.ORG_CODE == centerCode)
@@ -3590,6 +3635,10 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             int? version = null)
         {
             string orgCode = ProfileUtilities.User.ORGANIZE_CODE;
+            if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
+            {
+                orgCode = "100001";
+            }
             var template = GetTemplate(templateCode);
             var lstChildren = GetListOfChildrenCenter(orgCode).Select(x => x.CODE);
             // check if orgCode is org code of template or not

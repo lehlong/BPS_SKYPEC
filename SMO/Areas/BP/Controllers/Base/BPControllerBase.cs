@@ -10,6 +10,7 @@ using SMO.Service.BP;
 using SMO.Service.Class;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -123,18 +124,38 @@ namespace SMO.Areas.BP.Controllers
         public ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
         {
             orgCode = orgCode ?? ProfileUtilities.User.ORGANIZE_CODE;
-            var viewDataCenterModel = new ViewDataCenterModel
+            var viewDataCenterModel = new ViewDataCenterModel();
+            if(ProfileUtilities.User.ORGANIZE_CODE == "1000")
             {
-                ORG_CODE = _service.CalculateOrgCode(orgCode, templateCode),
-                IS_LEAF = _service.IsLeaf(),
-                TEMPLATE_CODE = templateCode ?? string.Empty,
-                KICH_BAN = kichBan,
-                PHIEN_BAN = phienBan,
-                YEAR = year,
-                VERSION = version,
-                IS_HAS_NOT_VALUE = false,
-                IS_HAS_VALUE = true,
-            };
+                viewDataCenterModel = new ViewDataCenterModel
+                {
+                    ORG_CODE = orgCode,
+                    IS_LEAF = _service.IsLeaf(),
+                    TEMPLATE_CODE = templateCode ?? string.Empty,
+                    KICH_BAN = kichBan,
+                    PHIEN_BAN = phienBan,
+                    YEAR = year,
+                    VERSION = version,
+                    IS_HAS_NOT_VALUE = false,
+                    IS_HAS_VALUE = true,
+                };
+            }
+            else
+            {
+                viewDataCenterModel = new ViewDataCenterModel
+                {
+                    ORG_CODE = _service.CalculateOrgCode(orgCode, templateCode),
+                    IS_LEAF = _service.IsLeaf(),
+                    TEMPLATE_CODE = templateCode ?? string.Empty,
+                    KICH_BAN = kichBan,
+                    PHIEN_BAN = phienBan,
+                    YEAR = year,
+                    VERSION = version,
+                    IS_HAS_NOT_VALUE = false,
+                    IS_HAS_VALUE = true,
+                };
+            }
+            
             ViewBag.currencies = _service.GetAllMasterData<CurrencyRepo, T_MD_CURRENCY>();
             return PartialView("ViewData", viewDataCenterModel);
         }
@@ -819,14 +840,32 @@ namespace SMO.Areas.BP.Controllers
         [AuthorizeCustom(Right = "R301")]
         public ActionResult SearchIndexOfChild(TService service)
         {
-            service.GetListOfChild();
-            var headerOfParent = service.GetBPHeader("", null, service.ObjDetail.TIME_YEAR, ProfileUtilities.User.ORGANIZE_CODE);
-            if (headerOfParent != null)
+            if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
             {
-                service.GetSumUpHistory(ProfileUtilities.User.ORGANIZE_CODE, service.ObjDetail.TIME_YEAR, headerOfParent.VERSION);
+                service.GetListOfChild();
+                var headerOfParent = service.GetBPHeader("", null, service.ObjDetail.TIME_YEAR, ProfileUtilities.User.ORGANIZE_CODE);
+
+                if (headerOfParent != null)
+                {
+                    service.GetSumUpHistory(ProfileUtilities.User.ORGANIZE_CODE, service.ObjDetail.TIME_YEAR, headerOfParent.VERSION);
+                }
+                ViewBag.HeaderOfParent = headerOfParent;
+                return PartialView(service);
             }
-            ViewBag.HeaderOfParent = headerOfParent;
-            return PartialView(service);
+            else
+            {
+                service.GetListOfChild();
+                var headerOfParent = service.GetBPHeader("", null, service.ObjDetail.TIME_YEAR, ProfileUtilities.User.ORGANIZE_CODE);
+
+                if (headerOfParent != null)
+                {
+                    service.GetSumUpHistory(ProfileUtilities.User.ORGANIZE_CODE, service.ObjDetail.TIME_YEAR, headerOfParent.VERSION);
+                }
+                ViewBag.HeaderOfParent = headerOfParent;
+                return PartialView(service);
+            }
+            
+            
         }
 
         public abstract ActionResult SummaryCenter(string centerCode, int? year, int? version, bool isRenderPartial = false);
