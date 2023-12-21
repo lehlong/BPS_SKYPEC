@@ -3179,11 +3179,12 @@ namespace SMO.Service.BP.SUA_CHUA_LON
         {
             templateId = templateId ?? string.Empty;
             var template = GetTemplate(templateId);
-            
+
+            var code = UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(x => x.CODE == template.ORG_CODE).Select(x => x.PARENT_CODE).FirstOrDefault();
             var currentUserCenterCode = ProfileUtilities.User.ORGANIZE_CODE;
             if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
             {
-                currentUserCenterCode = "100001";
+                currentUserCenterCode = code;
             }
             var childOrgOtherCosts = GetListOfChildrenCenter(currentUserCenterCode).Select(x => x.CODE);
 
@@ -3635,11 +3636,12 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             int? version = null)
         {
             string orgCode = ProfileUtilities.User.ORGANIZE_CODE;
+            var template = GetTemplate(templateCode);
+            var code = UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(x => x.CODE == template.ORG_CODE).Select(x => x.PARENT_CODE).FirstOrDefault();
             if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
             {
-                orgCode = "100001";
+                orgCode = code;
             }
-            var template = GetTemplate(templateCode);
             var lstChildren = GetListOfChildrenCenter(orgCode).Select(x => x.CODE);
             // check if orgCode is org code of template or not
             if (template.ORG_CODE.Equals(orgCode))
