@@ -4395,13 +4395,13 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
         }
 
-        public T_MD_KHOAN_MUC_CHI_PHI GetKMChiPhi(string code)
+        public T_MD_KHOAN_MUC_HANG_HOA GetKMHangHoa(string code)
         {
-            var KMChiPhi = UnitOfWork.Repository<KhoanMucChiPhiRepo>()
+            var KMHangHoa = UnitOfWork.Repository<KhoanMucHangHoaRepo>()
                 .Queryable()
                 .FirstOrDefault(x => x.CODE == code);
 
-            return KMChiPhi;
+            return KMHangHoa;
         }
 
     }

@@ -231,6 +231,7 @@
     <Compile Include="Implement\BU\PaymentRepo.cs" />
     <Compile Include="Implement\CF\ConfigTableauRepo.cs" />
     <Compile Include="Implement\CF\ConfigTemplateNotifyRepo.cs" />
+    <Compile Include="Implement\CM\AssignDepartmentRepo.cs" />
     <Compile Include="Implement\CM\CommentDetailsRepo.cs" />
     <Compile Include="Implement\CM\CommentRepo.cs" />
     <Compile Include="Implement\CM\EmailRepo.cs" />
@@ -475,6 +476,7 @@
     <Compile Include="Interface\BU\IPaymentRepo.cs" />
     <Compile Include="Interface\CF\IConfigTableauRepo.cs" />
     <Compile Include="Interface\CF\IConfigTemplateNotify.cs" />
+    <Compile Include="Interface\CM\IAssignDepartmentRepo.cs" />
     <Compile Include="Interface\CM\ICommentDetailsRepo.cs" />
     <Compile Include="Interface\CM\ICommentRepo.cs" />
     <Compile Include="Interface\CM\IEmailRepo.cs" />
@@ -720,6 +722,7 @@
     <Compile Include="Mapping\BU\T_BU_PAYMENT_PROGRESS_Map.cs" />
     <Compile Include="Mapping\CF\T_CF_TABLEAU_Map.cs" />
     <Compile Include="Mapping\CF\T_CF_TEMPLATE_NOTIFY_Map.cs" />
+    <Compile Include="Mapping\CM\T_CM_ASSIGN_DEPARTMENT_Map.cs" />
     <Compile Include="Mapping\CM\T_CM_COMMENT_DETAILS_Map.cs" />
     <Compile Include="Mapping\CM\T_CM_COMMENT_Map.cs" />
     <Compile Include="Mapping\CM\T_CM_EMAIL_Map.cs" />

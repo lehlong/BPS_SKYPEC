@@ -507,6 +507,7 @@
     <Compile Include="Areas\AD\Controllers\RoleController.cs" />
     <Compile Include="Areas\AD\Controllers\UserHistoryController.cs" />
     <Compile Include="Areas\BP\BPAreaRegistration.cs" />
+    <Compile Include="Areas\BP\Controllers\AssignDepartmentController.cs" />
     <Compile Include="Areas\BP\Controllers\Base\BPControllerBase.cs" />
     <Compile Include="Areas\BP\Controllers\BudgetPeriodController.cs" />
     <Compile Include="Areas\BP\Controllers\CommentController.cs" />
@@ -806,6 +807,7 @@
     <Compile Include="Service\Class\T_EB_BID_SPEC_SYSTEM_SCORE.cs" />
     <Compile Include="Service\Class\ViewDataCenterModel.cs" />
     <Compile Include="Service\Class\WF\ConfigSendViewModel.cs" />
+    <Compile Include="Service\CM\AssignDepartmentService.cs" />
     <Compile Include="Service\CM\CommentDetailsService.cs" />
     <Compile Include="Service\CM\FileUploadService.cs" />
     <Compile Include="Service\CM\SmsHistoryService.cs" />
@@ -2008,6 +2010,9 @@
     <Content Include="Areas\BU\Views\PaymentProgress\UpdatePharse.cshtml" />
     <Content Include="Areas\BU\Views\PaymentProgress\Create.cshtml" />
     <Content Include="Areas\BU\Views\PaymentProgress\Update.cshtml" />
+
+    <Content Include="Areas\BP\Views\Shared\_PartialViewTableChildKeHoachDoanhThu.cshtml" />
+
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -2154,6 +2159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\BP\Views\AssignDepartment\" />
     <Folder Include="Areas\BP\Views\CommentDetails\" />
     <Folder Include="Areas\MD\Views\ChiPhiProfitCenter\" />
     <Folder Include="Areas\MD\Views\DauTuNgoaiDoanhNghiepProfitCenter\" />

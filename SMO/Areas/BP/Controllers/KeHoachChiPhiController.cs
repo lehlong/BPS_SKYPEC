@@ -2,12 +2,13 @@
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
+using SMO.Models;
 using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
 using SMO.Service.BP;
 using SMO.Service.BP.KE_HOACH_CHI_PHI;
 using SMO.Service.Class;
-
+using SMO.Service.CM;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -172,7 +173,18 @@ namespace SMO.Areas.BP.Controllers
 
         public ActionResult CommentKM(string code)
         {
-            var khoanmuc = _service.GetKMChiPhi(code);
+            var khoanmuc = _service.GetKMHangHoa(code);
+            var resultData = new
+            {
+                khoanmuc = khoanmuc
+            };
+
+            return Json(resultData, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AssignKM(string code)
+        {
+            var khoanmuc = _service.GetKMHangHoa(code);
             var resultData = new
             {
                 khoanmuc = khoanmuc

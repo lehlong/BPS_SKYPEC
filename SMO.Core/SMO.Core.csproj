@@ -258,6 +258,7 @@
     <Compile Include="Entities\BU\T_BU_PAYMENT_PROGRESS.cs" />
     <Compile Include="Entities\CF\T_CF_TABLEAU.cs" />
     <Compile Include="Entities\CF\T_CF_TEMPLATE_NOTIFY.cs" />
+    <Compile Include="Entities\CM\T_CM_ASSIGN_DEPARTMENT.cs" />
     <Compile Include="Entities\CM\T_CM_COMMENT.cs" />
     <Compile Include="Entities\CM\T_CM_COMMENT_DETAILS.cs" />
     <Compile Include="Entities\CM\T_CM_EMAIL.cs" />
