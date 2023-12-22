@@ -4677,13 +4677,17 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     {
                         percentagePreventive = 1 + percentagePreventive / 100;
                     }
+                    if(string.IsNullOrEmpty(tableData.Rows[i][15].ToString().Trim()) || string.IsNullOrEmpty(tableData.Rows[i][16].ToString().Trim()))
+                    {
+                        continue;
+                    }
 
                     var centerCode = allSanLuongProfitCenters.FirstOrDefault(
                                                 x => x.SanBay.OTHER_PM_CODE == tableData.Rows[i][15].ToString().Trim() &&
                                                 x.HangHangKhong.OTHER_PM_CODE == tableData.Rows[i][16].ToString().Trim())?.CODE;
                     if (centerCode == null)
                     {
-                        throw new Exception($"Biểu mẫu chưa khai báo đủ sân bay và hãng hàng không! Vui lòng kiểm tra lại!");
+                        throw new Exception($"Biểu mẫu chưa khai báo đủ sân bay và hãng hàng không! Mã sân bay: {tableData.Rows[i][15].ToString().Trim()} - Mã hãng hàng không: {tableData.Rows[i][16].ToString().Trim()}");
                     }
 
                     var costData = new T_BP_KE_HOACH_SAN_LUONG_DATA();
