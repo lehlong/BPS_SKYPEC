@@ -8,6 +8,7 @@ namespace SMO.Repository.Mapping.MD
     {
         public T_MD_KHOAN_MUC_CHUNG_Map() : base()
         {
+            Map(x => x.UNIT_CODE);
             Map(x => x.IS_GROUP).Not.Nullable().CustomType<YesNoType>();
             References(x => x.Parent, "PARENT_CODE")
                 .Not.Insert()

@@ -27,7 +27,6 @@ using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Web;
-
 using static SMO.SelectListUtilities;
 
 namespace SMO.Service.BP.KE_HOACH_CHI_PHI
@@ -1366,11 +1365,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         TIME_YEAR = year,
                         VERSION = isCorp ? lookupData[key].First().VERSION : version, // cấp tập đoàn thì sẽ là data_version còn nếu cấp dưới thì sẽ là sumup version
                         ORG_NAME = lookupData[key].First().Organize.NAME,
-                        Values = new decimal[3]
+                        Values = new decimal[6]
                             {
                                 lookupData[key].Sum(x => x.QUANTITY) ?? 0,
                                 lookupData[key].Sum(x => x.PRICE) ?? 0,
                                 lookupData[key].Sum(x => x.AMOUNT) ?? 0,
+                                lookupData[key].Sum(x => x.QUANTITY_TD) ?? 0,
+                                lookupData[key].Sum(x => x.PRICE_TD) ?? 0,
+                                lookupData[key].Sum(x => x.AMOUNT_TD) ?? 0,
                             },
                         NUMBER_COMMENTS = isCountComments ? isChild ?
                         $"{parentComments}" :
@@ -1459,7 +1461,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     IsChildren = false,
                     C_ORDER = 0,
                     CODE = string.Empty,
-                    Values = new decimal[3]
+                    Values = new decimal[6]
                 };
                 //var isTemplateBase = GetTemplate(model.TEMPLATE_CODE)?.IS_BASE;
                 //isTemplateBase = isTemplateBase.HasValue && isTemplateBase.Value;
@@ -3834,7 +3836,13 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     i.Values[0] = treeData.QUANTITY ?? 0;
                                     i.Values[1] = treeData.PRICE ?? 0;
                                     i.Values[2] = treeData.AMOUNT ?? 0;
+
+                                    i.Values[3] = treeData.QUANTITY_TD ?? 0;
+                                    i.Values[4] = treeData.PRICE_TD ?? 0;
+                                    i.Values[5] = treeData.AMOUNT_TD ?? 0;
+
                                     i.DESCRIPTION = treeData.DESCRIPTION;
+                                    i.DESCRIPTION_TD = treeData.DESCRIPTION_TD;
                                 }
                             }
                             yield return i;
@@ -3854,11 +3862,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             var data = revenuePlData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == item.CODE && x.CHI_PHI_PROFIT_CENTER_CODE == item.CENTER_CODE);
                             if (data != null)
                             {
-                                item.Values = new decimal[3]
+                                item.Values = new decimal[6]
                                 {
                                 data.Sum(x => x.QUANTITY) ?? 0,
                                 data.Sum(x => x.PRICE) ?? 0,
-                                data.Sum(x => x.AMOUNT) ?? 0
+                                data.Sum(x => x.AMOUNT) ?? 0,
+                                data.Sum(x => x.QUANTITY_TD) ?? 0,
+                                data.Sum(x => x.PRICE_TD) ?? 0,
+                                data.Sum(x => x.AMOUNT_TD) ?? 0
                                 };
                             }
                             yield return item;
@@ -4214,11 +4225,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     IsChildren = false,
                     C_ORDER = 0,
                     CODE = string.Empty,
-                    Values = new decimal[3]
+                    Values = new decimal[6]
                     {
                         costCFData.Sum(x => x.QUANTITY) ?? 0,
                          costCFData.Sum(x => x.PRICE) ?? 0,
                           costCFData.Sum(x => x.AMOUNT) ?? 0,
+                          costCFData.Sum(x => x.QUANTITY_TD) ?? 0,
+                         costCFData.Sum(x => x.PRICE_TD) ?? 0,
+                          costCFData.Sum(x => x.AMOUNT_TD) ?? 0,
                     }
                 }
             };
@@ -4263,6 +4277,9 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 item.Values[0] += treeData.Sum(x => x.QUANTITY) ?? 0;
                                 item.Values[1] += treeData.Sum(x => x.PRICE) ?? 0;
                                 item.Values[2] += treeData.Sum(x => x.AMOUNT) ?? 0;
+                                item.Values[3] += treeData.Sum(x => x.QUANTITY_TD) ?? 0;
+                                item.Values[4] += treeData.Sum(x => x.PRICE_TD) ?? 0;
+                                item.Values[5] += treeData.Sum(x => x.AMOUNT_TD) ?? 0;
                                 item.HasAssignValue = true;
 
                                 foreach (var d in treeData)
@@ -4271,6 +4288,9 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     values[0] = treeData.Sum(x => x.QUANTITY) ?? 0;
                                     values[1] = treeData.Sum(x => x.PRICE) ?? 0;
                                     values[2] = treeData.Sum(x => x.AMOUNT) ?? 0;
+                                    values[3] = treeData.Sum(x => x.QUANTITY_TD) ?? 0;
+                                    values[4] = treeData.Sum(x => x.PRICE_TD) ?? 0;
+                                    values[5] = treeData.Sum(x => x.AMOUNT_TD) ?? 0;
 
                                     i.Values = values;
                                     var clone = (T_MD_KHOAN_MUC_HANG_HOA)i.Clone();
@@ -4291,6 +4311,9 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         item.Values[0] += treeData.Sum(x => x.QUANTITY) ?? 0;
                         item.Values[1] += treeData.Sum(x => x.PRICE) ?? 0;
                         item.Values[2] += treeData.Sum(x => x.AMOUNT) ?? 0;
+                        item.Values[3] += treeData.Sum(x => x.QUANTITY_TD) ?? 0;
+                        item.Values[4] += treeData.Sum(x => x.PRICE_TD) ?? 0;
+                        item.Values[5] += treeData.Sum(x => x.AMOUNT_TD) ?? 0;
                     }
                     var clone = (T_MD_KHOAN_MUC_HANG_HOA)item.Clone();
                     lstResult.Add(clone);
@@ -4309,11 +4332,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var data = costCFData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == item.CODE && x.ORG_CODE == item.CENTER_CODE);
                         if (data != null)
                         {
-                            item.Values = new decimal[3]
+                            item.Values = new decimal[6]
                             {
                                 data.Sum(x => x.QUANTITY) ?? 0,
                                 data.Sum(x => x.PRICE) ?? 0,
                                 data.Sum(x => x.AMOUNT) ?? 0,
+                                data.Sum(x => x.QUANTITY_TD) ?? 0,
+                                data.Sum(x => x.PRICE_TD) ?? 0,
+                                data.Sum(x => x.AMOUNT_TD) ?? 0,
                             };
                         }
                     }
@@ -4452,6 +4478,202 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 .FirstOrDefault(x => x.CODE == code);
 
             return KMHangHoa;
+        }
+
+
+        public void UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                if (type == "SL")
+                {
+                    var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.ChiPhiProfitCenter.COST_CENTER_CODE == costCenter && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();                   
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().QUANTITY;
+                    foreach (var item in rowsChange)
+                    {
+                        item.QUANTITY = Convert.ToDecimal(value);
+                        item.AMOUNT = item.PRICE * Convert.ToDecimal(value);
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
+                    }
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY
+                    {
+                        ID= Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Cập nhật sản lượng",
+                        COST_CENTER_CODE = costCenter,
+                        SAN_BAY_CODE = sanBay,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = Convert.ToDecimal(value),
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }
+                else if(type == "DG")
+                {
+                    var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().PRICE;
+                    foreach (var item in rowsChange)
+                    {
+                        item.PRICE = Convert.ToDecimal(value);
+                        item.AMOUNT = item.QUANTITY * Convert.ToDecimal(value);
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
+                    }
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Cập nhật đơn giá",
+                        COST_CENTER_CODE = costCenter,
+                        SAN_BAY_CODE = sanBay,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = Convert.ToDecimal(value),
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }
+                else if (type == "SL_TD")
+                {
+                    var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().QUANTITY_TD;
+                    foreach (var item in rowsChange)
+                    {
+                        item.QUANTITY_TD = Convert.ToDecimal(value);
+                        item.AMOUNT_TD = item.PRICE_TD * Convert.ToDecimal(value);
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
+                    }
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Thẩm định sản lượng",
+                        COST_CENTER_CODE = costCenter,
+                        SAN_BAY_CODE = sanBay,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = Convert.ToDecimal(value),
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }
+                else if (type == "DG_TD")
+                {
+                    var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().PRICE_TD;
+                    foreach (var item in rowsChange)
+                    {
+                        item.PRICE_TD = Convert.ToDecimal(value);
+                        item.AMOUNT_TD = item.QUANTITY_TD * Convert.ToDecimal(value);
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
+                    }
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Thẩm định đơn giá",
+                        COST_CENTER_CODE = costCenter,
+                        SAN_BAY_CODE = sanBay,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = Convert.ToDecimal(value),
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }
+                else if (type == "GC_TD")
+                {
+                    var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().DESCRIPTION_TD;
+                    foreach (var item in rowsChange)
+                    {
+                        item.DESCRIPTION_TD = value;
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
+                    }
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Thẩm định ghi chú",
+                        COST_CENTER_CODE = costCenter,
+                        SAN_BAY_CODE = sanBay,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = 0,
+                        NEW_VALUE = 0,
+                        OLD_DESCRIPTION = oldValue,
+                        NEW_DESCRIPTION = value,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public IList<T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY> GetHistoryEditElement(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                return UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY>();
+            }
         }
 
     }

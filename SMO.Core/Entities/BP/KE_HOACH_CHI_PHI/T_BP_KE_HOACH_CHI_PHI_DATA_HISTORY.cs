@@ -18,6 +18,11 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
         public virtual string DESCRIPTION { get; set; }
         public virtual string STATUS { get; set; }
 
+        public virtual decimal? QUANTITY_TD { get; set; }
+        public virtual decimal? PRICE_TD { get; set; }
+        public virtual decimal? AMOUNT_TD { get; set; }
+        public virtual string DESCRIPTION_TD { get; set; }
+
         public virtual T_MD_KHOAN_MUC_HANG_HOA KhoanMucHangHoa { get; set; }
         public virtual T_MD_CHI_PHI_PROFIT_CENTER ChiPhiProfitCenter { get; set; }
         public virtual T_MD_COST_CENTER Organize { get; set; }
@@ -82,7 +87,12 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
                 ChiPhiProfitCenter = data.ChiPhiProfitCenter,
                 STATUS = data.STATUS,
                 Organize = data.Organize,
-                Template = data.Template
+                Template = data.Template,
+
+                QUANTITY_TD = data.QUANTITY_TD,
+                PRICE_TD = data.PRICE_TD,
+                AMOUNT_TD = data.AMOUNT_TD,
+                DESCRIPTION_TD = data.DESCRIPTION_TD,
             };
         }
     }

@@ -3,6 +3,7 @@
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
+    var lstUnit = SelectListUtilities.GetAllUnit(false);
 }
 <div id='@Model.ViewId'>
     @using (Ajax.BeginForm("Update", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
@@ -49,6 +50,14 @@
                                         @Html.MyTextBoxFor(m => m.ObjDetail.NAME)
                                     </div>
                                     @Html.ValidationMessageFor(m => m.ObjDetail.NAME)
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <label>Đơn vị tính</label>
+                                <div class="form-group">
+                                    @Html.MyDropDownListFor(m => m.ObjDetail.UNIT_CODE, SelectListUtilities.GetAllUnit(), new { @class = "selectpicker show-tick", @data_val = false })
+                                    @Html.ValidationMessageFor(m => m.ObjDetail.UNIT_CODE)
                                 </div>
                             </div>
 

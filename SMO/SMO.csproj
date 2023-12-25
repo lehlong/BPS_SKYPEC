@@ -2010,9 +2010,8 @@
     <Content Include="Areas\BU\Views\PaymentProgress\UpdatePharse.cshtml" />
     <Content Include="Areas\BU\Views\PaymentProgress\Create.cshtml" />
     <Content Include="Areas\BU\Views\PaymentProgress\Update.cshtml" />
-
     <Content Include="Areas\BP\Views\Shared\_PartialViewTableChildKeHoachDoanhThu.cshtml" />
-
+    <Content Include="Areas\BP\Views\KeHoachChiPhi\GetHistoryEditElement.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

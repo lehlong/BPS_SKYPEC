@@ -10,7 +10,7 @@ namespace SMO.Core.Entities.MD
     public class T_MD_KHOAN_MUC_CHUNG : CoreCenter
     {
         private T_MD_KHOAN_MUC_CHUNG parent;
-
+        public virtual string UNIT_CODE { get; set; }
         public virtual bool IS_GROUP { get; set; }
         public virtual T_MD_KHOAN_MUC_CHUNG Parent
         {

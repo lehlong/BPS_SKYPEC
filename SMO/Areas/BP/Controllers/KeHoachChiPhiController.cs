@@ -9,6 +9,7 @@ using SMO.Service.BP;
 using SMO.Service.BP.KE_HOACH_CHI_PHI;
 using SMO.Service.Class;
 using SMO.Service.CM;
+using SMO.Service.MD;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -191,6 +192,37 @@ namespace SMO.Areas.BP.Controllers
             };
 
             return Json(resultData, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.UpdateCellValue(templateCode,version, year, type, sanBay, costCenter, elementCode, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult GetHistoryEditElement(string templateCode, int version, int year, string elementCode)
+        {
+            var data = _service.GetHistoryEditElement(templateCode, version, year, elementCode);
+            return PartialView(data);
         }
     }
 }

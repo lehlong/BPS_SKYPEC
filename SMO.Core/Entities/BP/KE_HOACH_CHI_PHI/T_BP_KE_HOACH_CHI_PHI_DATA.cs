@@ -17,6 +17,11 @@ namespace SMO.Core.Entities.BP.KE_HOACH_CHI_PHI
         public virtual string QUY_MO { get; set; }
 
         public virtual string DESCRIPTION { get; set; }
+
+        public virtual decimal? QUANTITY_TD { get; set; }
+        public virtual decimal? PRICE_TD { get; set; }
+        public virtual decimal? AMOUNT_TD { get; set; }
+        public virtual string DESCRIPTION_TD { get; set; }
         public virtual string STATUS { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }

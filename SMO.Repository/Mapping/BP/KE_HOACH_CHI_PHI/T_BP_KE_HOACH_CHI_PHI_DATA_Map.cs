@@ -28,6 +28,11 @@ namespace SMO.Repository.Mapping.BP.KE_HOACH_CHI_PHI
             Map(x => x.DESCRIPTION);
             Map(x => x.STATUS);
 
+            Map(x => x.QUANTITY_TD);
+            Map(x => x.PRICE_TD);
+            Map(x => x.AMOUNT_TD);
+            Map(x => x.DESCRIPTION_TD);
+
             References(x => x.KhoanMucHangHoa).Columns("KHOAN_MUC_HANG_HOA_CODE", "TIME_YEAR")
                 .Not.Insert().Not.Update();
             References(x => x.ChiPhiProfitCenter, "CHI_PHI_PROFIT_CENTER_CODE")

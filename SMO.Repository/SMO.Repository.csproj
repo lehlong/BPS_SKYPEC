@@ -133,6 +133,7 @@
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\DauTuXayDungDataBaseRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDataRepo.cs" />
+    <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiEditHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiReviewCommentRepo.cs" />
@@ -394,6 +395,7 @@
     <Compile Include="Interface\BP\ITypeRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiDataHistoryRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiDataRepo.cs" />
+    <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiEditHistoryRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiHistoryRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiReviewCommentRepo.cs" />
@@ -636,6 +638,7 @@
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\KE_HOACH_CHI_PHI_DATA_BASE\T_BP_KE_HOACH_CHI_PHI_DATA_BASE_Mapping.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_DATA_Map.cs" />
+    <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_REVIEW_COMMENT_Map.cs" />

@@ -1,0 +1,63 @@
+﻿@model IList<SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY>
+@{
+
+}
+<div class="modal-close">
+    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
+</div>
+<div class="modal-body">
+    <div class="content">
+          <div class="card">
+                <div class="body" style="padding-top: 0px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a style="padding-left:0px"><i class="material-icons">clear_all</i> LỊCH SỬ CHỈNH SỬA</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="page-function">
+                        </div>
+
+                        <div id="divResult">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã khoản mục</th>
+                                            <th>Loại cập nhật</th>
+                                            <th>Sân bay</th>
+                                            <th>Giá trị cũ</th>
+                                            <th>Giá trị mới</th>
+                                            <th>Ghi chú cũ</th>
+                                            <th>Ghi chú mới</th>
+                                            <th>Thời gian cập nhật</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.OrderByDescending(x => x.CREATE_DATE))
+                                        {
+                                            <tr>
+                                                <td>@item.ELEMENT_CODE</td>
+                                                <td>@item.TYPE</td>
+                                                <td>@item.SAN_BAY_CODE</td>
+                                                <td>@item.OLD_VALUE</td>
+                                                <td>@item.NEW_VALUE</td>
+                                                <td>@item.OLD_DESCRIPTION</td>
+                                                <td>@item.NEW_DESCRIPTION</td>
+                                                <td>@item.CREATE_BY</td>
+                                                <td>@item.CREATE_DATE</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
+</div>

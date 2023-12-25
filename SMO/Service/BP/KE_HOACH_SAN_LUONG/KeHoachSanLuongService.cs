@@ -4576,6 +4576,14 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     this.ErrorMessage = "Mẫu khai báo này không ở trạng thái Từ chối hoặc Chưa trình duyệt!";
                     return;
                 }
+
+                var template = UnitOfWork.Repository<TemplateRepo>().Get(ObjDetail.TEMPLATE_CODE);
+                if (template.DetailKeHoachSanLuong.Where(x => x.TIME_YEAR == ObjDetail.TIME_YEAR).Count() == 0)
+                {
+                    this.State = false;
+                    this.ErrorMessage = $"Mẫu khai báo này chưa được định nghĩa tại năm {ObjDetail.TIME_YEAR}!";
+                    return;
+                }
                 var versionNext = 1;
                 if (KeHoachSanLuongCurrent != null)
                 {

@@ -48,6 +48,14 @@
                             </div>
                         </div>
 
+                        <div class="col-xs-12">
+                            <label>Đơn vị tính</label>
+                            <div class="form-group">
+                                @Html.MyDropDownListFor(m => m.ObjDetail.UNIT_CODE, SelectListUtilities.GetAllUnit(), new { @class = "selectpicker show-tick", @data_val = false })
+                                @Html.ValidationMessageFor(m => m.ObjDetail.UNIT_CODE)
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

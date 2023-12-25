@@ -28,6 +28,22 @@
     .full-screen-table {
         height: calc(100vh -100px) !important;
     }
+
+    .input-edit {
+        background: none;
+        border: none;
+        text-align: right;
+        width: 100%;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 
 @if (Model == null || Model.Count == 0 ||
@@ -45,7 +61,7 @@ else
                 <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
                     <tbody>
                         <tr class="sticky-row strong align-center" data-xls-row="header">
-                            <td rowspan="3" colspan="3">CHỈ TIÊU</td>
+                            <td rowspan="3" colspan="4">CHỈ TIÊU</td>
                             <td colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 3)">KẾ HOẠCH CHI TIẾT</td>
                             <td colspan="4">Ý KIẾN PHÒNG KỸ THUẬT</td>
                         </tr>
@@ -98,17 +114,28 @@ else
                                 {
                                     <td></td>
                                 }
+                                @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
+                                {
+                                    <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
 
                                 <td style="max-width:360px"><div class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</div></td>
 
+                                @*Số lượng*@
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
                                     var value = Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN();
-                                    <td class="align-right">@(value == "0" ? "" : value)</td>
+                                    <td class="align-right"><input type="number" class="input-edit" onchange="onEditCell('SL', '@sb.Center.SAN_BAY_CODE','@sb.Center.COST_CENTER_CODE', '@item.CODE', this.value)" value="@(value == "0" ? "" : value)" @isEdit/></td>
                                 }
 
                                 <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN() == "0" ? "" : Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN())</td>
-                                <td class="align-right">@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())</td>
+                                
+                                @*Đơn giá*@
+                                <td class="align-right"><input type="number" class="input-edit" @isEdit  onchange="onEditCell('DG', '','', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())"/></td>
 
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
@@ -116,10 +143,10 @@ else
                                 }
 
                                 <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]).ToStringVN())</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>@item.DESCRIPTION</td>
+                                <td class="align-right"><input type="number" class="input-edit" @isEdit onchange="onEditCell('SL_TD', '','', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[3].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[3].ToStringVN())" /></td>
+                                <td class="align-right"><input type="number" class="input-edit" @isEdit onchange="onEditCell('DG_TD', '','', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[4].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[4].ToStringVN())" /></td>
+                                <td class="align-right">@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[5].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[5].ToStringVN())</td>
+                                <td class="align-right"><input type="text" class="input-edit" @isEdit onchange="onEditCell('GC_TD', '','', '@item.CODE', this.value)" value="@item.DESCRIPTION_TD" /></td>
                             </tr>
 
                         }
@@ -346,7 +373,7 @@ else
 
         function ShowAssignDepartment(code) {
             var selectElement = document.getElementById("DEPARTMENT");
-            selectElement.selectedIndex = -1;            
+            selectElement.selectedIndex = -1;
             for (var i = 0; i < selectElement.options.length; i++) {
                 var option = selectElement.options[i];
 
@@ -475,6 +502,51 @@ else
                 },
                 error: Forms.AjaxErrorHandler
             })
+        }
+
+        function onEditCell(type, sanBay, costCenter, elementCode, value) {
+            if (value == null || value == "") {
+                return;
+            }
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/KeHoachChiPhi/UpdateCellValue',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    type: type,
+                    sanBay: sanBay,
+                    costCenter: costCenter,
+                    elementCode: elementCode,
+                    value: value
+                },
+                dataType: 'json',
+                success: function (response) {
+                    Message.execute(response);
+                }
+            };
+            Forms.Ajax(ajaxParams);
+        }
+
+        function getHistoryEditElement(elementCode) {
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/KeHoachChiPhi/GetHistoryEditElement',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    elementCode: elementCode,
+                },
+            };
+            Forms.LoadAjaxModalLarge(ajaxParams);
         }
     </script>
 }

@@ -36,6 +36,7 @@ namespace SMO.Core.Common
         public virtual string ORG_CODE { get; set; }
         public virtual string ORG_NAME { get; set; }
         public virtual string DESCRIPTION { get; set; }
+        public virtual string DESCRIPTION_TD { get; set; }
         public virtual string PROCESS { get; set; }
 
         public virtual int LEVEL { get; set; }      // property to determine level of element. Higher is child

@@ -10,7 +10,7 @@ namespace SMO.Core.Entities.MD
     {
         public T_MD_KHOAN_MUC_HANG_HOA() : base()
         {
-            Values = new decimal[3];
+            Values = new decimal[6];
         }
 
         public virtual object Clone()
@@ -48,11 +48,14 @@ namespace SMO.Core.Entities.MD
                 ORG_CODE = v.ORG_CODE,
                 ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Sân bay: {v.ChiPhiProfitCenter.SanBay.NAME}\nChi nhánh: {v.ChiPhiProfitCenter.CostCenter.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
                 CENTER_CODE = v.ORG_CODE,
-                Values = new decimal[3]
+                Values = new decimal[6]
                 {
                     v.QUANTITY ?? 0,
                     v.PRICE ?? 0,
                     v.AMOUNT ?? 0,
+                    v.QUANTITY_TD ?? 0,
+                    v.PRICE_TD ?? 0,
+                    v.AMOUNT_TD ?? 0,
                 },
                 VERSION = v.VERSION,
                 DESCRIPTION = v.DESCRIPTION,
@@ -73,11 +76,14 @@ namespace SMO.Core.Entities.MD
                 ORG_CODE = v.ORG_CODE,
                 ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Sân bay: {v.ChiPhiProfitCenter.SanBay.NAME}\nChi nhánh: {v.ChiPhiProfitCenter.CostCenter.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
                 CENTER_CODE = v.ORG_CODE,
-                Values = new decimal[3]
+                Values = new decimal[6]
                 {
                     v.QUANTITY ?? 0,
                     v.PRICE ?? 0,
                     v.AMOUNT ?? 0,
+                    v.QUANTITY_TD ?? 0,
+                    v.PRICE_TD ?? 0,
+                    v.AMOUNT_TD ?? 0,
                 },
                 VERSION = v.VERSION,
                 DESCRIPTION = v.DESCRIPTION,
