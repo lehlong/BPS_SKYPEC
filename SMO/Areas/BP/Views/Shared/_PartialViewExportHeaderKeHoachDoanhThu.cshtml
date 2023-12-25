@@ -134,7 +134,7 @@ else
         </div>
     </div>
 
-    <div class="col-xs-6">
+    <div class="col-xs-6 m-b-10">
         @Html.MyDropDownListFor(x => x.SAN_BAY_CODE, SelectListUtilities.GetAllSanBay(),
      new
      {
@@ -144,7 +144,7 @@ else
          @onchange = "OnChangeYear()"
      })
     </div>
-    <div class="col-xs-6" id="select-hang-hang-khong">
+    <div class="col-xs-6 m-b-10" id="select-hang-hang-khong">
         @Html.MyDropDownListFor(x => x.HANG_HANG_KHONG_CODE, SelectListUtilities.GetSelectHangHangKhong(true),
             new
             {
@@ -153,6 +153,28 @@ else
                 @data_live_search = "true",
                 @onchange = "OnChangeYear()"
             })
+    </div>
+
+    <div class="col-xs-6 ">
+        @Html.MyDropDownListFor(x => x.AREA_CODE, SelectListUtilities.GetAllArea(),
+     new
+     {
+         @class = "selectpicker show-tick dropdown",
+         @data_container = "body",
+         @data_live_search = "true",
+         @onchange = "OnChangeYear()"
+     })
+    </div>
+
+    <div class="col-xs-6">
+        @Html.MyDropDownListFor(x => x.NHOM_SAN_BAY_CODE, SelectListUtilities.GetSelectHangHangKhong(),
+     new
+     {
+         @class = "selectpicker show-tick dropdown",
+         @data_container = "body",
+         @data_live_search = "true",
+         @onchange = "OnChangeYear()"
+     })
     </div>
 </div>
 
@@ -352,6 +374,7 @@ else
         var phienBan = $("#@viewId #PHIEN_BAN").val();
         var sanbay = $("#@viewId #SAN_BAY_CODE").val();
         var hanghangkhong = $("#@viewId #HANG_HANG_KHONG_CODE").val();
+        var area = $("#@viewId #AREA_CODE").val();
         if (year === undefined) {
             return;
         }

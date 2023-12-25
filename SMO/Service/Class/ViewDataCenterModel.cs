@@ -6,6 +6,9 @@
         public string TEMPLATE_CODE { get; set; }
         public string HANG_HANG_KHONG_CODE { get; set; }
         public string SAN_BAY_CODE { get; set; }
+        public string AREA_CODE { get; set; }
+        public string NHOM_SAN_BAY_CODE { get; set; }
+
         public string KICH_BAN { get; set; }
         public string PHIEN_BAN { get; set; }
         public int YEAR { get; set; }

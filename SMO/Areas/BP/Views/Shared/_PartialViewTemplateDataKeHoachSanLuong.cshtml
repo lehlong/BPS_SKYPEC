@@ -77,10 +77,21 @@
 else
 {
     List<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG> lstDetail = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG>();
-    if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.HANG_HANG_KHONG_CODE != null)
+    if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.AREA_CODE != null)
     {
         var flat = 0;
-        if(dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.HANG_HANG_KHONG_CODE != null)
+        if(dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.AREA_CODE != null)
+        {
+            foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
+            {
+                if (detail.Center.SAN_BAY_CODE == dataCenterModel.SAN_BAY_CODE && detail.Center.SanBay.AREA_CODE == dataCenterModel.AREA_CODE)
+                {
+                    lstDetail.Add(detail);
+                    flat++;
+                }
+            }
+        }
+        else if (dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.HANG_HANG_KHONG_CODE != null)
         {
             foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
             {
@@ -91,11 +102,16 @@ else
                 }
             }
         }
-        else if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.HANG_HANG_KHONG_CODE != null)
+        else if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.AREA_CODE != null)
         {
             foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
             {
-                if (detail.Center.SAN_BAY_CODE == dataCenterModel.SAN_BAY_CODE)
+                if (detail.Center.SanBay.AREA_CODE == dataCenterModel.AREA_CODE)
+                {
+                    lstDetail.Add(detail);
+                    flat++;
+                }
+                else if (detail.Center.SAN_BAY_CODE == dataCenterModel.SAN_BAY_CODE)
                 {
                     lstDetail.Add(detail);
 
@@ -107,6 +123,7 @@ else
 
                     flat++;
                 }
+
             }
         }
         if (flat == 0)
@@ -159,7 +176,7 @@ else
                             </tr>
 
                             @{
-                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null)
+                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.AREA_CODE != null)
                                 {
                                     List<T_MD_KHOAN_MUC_SAN_LUONG> lstItem = new List<T_MD_KHOAN_MUC_SAN_LUONG>();
                                     foreach (var detail in lstDetail.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
@@ -242,9 +259,16 @@ else
                             }
                             @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
                             {
-                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null)
+                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.AREA_CODE != null)
                                 {
-                                    if (dataCenterModel.HANG_HANG_KHONG_CODE != null && dataCenterModel.SAN_BAY_CODE != null)
+                                    if(dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.AREA_CODE != null)
+                                    {
+                                        if(detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE || detail.Center.SanBay.AREA_CODE != dataCenterModel.AREA_CODE)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    else if (dataCenterModel.HANG_HANG_KHONG_CODE != null && dataCenterModel.SAN_BAY_CODE != null)
                                     {
                                         if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE || detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
                                         {
@@ -261,6 +285,13 @@ else
                                     else if (dataCenterModel.SAN_BAY_CODE != null)
                                     {
                                         if (detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    else if(dataCenterModel.AREA_CODE != null)
+                                    {
+                                        if(detail.Center.SanBay.AREA_CODE != dataCenterModel.AREA_CODE)
                                         {
                                             continue;
                                         }

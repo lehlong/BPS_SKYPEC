@@ -24,7 +24,7 @@ namespace SMO.Repository.Common
                 lock (_lockObj)
                 {
                     if (_sessionFactory == null)
-                    {
+                    {   
                         try
                         {
                             string strConnection = ConfigurationManager.ConnectionStrings["SMO_MSSQL_Connection"].ConnectionString;
