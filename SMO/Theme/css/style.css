@@ -19,7 +19,7 @@
     /*height: 45px;*/
     margin-bottom: 0;
     min-height: 45px;
-    /*background-color: #f6753c !important;*/
+    /*background-color: #207ce5 !important;*/
     /*-webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
     -ms-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
@@ -5656,7 +5656,7 @@ section.content {
                 left: 0;
                 width: 100%;
                 height: 0;
-                border-bottom: 2px solid #f6753c;
+                border-bottom: 2px solid #207ce5;
                 bottom: 2px;
                 -moz-transform: scaleX(0);
                 -ms-transform: scaleX(0);
@@ -6930,7 +6930,7 @@ section.content {
             -o-transition: 0.25s ease-in;
             -webkit-transition: 0.25s ease-in;
             transition: 0.25s ease-in;
-            border-bottom: 1px solid #f6753c;
+            border-bottom: 1px solid #207ce5;
         }
 
         .input-group .form-line + .input-group-addon {
@@ -7087,7 +7087,7 @@ section.content {
             -o-transition: 0.25s ease-in;
             -webkit-transition: 0.25s ease-in;
             transition: 0.25s ease-in;
-            border-bottom: 1px solid #f6753c;
+            border-bottom: 1px solid #207ce5;
         }
 
         .form-group .form-line .form-label {
@@ -9599,7 +9599,7 @@ fieldset[disabled] .form-control {
 
             .sidebar .menu .list li.active > :first-child span {
                 font-weight: bold;
-                color: #f6753c !important;
+                color: #207ce5 !important;
             }
 
             .sidebar .menu .list .header {
@@ -9611,7 +9611,7 @@ fieldset[disabled] .form-control {
 
             .sidebar .menu .list i.material-icons {
                 margin-top: 4px;
-                color: #f6753c !important;
+                color: #207ce5 !important;
             }
 
             .sidebar .menu .list .menu-toggle:after, .sidebar .menu .list .menu-toggle:before {
@@ -9665,7 +9665,7 @@ fieldset[disabled] .form-control {
             }
 
             .sidebar .menu .list a {
-                color: #f6753c;
+                color: #207ce5;
                 position: relative;
                 display: inline-flex;
                 vertical-align: middle;
@@ -10708,7 +10708,7 @@ label{
   text-align: center;
   margin-top: -64px; }
   .profile-card .profile-body .image-area img {
-    border: 1px solid #f6753c;
+    border: 1px solid #207ce5;
     padding: 2px;
     margin: 2px;
     -webkit-border-radius: 50%;
@@ -11133,7 +11133,7 @@ label{
 
             .sub-sidebar .menu .list li.active > :first-child span {
                 font-weight: bold;
-                color: #f6753c !important;
+                color: #207ce5 !important;
             }
 
             .sub-sidebar .menu .list .header {
@@ -11145,7 +11145,7 @@ label{
 
             .sub-sidebar .menu .list i.material-icons {
                 margin-top: 4px;
-                color: #f6753c !important;
+                color: #207ce5 !important;
             }
 
             .sub-sidebar .menu .list .menu-toggle:after, .sub-sidebar .menu .list .menu-toggle:before {
@@ -11199,7 +11199,7 @@ label{
             }
 
             .sub-sidebar .menu .list a {
-                color: #f6753c;
+                color: #207ce5;
                 position: relative;
                 display: inline-flex;
                 vertical-align: middle;
@@ -11271,7 +11271,7 @@ label{
     padding: 5px 10px 10px 5px !important;
 }
 .col-fecon {
-    color: #f6753c !important;
+    color: #207ce5 !important;
 }
 
 .border-grey {
@@ -11296,7 +11296,7 @@ label{
 }
 .multi_step_form #msform #progressbar li {
   list-style-type: none;
-  color: #f6753c !important;
+  color: #207ce5 !important;
   font-size: 14px;
   width: calc(100%/5);
   float: left;
@@ -11409,7 +11409,7 @@ label{
 }
 
     .swap-icon-drill-down:hover {
-        color: #f6753c;
+        color: #207ce5;
     }
 
 .table-striped > tbody > tr:nth-of-type(even){
@@ -11456,7 +11456,7 @@ label{
 }
 
     .show-template-file-base:hover {
-        color: #f6753c;
+        color: #207ce5;
     }
 
 .nowrap-white-space{
