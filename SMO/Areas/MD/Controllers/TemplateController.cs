@@ -381,6 +381,28 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
+        [MyValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult GenFullTemplateSanLuong(string template, int year)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.GenFullTemplateSanLuong(template, year);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
 
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTree(string templateId, string type, int year)

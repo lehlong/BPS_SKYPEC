@@ -145,6 +145,7 @@
                                 <div class="page-function">
                                     <div class="page-function-button" style="float:left">
                                         @Html.MyButton("cmdSave", "Lưu lại", "saveDetailInformation()", "Alt+N", "done_all")
+                                        @Html.MyButton("cmdSave", "Lưu tất cả", "saveFullTemplate()", "Alt+N", "done_all")
                                         @Html.MyButton("cmdViewSample",
                                             "Xem trước",
                                             "PreviewTempate();",
@@ -530,6 +531,25 @@
                 };
                 Forms.Ajax(ajaxParams);
 
+        }
+
+        function saveFullTemplate() {
+            var year = $("#TIME_YEAR").val();
+            Forms.ShowLoading();
+            var ajaxParams = {
+                url: '@Url.Action("GenFullTemplateSanLuong")',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: {
+                    year,
+                    template: '@Model.ObjDetail.CODE',
+                },
+                success: function (response) {
+                    Message.execute(response);
+                }
+            };
+            Forms.Ajax(ajaxParams);
         }
 
         function triggerSelectProject() {

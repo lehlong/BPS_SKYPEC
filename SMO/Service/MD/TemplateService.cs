@@ -1538,6 +1538,66 @@ namespace SMO.Service.MD
 
         }
 
+        internal void GenFullTemplateSanLuong(string template, int year)
+        {
+            try
+            {
+                Get(template);
+                var lstSanBay = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null).ToList();
+                var hangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll();
+                var profitCenterCode = "";
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                foreach(var sb in lstSanBay)
+                {
+                    foreach(var hhk in hangHangKhong)
+                    {
+                        var centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sb.CODE && x.HANG_HANG_KHONG_CODE == hhk.CODE);
+                        if(centerCode == null)
+                        {
+                            profitCenterCode = Guid.NewGuid().ToString();
+                            UnitOfWork.Repository<SanLuongProfitCenterRepo>().Create(new T_MD_SAN_LUONG_PROFIT_CENTER
+                            {
+                                CODE = profitCenterCode,
+                                HANG_HANG_KHONG_CODE = hhk.CODE,
+                                SAN_BAY_CODE = sb.CODE
+                            });
+                        }
+                        else
+                        {
+                            profitCenterCode = centerCode.CODE;
+                        }
+
+                        UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
+                        {
+                            PKID = Guid.NewGuid().ToString(),
+                            CENTER_CODE = profitCenterCode,
+                            ELEMENT_CODE = "10020",
+                            TEMPLATE_CODE = template,
+                            TIME_YEAR = year
+                        });
+
+                        UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
+                        {
+                            PKID = Guid.NewGuid().ToString(),
+                            CENTER_CODE = profitCenterCode,
+                            ELEMENT_CODE = "10010",
+                            TEMPLATE_CODE = template,
+                            TIME_YEAR = year
+                        });
+                    }
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception e) {
+                UnitOfWork.Rollback();
+                Exception = e;
+                State = false;
+                ErrorMessage = e.Message;
+            }
+            
+        }
+
         private IList<string> GetNodeDetailElement<TTemplateDetail, TTemplateDetailRepo, TElement, TCenter>(string centerCode, int year, string templateId)
             where TTemplateDetailRepo : GenericTemplateDetailRepository<TTemplateDetail, TElement, TCenter>
             where TTemplateDetail : BaseTemplateDetail<TElement, TCenter>
