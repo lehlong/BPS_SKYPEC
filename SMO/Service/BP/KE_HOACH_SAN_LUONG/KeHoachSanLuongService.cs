@@ -2774,7 +2774,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             if (!string.IsNullOrEmpty(templateId))
             {   
                 var sanbayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.AREA_CODE == khuvuc || x.NHOM_SAN_BAY_CODE == nhomsanbay).Select(x=>x.CODE).ToList();
-                var centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong || x.SAN_BAY_CODE == sanbay || sanbayCode.Contains(x.SAN_BAY_CODE)).Select(x => x.CODE).FirstOrDefault();
+                var centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong || x.SAN_BAY_CODE == sanbay || sanbayCode.Contains(x.SAN_BAY_CODE)).Select(x => x.CODE).ToList();
                 if(string.IsNullOrEmpty(hanghangkhong) && string.IsNullOrEmpty(sanbay) && string.IsNullOrEmpty(khuvuc) && string.IsNullOrEmpty(nhomsanbay))
                 {
                     return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
@@ -2788,9 +2788,9 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     var templateCode = string.Empty;
                     if(!string.IsNullOrEmpty(hanghangkhong) && !string.IsNullOrEmpty(sanbay))
                     {
-                        centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong && x.SAN_BAY_CODE == sanbay).Select(x => x.CODE).FirstOrDefault();
+                        centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong && x.SAN_BAY_CODE == sanbay).Select(x => x.CODE).ToList();
                     }
-                    templateCode = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.SAN_LUONG_PROFIT_CENTER_CODE == centerCode).Select(x => x.TEMPLATE_CODE).FirstOrDefault();
+                    templateCode = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => centerCode.Contains(x.SAN_LUONG_PROFIT_CENTER_CODE)).Select(x => x.TEMPLATE_CODE).FirstOrDefault();
                     return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
                     .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
                     .Select(x => x.VERSION)
