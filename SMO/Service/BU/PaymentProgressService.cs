@@ -46,9 +46,9 @@ namespace SMO.Service.BU
                 var lstContractVersion = UnitOfWork.Repository<ContractRepo>().Queryable().Where(x => x.NAME_CONTRACT == ObjDetail.NAME_CONTRACT);
                 var version = lstContractVersion.Max(x => x.VERSION);
                 var contract = lstContractVersion.FirstOrDefault(x => x.VERSION == version);
-                var paymentProgress = UnitOfWork.Repository<PaymentProgressRepo>().Queryable().Where(x => x.NAME_CONTRACT == ObjDetail.NAME_CONTRACT && x.VERSION == version).ToList();
+                var paymentProgress = UnitOfWork.Repository<PaymentProgressRepo>().Queryable().Where(x => x.NAME_CONTRACT == ObjDetail.NAME_CONTRACT && x.VERSION == version && x.IS_DELETE == false).ToList();
                 
-                if (paymentProgress.Sum(x => x.PAYMENT_VALUE) > contract.CONTRACT_VALUE_VAT)
+                if (paymentProgress.Sum(x => x.PAYMENT_VALUE) + ObjDetail.PAYMENT_VALUE > contract.CONTRACT_VALUE_VAT)
                 {
                     this.State = false;
                     this.ErrorMessage = "Tổng số tiền các đợt thanh toán lớn hơn giá trị hợp đồng!";

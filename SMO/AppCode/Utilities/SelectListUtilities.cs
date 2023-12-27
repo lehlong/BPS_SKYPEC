@@ -116,6 +116,22 @@ namespace SMO
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
 
+        public static SelectList GetAllNhomSanBay(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " - " });
+            }
+            var lstDomain = UnitOfWork.Repository<NhomSanBayRepo>().GetAll();
+            foreach (var obj in lstDomain)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.TEXT });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
+
         public static SelectList GetAllKichBan()
         {
             IUnitOfWork UnitOfWork = new NHUnitOfWork();

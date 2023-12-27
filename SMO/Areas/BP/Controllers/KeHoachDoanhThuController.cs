@@ -226,5 +226,12 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
+
+        public JsonResult GetVersionsDoanhThu(string orgCode, string templateId, int year, string kichBan, string phienBan, string hanghangkhong, string sanbay, string area, string nhomsanbay)
+        {
+            var lstVersions = _service.GetVersionsNumberDT(orgCode, templateId, year, kichBan, phienBan, hanghangkhong, sanbay, area, nhomsanbay);
+
+            return Json(lstVersions, JsonRequestBehavior.AllowGet);
+        }
     }
 }

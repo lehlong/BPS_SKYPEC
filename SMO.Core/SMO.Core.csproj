@@ -312,6 +312,7 @@
     <Compile Include="Entities\MD\T_MD_MATERIAL.cs" />
     <Compile Include="Entities\MD\T_MD_MATERIAL_TYPE.cs" />
     <Compile Include="Entities\MD\T_MD_NGANH_NGHE_DAU_TU.cs" />
+    <Compile Include="Entities\MD\T_MD_NHOM_SAN_BAY.cs" />
     <Compile Include="Entities\MD\T_MD_OTHER_PROFIT_CENTER.cs.cs" />
     <Compile Include="Entities\MD\T_MD_PERIOD_TIME.cs" />
     <Compile Include="Entities\MD\T_MD_PHAN_LOAI_DAU_TU.cs" />

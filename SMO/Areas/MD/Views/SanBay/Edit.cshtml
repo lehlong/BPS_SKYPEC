@@ -3,6 +3,7 @@
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
+    var lstNhomSanBay = SelectListUtilities.GetAllNhomSanBay();
     var lstArea = SelectListUtilities.GetAllArea();
     var lstProvince = SelectListUtilities.GetAllProvince();
 }
@@ -66,6 +67,20 @@
                                 {
                                     var selected = "";
                                     if (item.Value == Model.ObjDetail.AREA_CODE)
+                                    {
+                                        selected = "selected";
+                                    }
+                                    <option @selected value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+
+                            <label>Nhóm sân bay</label>
+                            <select class="form-control  selectpicker show-tick" data-live-search="true" data-val="true" data-show-subtext="true"
+                                    name="@Html.NameFor(x => x.ObjDetail.NHOM_SAN_BAY_CODE)">
+                                @foreach (var item in lstNhomSanBay)
+                                {
+                                    var selected = "";
+                                    if (item.Value == Model.ObjDetail.NHOM_SAN_BAY_CODE)
                                     {
                                         selected = "selected";
                                     }

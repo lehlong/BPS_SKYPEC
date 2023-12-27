@@ -163,18 +163,18 @@ else
          @class = "selectpicker show-tick dropdown",
          @data_container = "body",
          @data_live_search = "true",
-         @onchange = "OnChangeYear()"
+         @onchange = "OnChangeArea()"
      })
     </div>
 
     <div class="col-xs-6">
-        @Html.MyDropDownListFor(x => x.NHOM_SAN_BAY_CODE, SelectListUtilities.GetSelectHangHangKhong(),
+        @Html.MyDropDownListFor(x => x.NHOM_SAN_BAY_CODE, SelectListUtilities.GetAllNhomSanBay(),
      new
      {
          @class = "selectpicker show-tick dropdown",
          @data_container = "body",
          @data_live_search = "true",
-         @onchange = "OnChangeYear()"
+         @onchange = "OnChangeNhomSanBay()"
      })
     </div>
 
@@ -381,18 +381,144 @@ else
             var phienBan = $("#@viewId #PHIEN_BAN").val();
             var sanbay = $("#@viewId #SAN_BAY_CODE").val();
             var hanghangkhong = $("#@viewId #HANG_HANG_KHONG_CODE").val();
-            var area = $("#@viewId #AREA_CODE").val();
-
+            var khuvuc = $("#@viewId #AREA_CODE").val();
+            var nhomsanbay = $("#@viewId #NHOM_SAN_BAY_CODE").val();
+            if (sanbay || hanghangkhong) {
+                $("#@viewId #AREA_CODE").val('');
+                $("#@viewId #AREA_CODE").selectpicker('refresh');
+                $("#@viewId #NHOM_SAN_BAY_CODE").val('');
+                $("#@viewId #NHOM_SAN_BAY_CODE").selectpicker('refresh');
+            }
             if (year === undefined) {
                 return;
             }
             Forms.ShowLoading();
             var ajaxParams = {
-                url: '@Url.Action("GetVersions")',
+                url: '@Url.Action("GetVersionsSanLuong")',
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                data: { orgCode, year, templateId, kichBan, phienBan, sanbay, hanghangkhong, area },
+                data: { orgCode, year, templateId, kichBan, phienBan,hanghangkhong, sanbay, khuvuc, nhomsanbay},
+                success: function (response) {
+                    var lstVersion = $('#@viewId #VERSION');
+                    lstVersion.html('');
+                    if (response && response.length > 0) {
+                        lstVersion.append($('<option>', { value: '', text: 'Version' }));
+                        $.each(response, function (index, value) {
+                            let td = '';
+
+                            if (value === @Model.VERSION && orgCode === '@Model.ORG_CODE') {
+                                td = $('<option>', { value: value, text: value, selected: "selected" });
+                            }
+                            else {
+                                td = $('<option>', { value: value, text: value });
+                            }
+                            lstVersion.append(td);
+                        });
+                        if (version) {
+                            lstVersion.val(version);
+                        }
+                        $('#@viewId #VERSION').val(response[0]);
+                    } else {
+                        lstVersion.append($('<option>', { value: '-1', text: 'Nothing version' }))
+                    }
+                    lstVersion.selectpicker('refresh');
+                    OnChangeVersion(submitForm);
+                }
+            };
+            Forms.Ajax(ajaxParams);
+    }
+
+    function OnChangeArea(version, submitForm) {
+            // clear data in the right div
+            $("#divExportRight_@viewId").html("");
+            var year = $("#@viewId #YEAR").val();
+            var orgCode = $("#@viewId #ORG_CODE").val();
+            var templateId = $("#@viewId #TEMPLATE_CODE").val();
+            var kichBan = $("#@viewId #KICH_BAN").val();
+            var phienBan = $("#@viewId #PHIEN_BAN").val();
+            var sanbay = $("#@viewId #SAN_BAY_CODE").val();
+            var hanghangkhong = $("#@viewId #HANG_HANG_KHONG_CODE").val();
+            var khuvuc = $("#@viewId #AREA_CODE").val();
+            var nhomsanbay = $("#@viewId #NHOM_SAN_BAY_CODE").val();
+            if (khuvuc) {
+                $("#@viewId #SAN_BAY_CODE").val('');
+                $("#@viewId #SAN_BAY_CODE").selectpicker('refresh');
+                $("#@viewId #HANG_HANG_KHONG_CODE").val('');
+                $("#@viewId #HANG_HANG_KHONG_CODE").selectpicker('refresh');
+                $("#@viewId #NHOM_SAN_BAY_CODE").val('');
+                $("#@viewId #NHOM_SAN_BAY_CODE").selectpicker('refresh');
+            }
+            if (year === undefined) {
+                return;
+            }
+            Forms.ShowLoading();
+            var ajaxParams = {
+                url: '@Url.Action("GetVersionsSanLuong")',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: { orgCode, year, templateId, kichBan, phienBan,hanghangkhong, sanbay, khuvuc, nhomsanbay},
+                success: function (response) {
+                    var lstVersion = $('#@viewId #VERSION');
+                    lstVersion.html('');
+                    if (response && response.length > 0) {
+                        lstVersion.append($('<option>', { value: '', text: 'Version' }));
+                        $.each(response, function (index, value) {
+                            let td = '';
+
+                            if (value === @Model.VERSION && orgCode === '@Model.ORG_CODE') {
+                                td = $('<option>', { value: value, text: value, selected: "selected" });
+                            }
+                            else {
+                                td = $('<option>', { value: value, text: value });
+                            }
+                            lstVersion.append(td);
+                        });
+                        if (version) {
+                            lstVersion.val(version);
+                        }
+                        $('#@viewId #VERSION').val(response[0]);
+                    } else {
+                        lstVersion.append($('<option>', { value: '-1', text: 'Nothing version' }))
+                    }
+                    lstVersion.selectpicker('refresh');
+                    OnChangeVersion(submitForm);
+                }
+            };
+            Forms.Ajax(ajaxParams);
+    }
+
+    function OnChangeNhomSanBay(version, submitForm) {
+            // clear data in the right div
+            $("#divExportRight_@viewId").html("");
+            var year = $("#@viewId #YEAR").val();
+            var orgCode = $("#@viewId #ORG_CODE").val();
+            var templateId = $("#@viewId #TEMPLATE_CODE").val();
+            var kichBan = $("#@viewId #KICH_BAN").val();
+            var phienBan = $("#@viewId #PHIEN_BAN").val();
+            var sanbay = $("#@viewId #SAN_BAY_CODE").val();
+            var hanghangkhong = $("#@viewId #HANG_HANG_KHONG_CODE").val();
+            var khuvuc = $("#@viewId #AREA_CODE").val();
+            var nhomsanbay = $("#@viewId #NHOM_SAN_BAY_CODE").val();
+            if (nhomsanbay) {
+                $("#@viewId #SAN_BAY_CODE").val('');
+                $("#@viewId #SAN_BAY_CODE").selectpicker('refresh');
+                $("#@viewId #HANG_HANG_KHONG_CODE").val('');
+                $("#@viewId #HANG_HANG_KHONG_CODE").selectpicker('refresh');
+                $("#@viewId #AREA_CODE").val('');
+                $("#@viewId #AREA_CODE").selectpicker('refresh');
+            }
+            if (year === undefined) {
+                return;
+            }
+            Forms.ShowLoading();
+            var ajaxParams = {
+                url: '@Url.Action("GetVersionsSanLuong")',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: { orgCode, year, templateId, kichBan, phienBan,hanghangkhong, sanbay, khuvuc, nhomsanbay},
                 success: function (response) {
                     var lstVersion = $('#@viewId #VERSION');
                     lstVersion.html('');

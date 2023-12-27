@@ -1459,6 +1459,12 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     lstOrgs.Add(model.ORG_CODE);
                 }
                 var elements = GetDataCostPreview(out detailOtherKhoanMucSanLuongs, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue);
+                if (!string.IsNullOrEmpty(model.HANG_HANG_KHONG_CODE) || !string.IsNullOrEmpty(model.SAN_BAY_CODE) || !string.IsNullOrEmpty(model.AREA_CODE) || !string.IsNullOrEmpty(model.NHOM_SAN_BAY_CODE))
+                {
+                    var sanbayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.AREA_CODE == model.AREA_CODE || x.NHOM_SAN_BAY_CODE == model.NHOM_SAN_BAY_CODE).Select(x => x.CODE).ToList();
+                    var centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == model.HANG_HANG_KHONG_CODE || x.SAN_BAY_CODE == model.SAN_BAY_CODE || sanbayCode.Contains(x.SAN_BAY_CODE)).Select(x => x.CODE).ToList();
+                    elements = elements.Where(e => centerCode.Contains(e.CENTER_CODE)).ToList();
+                }
                 var sumElements = new T_MD_KHOAN_MUC_SAN_LUONG
                 {
                     // set tổng năm
@@ -2720,6 +2726,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         {
             if (!string.IsNullOrEmpty(templateId))
             {
+                
                 return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
                     .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
                     .Select(x => x.VERSION)
@@ -2760,6 +2767,59 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             //    .Union(lstTemplateCurrentUserSelfUpload)
             //    .OrderByDescending(x => x)
             //    .ToList();
+        }
+
+        public  IList<int> GetVersionsNumberSL(string orgCode, string templateId, int year, string kichBan, string phienBan, string hanghangkhong, string sanbay, string khuvuc, string nhomsanbay)
+        {
+            if (!string.IsNullOrEmpty(templateId))
+            {   
+                var sanbayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.AREA_CODE == khuvuc || x.NHOM_SAN_BAY_CODE == nhomsanbay).Select(x=>x.CODE).ToList();
+                var centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong || x.SAN_BAY_CODE == sanbay || sanbayCode.Contains(x.SAN_BAY_CODE)).Select(x => x.CODE).FirstOrDefault();
+                if(string.IsNullOrEmpty(hanghangkhong) && string.IsNullOrEmpty(sanbay) && string.IsNullOrEmpty(khuvuc) && string.IsNullOrEmpty(nhomsanbay))
+                {
+                    return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
+                    .Select(x => x.VERSION)
+                    .OrderByDescending(x => x)
+                    .ToList();
+                }
+                else
+                {
+                    var templateCode = string.Empty;
+                    if(!string.IsNullOrEmpty(hanghangkhong) && !string.IsNullOrEmpty(sanbay))
+                    {
+                        centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong && x.SAN_BAY_CODE == sanbay).Select(x => x.CODE).FirstOrDefault();
+                    }
+                    templateCode = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.SAN_LUONG_PROFIT_CENTER_CODE == centerCode).Select(x => x.TEMPLATE_CODE).FirstOrDefault();
+                    return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
+                    .Select(x => x.VERSION)
+                    .OrderByDescending(x => x)
+                    .ToList();
+                }
+            }
+            else
+            {
+                var centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong).Select(x => x.CODE).FirstOrDefault();
+                var templateCode = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.SAN_LUONG_PROFIT_CENTER_CODE == centerCode).Select(x => x.TEMPLATE_CODE).FirstOrDefault();
+                if (string.IsNullOrEmpty(hanghangkhong))
+                {
+                    return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year && x.ORG_CODE == orgCode && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
+                    .Select(x => x.VERSION)
+                    .OrderByDescending(x => x)
+                    .ToList();
+                }
+                else
+                {
+                    return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
+                    .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year && x.ORG_CODE == orgCode && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
+                    .Select(x => x.VERSION)
+                    .OrderByDescending(x => x)
+                    .ToList();
+                }
+            }
+
         }
 
         #endregion

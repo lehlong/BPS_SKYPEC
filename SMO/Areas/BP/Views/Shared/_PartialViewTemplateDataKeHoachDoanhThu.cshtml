@@ -42,62 +42,6 @@
 }
 else
 {
-    List<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU> lstDetail = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU>();
-    if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.AREA_CODE != null)
-    {
-        var flat = 0;
-        if (dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.AREA_CODE != null)
-        {
-            foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
-            {
-                if (detail.Center.SAN_BAY_CODE == dataCenterModel.SAN_BAY_CODE && detail.Center.SanBay.AREA_CODE == dataCenterModel.AREA_CODE)
-                {
-                    lstDetail.Add(detail);
-                    flat++;
-                }
-            }
-        }
-        else if (dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.HANG_HANG_KHONG_CODE != null)
-        {
-            foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
-            {
-                if (detail.Center.SAN_BAY_CODE == dataCenterModel.SAN_BAY_CODE && detail.Center.HANG_HANG_KHONG_CODE == dataCenterModel.HANG_HANG_KHONG_CODE)
-                {
-                    lstDetail.Add(detail);
-                    flat++;
-                }
-            }
-        }
-        else if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.AREA_CODE != null)
-        {
-            foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
-            {
-                if (detail.Center.SanBay.AREA_CODE == dataCenterModel.AREA_CODE)
-                {
-                    lstDetail.Add(detail);
-                    flat++;
-                }
-                else if (detail.Center.SAN_BAY_CODE == dataCenterModel.SAN_BAY_CODE)
-                {
-                    lstDetail.Add(detail);
-
-                    flat++;
-                }
-                else if (detail.Center.HANG_HANG_KHONG_CODE == dataCenterModel.HANG_HANG_KHONG_CODE)
-                {
-                    lstDetail.Add(detail);
-
-                    flat++;
-                }
-
-            }
-        }
-        if (flat == 0)
-        {
-            Html.RenderPartial("_NothingData");
-            return;
-        }
-    }
     Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
     <div class="export-left-tab">
         <ul class="nav nav-tabs" role="tablist">
@@ -148,44 +92,6 @@ else
 
                             @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
                             {
-                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.AREA_CODE != null)
-                                {
-                                    if (dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.AREA_CODE != null)
-                                    {
-                                        if (detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE || detail.Center.SanBay.AREA_CODE != dataCenterModel.AREA_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.HANG_HANG_KHONG_CODE != null && dataCenterModel.SAN_BAY_CODE != null)
-                                    {
-                                        if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE || detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.HANG_HANG_KHONG_CODE != null)
-                                    {
-                                        if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.SAN_BAY_CODE != null)
-                                    {
-                                        if (detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.AREA_CODE != null)
-                                    {
-                                        if (detail.Center.SanBay.AREA_CODE != dataCenterModel.AREA_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
                                 foreach (var item in Model
                                                 .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
                                                 .OrderBy(x => x.C_ORDER)
@@ -248,44 +154,7 @@ else
                             </tr>
                             @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
                             {
-                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.AREA_CODE != null)
-                                {
-                                    if (dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.AREA_CODE != null)
-                                    {
-                                        if (detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE || detail.Center.SanBay.AREA_CODE != dataCenterModel.AREA_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.HANG_HANG_KHONG_CODE != null && dataCenterModel.SAN_BAY_CODE != null)
-                                    {
-                                        if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE || detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.HANG_HANG_KHONG_CODE != null)
-                                    {
-                                        if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.SAN_BAY_CODE != null)
-                                    {
-                                        if (detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.AREA_CODE != null)
-                                    {
-                                        if (detail.Center.SanBay.AREA_CODE != dataCenterModel.AREA_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
+                                
                                 foreach (var item in Model
                                                 .Where(x => x.CENTER_CODE == detail.CENTER_CODE).Where(x => x.CODE == "10010" || x.CODE == "2001")
                                                 .OrderBy(x => x.C_ORDER)
@@ -344,44 +213,7 @@ else
                             </tr>
                             @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
                             {
-                                if (dataCenterModel.HANG_HANG_KHONG_CODE != null || dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.AREA_CODE != null)
-                                {
-                                    if (dataCenterModel.SAN_BAY_CODE != null && dataCenterModel.AREA_CODE != null)
-                                    {
-                                        if (detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE || detail.Center.SanBay.AREA_CODE != dataCenterModel.AREA_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.HANG_HANG_KHONG_CODE != null && dataCenterModel.SAN_BAY_CODE != null)
-                                    {
-                                        if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE || detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.HANG_HANG_KHONG_CODE != null)
-                                    {
-                                        if (detail.Center.HANG_HANG_KHONG_CODE != dataCenterModel.HANG_HANG_KHONG_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.SAN_BAY_CODE != null)
-                                    {
-                                        if (detail.Center.SAN_BAY_CODE != dataCenterModel.SAN_BAY_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (dataCenterModel.AREA_CODE != null)
-                                    {
-                                        if (detail.Center.SanBay.AREA_CODE != dataCenterModel.AREA_CODE)
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
+                                
                                 foreach (var item in Model
                                                 .Where(x => x.CENTER_CODE == detail.CENTER_CODE).Where(x => x.CODE == "10020" || x.CODE == "2002")
                                                 .OrderBy(x => x.C_ORDER)
@@ -433,21 +265,7 @@ else
                             </tr>
                             @foreach (var sb in lstSanBay.Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null))
                             {
-                                if(dataCenterModel.AREA_CODE != null)
-                                {
-                                    if (dataCenterModel.AREA_CODE != sb.AREA_CODE)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                else if(dataCenterModel.SAN_BAY_CODE != null)
-                                {
-
-                                    if(dataCenterModel.SAN_BAY_CODE != sb.CODE)
-                                    {
-                                        continue;
-                                    }
-                                }
+                               
                                 var data = Model.Where(x => x.ProfitCenter.SAN_BAY_CODE == sb.CODE).Where(x => x.CODE == "2001" || x.CODE == "2002");
                                 <tr>
                                     <td class="pre-whitespace sticky-cell">@(sb.CODE)</td>
@@ -484,21 +302,7 @@ else
                             </tr>
                             @foreach (var sb in lstSanBay.Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null))
                             {
-                                if (dataCenterModel.AREA_CODE != null)
-                                {
-                                    if (dataCenterModel.AREA_CODE != sb.AREA_CODE)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                else if (dataCenterModel.SAN_BAY_CODE != null)
-                                {
-
-                                    if (dataCenterModel.SAN_BAY_CODE != sb.CODE)
-                                    {
-                                        continue;
-                                    }
-                                }
+                                
                                 var data = Model.Where(x => x.ProfitCenter.SAN_BAY_CODE == sb.CODE).Where(x => x.CODE == "2001");
                                 <tr>
                                     <td class="pre-whitespace sticky-cell">@(sb.CODE)</td>
@@ -535,21 +339,7 @@ else
                             </tr>
                             @foreach (var sb in lstSanBay.Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null))
                             {
-                                if (dataCenterModel.AREA_CODE != null)
-                                {
-                                    if (dataCenterModel.AREA_CODE != sb.AREA_CODE)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                else if (dataCenterModel.SAN_BAY_CODE != null)
-                                {
-
-                                    if (dataCenterModel.SAN_BAY_CODE != sb.CODE)
-                                    {
-                                        continue;
-                                    }
-                                }
+                               
                                 var data = Model.Where(x => x.ProfitCenter.SAN_BAY_CODE == sb.CODE).Where(x => x.CODE == "2002");
                                 <tr>
                                     <td class="pre-whitespace sticky-cell">@(sb.CODE)</td>

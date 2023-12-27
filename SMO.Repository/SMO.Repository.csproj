@@ -268,6 +268,7 @@
     <Compile Include="Implement\MD\HangHangKhongRepo.cs" />
     <Compile Include="Implement\MD\InternalOrderRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucHangHoaRepo.cs" />
+    <Compile Include="Implement\MD\NhomSanBayRepo.cs" />
     <Compile Include="Implement\MD\SuaChuaThuongXuyenProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucChiPhiRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucChungRepo.cs" />
@@ -529,6 +530,7 @@
     <Compile Include="Interface\MD\IMdBidSpecDetailRepo.cs" />
     <Compile Include="Interface\MD\IMdBidSpecRepo.cs" />
     <Compile Include="Interface\MD\INganhNgheDauTuRepo.cs" />
+    <Compile Include="Interface\MD\INhomSanBay.cs" />
     <Compile Include="Interface\MD\IOtherProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IPeriodTimeRepo.cs" />
     <Compile Include="Interface\MD\IPhanLoaiDauTuRepo.cs" />
@@ -784,6 +786,7 @@
     <Compile Include="Mapping\MD\T_MD_MATERIAL_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_MATERIAL_TYPE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_NGANH_NGHE_DAU_TU_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_NHOM_SAN_BAY_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_OTHER_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PERIOD_TIME_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PHAN_LOAI_DAU_TU_Map.cs" />

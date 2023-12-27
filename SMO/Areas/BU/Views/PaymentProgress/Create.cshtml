@@ -41,7 +41,7 @@
                                     <label>Tiến độ</label>
                                     <div class="form-group">
                                         <div class="form-line">
-                                            @Html.MyTextBoxFor(m => m.ObjDetail.PROGRESS, new { @type = "number", @id = "progress", @disabled = "disabled" })
+                                            @Html.MyTextBoxFor(m => m.ObjDetail.PROGRESS, new { @type = "number", @id = "progress", @onkeyup = "CalProgress()", @max = 100 })
                                         </div>
                                         @Html.ValidationMessageFor(m => m.ObjDetail.PROGRESS)
                                     </div>
@@ -139,6 +139,12 @@
             var value = Number($("#value").val());
             var progress = value / contractValue * 100;
             $("#progress").val(progress.toFixed(2))
+        }
+
+        function CalProgress() {
+            var progress = Number($("#progress").val());
+            var value = progress * contractValue / 100;
+            $("#value").val(value);
         }
 
     </script>
