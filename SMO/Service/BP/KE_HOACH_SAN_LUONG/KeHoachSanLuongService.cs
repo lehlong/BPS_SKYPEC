@@ -1489,9 +1489,9 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 {
                     var sanbayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.AREA_CODE == model.AREA_CODE || x.NHOM_SAN_BAY_CODE == model.NHOM_SAN_BAY_CODE).Select(x => x.CODE).ToList();
                     var centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == model.HANG_HANG_KHONG_CODE || x.SAN_BAY_CODE == model.SAN_BAY_CODE || sanbayCode.Contains(x.SAN_BAY_CODE)).Select(x => x.CODE).ToList();
-                    if (!string.IsNullOrEmpty(hanghangkhong) && !string.IsNullOrEmpty(sanbay))
+                    if (!string.IsNullOrEmpty(model.HANG_HANG_KHONG_CODE) && !string.IsNullOrEmpty(model.SAN_BAY_CODE))
                     {
-                        centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong && x.SAN_BAY_CODE == sanbay).Select(x => x.CODE).ToList();
+                        centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == model.HANG_HANG_KHONG_CODE && x.SAN_BAY_CODE == model.SAN_BAY_CODE).Select(x => x.CODE).ToList();
                     }
                     elements = elements.Where(e => centerCode.Contains(e.CENTER_CODE)).ToList();
                 }
