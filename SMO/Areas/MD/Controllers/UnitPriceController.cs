@@ -88,5 +88,27 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SynchornizeData(int year)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.SynchornizeData(year);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
     }
 }
