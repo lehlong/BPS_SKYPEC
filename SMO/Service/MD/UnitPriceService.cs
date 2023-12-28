@@ -59,6 +59,8 @@ namespace SMO.Service.MD
                         this.Exception = ex;
                     }
                 }
+
+                var data = ConvertDataTableToUnitPrice(tableData);
             }
             catch (Exception ex)
             {
