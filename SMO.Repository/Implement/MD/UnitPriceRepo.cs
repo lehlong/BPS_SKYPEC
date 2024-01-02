@@ -19,6 +19,15 @@ namespace SMO.Repository.Implement.MD
             var query = Queryable();
             query = query.Where(x => x.YEAR == objFilter.YEAR);
 
+            if (!string.IsNullOrEmpty(objFilter.OBJECT_ID))
+            {
+                query = query.Where(x => x.OBJECT_ID == objFilter.OBJECT_ID);
+            }
+            if (!string.IsNullOrEmpty(objFilter.WAREHOUSE_ID))
+            {
+                query = query.Where(x => x.WAREHOUSE_ID == objFilter.WAREHOUSE_ID);
+            }
+
             query = query.OrderByDescending(x => x.ACTIVE);
             return base.Paging(query, pageSize, pageIndex, out total).ToList();
         }

@@ -2,7 +2,6 @@
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
-    var frmFormCode = "frmUnitPriceIndex";
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
     @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
@@ -20,11 +19,22 @@
                 <div class="tab-content">
                     <div class="page-function">
                         <div class="page-function-button m-r-20" style="float:left">
-                            @Html.MyButton("cmdAdd", "Thêm mới", string.Format("Forms.LoadAjax('{0}');", @Url.Action("Create")), "Alt+N", "add")
-                            @Html.MyButton("cmdAdd", "Đồng bộ", "SynchornizeData()", "Alt+N", "add")
+                            @Html.MyButton("cmdAdd", "Đồng bộ", "SynchornizeData()", "Alt+N", "sync")
                         </div>
-                        <div class="input-group page-function-search" style="margin-bottom: 7px !important">
-                            @Html.MyDropDownListFor(m => m.ObjDetail.YEAR, SelectListUtilities.GetTimeYear(false), new { @onchange = "SubmitIndex();", @id = "ddlTimeYear", @data_live_search = "true", @class = "selectpicker show-tick", data_container = "body", @data_val = false })
+                        <div class="input-group page-function-search" style="margin-bottom: 7px !important; max-width:720px">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.MyDropDownListFor(m => m.ObjDetail.YEAR, SelectListUtilities.GetTimeYear(false), new { @onchange = "SubmitIndex();", @id = "ddlTimeYear", @data_live_search = "true", @class = "selectpicker show-tick", data_container = "body", @data_val = false })
+
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.MyDropDownListFor(m => m.ObjDetail.WAREHOUSE_ID, SelectListUtilities.ListSanBayFromOther(true), new { @onchange = "SubmitIndex();", @data_live_search = "true", @class = "selectpicker show-tick", data_container = "body", @data_val = false })
+
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.MyDropDownListFor(m => m.ObjDetail.OBJECT_ID, SelectListUtilities.ListHangHangKhongFromOther(true), new { @onchange = "SubmitIndex();", @data_live_search = "true", @class = "selectpicker show-tick", data_container = "body", @data_val = false })
+                                </div>
+                            </div>
                         </div>
                     </div>
 

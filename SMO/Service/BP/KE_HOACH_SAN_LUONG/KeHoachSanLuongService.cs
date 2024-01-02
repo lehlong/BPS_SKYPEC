@@ -4820,7 +4820,10 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
 
                     costData.VALUE_SUM_YEAR_PREVENTIVE = costData.VALUE_SUM_YEAR * percentagePreventive;
 
-                    UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Create(costData);
+                    if (costData.VALUE_SUM_YEAR != 0 && costData.VALUE_SUM_YEAR != null)
+                    {
+                        UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Create(costData);
+                    }                    
                 }
                 UnitOfWork.Commit();
                 NotifyUtilities.CreateNotify(

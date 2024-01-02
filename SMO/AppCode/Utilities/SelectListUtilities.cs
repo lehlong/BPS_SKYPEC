@@ -1256,5 +1256,37 @@ namespace SMO
             }
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
+
+        public static SelectList ListSanBayFromOther(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " - " });
+            }
+            var lstDomain = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != null && x.OTHER_PM_CODE != "").ToList();
+            foreach (var obj in lstDomain)
+            {
+                lstData.Add(new Data { Value = obj.OTHER_PM_CODE, Text = obj.OTHER_PM_CODE + " - " + obj.NAME });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
+
+        public static SelectList ListHangHangKhongFromOther(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            if (isAddBlank)
+            {
+                lstData.Add(new Data() { Value = "", Text = " - " });
+            }
+            var lstDomain = UnitOfWork.Repository<HangHangKhongRepo>().GetAll();
+            foreach (var obj in lstDomain)
+            {
+                lstData.Add(new Data { Value = obj.CODE, Text = obj.CODE + " - " + obj.NAME });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
     }
 }

@@ -1154,21 +1154,14 @@ namespace SMO.Service.MD
                         {
                             UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
                         }
-                        
-                        switch (ObjDetail.BUDGET_TYPE.Trim())
+
+                        if (detailCodes != null)
                         {
-                            case BudgetType.SanLuong:
-                                var detailsCostPL = from d in detailCodes
-                                                    select new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
-                                                    (Guid.NewGuid().ToString(), template, d, centerCode, year);
-
-                                UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(detailsCostPL.ToList());
-                                break;
-
-                            default:
-                                break;
-                        }
-
+                            var detailsCostPL = from d in detailCodes
+                                                select new T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG
+                                                (Guid.NewGuid().ToString(), template, d, centerCode, year);
+                            UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Create(detailsCostPL.ToList());
+                        } 
                         UnitOfWork.Commit();
                     }
                     catch (Exception e)

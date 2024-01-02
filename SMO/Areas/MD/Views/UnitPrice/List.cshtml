@@ -8,38 +8,37 @@
     <table class="table table-condensed table-bordered table-striped">
         <thead>
             <tr>
-                <th></th>
-                <th>VN</th>
-                <th>0V</th>
-                <th>BL</th>
-                <th>VJ</th>
-                <th>QH</th>
-                <th>VU</th>
-                <th>HKTN#</th>
-                <th>HKNN</th>
-            </tr>
-            <tr>
-                <th>Sân bay</th>
-                <th colspan="8" style="text-align:center;">VND/Tấn</th>
+                <th>SHORT_OBJECT_ID</th>
+                <th>OBJECT_ID</th>
+                <th>OBJECT_TYPE_ID</th>
+                <th>CURRENCY_ID</th>
+                <th>MOPS_PRICE</th>
+                <th>UNIT_ID</th>
+                <th>WAREHOUSE_ID</th>
+                <th>PRICE_01</th>
+                <th>PRICE_02</th>
+                <th>ENVIRONMENT_AMOUNT</th>
+                <th>SERVICE_PRICE</th>
+                <th>PUMP_FEE</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.ObjList)
             {
-                number++;
-                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.ID }));
+              
                 <tr>
-                    <td ondblclick="@vdbclickAction">
-                        <a href="#" onclick="@vdbclickAction">@(item.SanBay?.NAME)</a>
-                    </td>
-                    <td ondblclick="@vdbclickAction">@item.VN</td>
-                    <td ondblclick="@vdbclickAction">@item.OV</td>
-                    <td ondblclick="@vdbclickAction">@item.BL</td>
-                    <td ondblclick="@vdbclickAction">@item.VJ</td>
-                    <td ondblclick="@vdbclickAction">@item.QH</td>
-                    <td ondblclick="@vdbclickAction">@item.VU</td>
-                    <td ondblclick="@vdbclickAction">@item.OTHER_HKTN</td>
-                    <td ondblclick="@vdbclickAction">@item.HKNN</td>
+                    <td>@item.SHORT_OBJECT_ID</td>
+                    <td>@item.OBJECT_ID</td>
+                    <td>@item.OBJECT_TYPE_ID</td>
+                    <td>@item.CURRENCY_ID</td>
+                    <td>@item.MOPS_PRICE</td>
+                    <td>@item.UNIT_ID</td>
+                    <td>@item.WAREHOUSE_ID</td>
+                    <td>@item.PRICE_01</td>
+                    <td>@item.PRICE_02</td>
+                    <td>@item.ENVIRONMENT_AMOUNT</td>
+                    <td>@item.SERVICE_PRICE</td>
+                    <td>@item.PUMP_FEE</td>
                 </tr>
             }
         </tbody>

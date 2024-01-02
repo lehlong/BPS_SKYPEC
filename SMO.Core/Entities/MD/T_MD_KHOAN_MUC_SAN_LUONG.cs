@@ -47,7 +47,7 @@ namespace SMO.Core.Entities.MD
                 TEMPLATE_CODE = v.TEMPLATE_CODE + v.SAN_LUONG_PROFIT_CENTER_CODE,
                 TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
                 ORG_CODE = v.ORG_CODE,
-                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Hãng hàng không: {v.SanLuongProfitCenter.HangHangKhong.NAME}\nSân bay: {v.SanLuongProfitCenter.SanBay.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
+                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Sân bay: {v.SanLuongProfitCenter.SanBay.NAME} \n Hãng hàng không: {v.SanLuongProfitCenter.HangHangKhong.NAME}\n",
                 CENTER_CODE = v.ORG_CODE,
                 Values = new decimal[14]
                 {
@@ -83,7 +83,7 @@ namespace SMO.Core.Entities.MD
                 TEMPLATE_CODE = v.TEMPLATE_CODE + v.SAN_LUONG_PROFIT_CENTER_CODE,
                 TEMPLATE_CODE_PURE = v.TEMPLATE_CODE,
                 ORG_CODE = v.ORG_CODE,
-                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Hãng hàng không: {v.SanLuongProfitCenter.HangHangKhong.NAME}\nSân bay: {v.SanLuongProfitCenter.SanBay.NAME}\nMẫu: {v.TEMPLATE_CODE}\nĐơn vị nộp: {v.Template.Organize.NAME}\nTrạng thái: {Approve_Status.GetStatusText(v.STATUS)}",
+                ORG_NAME = string.IsNullOrEmpty(v.TEMPLATE_CODE) ? v.Organize.NAME : $"Sân bay: {v.SanLuongProfitCenter.SanBay.NAME} \n Hãng hàng không: {v.SanLuongProfitCenter.HangHangKhong.NAME}\n",
                 CENTER_CODE = v.ORG_CODE,
                 Values = new decimal[14]
                 {

@@ -89,7 +89,7 @@ namespace SMO.Areas.MD.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [MyValidateAntiForgeryToken]
         public ActionResult SynchornizeData(int year)
         {
             var result = new TransferObject

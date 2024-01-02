@@ -37,7 +37,7 @@
     }
 }
 
-@foreach (var file in Model.OrderByDescending(x => x.CREATE_DATE))
+@foreach (var file in Model)
 {
     file.FILE_EXT = file.FILE_EXT.ToLower();
 
