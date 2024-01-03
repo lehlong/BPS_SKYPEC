@@ -1446,12 +1446,86 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 }
             }
         }
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> GetData(ViewDataCenterModel model)
+        {
+            try
+            {
+                var template = UnitOfWork.Repository<TemplateRepo>().Get(model.TEMPLATE_CODE);
+                IList<T_MD_KHOAN_MUC_HANG_HOA> data = new List<T_MD_KHOAN_MUC_HANG_HOA>();
+                var elements = UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetAll();
+
+                if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("B62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+                else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("T62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+                else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("N62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+
+                foreach (var el in elements) {
+                    el.Children = elements.Where(x => x.PARENT_CODE == el.CODE).ToList();
+                }
+                var detail = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.TIME_YEAR == model.YEAR).ToList();
+
+                var lstSanBay = detail.GroupBy(x => x.ChiPhiProfitCenter.SAN_BAY_CODE).Select(x => x.First()).ToList();
+                var order = 0;
+                foreach ( var sb in lstSanBay)
+                {
+                    foreach(var element in elements.OrderByDescending(x => x.C_ORDER))
+                    {
+                        var child = elements.Where(x => x.CODE == element.CODE).SelectMany(x => x.Children).Select(x => x.CODE).ToList();
+
+                        var query = child.Count() == 0 ?
+                            detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() : 
+                            detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
+
+                        var item = new T_MD_KHOAN_MUC_HANG_HOA
+                        {
+                            CODE = element.CODE,
+                            NAME = element.NAME,
+                            Values = child.Count() == 0 ? new decimal[3]
+                            {
+                                query.Sum(x => x.QUANTITY) ?? 0,
+                                query.Sum(x => x.PRICE) ?? 0,
+                                query.Sum(x => x.AMOUNT) ?? 0,
+                            } : new decimal[3]
+                            {
+                                0,
+                                0,
+                                query.Sum(x => x.AMOUNT) ?? 0,
+                            },
+                            C_ORDER = order,
+                            IS_GROUP = element.IS_GROUP,
+                            Center = sb.ChiPhiProfitCenter
+                        };
+
+                        data.Add(item);
+                        order++;
+                    }
+                }
+
+                return data;
+            }
+            catch(Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.Exception = ex;
+                return new List<T_MD_KHOAN_MUC_HANG_HOA>();
+            }
+        }
+
 
         public IList<T_MD_KHOAN_MUC_HANG_HOA> GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas,
             out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailOtherCostData,
             out bool isDrillDownApply,
             ViewDataCenterModel model)
         {
+            var detail = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.TIME_YEAR == model.YEAR).ToList();
             isDrillDownApply = model.IS_DRILL_DOWN;
             if (!model.IS_HAS_NOT_VALUE && !model.IS_HAS_VALUE &&
                 (!string.IsNullOrEmpty(model.TEMPLATE_CODE) || model.VERSION == null || model.VERSION.Value == -1))
@@ -1475,7 +1549,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 {
                     lstOrgs.Add(model.ORG_CODE);
                 }
-                var elements = GetDataCostPreview(out detailOtherKhoanMucHangHoas, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue);
+                //var elements = GetDataCostPreview(out detailOtherKhoanMucHangHoas, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue);
+
+                var templateDetails = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>();
+                
                 var sumElements = new T_MD_KHOAN_MUC_HANG_HOA
                 {
                     // set tổng năm
@@ -1489,21 +1566,22 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     CODE = string.Empty,
                     Values = new decimal[6]
                 };
+                detailOtherKhoanMucHangHoas = null;
                 //var isTemplateBase = GetTemplate(model.TEMPLATE_CODE)?.IS_BASE;
                 //isTemplateBase = isTemplateBase.HasValue && isTemplateBase.Value;
-                foreach (var item in elements.Distinct().Where(x => !x.IS_GROUP))
-                {
-                    //if (isTemplateBase.Value && item.Values.Sum() > 0)
-                    //{
-                    //    item.IsChildren = true;
-                    //}
-                    for (int i = 0; i < sumElements.Values.Length; i++)
-                    {
-                        sumElements.Values[i] += item.Values[i];
-                    }
-                }
-                elements.Add(sumElements);
-                return elements;
+                //foreach (var item in elements.Distinct().Where(x => !x.IS_GROUP))
+                //{
+                //    //if (isTemplateBase.Value && item.Values.Sum() > 0)
+                //    //{
+                //    //    item.IsChildren = true;
+                //    //}
+                //    for (int i = 0; i < sumElements.Values.Length; i++)
+                //    {
+                //        sumElements.Values[i] += item.Values[i];
+                //    }
+                //}
+                //elements.Add(sumElements);
+                return (IList<T_MD_KHOAN_MUC_HANG_HOA>)templateDetails;
             }
             else if (model.VERSION == null || model.VERSION.Value == -1)
             {
@@ -4699,6 +4777,47 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 this.State = false;
                 this.Exception = ex;
                 return new List<T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY>();
+            }
+        }
+
+        public void InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<KeHoachChiPhiCommentRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_COMMENT
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    COMMENT = value,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+                
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public IList<T_BP_KE_HOACH_CHI_PHI_COMMENT> GetCommentElement(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                return UnitOfWork.Repository<KeHoachChiPhiCommentRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_KE_HOACH_CHI_PHI_COMMENT>();
             }
         }
 

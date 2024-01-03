@@ -3,51 +3,229 @@
 @using SMO.Core.Entities.MD;
 @using SMO.Service.Class;
 @using System.Text;
-
 @{
-    var viewId = Guid.NewGuid().ToString();
-    var revenuePLHeader = ViewBag.revenuePLHeader as T_BP_KE_HOACH_CHI_PHI_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
-}
-@if (Model == null || Model.Count == 1)
-{
-    Html.RenderPartial("_NothingData");
-    return;
-}
-@if (!string.IsNullOrEmpty(dataCenterModel.TEMPLATE_CODE))
-{
-    // view template data
-    ViewBag.revenuePLHeader = revenuePLHeader;
-    ViewBag.dataCenterModel = dataCenterModel;
-
-    Html.RenderPartial("_PartialViewTemplateDataKeHoachChiPhi", Model);
-}
-else if (dataCenterModel.VERSION == null || dataCenterModel.VERSION.Value < 0)
-{
-    // xem dữ liệu trước khi tổng hợp
-    Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
-    ViewBag.dataCenterModel = dataCenterModel;
-    Html.RenderPartial("_PartialViewSumUpPreview", Model.Select(x => (SMO.Core.Common.CoreElement)x).ToList());
-    <script>
-        $(document).on("keyup", "#text-search-table", () => SearchTable(2, 1, 1, 2));
-    </script>
-}
-else
-{
-    ViewBag.dataCenterModel = dataCenterModel;
-    // xem dữ liệu được tổng hợp cho đơn vị
-    Html.RenderPartial("_PartialViewSummaryCenterKeHoachChiPhi", Model);
+    var lstDepartment = SelectListUtilities.GetAllCostCenter().ToList();
+    var orgCode = dataCenterModel.ORG_CODE;
+    var reference = dataCenterModel.TEMPLATE_CODE;
+    var year = dataCenterModel.YEAR;
+    var version = dataCenterModel.VERSION;
 }
 
-
-@{
-    if (!string.IsNullOrEmpty(dataCenterModel.TEMPLATE_CODE))
-    {
-        ViewBag.EmptyColumns = 6;
-        Html.RenderPartial("_ScriptViewTemplateData", dataCenterModel.YEAR);
+<style>
+    .icon-function {
+        cursor: pointer;
     }
-    else
-    {
-        Html.RenderPartial("_ScriptSummaryDataCenter", dataCenterModel.YEAR);
+
+    .table-screen {
+        height: calc(100vh - 162px);
+        margin-bottom: 0
     }
-}
+
+    .full-screen-table {
+        height: calc(100vh -100px) !important;
+    }
+
+    .input-edit {
+        background: none;
+        border: none;
+        text-align: right;
+        width: 86px;
+    }
+
+    th{
+        text-align:center;
+    }
+</style>
+<div class="export-left-tab">
+    <div role="tabpanel" class="tab-pane fade in active">
+        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
+                <thead>
+                    <tr>
+                        <th rowspan="3" colspan="4">HÀNH ĐỘNG</th>
+                        <th rowspan="3">MÃ</th>
+                        <th rowspan="3">CHỈ TIÊU</th>
+                        <th colspan="@(Model.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 3)">KẾ HOẠCH CHI TIẾT</th>
+                    </tr>
+                    <tr>
+                        <th colspan="@(Model.GroupBy(x => x.Center.SAN_BAY_CODE).Count())">SỐ LƯỢNG</th>
+                        <th rowspan="2">CỘNG</th>
+                        <th rowspan="2">ĐƠN GIÁ</th>
+                        <th colspan="@(Model.GroupBy(x => x.Center.SAN_BAY_CODE).Count())">THÀNH TIỀN</th>
+                        <th rowspan="2">CỘNG</th>
+                    </tr>
+                    <tr>
+                        @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                        {
+                            <th>@sb.Center.SAN_BAY_CODE</th>
+                        }
+                        @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                        {
+                            <th>@sb.Center.SAN_BAY_CODE</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                    {
+                        var space = new StringBuilder();
+                        for (int i = 0; i < item.LEVEL; i++)
+                        {
+                            space.Append("\t");
+                        }
+                        var classParent = item.IS_GROUP ? "strong" : string.Empty;
+                        var isEdit = item.IS_GROUP ? "disabled" : "";
+                        <tr class="@classParent">
+                            <td>
+                                <input type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                                <label for="@("chkItem" + item.CODE)"></label>
+                            </td>
+                            <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
+                            <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
+                           
+                            @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
+                            {
+                                <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+
+                            <td class="pre-whitespace @classParent"><div class="pre-whitespace @classParent">@(item.CODE)</div></td>
+                            <td class="pre-whitespace @classParent"><div class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</div></td>
+
+                            @*Số lượng*@
+                            @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                            {
+                                var value = Model.FirstOrDefault(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN();
+                                <td class="align-right"><input type="text" class="input-edit" onchange="onEditCell('SL', '@sb.Center.SAN_BAY_CODE','@sb.Center.COST_CENTER_CODE', '@item.CODE', this.value)" value="@(value == "0" ? "" : value)" @isEdit /></td>
+                            }
+
+                            <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN() == "0" ? "" : Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN())</td>
+
+                            @*Đơn giá*@
+                            <td class="align-right"><input type="text" class="input-edit" @isEdit onchange="onEditCell('DG', '','', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())" /></td>
+
+                            @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                            {
+                                <td class="align-right">@(Model.FirstOrDefault(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.CODE == item.CODE)?.Values[2].ToStringVN())</td>
+                            }
+
+                            <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]).ToStringVN())</td>
+                        </tr>
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function onEditCell(type, sanBay, costCenter, elementCode, value) {
+        if (value == null || value == "") {
+            return;
+        }
+        var templateCode = $("#TEMPLATE_CODE").val();
+        var version = $("#VERSION").val();
+        var year = $("#YEAR").val();
+        var ajaxParams = {
+            url: 'BP/KeHoachChiPhi/UpdateCellValue',
+            type: "POST",
+            data: {
+                templateCode: templateCode,
+                version: version,
+                year: year,
+                type: type,
+                sanBay: sanBay,
+                costCenter: costCenter,
+                elementCode: elementCode,
+                value: value
+            },
+            dataType: 'json',
+            success: function (response) {
+                Message.execute(response);
+            }
+        };
+        Forms.Ajax(ajaxParams);
+    }
+
+    function getHistoryEditElement(elementCode) {
+        var templateCode = $("#TEMPLATE_CODE").val();
+        var version = $("#VERSION").val();
+        var year = $("#YEAR").val();
+        var ajaxParams = {
+            url: 'BP/KeHoachChiPhi/GetHistoryEditElement',
+            type: "POST",
+            data: {
+                templateCode: templateCode,
+                version: version,
+                year: year,
+                elementCode: elementCode,
+            },
+        };
+        Forms.LoadAjaxModalLarge(ajaxParams);
+    }
+
+    function getCommentElement(elementCode) {
+        var templateCode = $("#TEMPLATE_CODE").val();
+        var version = $("#VERSION").val();
+        var year = $("#YEAR").val();
+        var ajaxParams = {
+            url: 'BP/KeHoachChiPhi/GetCommentElement',
+            type: "POST",
+            data: {
+                templateCode: templateCode,
+                version: version,
+                year: year,
+                elementCode: elementCode,
+            },
+        };
+        Forms.LoadAjaxModal(ajaxParams);
+    }
+
+    function getAssignDepartmentElement(elementCode) {
+        var templateCode = $("#TEMPLATE_CODE").val();
+        var version = $("#VERSION").val();
+        var year = $("#YEAR").val();
+        var ajaxParams = {
+            url: 'BP/KeHoachChiPhi/GetAssignDepartmentElement',
+            type: "POST",
+            data: {
+                templateCode: templateCode,
+                version: version,
+                year: year,
+                elementCode: elementCode,
+            },
+        };
+        Forms.LoadAjaxModal(ajaxParams);
+    }
+
+    function IsDoneExpertise(isCheck, element) {
+        if (!isCheck) {
+            Swal.fire({
+                title: "Lưu ý?",
+                text: "Hạng mục này đã được thẩm định! Hành động này sẽ không được lưu lại!",
+                icon: "warning"
+            });
+            return;
+        } else {
+            Swal.fire({
+                title: "Lưu ý?",
+                text: "Bạn có chắc hoàn thành thẩm định chỉ tiêu này?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Huỷ"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    
+                }
+            });
+        }
+    }
+</script>

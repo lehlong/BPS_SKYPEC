@@ -1,0 +1,59 @@
+﻿@model SMO.Service.BP.KE_HOACH_CHI_PHI.KeHoachChiPhiService
+@using SMO.Repository.Implement.MD
+@{
+    var lstCostCenter = Model.UnitOfWork.Repository<CostCenterRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+}
+<div class="modal-close">
+    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
+</div>
+<div class="modal-body">
+    <div class="content">
+        <div class="card">
+            <div class="body" style="padding-top: 0px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-left:0px"><i class="material-icons">clear_all</i> GÁN PHÒNG BAN - CÔNG TY THẨM ĐỊNH</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="page-function">
+                    </div>
+
+                    <div id="divResult">
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th width="20px" class="align-center"></th>
+                                        <th>Mã</th>
+                                        <th>Tên công ty - phòng ban</th>
+                                        <th>Mã khác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in lstCostCenter)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" />
+                                                <label for="@("chkItem" + item.CODE)"></label>
+                                            </td>
+                                            <td>@item.CODE</td>
+                                            <td>@item.NAME</td>
+                                            <td>@item.SAP_CODE</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
+</div>
+

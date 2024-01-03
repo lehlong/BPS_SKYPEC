@@ -169,6 +169,7 @@
     <Compile Include="Entities\BP\KE_HOACH_CHI_PHI\KE_HOACH_CHI_PHI_DATA_BASE\T_BP_KE_HOACH_CHI_PHI_DATA_BASE.cs" />
     <Compile Include="Entities\BP\KE_HOACH_CHI_PHI\KE_HOACH_CHI_PHI_DATA_BASE\T_BP_KE_HOACH_CHI_PHI_DATA_BASE_HISTORY.cs" />
     <Compile Include="Entities\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI.cs" />
+    <Compile Include="Entities\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_COMMENT.cs" />
     <Compile Include="Entities\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_DATA.cs" />
     <Compile Include="Entities\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY.cs" />
     <Compile Include="Entities\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY.cs" />

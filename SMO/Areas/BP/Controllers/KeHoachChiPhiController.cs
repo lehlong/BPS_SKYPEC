@@ -92,48 +92,50 @@ namespace SMO.Areas.BP.Controllers
         [ValidateAntiForgeryToken]
         public override ActionResult SummaryDataCenter(ViewDataCenterModel model)
         {
-            var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements,
-                out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailCostData, out bool isDrillDownApply, model);
-            if (dataCost == null)
-            {
-                ViewBag.dataCenterModel = model;
-                return PartialView(dataCost);
-            }
-            dataCost = dataCost.Distinct().ToList();
-            // chuyển đơn vị tiền tệ 
-            if (model.EXCHANGE_RATE.HasValue && model.EXCHANGE_RATE != 1)
-            {
-                foreach (var data in dataCost)
-                {
-                    for (int i = 0; i < data.Values.Length; i++)
-                    {
-                        data.Values[i] = Math.Round(data.Values[i] / model.EXCHANGE_RATE.Value, 2);
-                    }
-                }
-                if (isDrillDownApply && detailCostData != null)
-                {
-                    foreach (var data in detailCostData)
-                    {
-                        data.QUANTITY = Math.Round((data.QUANTITY ?? 0) / model.EXCHANGE_RATE.Value, 2);
-                        data.PRICE = Math.Round((data.PRICE ?? 0) / model.EXCHANGE_RATE.Value, 2);
-                        data.AMOUNT = Math.Round((data.AMOUNT ?? 0) / model.EXCHANGE_RATE.Value, 2);
-                    }
-                }
-            }
-
-            if (detailCostData != null)
-            {
-                ViewBag.detailCostElements = detailCostData;
-            }
-            if (detailCostElements != null)
-            {
-                ViewBag.detailCostElements = detailCostElements;
-            }
-            ViewBag.costCFHeader = _service.GetHeader(model);
-            model.IS_DRILL_DOWN = isDrillDownApply;
-            model.EXCHANGE_RATE = 12;
+            var data = _service.GetData(model);
             ViewBag.dataCenterModel = model;
-            return PartialView(dataCost);
+            //var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements,
+            //    out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailCostData, out bool isDrillDownApply, model);
+            //if (dataCost == null)
+            //{
+            //    ViewBag.dataCenterModel = model;
+            //    return PartialView(dataCost);
+            //}
+            //dataCost = dataCost.Distinct().ToList();
+            //// chuyển đơn vị tiền tệ 
+            //if (model.EXCHANGE_RATE.HasValue && model.EXCHANGE_RATE != 1)
+            //{
+            //    foreach (var data in dataCost)
+            //    {
+            //        for (int i = 0; i < data.Values.Length; i++)
+            //        {
+            //            data.Values[i] = Math.Round(data.Values[i] / model.EXCHANGE_RATE.Value, 2);
+            //        }
+            //    }
+            //    if (isDrillDownApply && detailCostData != null)
+            //    {
+            //        foreach (var data in detailCostData)
+            //        {
+            //            data.QUANTITY = Math.Round((data.QUANTITY ?? 0) / model.EXCHANGE_RATE.Value, 2);
+            //            data.PRICE = Math.Round((data.PRICE ?? 0) / model.EXCHANGE_RATE.Value, 2);
+            //            data.AMOUNT = Math.Round((data.AMOUNT ?? 0) / model.EXCHANGE_RATE.Value, 2);
+            //        }
+            //    }
+            //}
+
+            //if (detailCostData != null)
+            //{
+            //    ViewBag.detailCostElements = detailCostData;
+            //}
+            //if (detailCostElements != null)
+            //{
+            //    ViewBag.detailCostElements = detailCostElements;
+            //}
+            //ViewBag.costCFHeader = _service.GetHeader(model);
+            //model.IS_DRILL_DOWN = isDrillDownApply;
+            //model.EXCHANGE_RATE = 12;
+            //ViewBag.dataCenterModel = model;
+            return PartialView(data);
         }
 
         public override ActionResult SummaryCenter(string centerCode, int? year, int? version, bool isRenderPartial = false)
@@ -194,7 +196,7 @@ namespace SMO.Areas.BP.Controllers
             return Json(resultData, JsonRequestBehavior.AllowGet);
         }
 
-
+        #region Update and History cell value
         [HttpPost]
         [MyValidateAntiForgeryToken]
         public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
@@ -224,5 +226,57 @@ namespace SMO.Areas.BP.Controllers
             var data = _service.GetHistoryEditElement(templateCode, version, year, elementCode);
             return PartialView(data);
         }
+        #endregion
+
+        #region Comment Elements
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.InsertComment(templateCode, version, year, type, sanBay, costCenter, elementCode, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult GetCommentElement(string templateCode, int version, int year, string elementCode)
+        {
+            var data = _service.GetCommentElement(templateCode, version, year, elementCode);
+            ViewBag.TemplateCode = templateCode;
+            ViewBag.Version = version;
+            ViewBag.Year = year;
+            ViewBag.ElementCode = elementCode;
+            return PartialView(data);
+        }
+        #endregion
+
+        #region Get Assign Department
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult GetAssignDepartmentElement(string templateCode, int version, int year, string elementCode)
+        {
+            //var data = _service.GetCommentElement(templateCode, version, year, elementCode);
+            ViewBag.TemplateCode = templateCode;
+            ViewBag.Version = version;
+            ViewBag.Year = year;
+            ViewBag.ElementCode = elementCode;
+            return PartialView(_service);
+        }
+
+        #endregion
     }
 }

@@ -2013,6 +2013,8 @@
     <Content Include="Areas\BU\Views\PaymentProgress\Update.cshtml" />
     <Content Include="Areas\BP\Views\Shared\_PartialViewTableChildKeHoachDoanhThu.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhi\GetHistoryEditElement.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachChiPhi\GetCommentElement.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachChiPhi\GetAssignDepartmentElement.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
