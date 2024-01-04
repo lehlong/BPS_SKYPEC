@@ -39,9 +39,14 @@
                                 <tbody>
                                     @foreach (var item in lstCostCenter)
                                     {
+                                        var checkedItem = "";
+                                        if (true)
+                                        {
+                                            checkedItem = "checked";
+                                        }
                                         <tr>
                                             <td>
-                                                <input @checked type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onclick="AssignDepartment('@item.CODE')" />
+                                                <input @checkedItem type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onclick="AssignDepartment('@item.CODE')" />
                                                 <label for="@("chkItem" + item.CODE)"></label>
                                             </td>
                                             <td>@item.CODE</td>
