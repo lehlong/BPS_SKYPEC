@@ -1,7 +1,11 @@
-﻿@model SMO.Service.BP.KE_HOACH_CHI_PHI.KeHoachChiPhiService
+﻿@model IList<SMO.Core.Entities.BP.KE_HOACH_CHI_PHI.T_BP_KE_HOACH_CHI_PHI_DEPARTMENT_ASSIGN>
 @using SMO.Repository.Implement.MD
 @{
-    var lstCostCenter = Model.UnitOfWork.Repository<CostCenterRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+    var lstCostCenter = ViewBag.LstCostCenter as List<SMO.Core.Entities.MD.T_MD_COST_CENTER>;
+    var templateCode = ViewBag.TemplateCode;
+    var version = ViewBag.Version;
+    var elementCode = ViewBag.ElementCode;
+    var year = ViewBag.Year;
 }
 <div class="modal-close">
     <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
@@ -36,7 +40,7 @@
                                     {
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" />
+                                                <input type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onclick="AssignDepartment('@item.CODE')" />
                                                 <label for="@("chkItem" + item.CODE)"></label>
                                             </td>
                                             <td>@item.CODE</td>
@@ -56,4 +60,29 @@
 <div class="modal-footer">
     <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
 </div>
+<script>
+    function AssignDepartment(departmentcode) {
+        var templateCode = '@templateCode';
+        var version = '@version';
+        var year = '@year';
+        var elementCode = '@elementCode';
+        var ajaxParams = {
+            url: 'BP/KeHoachChiPhi/AssignDepartment',
+            type: "POST",
+            data: {
+                templateCode: templateCode,
+                version: version,
+                year: year,
+                elementCode: elementCode,
+                departmentCode: departmentcode
+            },
+            dataType: 'json',
+            success: function (response) {
+                /*Message.execute(response);*/
+                console.log(response);
+            }
+        };
+        Forms.LoadAjaxModal(ajaxParams);
+    }
+</script>
 

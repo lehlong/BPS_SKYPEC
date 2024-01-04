@@ -76,6 +76,7 @@
                         }
                         var classParent = item.IS_GROUP ? "strong" : string.Empty;
                         var isEdit = item.IS_GROUP ? "disabled" : "";
+                        var isChecked = item.IsChecked ? "checked" : "";
                         <tr class="@classParent">
                             <td>
                                 <input type="checkbox" class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />

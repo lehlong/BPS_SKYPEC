@@ -1,10 +1,12 @@
 ﻿
+using Microsoft.Office.Interop.Excel;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
 using SMO.Models;
 using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
+using SMO.Repository.Implement.MD;
 using SMO.Service.BP;
 using SMO.Service.BP.KE_HOACH_CHI_PHI;
 using SMO.Service.Class;
@@ -269,12 +271,36 @@ namespace SMO.Areas.BP.Controllers
         [MyValidateAntiForgeryToken]
         public ActionResult GetAssignDepartmentElement(string templateCode, int version, int year, string elementCode)
         {
-            //var data = _service.GetCommentElement(templateCode, version, year, elementCode);
+            var data = _service.GetDepartmentAssignElement(templateCode, version, year, elementCode);
+            var lstCostCenter = _service.GetCostCenter();
+            ViewBag.LstCostCenter = lstCostCenter;
             ViewBag.TemplateCode = templateCode;
             ViewBag.Version = version;
             ViewBag.Year = year;
             ViewBag.ElementCode = elementCode;
-            return PartialView(_service);
+            return PartialView(data);
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult AssignDepartment(string templateCode, int version, int year, string elementCode, string departmentCode)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.AssignDepartment(templateCode, version, year, elementCode, departmentCode);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
         }
 
         #endregion

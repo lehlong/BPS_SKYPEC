@@ -14,6 +14,8 @@ namespace SMO.Core.Entities.MD
 
         }
         public virtual T_MD_CHI_PHI_PROFIT_CENTER Center { get; set; }
+        public virtual bool IsChecked { get; set; }
+        public virtual bool IsHighLight { get; set; }
         public virtual List<T_MD_KHOAN_MUC_HANG_HOA> Children { get; set; }
         public virtual object Clone()
         {

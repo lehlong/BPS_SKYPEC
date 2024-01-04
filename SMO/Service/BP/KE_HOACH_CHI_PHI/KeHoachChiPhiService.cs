@@ -1501,7 +1501,9 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             },
                             C_ORDER = order,
                             IS_GROUP = element.IS_GROUP,
-                            Center = sb.ChiPhiProfitCenter
+                            Center = sb.ChiPhiProfitCenter,
+                            IsChecked = true,
+                            IsHighLight = true
                         };
 
                         data.Add(item);
@@ -4818,6 +4820,61 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 this.State = false;
                 this.Exception = ex;
                 return new List<T_BP_KE_HOACH_CHI_PHI_COMMENT>();
+            }
+        }
+
+        public IList<T_MD_COST_CENTER> GetCostCenter()
+        {
+            try
+            {
+                return UnitOfWork.Repository<CostCenterRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+            }
+            catch(Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_MD_COST_CENTER>();
+            }
+        }
+
+        public IList<T_BP_KE_HOACH_CHI_PHI_DEPARTMENT_ASSIGN> GetDepartmentAssignElement(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                return UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_KE_HOACH_CHI_PHI_DEPARTMENT_ASSIGN>();
+            }
+        }
+
+        public void AssignDepartment(string templateCode, int version, int year, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DEPARTMENT_ASSIGN
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    DEPARTMENT_CODE = value,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
             }
         }
 
