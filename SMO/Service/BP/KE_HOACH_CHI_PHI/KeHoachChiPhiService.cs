@@ -1483,7 +1483,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var query = child.Count() == 0 ?
                             detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() : 
                             detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
-
+                        var expertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE).FirstOrDefault();
                         var item = new T_MD_KHOAN_MUC_HANG_HOA
                         {
                             CODE = element.CODE,
@@ -1502,7 +1502,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             C_ORDER = order,
                             IS_GROUP = element.IS_GROUP,
                             Center = sb.ChiPhiProfitCenter,
-                            IsChecked = true,
+                            IsChecked = expertise!= null? true : false,
                             IsHighLight = true
                         };
 
@@ -4868,6 +4868,72 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     CREATE_DATE = DateTime.Now,
                 });
 
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void UnAssignDepartment(string templateCode, int version, int year, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var department = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == value && x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
+                if (department != null)
+                {
+                    UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Delete(department);
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void Expertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DEPARTMENT_EXPERTISE
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void UnExpertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var KhoanMuc = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Where(x=> x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
+                if (KhoanMuc != null)
+                {
+                    UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Delete(KhoanMuc);
+                }
                 UnitOfWork.Commit();
             }
             catch (Exception ex)

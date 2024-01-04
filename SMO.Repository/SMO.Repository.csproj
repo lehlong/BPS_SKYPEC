@@ -135,6 +135,7 @@
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDataRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDepartmentAssignRepo.cs" />
+    <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDepartmentExpertiseRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiEditHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiRepo.cs" />
@@ -409,6 +410,7 @@
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiReviewResultRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiSumUpDetailRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiVersionRepo.cs" />
+    <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\IKeHoachChiPhiDepartmentExpertiseRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\KE_HOACH_CHI_PHI_DATA_BASE\IKeHoachChiPhiDataBaseHistoryRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_CHI_PHI\KE_HOACH_CHI_PHI_DATA_BASE\IKeHoachChiPhiDataBaseRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_DOANH_THU\IKeHoachDoanhThuDataHistoryRepo.cs" />
@@ -645,6 +647,7 @@
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_DATA_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_DEPARTMENT_ASSIGN_Map.cs" />
+    <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_DEPARTMENT_EXPERTISE_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_CHI_PHI\T_BP_KE_HOACH_CHI_PHI_Map.cs" />

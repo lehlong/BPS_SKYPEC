@@ -7,6 +7,7 @@
     var version = ViewBag.Version;
     var elementCode = ViewBag.ElementCode;
     var year = ViewBag.Year;
+    var lstDepartmetCode = Model.Select(x => x.DEPARTMENT_CODE).ToList();
 }
 <div class="modal-close">
     <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
@@ -40,7 +41,7 @@
                                     @foreach (var item in lstCostCenter)
                                     {
                                         var checkedItem = "";
-                                        if (true)
+                                        if (lstDepartmetCode.Contains(item.CODE))
                                         {
                                             checkedItem = "checked";
                                         }
@@ -68,22 +69,44 @@
 </div>
 <script>
     function AssignDepartment(departmentcode) {
-        var ajaxParams = {
-            url: 'BP/KeHoachChiPhi/AssignDepartment',
-            type: "POST",
-            data: {
-                templateCode: '@templateCode',
-                version: @version,
-                year: @year,
-                elementCode: '@elementCode',
-                departmentCode: departmentcode
-            },
-            dataType: 'json',
-            success: function (response) {
-                Message.execute(response)
-            }
-        };
-        Forms.Ajax(ajaxParams);
+        var inputbtn = $('#chkItem' + departmentcode);
+        var isChecked = inputbtn.prop('checked');
+        if (isChecked) {
+            var ajaxParams = {
+                url: 'BP/KeHoachChiPhi/AssignDepartment',
+                type: "POST",
+                data: {
+                    templateCode: '@templateCode',
+                    version: @version,
+                    year: @year,
+                    elementCode: '@elementCode',
+                    departmentCode: departmentcode
+                },
+                dataType: 'json',
+                success: function (response) {
+                    Message.execute(response)
+                }
+            };
+            Forms.Ajax(ajaxParams);
+        }
+        else {
+            var ajaxParams = {
+                url: 'BP/KeHoachChiPhi/UnAssignDepartment',
+                type: "POST",
+                data: {
+                    templateCode: '@templateCode',
+                    version: @version,
+                    year: @year,
+                    elementCode: '@elementCode',
+                    departmentCode: departmentcode
+                },
+                dataType: 'json',
+                success: function (response) {
+                    Message.execute(response)
+                }
+            };
+            Forms.Ajax(ajaxParams);
+        }
     }
 </script>
 
