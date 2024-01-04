@@ -1483,7 +1483,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var query = child.Count() == 0 ?
                             detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() : 
                             detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
-                        var expertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE).FirstOrDefault();
+                        var expertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE);
                         var item = new T_MD_KHOAN_MUC_HANG_HOA
                         {
                             CODE = element.CODE,
@@ -1502,7 +1502,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             C_ORDER = order,
                             IS_GROUP = element.IS_GROUP,
                             Center = sb.ChiPhiProfitCenter,
-                            IsChecked = expertise!= null? true : false,
+                            IsChecked = expertise,
                             IsHighLight = true
                         };
 
