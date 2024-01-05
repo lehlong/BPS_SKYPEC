@@ -2015,6 +2015,10 @@
     <Content Include="Areas\BP\Views\KeHoachChiPhi\GetHistoryEditElement.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhi\GetCommentElement.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhi\GetAssignDepartmentElement.cshtml" />
+    <Content Include="Areas\BP\Views\SuaChuaLon\GetCommentElement.cshtml" />
+    <Content Include="Areas\BP\Views\SuaChuaLon\GetAssignDepartmentElement.cshtml" />
+    <Content Include="Areas\BP\Views\SuaChuaThuongXuyen\GetCommentElement.cshtml" />
+    <Content Include="Areas\BP\Views\SuaChuaThuongXuyen\GetAssignDepartmentElement.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

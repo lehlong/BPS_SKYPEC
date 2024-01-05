@@ -4,12 +4,14 @@ using NPOI.XSSF.UserModel;
 using SMO.AppCode.Utilities;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
+using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.BP.SUA_CHUA_LON;
 using SMO.Core.Entities.BP.SUA_CHUA_LON.SUA_CHUA_LON_DATA_BASE;
 using SMO.Core.Entities.MD;
 using SMO.Helper;
 using SMO.Models;
 using SMO.Repository.Implement.BP;
+using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Implement.BP.SUA_CHUA_LON;
 using SMO.Repository.Implement.BP.SUA_CHUA_LON.SUA_CHUA_LON_DATA_BASE;
 using SMO.Repository.Implement.MD;
@@ -1475,7 +1477,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                     IsChildren = false,
                     C_ORDER = 0,
                     CODE = string.Empty,
-                    Values = new decimal[1]
+                    Values = new decimal[1],
                 };
                 //var isTemplateBase = GetTemplate(model.TEMPLATE_CODE)?.IS_BASE;
                 //isTemplateBase = isTemplateBase.HasValue && isTemplateBase.Value;
@@ -1489,8 +1491,17 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                     {
                         sumElements.Values[i] += item.Values[i];
                     }
+                    
                 }
                 elements.Add(sumElements);
+                foreach(var element in elements)
+                {
+                    var expertise = UnitOfWork.Repository<SuaChuaLonDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE);
+                    if (expertise)
+                    {
+                        element.IsChecked = true;
+                    }
+                }
                 return elements;
             }
             else if (model.VERSION == null || model.VERSION.Value == -1)
@@ -4186,6 +4197,168 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 return null;
             }
             
+        }
+
+        public void InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<SuaChuaLonCommentRepo>().Create(new T_BP_SUA_CHUA_LON_COMMENT
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    COMMENT = value,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public IList<T_BP_SUA_CHUA_LON_COMMENT> GetCommentElement(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                return UnitOfWork.Repository<SuaChuaLonCommentRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_SUA_CHUA_LON_COMMENT>();
+            }
+        }
+
+        public void Expertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<SuaChuaLonDepartmentExpertiseRepo>().Create(new T_BP_SUA_CHUA_LON_DEPARTMENT_EXPERTISE
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void UnExpertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var KhoanMuc = UnitOfWork.Repository<SuaChuaLonDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
+                if (KhoanMuc != null)
+                {
+                    UnitOfWork.Repository<SuaChuaLonDepartmentExpertiseRepo>().Delete(KhoanMuc);
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public IList<T_BP_SUA_CHUA_LON_DEPARTMENT_ASSIGN> GetDepartmentAssignElement(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                return UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_SUA_CHUA_LON_DEPARTMENT_ASSIGN>();
+            }
+        }
+
+        public IList<T_MD_COST_CENTER> GetCostCenter()
+        {
+            try
+            {
+                return UnitOfWork.Repository<CostCenterRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_MD_COST_CENTER>();
+            }
+        }
+
+        public void AssignDepartment(string templateCode, int version, int year, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Create(new T_BP_SUA_CHUA_LON_DEPARTMENT_ASSIGN
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    DEPARTMENT_CODE = value,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void UnAssignDepartment(string templateCode, int version, int year, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var department = UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == value && x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
+                if (department != null)
+                {
+                    UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Delete(department);
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
         }
 
     }

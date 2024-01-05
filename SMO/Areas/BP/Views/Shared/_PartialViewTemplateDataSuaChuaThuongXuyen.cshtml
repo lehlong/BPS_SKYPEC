@@ -8,7 +8,10 @@
     var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_THUONG_XUYEN>;
     var costCFHeader = ViewBag.costCFHeader as T_BP_SUA_CHUA_THUONG_XUYEN_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
-    var hihi = Model;
+    var orgCode = dataCenterModel.ORG_CODE;
+    var tempalteCode = dataCenterModel.TEMPLATE_CODE;
+    var year = dataCenterModel.YEAR;
+    var version = dataCenterModel.VERSION;
 }
 
 <style>
@@ -58,6 +61,7 @@ else
                 <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
                     <tbody>
                         <tr class="sticky-row strong" data-xls-row="header">
+                            <th rowspan="2" colspan="4">HÀNH ĐỘNG</th>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">CHỈ TIÊU</td>
                             <td class="pre-whitespace" rowspan="2">QUY MÔ</td>
 
@@ -83,7 +87,23 @@ else
                             }
                             var classParent = item.IS_GROUP ? "strong" : string.Empty;
                             var isEdit = item.IS_GROUP ? "disabled" : "";
+                            var isChecked = item.IsChecked ? "checked" : "";
                             <tr class="@classParent">
+                                <td>
+                                    <input type="checkbox" @isChecked class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                                    <label for="@("chkItem" + item.CODE)"></label>
+                                </td>
+                                <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
+                                <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
+
+                                @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
+                                {
+                                    <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
                                 <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                 <td class="pre-whitespace"></td>
                                 <td class="pre-whitespace"></td>
@@ -107,5 +127,109 @@ else
         function mask(e) {
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
         }
+
+        function getCommentElement(elementCode) {
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/SuaChuaThuongXuyen/GetCommentElement',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    elementCode: elementCode,
+                },
+            };
+            Forms.LoadAjaxModal(ajaxParams);
+        }
+
+        function getAssignDepartmentElement(elementCode) {
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/SuaChuaThuongXuyen/GetAssignDepartmentElement',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    elementCode: elementCode,
+                },
+            };
+            Forms.LoadAjaxModal(ajaxParams);
+        }
+
+        function IsDoneExpertise(isCheck, element) {
+        var originalCheckboxState = $('#chkItem' + element).prop('checked');
+        if (!isCheck) {
+            Swal.fire({
+                title: "Lưu ý?",
+                text: "Hạng mục này đã được thẩm định! Hành động này sẽ không được lưu lại!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Huỷ"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var ajaxParams = {
+                        url: 'BP/SuaChuaThuongXuyen/UnExpertise',
+                        type: 'POST',
+                        data: {
+                            templateCode: '@tempalteCode',
+                            version: '@version',
+                            year: '@year',
+                            elementCode: element,
+                        },
+                        dataType: 'json',
+                        success: function (response) {
+                            Message.execute(response)
+                        }
+                    };
+                    Forms.Ajax(ajaxParams);
+                }
+                else {
+                    $('#chkItem' + element).prop('checked', !originalCheckboxState);
+                }
+            });
+            return;
+        } else {
+            Swal.fire({
+                title: "Lưu ý?",
+                text: "Bạn có chắc hoàn thành thẩm định chỉ tiêu này?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Huỷ"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var ajaxParams = {
+                        url: 'BP/SuaChuaThuongXuyen/Expertise',
+                        type: 'POST',
+                        data: {
+                            templateCode: '@tempalteCode',
+                            version: '@version',
+                            year: '@year',
+                            elementCode: element,
+                        },
+                        dataType: 'json',
+                        success: function (response) {
+                            Message.execute(response)
+                        }
+                    };
+                    Forms.Ajax(ajaxParams);
+                }
+                else {
+                    $('#chkItem' + element).prop('checked', !originalCheckboxState);
+                }
+            });
+        }
+    }
     </script>
 }

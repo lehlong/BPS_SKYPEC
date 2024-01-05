@@ -20,6 +20,8 @@ namespace SMO.Core.Entities.MD
             return MemberwiseClone();
         }
 
+        public virtual bool IsChecked { get; set; }
+
         public override bool Equals(object obj)
         {
             return obj is T_MD_KHOAN_MUC_SUA_CHUA element &&

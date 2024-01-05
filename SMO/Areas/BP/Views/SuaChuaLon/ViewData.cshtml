@@ -17,6 +17,7 @@
                     @Html.MyButton("cmdBack", "Kết xuất", $"$('#IS_DRILL_DOWN').val($('#chkDrillDown').is(':checked'));Forms.SubmitForm('{formId}');", "Alt+N", "search")
                     @Html.MyButton("cmdBack", "Download", $"DownloadDataCenter();", "Alt+N", "file_download")
                 }
+                @Html.MyButton("cmdBack", "Lọc", "ShowLeft();", "Alt+N", "sort")
             </div>
             <div class="btn-function m-l-5" id="btn-function">
             </div>
@@ -105,8 +106,15 @@
             ResizeExportTab();
 
             // submit form after filter select options
-            OnChangeOrg(null, null, null, true)
+            OnChangeOrg(null, null, null, true);
+            setTimeout(function () {
+                $("#divExportLeft_@viewId").toggle();
+            }, 2000)
         });
+
+        function ShowLeft() {
+            $("#divExportLeft_@viewId").toggle();
+        }
 
         var lastScrollLeft = 0;
 
@@ -124,7 +132,7 @@
             if (htmlMonth === '') {
                 return;
             }
-            
+
             $('#@inputIdExportExcel').remove();
             $('#@formIdExportExcel').append(`<input id="@inputIdExportExcel" name="html" type="hidden" />`);
             $('#@formIdExportExcel #exportExcelCenterCode').val($('#@formId #ORG_CODE').val());

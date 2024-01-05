@@ -74,6 +74,8 @@ namespace SMO.Areas.BP.Controllers
         {
             var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON> detailCostElements,
                 out IList<T_BP_SUA_CHUA_LON_DATA> detailCostData, out bool isDrillDownApply, model);
+
+            
             if (dataCost == null)
             {
                 ViewBag.dataCenterModel = model;
@@ -149,5 +151,143 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.InsertComment(templateCode, version, year, type, sanBay, costCenter, elementCode, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult GetCommentElement(string templateCode, int version, int year, string elementCode)
+        {
+            var data = _service.GetCommentElement(templateCode, version, year, elementCode);
+            ViewBag.TemplateCode = templateCode;
+            ViewBag.Version = version;
+            ViewBag.Year = year;
+            ViewBag.ElementCode = elementCode;
+            return PartialView(data);
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult AssignDepartment(string templateCode, int version, int year, string elementCode, string departmentCode)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.AssignDepartment(templateCode, version, year, elementCode, departmentCode);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult UnAssignDepartment(string templateCode, int version, int year, string elementCode, string departmentCode)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.UnAssignDepartment(templateCode, version, year, elementCode, departmentCode);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult Expertise(string templateCode, int version, int year, string elementCode)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.Expertise(templateCode, version, year, elementCode);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult UnExpertise(string templateCode, int version, int year, string elementCode)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.UnExpertise(templateCode, version, year, elementCode);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult GetAssignDepartmentElement(string templateCode, int version, int year, string elementCode)
+        {
+            var data = _service.GetDepartmentAssignElement(templateCode, version, year, elementCode);
+            var lstCostCenter = _service.GetCostCenter();
+            ViewBag.LstCostCenter = lstCostCenter;
+            ViewBag.TemplateCode = templateCode;
+            ViewBag.Version = version;
+            ViewBag.Year = year;
+            ViewBag.ElementCode = elementCode;
+            return PartialView(data);
+        }
+
+
     }
 }
