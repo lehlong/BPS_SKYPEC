@@ -2,10 +2,12 @@
 using SMO.Core.Common;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
+using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
 using SMO.Models;
 using SMO.Repository.Common;
 using SMO.Repository.Implement.BP;
+using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Class;
 
@@ -38,7 +40,6 @@ namespace SMO.Service.BP
             this.ObjDetail.ORG_CODE = orgCode;
             // this.ObjDetail.IS_DELETED = false;
             base.Search();
-
             // Tìm các mẫu nộp hộ của đơn vị cấp lá
             if (!ProfileUtilities.User.Organize.IS_GROUP && AuthorizeUtilities.CheckUserRight("R323"))
             {

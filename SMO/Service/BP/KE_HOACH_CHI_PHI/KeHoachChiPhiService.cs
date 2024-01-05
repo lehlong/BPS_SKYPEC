@@ -1474,42 +1474,96 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 var lstSanBay = detail.GroupBy(x => x.ChiPhiProfitCenter.SAN_BAY_CODE).Select(x => x.First()).ToList();
                 var order = 0;
-                foreach ( var sb in lstSanBay)
+                var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+                if (departmentAssign)
                 {
-                    foreach(var element in elements.OrderByDescending(x => x.C_ORDER))
+                    var lstElementAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x=> x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE).ToList();
+                    var lstElement = new List<T_MD_KHOAN_MUC_HANG_HOA>();
+                    foreach(var elementAssign in lstElementAssign)
                     {
-                        var child = elements.Where(x => x.CODE == element.CODE).SelectMany(x => x.Children).Select(x => x.CODE).ToList();
-
-                        var query = child.Count() == 0 ?
-                            detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() : 
-                            detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
-                        var expertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE);
-                        var item = new T_MD_KHOAN_MUC_HANG_HOA
+                        foreach(var element in elements.OrderByDescending(x => x.C_ORDER))
                         {
-                            CODE = element.CODE,
-                            NAME = element.NAME,
-                            Values = child.Count() == 0 ? new decimal[3]
+                            if(element.CODE == elementAssign.ELEMENT_CODE)
                             {
+                                lstElement.Add(element);
+                            }
+                        }
+                    }
+                    foreach(var sb in lstSanBay)
+                    {
+                        foreach (var element in lstElement.OrderByDescending(x => x.C_ORDER))
+                        {
+                            var child = elements.Where(x => x.CODE == element.CODE).SelectMany(x => x.Children).Select(x => x.CODE).ToList();
+
+                            var query = child.Count() == 0 ?
+                                detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() :
+                                detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
+                            var expertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE);
+                            var item = new T_MD_KHOAN_MUC_HANG_HOA
+                            {
+                                CODE = element.CODE,
+                                NAME = element.NAME,
+                                Values = child.Count() == 0 ? new decimal[3]
+                                {
                                 query.Sum(x => x.QUANTITY) ?? 0,
                                 query.Sum(x => x.PRICE) ?? 0,
                                 query.Sum(x => x.AMOUNT) ?? 0,
-                            } : new decimal[3]
-                            {
+                                } : new decimal[3]
+                                {
                                 0,
                                 0,
                                 query.Sum(x => x.AMOUNT) ?? 0,
-                            },
-                            C_ORDER = order,
-                            IS_GROUP = element.IS_GROUP,
-                            Center = sb.ChiPhiProfitCenter,
-                            IsChecked = expertise,
-                            IsHighLight = true
-                        };
-
-                        data.Add(item);
-                        order++;
+                                },
+                                C_ORDER = order,
+                                IS_GROUP = element.IS_GROUP,
+                                Center = sb.ChiPhiProfitCenter,
+                                IsChecked = expertise,
+                                IsHighLight = true
+                            };
+                            data.Add(item);
+                            order++;
+                        }
                     }
                 }
+                else
+                {
+                    foreach (var sb in lstSanBay)
+                    {
+                        foreach (var element in elements.OrderByDescending(x => x.C_ORDER))
+                        {
+                            var child = elements.Where(x => x.CODE == element.CODE).SelectMany(x => x.Children).Select(x => x.CODE).ToList();
+
+                            var query = child.Count() == 0 ?
+                                detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() :
+                                detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
+                            var expertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE);
+                            var item = new T_MD_KHOAN_MUC_HANG_HOA
+                            {
+                                CODE = element.CODE,
+                                NAME = element.NAME,
+                                Values = child.Count() == 0 ? new decimal[3]
+                                {
+                                query.Sum(x => x.QUANTITY) ?? 0,
+                                query.Sum(x => x.PRICE) ?? 0,
+                                query.Sum(x => x.AMOUNT) ?? 0,
+                                } : new decimal[3]
+                                {
+                                0,
+                                0,
+                                query.Sum(x => x.AMOUNT) ?? 0,
+                                },
+                                C_ORDER = order,
+                                IS_GROUP = element.IS_GROUP,
+                                Center = sb.ChiPhiProfitCenter,
+                                IsChecked = expertise,
+                                IsHighLight = true
+                            };
+                            data.Add(item);
+                            order++;
+                        }
+                    }
+                }
+                
 
                 return data;
             }
@@ -4943,6 +4997,18 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 this.Exception = ex;
             }
         }
+
+        public override void Search()
+        {
+            base.Search();
+            var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.Organize.CODE).FirstOrDefault();
+            if (departmentAssign!= null) {
+                var lstTemplate = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == departmentAssign.TEMPLATE_CODE && x.VERSION == departmentAssign.VERSION && x.TIME_YEAR == departmentAssign.YEAR && x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.KICH_BAN == ObjDetail.KICH_BAN);
+                ObjList.AddRange(lstTemplate);  
+            }
+        }
+
+
 
     }
 }

@@ -818,6 +818,7 @@ namespace SMO.Areas.BP.Controllers
         public ActionResult SearchIndex(TService service)
         {
             service.Search();
+            
             ViewBag.showReviewBtn = service.ShowReviewBtn();
             ViewBag.canDeleteDictionary = service.GetCanDeleteTemplateDictionary();
             return PartialView(service);
