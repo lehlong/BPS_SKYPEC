@@ -1442,6 +1442,11 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             ViewDataCenterModel model)
         {
             isDrillDownApply = model.IS_DRILL_DOWN;
+            var isRead = UnitOfWork.Repository<SuaChuaThuongXuyenDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+            if (isRead)
+            {
+                ObjDetail.ORG_CODE = model.ORG_CODE;
+            }
             if (!model.IS_HAS_NOT_VALUE && !model.IS_HAS_VALUE &&
                 (!string.IsNullOrEmpty(model.TEMPLATE_CODE) || model.VERSION == null || model.VERSION.Value == -1))
             {
@@ -1494,11 +1499,29 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                 elements.Add(sumElements);
                 foreach (var element in elements)
                 {
-                    var expertise = UnitOfWork.Repository<SuaChuaLonDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE);
+                    var expertise = UnitOfWork.Repository<SuaChuaThuongXuyenDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE && x.TYPE == BudgetType.SuaChuaThuongXuyen);
                     if (expertise)
                     {
                         element.IsChecked = true;
                     }
+                }
+                if (isRead)
+                {
+                    var lstElement = new List<T_MD_KHOAN_MUC_SUA_CHUA>();
+
+                    var departmentAssign = UnitOfWork.Repository<SuaChuaThuongXuyenDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
+                    foreach (var departmentElement in departmentAssign)
+                    {
+                        foreach (var element in elements)
+                        {
+                            if (departmentElement.ELEMENT_CODE == element.CODE)
+                            {
+                                lstElement.Add(element);
+                            }
+                        }
+                    }
+
+                    elements = lstElement;
                 }
                 return elements;
             }
@@ -3211,6 +3234,11 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
 
             var code = UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(x => x.CODE == template.ORG_CODE).Select(x => x.PARENT_CODE).FirstOrDefault();
             var currentUserCenterCode = ProfileUtilities.User.ORGANIZE_CODE;
+            var isRead = UnitOfWork.Repository<SuaChuaThuongXuyenDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+            if (isRead)
+            {
+                currentUserCenterCode = ObjDetail.ORG_CODE;
+            }
             if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
             {
                 currentUserCenterCode = code;
@@ -3665,6 +3693,11 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             int? version = null)
         {
             string orgCode = ProfileUtilities.User.ORGANIZE_CODE;
+            var isRead = UnitOfWork.Repository<SuaChuaThuongXuyenDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+            if (isRead)
+            {
+                orgCode = ObjDetail.ORG_CODE;
+            }
             var template = GetTemplate(templateCode);
             var code = UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(x => x.CODE == template.ORG_CODE).Select(x => x.PARENT_CODE).FirstOrDefault();
             if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
@@ -4194,6 +4227,17 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             
         }
 
+        public override void Search()
+        {
+            base.Search();
+            var departmentAssign = UnitOfWork.Repository<SuaChuaThuongXuyenDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.Organize.CODE).FirstOrDefault();
+            if (departmentAssign != null)
+            {
+                var lstTemplate = UnitOfWork.Repository<SuaChuaThuongXuyenRepo>().Queryable().Where(x => x.TEMPLATE_CODE == departmentAssign.TEMPLATE_CODE && x.VERSION == departmentAssign.VERSION && x.TIME_YEAR == departmentAssign.YEAR && x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.KICH_BAN == ObjDetail.KICH_BAN);
+                ObjList.AddRange(lstTemplate);
+            }
+        }
+
         public void InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
         {
             try
@@ -4247,6 +4291,7 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                     VERSION = version,
                     YEAR = year,
                     ELEMENT_CODE = elementCode,
+                    TYPE = BudgetType.SuaChuaThuongXuyen,
                     CREATE_BY = ProfileUtilities.User.USER_NAME,
                     CREATE_DATE = DateTime.Now,
                 });

@@ -1177,11 +1177,61 @@ namespace SMO.Service.MD
                     try
                     {
                         UnitOfWork.BeginTransaction();
-                        var profitCenter = UnitOfWork.Repository<SuaChuaProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == companyCode && x.COST_CENTER_CODE == projectCode);
+                        if (ObjDetail.BUDGET_TYPE.Trim() == BudgetType.SuaChuaLon) {
+                            var profitCenter = UnitOfWork.Repository<SuaChuaProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == companyCode && x.COST_CENTER_CODE == projectCode);
+                            var centerCode = profitCenter == null ? Guid.NewGuid().ToString() : profitCenter.CODE;
+                            if(profitCenter == null)
+                            {
+                                UnitOfWork.Repository<SuaChuaProfitCenterRepo>().Create(new T_MD_SUA_CHUA_PROFIT_CENTER
+                                {
+                                    CODE = centerCode,
+                                    SAN_BAY_CODE = companyCode,
+                                    COST_CENTER_CODE = projectCode,
+                                });
+                            }
+                            else
+                            {
+                                UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                            }
+
+                            var detailsCostPL = from d in detailCodes
+                                                select new T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON
+                                                (Guid.NewGuid().ToString(), template, d, centerCode, year);
+
+                            UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Create(detailsCostPL.ToList());
+
+                        }
+                        else
+                        {
+                            var profitCenterTX = UnitOfWork.Repository<SuaChuaThuongXuyenProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == companyCode && x.COST_CENTER_CODE == projectCode);
+                            var centerCodeTX = profitCenterTX == null ? Guid.NewGuid().ToString() : profitCenterTX.CODE;
+                            if(profitCenterTX == null)
+                            {
+                                UnitOfWork.Repository<SuaChuaThuongXuyenProfitCenterRepo>().Create(new T_MD_SUA_CHUA_THUONG_XUYEN_PROFIT_CENTER
+                                {
+                                    CODE = centerCodeTX,
+                                    SAN_BAY_CODE = companyCode,
+                                    COST_CENTER_CODE = projectCode,
+                                });
+                            }
+                            else
+                            {
+                                UnitOfWork.Repository<TemplateDetailSuaChuaThuongXuyenRepo>().Queryable().Where(x => x.CENTER_CODE == centerCodeTX && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                            }
+
+                            var detailsCost = from d in detailCodes
+                                              select new T_MD_TEMPLATE_DETAIL_SUA_CHUA_THUONG_XUYEN
+                                              (Guid.NewGuid().ToString(), template, d, centerCodeTX, year);
+
+                            UnitOfWork.Repository<TemplateDetailSuaChuaThuongXuyenRepo>().Create(detailsCost.ToList());
+
+                        }
+                        /*var profitCenter = UnitOfWork.Repository<SuaChuaProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == companyCode && x.COST_CENTER_CODE == projectCode);
                         var centerCode = profitCenter == null ? Guid.NewGuid().ToString() : profitCenter.CODE;
                         var profitCenterTX = UnitOfWork.Repository<SuaChuaThuongXuyenProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == companyCode && x.COST_CENTER_CODE == projectCode);
-                        var centerCodeTX = profitCenterTX == null ? Guid.NewGuid().ToString() : profitCenterTX.CODE;
-                        if (profitCenter == null && profitCenterTX == null)
+                        var centerCodeTX = profitCenterTX == null ? Guid.NewGuid().ToString() : profitCenterTX.CODE;*/
+
+                        /*if (profitCenter == null && profitCenterTX == null)
                         {
                             switch (ObjDetail.BUDGET_TYPE.Trim())
                             {
@@ -1220,9 +1270,9 @@ namespace SMO.Service.MD
                                 default:
                                     break;
                             }
-                        }
+                        }*/
                         
-                        switch (ObjDetail.BUDGET_TYPE.Trim())
+                        /*switch (ObjDetail.BUDGET_TYPE.Trim())
                         {
                             case BudgetType.SuaChuaLon:
                                 var detailsCostPL = from d in detailCodes
@@ -1241,7 +1291,7 @@ namespace SMO.Service.MD
 
                             default:
                                 break;
-                        }
+                        }*/
 
                         UnitOfWork.Commit();
                     }

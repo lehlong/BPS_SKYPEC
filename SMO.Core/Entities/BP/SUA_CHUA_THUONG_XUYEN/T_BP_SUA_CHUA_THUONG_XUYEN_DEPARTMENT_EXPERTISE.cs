@@ -13,5 +13,7 @@ namespace SMO.Core.Entities.BP.SUA_CHUA_THUONG_XUYEN
         public virtual int VERSION { get; set; }
         public virtual int YEAR { get; set; }
         public virtual string ELEMENT_CODE { get; set; }
+        public virtual string TYPE { get; set; }
+
     }
 }

@@ -10,7 +10,7 @@
     @if (SMOUtilities.CheckRight("R301"))
     {
         <button type="button" class="btn btn-default waves-effect col-deep-orange"
-                onclick="@($"Forms.LoadAjax('{Url.Action("ExportData", new { templateCode = Model.TEMPLATE_CODE, year = Model.TIME_YEAR, version = Model.VERSION, kichBan = Model.KICH_BAN, phienBan = Model.PHIEN_BAN })}');")">
+                onclick="@($"Forms.LoadAjax('{Url.Action("ExportData", new { templateCode = Model.TEMPLATE_CODE, year = Model.TIME_YEAR,orgCode = Model.ORG_CODE, version = Model.VERSION, kichBan = Model.KICH_BAN, phienBan = Model.PHIEN_BAN })}');")">
             Xem dữ liệu
         </button>
     }

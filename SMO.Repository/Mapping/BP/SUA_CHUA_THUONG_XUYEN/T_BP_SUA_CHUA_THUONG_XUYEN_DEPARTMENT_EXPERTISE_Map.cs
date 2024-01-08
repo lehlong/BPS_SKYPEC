@@ -18,6 +18,7 @@ namespace SMO.Repository.Mapping.BP.SUA_CHUA_THUONG_XUYEN
             Map(x => x.VERSION);
             Map(x => x.YEAR);
             Map(x => x.ELEMENT_CODE);
+            Map(x => x.TYPE);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
         }
     }
