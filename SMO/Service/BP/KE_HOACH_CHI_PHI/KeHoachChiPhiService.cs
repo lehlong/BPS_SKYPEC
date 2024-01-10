@@ -2111,12 +2111,13 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     {
                         var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100002");
                         var centerCodeHAN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "HAN" && x.COST_CENTER_CODE == "100002");
-                        var centerCodeVDO = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VDO" && x.COST_CENTER_CODE == "100002");
                         var centerCodeHPH = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "HPH" && x.COST_CENTER_CODE == "100002");
-                        var centerCodeDIN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "DIN" && x.COST_CENTER_CODE == "100002");
                         var centerCodeTHD = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "THD" && x.COST_CENTER_CODE == "100002");
-                        var centerCodeNAF = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "NAF" && x.COST_CENTER_CODE == "100002");
-                        if (centerCodeVPCN == null || centerCodeHAN == null || centerCodeVDO == null || centerCodeHPH == null || centerCodeDIN == null || centerCodeTHD == null || centerCodeNAF == null)
+                        var centerCodeVII = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VII" && x.COST_CENTER_CODE == "100002");
+                        var centerCodeVDH = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VDH" && x.COST_CENTER_CODE == "100002");
+                        var centerCodeVDO = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VDO" && x.COST_CENTER_CODE == "100002");
+                        
+                        if (centerCodeVPCN == null || centerCodeHAN == null || centerCodeHPH == null || centerCodeTHD == null || centerCodeVII == null || centerCodeVDH == null || centerCodeVDO == null)
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                         }
@@ -2162,26 +2163,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHAN);
 
                         //VDO
-                        var costDataVDO = new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVDO = new T_BP_KE_HOACH_CHI_PHI_DATA()
-                        {
-                            PKID = Guid.NewGuid().ToString(),
-                            ORG_CODE = orgCode,
-                            CHI_PHI_PROFIT_CENTER_CODE = centerCodeVDO.CODE,
-                            TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                            TIME_YEAR = ObjDetail.TIME_YEAR,
-                            STATUS = Approve_Status.ChuaTrinhDuyet,
-                            VERSION = versionNext,
-                            KHOAN_MUC_HANG_HOA_CODE = elementCode,
-                            QUANTITY = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString()),
-                            PRICE = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()),
-                            DESCRIPTION = tableData.Rows[i][19].ToString(),
-                            CREATE_BY = currentUser
-                        };
-                        costDataVDO.AMOUNT = costDataVDO.QUANTITY * costDataVDO.PRICE;
-                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVDO);
-
-                        //HPH
                         var costDataHPH = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataHPH = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
@@ -2193,7 +2174,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             STATUS = Approve_Status.ChuaTrinhDuyet,
                             VERSION = versionNext,
                             KHOAN_MUC_HANG_HOA_CODE = elementCode,
-                            QUANTITY = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString()),
+                            QUANTITY = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString()),
                             PRICE = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()),
                             DESCRIPTION = tableData.Rows[i][19].ToString(),
                             CREATE_BY = currentUser
@@ -2201,27 +2182,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         costDataHPH.AMOUNT = costDataHPH.QUANTITY * costDataHPH.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHPH);
 
-                        //DIN
-                        var costDataDIN = new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataDIN = new T_BP_KE_HOACH_CHI_PHI_DATA()
-                        {
-                            PKID = Guid.NewGuid().ToString(),
-                            ORG_CODE = orgCode,
-                            CHI_PHI_PROFIT_CENTER_CODE = centerCodeDIN.CODE,
-                            TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                            TIME_YEAR = ObjDetail.TIME_YEAR,
-                            STATUS = Approve_Status.ChuaTrinhDuyet,
-                            VERSION = versionNext,
-                            KHOAN_MUC_HANG_HOA_CODE = elementCode,
-                            QUANTITY = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString()),
-                            PRICE = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()),
-                            DESCRIPTION = tableData.Rows[i][19].ToString(),
-                            CREATE_BY = currentUser
-                        };
-                        costDataDIN.AMOUNT = costDataDIN.QUANTITY * costDataDIN.PRICE;
-                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataDIN);
-
-                        //THD
+                        //HPH
                         var costDataTHD = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataTHD = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
@@ -2233,7 +2194,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             STATUS = Approve_Status.ChuaTrinhDuyet,
                             VERSION = versionNext,
                             KHOAN_MUC_HANG_HOA_CODE = elementCode,
-                            QUANTITY = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()),
+                            QUANTITY = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString()),
                             PRICE = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()),
                             DESCRIPTION = tableData.Rows[i][19].ToString(),
                             CREATE_BY = currentUser
@@ -2241,13 +2202,53 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         costDataTHD.AMOUNT = costDataTHD.QUANTITY * costDataTHD.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataTHD);
 
-                        //NAF
-                        var costDataNAF = new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataNAF = new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        //DIN
+                        var costDataVII = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVII = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
-                            CHI_PHI_PROFIT_CENTER_CODE = centerCodeNAF.CODE,
+                            CHI_PHI_PROFIT_CENTER_CODE = centerCodeVII.CODE,
+                            TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                            TIME_YEAR = ObjDetail.TIME_YEAR,
+                            STATUS = Approve_Status.ChuaTrinhDuyet,
+                            VERSION = versionNext,
+                            KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                            QUANTITY = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString()),
+                            PRICE = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()),
+                            DESCRIPTION = tableData.Rows[i][19].ToString(),
+                            CREATE_BY = currentUser
+                        };
+                        costDataVII.AMOUNT = costDataVII.QUANTITY * costDataVII.PRICE;
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVII);
+
+                        //THD
+                        var costDataVDH = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVDH = new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        {
+                            PKID = Guid.NewGuid().ToString(),
+                            ORG_CODE = orgCode,
+                            CHI_PHI_PROFIT_CENTER_CODE = centerCodeVDH.CODE,
+                            TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                            TIME_YEAR = ObjDetail.TIME_YEAR,
+                            STATUS = Approve_Status.ChuaTrinhDuyet,
+                            VERSION = versionNext,
+                            KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                            QUANTITY = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()),
+                            PRICE = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()),
+                            DESCRIPTION = tableData.Rows[i][19].ToString(),
+                            CREATE_BY = currentUser
+                        };
+                        costDataVDH.AMOUNT = costDataVDH.QUANTITY * costDataVDH.PRICE;
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVDH);
+
+                        //NAF
+                        var costDataVDO = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVDO = new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        {
+                            PKID = Guid.NewGuid().ToString(),
+                            ORG_CODE = orgCode,
+                            CHI_PHI_PROFIT_CENTER_CODE = centerCodeVDO.CODE,
                             TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                             TIME_YEAR = ObjDetail.TIME_YEAR,
                             STATUS = Approve_Status.ChuaTrinhDuyet,
@@ -2258,8 +2259,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             DESCRIPTION = tableData.Rows[i][19].ToString(),
                             CREATE_BY = currentUser
                         };
-                        costDataNAF.AMOUNT = costDataNAF.QUANTITY * costDataNAF.PRICE;
-                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataNAF);
+                        costDataVDO.AMOUNT = costDataVDO.QUANTITY * costDataVDO.PRICE;
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVDO);
 
                     }
                     else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
@@ -2272,10 +2273,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var centerCodePXU = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "PXU" && x.COST_CENTER_CODE == "100003");
                         var centerCodeCXR = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "CXR" && x.COST_CENTER_CODE == "100003");
                         var centerCodeDLI = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "DLI" && x.COST_CENTER_CODE == "100003");
-                        var centerCodeVII = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VII" && x.COST_CENTER_CODE == "100003");
-                        var centerCodeTBB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "TBB" && x.COST_CENTER_CODE == "100003");
-                        var centerCodeVDH = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VDH" && x.COST_CENTER_CODE == "100003");
-                        var centerCodeVCL = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VCL" && x.COST_CENTER_CODE == "100003");
+                        
                         if (centerCodeVPCN == null || centerCodeDAD == null || centerCodeHUI == null || centerCodeUIH == null || centerCodeBMV == null || centerCodePXU == null || centerCodeCXR == null || centerCodeDLI == null || centerCodeVII == null || centerCodeTBB == null || centerCodeVDH == null || centerCodeVCL == null)
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
@@ -3372,9 +3370,9 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 numRowCur = 8;
                 var number = 1;
-                var data = dataOtherCost.GroupBy(x => x.CODE).ToList();
+                var data = dataOtherCost.GroupBy(x => x.CODE).Select(x => x.First()).ToList();
 
-                foreach (var item in data.Select(x => x.First()))
+                foreach (var item in data)
                 {
                     IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
 
@@ -3388,14 +3386,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         rowCur.Cells[1].CellStyle = styleCellBold;
                         rowCur.Cells[1].CellStyle.SetFont(fontBold);
                     }
-
-                    //for (int i = 4; i < 6; i++)
-                    //{
-                    //    rowCur.Cells[i].SetCellValue(string.Empty);
-                    //    rowCur.Cells[i].SetCellType(CellType.Numeric);
-                    //    rowCur.Cells[i].CellStyle = styleCellNumber;
-                    //}
-
                     numRowCur++;
                     number++;
                 }
