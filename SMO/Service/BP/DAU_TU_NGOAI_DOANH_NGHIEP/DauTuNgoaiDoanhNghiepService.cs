@@ -3467,7 +3467,7 @@ namespace SMO.Service.BP.DAU_TU_NGOAI_DOANH_NGHIEP
                             VALUE_4 = lookup[code].Sum(x => x.VALUE_4),
                             VALUE_5 = lookup[code].Sum(x => x.VALUE_5),
                             VALUE_6 = lookup[code].Sum(x => x.VALUE_6),
-                            KHOAN_MUC_DAU_TU_CODE = lookup[code].First().KHOAN_MUC_DAU_TU_CODE
+                            KHOAN_MUC_DAU_TU_CODE = lookup[code].First().KHOAN_MUC_DAU_TU_CODE,
                         });
                     }
                 }

@@ -1497,8 +1497,33 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             {
                 // xem dữ liệu được tổng hợp cho đơn vị
                 detailOtherKhoanMucDauTus = null;
-                return SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);
+                /* return SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);*/
+                return SummaryDauTu(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION);
             }
+        }
+
+        public IList<T_MD_KHOAN_MUC_DAU_TU> SummaryDauTu(out IList<T_BP_DAU_TU_TRANG_THIET_BI_DATA> plDataOtherKhoanMucDauTus, string orgCode, int year, int? version)
+        {
+            plDataOtherKhoanMucDauTus = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>()
+                    .GetCFDataByOrgCode(orgCode, year, string.Empty, version);
+            var lstDataSumUp = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year && x.VERSION == version).ToList();
+            var lstElementDauTu = new List<T_MD_KHOAN_MUC_DAU_TU>();
+            foreach (var item in lstDataSumUp)
+            {
+                var element = new T_MD_KHOAN_MUC_DAU_TU
+                {
+                    DauTuTrangThietBiProfitCenter = item.DauTuTrangThietBiProfitCenter == null ? new T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER() : item.DauTuTrangThietBiProfitCenter,
+                    CODE = item.KHOAN_MUC_DAU_TU_CODE,
+                    CENTER_CODE = item.DAU_TU_PROFIT_CENTER_CODE,
+                    PROCESS = item.PROCESS,
+                    Values = new decimal[1]
+                    {
+                        item.VALUE??0
+                    }
+                };
+                lstElementDauTu.Add(element);
+            }
+            return lstElementDauTu;
         }
 
         public override IList<T_MD_KHOAN_MUC_DAU_TU> GetDetailPreviewSumUp(string centerCode, string elementCode, int year)
@@ -3171,7 +3196,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                 }
 
                 // sumup element code with the same element code
-                var lookup = revenuePlDataApproved.ToLookup(x => x.KHOAN_MUC_DAU_TU_CODE);
+                var lookup = revenuePlDataApproved.ToLookup(x => Tuple.Create(x.DAU_TU_PROFIT_CENTER_CODE, x.KHOAN_MUC_DAU_TU_CODE));
                 foreach (var code in lookup.Select(x => x.Key))
                 {
                     // TODO: check if all value of months are equal 0
@@ -3183,8 +3208,9 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     {
                         lstData.Add(new T_BP_DAU_TU_TRANG_THIET_BI_DATA
                         {
-                            VALUE= lookup[code].Sum(x => x.VALUE),
-                            KHOAN_MUC_DAU_TU_CODE = lookup[code].First().KHOAN_MUC_DAU_TU_CODE
+                            DAU_TU_PROFIT_CENTER_CODE = code.Item1,
+                            VALUE = lookup[code].Sum(x => x.VALUE),
+                            KHOAN_MUC_DAU_TU_CODE = lookup[code].First().KHOAN_MUC_DAU_TU_CODE,
                         });
                     }
                 }
@@ -3241,7 +3267,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                 foreach (var item in lstData)
                 {
                     item.ORG_CODE = centerCode;
-                    item.DAU_TU_PROFIT_CENTER_CODE = string.Empty;
+                    item.DAU_TU_PROFIT_CENTER_CODE = item.DAU_TU_PROFIT_CENTER_CODE;
                     item.TEMPLATE_CODE = string.Empty;
                     item.PKID = Guid.NewGuid().ToString();
                     item.VERSION = versionPl;

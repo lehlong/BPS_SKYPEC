@@ -3518,6 +3518,11 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 return;
             }
 
+            if (string.IsNullOrEmpty(phienBan))
+            {
+                phienBan = ObjDetail.PHIEN_BAN;
+            }
+
             var lstData = new List<T_BP_KE_HOACH_SAN_LUONG_DATA>();
             revenuePL = new T_BP_KE_HOACH_SAN_LUONG_VERSION();
 
@@ -4844,6 +4849,16 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 State = false;
                 Exception = ex;
             }
+        }
+
+        public override void Search()
+        {
+            base.Search();
+            /*if (ProfileUtilities.User.Organize.IS_GROUP)
+            {
+                var lstTemSumUp = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.ORG_CODE == this.ObjDetail.ORG_CODE && x.TIME_YEAR == this.ObjDetail.TIME_YEAR && x.KICH_BAN == this.ObjDetail.KICH_BAN && x.IS_SUMUP);
+                this.ObjList.AddRange(lstTemSumUp);
+            }*/
         }
     }
 }

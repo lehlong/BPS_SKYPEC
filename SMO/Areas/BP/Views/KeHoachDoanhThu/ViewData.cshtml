@@ -18,6 +18,8 @@
                     @Html.MyButton("cmdBack", "Tính toán KHDT", "CalculateKeHoachDoanhThu()", "Alt+N", "functions")
                     @Html.MyButton("cmdBack", "Download", $"DownloadDataCenter();", "Alt+N", "file_download")
                 }
+                @Html.MyButton("cmdBack", "Lọc", "ShowLeft();", "Alt+N", "sort")
+
             </div>
             <div class="btn-function m-l-5" id="btn-function">
             </div>
@@ -113,7 +115,14 @@
 
             // submit form after filter select options
             OnChangeOrg(null, null, null, true)
+            setTimeout(function () {
+                $("#divExportLeft_@viewId").toggle();
+            }, 2000)
         });
+
+        function ShowLeft() {
+            $("#divExportLeft_@viewId").toggle();
+        }
 
         function CalculateKeHoachDoanhThu() {
             Swal.fire({

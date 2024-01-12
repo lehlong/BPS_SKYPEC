@@ -23,25 +23,15 @@ else
         <table class="table-condensed table-bordered table-striped font-13" id="table">
             <tbody>
                 <tr class="sticky-row" data-xls-row="header">
-                    <td class="sticky-cell"></td>
-                    <td class="sticky-cell strong">MÃ KHOẢN MỤC</td>
-                    <td class="sticky-cell strong">TÊN KHOẢN MỤC</td>
-                    <td class="pre-whitespace strong">THÁNG 1</td>
-                    <td class="pre-whitespace strong">THÁNG 2</td>
-                    <td class="pre-whitespace strong">THÁNG 3</td>
-                    <td class="pre-whitespace strong">THÁNG 4</td>
-                    <td class="pre-whitespace strong">THÁNG 5</td>
-                    <td class="pre-whitespace strong">THÁNG 6</td>
-                    <td class="pre-whitespace strong">THÁNG 7</td>
-                    <td class="pre-whitespace strong">THÁNG 8</td>
-                    <td class="pre-whitespace strong">THÁNG 9</td>
-                    <td class="pre-whitespace strong">THÁNG 10</td>
-                    <td class="pre-whitespace strong">THÁNG 11</td>
-                    <td class="pre-whitespace strong">THÁNG 12</td>
-                    <td class="pre-whitespace strong">TỔNG NĂM</td>
-                    <td class="pre-whitespace strong">TỔNG NĂM (DP)</td>
-                    <td class="pre-whitespace strong">TRUNG BÌNH THÁNG</td>
-                    <td class="pre-whitespace strong">GHI CHÚ</td>
+                    <td class="align-center strong">Mã khoản mục</td>
+                    <td class="align-center strong">Tên khoản mục</td>
+                    <td class="align-center strong">Giá trị đầu tư thời điểm đầu năm</td>
+                    <td class="align-center strong">Kế hoạch tăng/giảm trong năm</td>
+                    <td class="align-center strong">Giá trị đầu tư thời điểm cuối năm</td>
+                    <td class="align-center strong">Tỷ lệ vốn góp (%) đến cuối năm</td>
+                    <td class="align-center strong">Kế hoạch cổ tức / lợi nhuận được chia</td>
+                    <td class="align-center strong">Tỷ lệ LN được chia trên vốn đầu tư</td>
+                    <td class="align-center strong">Ghi chú</td>
                 </tr>
 
                 @foreach (var item in Model?
@@ -61,24 +51,6 @@ else
                         var childClass = item.IsChildren ? "child" : string.Empty;
 
                         <tr class="@classParent">
-                            @*chỉ xuất hiện biểu tượng drilldown ở khoản mục con*@
-                            @if (item.IsChildren)
-                            {
-                                <td id="@item.CODE"
-                                    centerCode="@dataCenterModel.ORG_CODE"
-                                    version="@dataCenterModel.VERSION"
-                                    level="@item.LEVEL"
-                                    root="true"
-                                    type="sumup"
-                                    class="@childClass sticky-cell"
-                                    onclick="DrillDown(this);">
-                                    <i class="material-icons swap-icon-drill-down">unfold_more</i>
-                                </td>
-                            }
-                            else
-                            {
-                                <td class="sticky-cell"></td>
-                            }
                             @if (item.IS_GROUP)
                             {
                                 <td class="sticky-cell @childClass" level="@item.LEVEL" type="sumup">@item.CODE</td>
@@ -89,15 +61,6 @@ else
                                 <td class="align-right">@item.Values[3].ToStringVN()</td>
                                 <td class="align-right">@item.Values[4].ToStringVN()</td>
                                 <td class="align-right">@item.Values[5].ToStringVN()</td>
-                                <td class="align-right">@item.Values[6].ToStringVN()</td>
-                                <td class="align-right">@item.Values[7].ToStringVN()</td>
-                                <td class="align-right">@item.Values[8].ToStringVN()</td>
-                                <td class="align-right">@item.Values[9].ToStringVN()</td>
-                                <td class="align-right">@item.Values[10].ToStringVN()</td>
-                                <td class="align-right">@item.Values[11].ToStringVN()</td>
-                                <td class="align-right">@item.Values[12].ToStringVN()</td>
-                                <td class="align-right">@item.Values[13].ToStringVN()</td>
-                                <td class="align-right">@((item.Values[12] / 12).ToStringVN())</td>
                                 <td></td>
                             }
                             else
@@ -110,15 +73,7 @@ else
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[3]).ToStringVN()</td>
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[4]).ToStringVN()</td>
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[5]).ToStringVN()</td>
-                                <td class=" align-right">@lstElements.Sum(x => x.Values[6]).ToStringVN()</td>
-                                <td class=" align-right">@lstElements.Sum(x => x.Values[7]).ToStringVN()</td>
-                                <td class=" align-right">@lstElements.Sum(x => x.Values[8]).ToStringVN()</td>
-                                <td class=" align-right">@lstElements.Sum(x => x.Values[9]).ToStringVN()</td>
-                                <td class=" align-right">@lstElements.Sum(x => x.Values[10]).ToStringVN()</td>
-                                <td class=" align-right">@lstElements.Sum(x => x.Values[11]).ToStringVN()</td>
-                                <td class=" align-right">@lstElements.Sum(x => x.Values[12]).ToStringVN()</td>
-                                <td class=" align-right">@lstElements.Sum(x => x.Values[13]).ToStringVN()</td>
-                                <td class=" align-right">@((lstElements.Sum(x => x.Values[12]) / 12).ToStringVN())</td>
+
                                 <td class=""></td>
                             }
                         </tr>
@@ -131,16 +86,6 @@ else
                             space.Append("\t");
                         }
                         <tr class="expanded @item.CODE">
-                            <td id="@item.CODE"
-                                centerCode="@dataCenterModel.ORG_CODE"
-                                version="@dataCenterModel.VERSION"
-                                level="@item.LEVEL"
-                                root="true"
-                                type="sumup"
-                                class="strong sticky-cell"
-                                onclick="DrillDown(this);">
-                                <i class="material-icons swap-icon-drill-down">unfold_more</i>
-                            </td>
                             <td class="sticky-cell" level="@item.LEVEL">@item.CODE</td>
                             <td class="sticky-cell @classParent">@($"{space.ToString()}{item.NAME}")</td>
                             <td class=" align-right">@lstElements.Sum(x => x.Values[0]).ToStringVN()</td>
@@ -149,15 +94,6 @@ else
                             <td class=" align-right">@lstElements.Sum(x => x.Values[3]).ToStringVN()</td>
                             <td class=" align-right">@lstElements.Sum(x => x.Values[4]).ToStringVN()</td>
                             <td class=" align-right">@lstElements.Sum(x => x.Values[5]).ToStringVN()</td>
-                            <td class=" align-right">@lstElements.Sum(x => x.Values[6]).ToStringVN()</td>
-                            <td class=" align-right">@lstElements.Sum(x => x.Values[7]).ToStringVN()</td>
-                            <td class=" align-right">@lstElements.Sum(x => x.Values[8]).ToStringVN()</td>
-                            <td class=" align-right">@lstElements.Sum(x => x.Values[9]).ToStringVN()</td>
-                            <td class=" align-right">@lstElements.Sum(x => x.Values[10]).ToStringVN()</td>
-                            <td class=" align-right">@lstElements.Sum(x => x.Values[11]).ToStringVN()</td>
-                            <td class=" align-right">@lstElements.Sum(x => x.Values[12]).ToStringVN()</td>
-                            <td class=" align-right">@lstElements.Sum(x => x.Values[13]).ToStringVN()</td>
-                            <td class=" align-right">@((lstElements.Sum(x => x.Values[12]) / 12).ToStringVN())</td>
                             <td class=""></td>
                         </tr>
 
@@ -165,34 +101,16 @@ else
 
                         foreach (var element in detailCostElements.Where(x => x.KHOAN_MUC_DAU_TU_CODE == item.CODE).OrderBy(x => x.ORG_CODE))
                         {
-                            var sum = element.VALUE_JAN + element.VALUE_FEB + element.VALUE_MAR + element.VALUE_APR + element.VALUE_MAY + element.VALUE_JUN + element.VALUE_JUL + element.VALUE_AUG + element.VALUE_SEP + element.VALUE_OCT + element.VALUE_NOV + element.VALUE_DEC;
-                            <tr class="@element.KHOAN_MUC_SAN_LUONG_CODE @dataCenterModel.ORG_CODE-@element.KHOAN_MUC_SAN_LUONG_CODE">
-                                <td id="@element.KHOAN_MUC_SAN_LUONG_CODE"
-                                    centerCode="@element.ORG_CODE"
-                                    version="@element.VERSION"
-                                    level="@(item.LEVEL+1)"
-                                    class="sticky-cell"
-                                    sum_up_version="@dataCenterModel.VERSION"
-                                    onclick="DrillDown(this);">
-                                    <i class="material-icons swap-icon-drill-down">unfold_more</i>
-                                </td>
+                            var sum = element.VALUE_1 + element.VALUE_2 + element.VALUE_3 + element.VALUE_4 + element.VALUE_5 + element.VALUE_6;
+                            <tr class="@element.KHOAN_MUC_DAU_TU_CODE @dataCenterModel.ORG_CODE-@element.KHOAN_MUC_DAU_TU_CODE">
                                 <td class="sticky-cell"></td>
                                 <td class="sticky-cell">@($"{space.ToString()}{element.Organize.NAME}")</td>
-                                <td class=" align-right">@((element.VALUE_JAN ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_FEB ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_MAR ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_APR ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_MAY ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_JUN ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_JUL ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_AUG ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_SEP ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_OCT ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_NOV ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_DEC ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_SUM_YEAR ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@((element.VALUE_SUM_YEAR_PREVENTIVE ?? 0).ToStringVN())</td>
-                                <td class=" align-right">@(((element.VALUE_SUM_YEAR ?? 0) / 12).ToStringVN())</td>
+                                <td class=" align-right">@((element.VALUE_1 ?? 0).ToStringVN())</td>
+                                <td class=" align-right">@((element.VALUE_2 ?? 0).ToStringVN())</td>
+                                <td class=" align-right">@((element.VALUE_3 ?? 0).ToStringVN())</td>
+                                <td class=" align-right">@((element.VALUE_4 ?? 0).ToStringVN())</td>
+                                <td class=" align-right">@((element.VALUE_5 ?? 0).ToStringVN())</td>
+                                <td class=" align-right">@((element.VALUE_6 ?? 0).ToStringVN())</td>
                                 <td class=""></td>
                             </tr>
                         }

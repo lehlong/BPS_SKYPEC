@@ -72,6 +72,7 @@
                     @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR, new { @class = "hddTimeYear" })
                     @Html.HiddenFor(m => m.ObjDetail.KICH_BAN, new { @class = "hddKichBan" })
                     @Html.HiddenFor(m => m.ObjDetail.PHIEN_BAN, new { @class = "hddPhienBan" })
+
                     <div class="card border-grey" style="margin-bottom: 2px;">
                         <div class="body" style="padding-top: 0px;">
                             <ul class="nav nav-tabs" role="tablist">
@@ -88,6 +89,7 @@
                         </div>
                     </div>
                 }
+                    
             }
 
         </div>
@@ -199,7 +201,9 @@
         $(function () {
             $("#dllTimeYear").change();
                 $("#dllKichBan").val("TB");
-                $("#dllKichBan").change();
+            $("#dllKichBan").change();
+            $("#dllPhienBan").val("PB1");
+            $("#dllPhienBan").change();
             Forms.CompleteUI();
             Forms.SubmitByEnter("@Model.FormId");
         });

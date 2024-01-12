@@ -189,7 +189,6 @@
             var year = $(".hddTimeYear").val();
             var kichBan = $(".hddKichBan").val();
             var phienBan = $(".hddPhienBan").val();
-
             var ajaxParams = {
                 url: '@Url.Action("SumUpData")',
                 type: 'POST',
@@ -246,7 +245,6 @@
         }
         var year = $(obj).val();
         $(".hddPhienBan").val(year);
-
         RefreshData();
     }
 </script>
