@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>true</Use64BitIISExpress>
     <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -38,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MvcBuildViews>false</MvcBuildViews>
+    <CodeAnalysisRuleSet>SecurityRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -216,17 +217,6 @@
     <Reference Include="SharedCache.WinServiceCommon">
       <HintPath>..\SolutionDll\SharedCache.WinServiceCommon.dll</HintPath>
     </Reference>
-    <Reference Include="SharpSapRfc, Version=2.0.10.0, Culture=neutral, PublicKeyToken=3a74d6eebd98cdfe, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SolutionDll\SharpSapRfc.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpSapRfc.Plain">
-      <HintPath>..\SolutionDll\SharpSapRfc.Plain.dll</HintPath>
-    </Reference>
-    <Reference Include="SMO.SAPINT, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SolutionDll\SMO.SAPINT.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Private>True</Private>
     </Reference>
@@ -378,7 +368,8 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TableauAPI">
+    <Reference Include="TableauAPI, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SolutionDll\TableauAPI.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">

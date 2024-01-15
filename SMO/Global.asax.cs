@@ -1,4 +1,4 @@
-﻿using SMO.SAPINT;
+﻿
 using SMO.Service.AD;
 
 using System;
@@ -77,7 +77,6 @@ namespace SMO
 
             var service = new SystemConfigService();
             service.GetConfig();
-            SAPDestitination.Init(service.ObjDetail.SAP_HOST, service.ObjDetail.SAP_CLIENT, service.ObjDetail.SAP_NUMBER);
         }
     }
 }
