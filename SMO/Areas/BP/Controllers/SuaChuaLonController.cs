@@ -109,6 +109,10 @@ namespace SMO.Areas.BP.Controllers
             {
                 ViewBag.detailCostElements = detailCostElements;
             }
+            if(string.IsNullOrEmpty(model.TEMPLATE_CODE))
+            {
+                ViewBag.lstCenterCode = _service.GetSanBaySuaChua(model);
+            }
             ViewBag.costCFHeader = _service.GetHeader(model);
             model.IS_DRILL_DOWN = isDrillDownApply;
             model.EXCHANGE_RATE = 12;

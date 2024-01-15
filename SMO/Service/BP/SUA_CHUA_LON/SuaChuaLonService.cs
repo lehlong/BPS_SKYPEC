@@ -1541,8 +1541,43 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             {
                 // xem dữ liệu được tổng hợp cho đơn vị
                 detailOtherKhoanMucSuaChuas = null;
-                return SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);
+                var lstElementSC = SummarySuaChua(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION);
+                var lstSumElement = SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);
+                var lstSum = new List<T_MD_KHOAN_MUC_SUA_CHUA>();
+                lstSum.AddRange(lstElementSC);
+                lstSum.AddRange(lstSumElement);
+                return lstSum;
             }
+        }
+
+        public IList<T_MD_KHOAN_MUC_SUA_CHUA> SummarySuaChua(out IList<T_BP_SUA_CHUA_LON_DATA> plDataOtherKhoanMucSuaChuas,  string orgCode, int year, int? version)
+        {
+            plDataOtherKhoanMucSuaChuas = UnitOfWork.Repository<SuaChuaLonDataRepo>()
+                    .GetCFDataByOrgCode(orgCode, year, string.Empty, version);
+            var lstDataSumUp = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year && x.VERSION == version).ToList();
+            var lstElementSuaChua = new List<T_MD_KHOAN_MUC_SUA_CHUA>();
+            foreach (var item in lstDataSumUp)
+            {
+                var element = new T_MD_KHOAN_MUC_SUA_CHUA
+                {
+                    CODE = item.KHOAN_MUC_SUA_CHUA_CODE,
+                    CENTER_CODE = item.SUA_CHUA_PROFIT_CENTER_CODE,
+                    NAME = item.KhoanMucSuaChua.NAME,
+                    Values = new decimal[1]
+                    {
+                        item.VALUE??0
+                    }
+                };
+                lstElementSuaChua.Add(element);
+            }
+            return lstElementSuaChua;
+        }
+
+        public IList<T_MD_SUA_CHUA_PROFIT_CENTER> GetSanBaySuaChua(ViewDataCenterModel model)
+        {
+            var lstProfitCenterCode = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).Select(x => x.SUA_CHUA_PROFIT_CENTER_CODE).ToList();
+            var lstProfitCenter = UnitOfWork.Repository<SuaChuaProfitCenterRepo>().Queryable().Where(x => lstProfitCenterCode.Contains(x.CODE)).ToList();
+            return lstProfitCenter;
         }
 
         public override IList<T_MD_KHOAN_MUC_SUA_CHUA> GetDetailPreviewSumUp(string centerCode, string elementCode, int year)
@@ -3383,7 +3418,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 }
 
                 // sumup element code with the same element code
-                var lookup = revenuePlDataApproved.ToLookup(x => x.KHOAN_MUC_SUA_CHUA_CODE);
+                var lookup = revenuePlDataApproved.ToLookup(x => Tuple.Create(x.KHOAN_MUC_SUA_CHUA_CODE, x.SUA_CHUA_PROFIT_CENTER_CODE));
                 foreach (var code in lookup.Select(x => x.Key))
                 {
                     // TODO: check if all value of months are equal 0
@@ -3396,7 +3431,8 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                         lstData.Add(new T_BP_SUA_CHUA_LON_DATA
                         {
                             VALUE = lookup[code].Sum(x => x.VALUE),
-                            KHOAN_MUC_SUA_CHUA_CODE = lookup[code].First().KHOAN_MUC_SUA_CHUA_CODE
+                            KHOAN_MUC_SUA_CHUA_CODE = lookup[code].First().KHOAN_MUC_SUA_CHUA_CODE,
+                            SUA_CHUA_PROFIT_CENTER_CODE = code.Item2
                         });
                     }
                 }
@@ -3453,7 +3489,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 foreach (var item in lstData)
                 {
                     item.ORG_CODE = centerCode;
-                    item.SUA_CHUA_PROFIT_CENTER_CODE = string.Empty;
+                    item.SUA_CHUA_PROFIT_CENTER_CODE = item.SUA_CHUA_PROFIT_CENTER_CODE;
                     item.TEMPLATE_CODE = string.Empty;
                     item.PKID = Guid.NewGuid().ToString();
                     item.VERSION = versionPl;

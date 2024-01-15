@@ -53,8 +53,8 @@ else
                         <tr class="@classParent">
                             @if (item.IS_GROUP)
                             {
-                                <td class="sticky-cell @childClass" level="@item.LEVEL" type="sumup">@item.CODE</td>
-                                <td class="sticky-cell @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                <td class="align-right @childClass" level="@item.LEVEL" type="sumup">@item.CODE</td>
+                                <td class="align-right @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                 <td class="align-right">@item.Values[0].ToStringVN()</td>
                                 <td class="align-right">@item.Values[1].ToStringVN()</td>
                                 <td class="align-right">@item.Values[2].ToStringVN()</td>
@@ -65,8 +65,8 @@ else
                             }
                             else
                             {
-                                <td class="sticky-cell" level="@item.LEVEL">@item.CODE</td>
-                                <td class="sticky-cell @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                <td class="align-right" level="@item.LEVEL">@item.CODE</td>
+                                <td class="align-right @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[0]).ToStringVN()</td>
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[1]).ToStringVN()</td>
                                 <td class=" align-right">@lstElements.Sum(x => x.Values[2]).ToStringVN()</td>
@@ -86,8 +86,8 @@ else
                             space.Append("\t");
                         }
                         <tr class="expanded @item.CODE">
-                            <td class="sticky-cell" level="@item.LEVEL">@item.CODE</td>
-                            <td class="sticky-cell @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                            <td class="align-right" level="@item.LEVEL">@item.CODE</td>
+                            <td class="align-right @classParent">@($"{space.ToString()}{item.NAME}")</td>
                             <td class=" align-right">@lstElements.Sum(x => x.Values[0]).ToStringVN()</td>
                             <td class=" align-right">@lstElements.Sum(x => x.Values[1]).ToStringVN()</td>
                             <td class=" align-right">@lstElements.Sum(x => x.Values[2]).ToStringVN()</td>
