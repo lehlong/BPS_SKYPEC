@@ -73,7 +73,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                    @foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Skip(0).Take(10).Select(x => x.First()))
                     {
                         var space = new StringBuilder();
                         for (int i = 0; i < item.LEVEL; i++)

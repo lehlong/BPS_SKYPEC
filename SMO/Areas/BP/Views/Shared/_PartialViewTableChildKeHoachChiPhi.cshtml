@@ -1,7 +1,14 @@
 ﻿
 @model SMO.Core.Entities.T_BP_KE_HOACH_CHI_PHI
+@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
 @{
     var number = ViewBag.number as int?;
+    var model = new SMO.Service.Class.ViewDataCenterModel();
+    model.TEMPLATE_CODE = Model.TEMPLATE_CODE;
+    model.YEAR = Model.TIME_YEAR;
+    model.ORG_CODE = Model.ORG_CODE;
+    model.VERSION = Model.VERSION;
 }
 <td>
     <div><b>@Model.ORG_CODE</b></div>
@@ -34,7 +41,7 @@
         @if (SMOUtilities.CheckRight("R301"))
         {
             <button type="button" class="btn btn-default waves-effect col-deep-orange"
-                    onclick="@($"Forms.LoadAjax('{Url.Action("ExportData", new { templateCode = Model.TEMPLATE_CODE, year = Model.TIME_YEAR, version = Model.VERSION, orgCode = Model.ORG_CODE, kichBan = Model.KICH_BAN, phienBan = Model.PHIEN_BAN })}');")">
+                    onclick="@($"Forms.LoadAjax('{Url.Action("ViewDataTemplate", new { model = JsonConvert.SerializeObject(model) })}');")">
                 Xem dữ liệu
             </button>
         }

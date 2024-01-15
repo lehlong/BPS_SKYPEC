@@ -5,12 +5,17 @@
     var number = ViewBag.number as int?;
     var periodTime = ViewBag.periodTime as T_MD_PERIOD_TIME;
     var canDelete = ViewBag.canDelete as bool?;
+    var model = new SMO.Service.Class.ViewDataCenterModel();
+    model.TEMPLATE_CODE = Model.TEMPLATE_CODE;
+    model.YEAR = Model.TIME_YEAR;
+    model.ORG_CODE = Model.ORG_CODE;
+    model.VERSION = model.VERSION;
 }
 <div class="m-b-5">
     @if (SMOUtilities.CheckRight("R301"))
     {
         <button type="button" class="btn btn-default waves-effect col-deep-orange"
-                onclick="@($"Forms.LoadAjax('{Url.Action("ExportData", new { templateCode = Model.TEMPLATE_CODE, year = Model.TIME_YEAR, orgCode = Model.ORG_CODE, version = Model.VERSION, kichBan = Model.KICH_BAN, phienBan = Model.PHIEN_BAN })}');")">
+                onclick="@($"Forms.LoadAjax('{Url.Action("ViewDataTemplate", new { model = model })}');")">
             Xem dữ liệu
         </button>
     }

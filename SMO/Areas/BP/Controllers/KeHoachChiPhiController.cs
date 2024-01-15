@@ -139,6 +139,14 @@ namespace SMO.Areas.BP.Controllers
             return PartialView(data);
         }
 
+        public ActionResult ViewDataTemplate(string model)
+        {
+            var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
+            var data = _service.GetData(modelJson);
+            ViewBag.dataCenterModel = modelJson;
+            return PartialView(data);
+        }
+
         public override ActionResult SummaryCenter(string centerCode, int? year, int? version, bool isRenderPartial = false)
         {
             // cost
