@@ -3,7 +3,10 @@
 @using SMO.Core.Entities.MD;
 @using SMO.Service.Class;
 @using System.Text;
+@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
 @{
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
     var lstDepartment = SelectListUtilities.GetAllCostCenter().ToList();
     var orgCode = dataCenterModel.ORG_CODE;
@@ -33,10 +36,13 @@
         width: 86px;
     }
 
-    th{
-        text-align:center;
+    th {
+        text-align: center;
     }
 </style>
+<a class="btn btn-default" style=" padding: 8px 6px 0px 4px;" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank">
+    <span class="material-icons">file_download</span>
+</a>
 <div class="export-left-tab">
     <div role="tabpanel" class="tab-pane fade in active">
         <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
@@ -84,7 +90,7 @@
                             </td>
                             <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
                             <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
-                           
+
                             @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
                             {
                                 <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>

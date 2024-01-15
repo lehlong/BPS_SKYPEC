@@ -14,8 +14,7 @@
                 @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
                 @if (SMOUtilities.CheckRight("R301"))
                 {
-                    @Html.MyButton("cmdBack", "Kết xuất", $"$('#IS_DRILL_DOWN').val($('#chkDrillDown').is(':checked'));Forms.SubmitForm('{formId}');", "Alt+N", "search")
-                    @Html.MyButton("cmdBack", "Download", $"DownloadDataCenter();", "Alt+N", "file_download")
+                    @Html.MyButton("cmdBack", "Kết xuất", $"$('#IS_DRILL_DOWN').val($('#chkDrillDown').is(':checked'));Forms.SubmitForm('{formId}');", "Alt+N", "search")                   
                 }
                 @Html.MyButton("cmdBack", "Lọc", "ShowLeft();", "Alt+N", "sort")
             </div>
@@ -78,7 +77,7 @@
                     </div>
                 </div>
             </div>
-            <div class="export-right" id="divExportRight_@viewId" style="margin-left:auto">
+            <div class="export-right" id="divExportRight_@viewId" style="margin-left:auto;padding:0">
 
             </div>
             <div class="hidden">

@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Office.Interop.Excel;
+using Newtonsoft.Json;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
@@ -56,6 +57,45 @@ namespace SMO.Areas.BP.Controllers
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
 
+        public FileContentResult DownloadData(string modelJson)
+        {
+            var model = JsonConvert.DeserializeObject<ViewDataCenterModel>(modelJson);
+
+            var template = _service.GetTemplate(model.TEMPLATE_CODE);
+
+            MemoryStream outFileStream = new MemoryStream();
+
+            var orgCodeInTemplate = "";
+
+            var templateExcel = "";
+            if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
+            {
+                templateExcel = "Template_KeHoachChiPhiMienBac.xlsx";
+                orgCodeInTemplate = "100002";
+            }
+            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
+            {
+                templateExcel = "Template_KeHoachChiPhiMienTrung.xlsx";
+                orgCodeInTemplate = "100003";
+            }
+            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
+            {
+                templateExcel = "Template_KeHoachChiPhiMienNam.xlsx";
+                orgCodeInTemplate = "100004";
+            }
+            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
+            {
+                templateExcel = "Template_KeHoachChiPhiDoiVanTai.xlsx";
+                orgCodeInTemplate = "100005";
+            }
+
+            string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
+            _service.GenerateData(ref outFileStream, path, model, orgCodeInTemplate);
+            var fileName = template.NAME;
+
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+        }
+
         public override ActionResult ViewTemplate(string templateId, int? version, int year, string centerCode = "")
         {
             if (!string.IsNullOrEmpty(templateId))
@@ -96,47 +136,6 @@ namespace SMO.Areas.BP.Controllers
         {
             var data = _service.GetData(model);
             ViewBag.dataCenterModel = model;
-            //var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailCostElements,
-            //    out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailCostData, out bool isDrillDownApply, model);
-            //if (dataCost == null)
-            //{
-            //    ViewBag.dataCenterModel = model;
-            //    return PartialView(dataCost);
-            //}
-            //dataCost = dataCost.Distinct().ToList();
-            //// chuyển đơn vị tiền tệ 
-            //if (model.EXCHANGE_RATE.HasValue && model.EXCHANGE_RATE != 1)
-            //{
-            //    foreach (var data in dataCost)
-            //    {
-            //        for (int i = 0; i < data.Values.Length; i++)
-            //        {
-            //            data.Values[i] = Math.Round(data.Values[i] / model.EXCHANGE_RATE.Value, 2);
-            //        }
-            //    }
-            //    if (isDrillDownApply && detailCostData != null)
-            //    {
-            //        foreach (var data in detailCostData)
-            //        {
-            //            data.QUANTITY = Math.Round((data.QUANTITY ?? 0) / model.EXCHANGE_RATE.Value, 2);
-            //            data.PRICE = Math.Round((data.PRICE ?? 0) / model.EXCHANGE_RATE.Value, 2);
-            //            data.AMOUNT = Math.Round((data.AMOUNT ?? 0) / model.EXCHANGE_RATE.Value, 2);
-            //        }
-            //    }
-            //}
-
-            //if (detailCostData != null)
-            //{
-            //    ViewBag.detailCostElements = detailCostData;
-            //}
-            //if (detailCostElements != null)
-            //{
-            //    ViewBag.detailCostElements = detailCostElements;
-            //}
-            //ViewBag.costCFHeader = _service.GetHeader(model);
-            //model.IS_DRILL_DOWN = isDrillDownApply;
-            //model.EXCHANGE_RATE = 12;
-            //ViewBag.dataCenterModel = model;
             return PartialView(data);
         }
 

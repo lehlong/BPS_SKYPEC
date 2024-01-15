@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.SignalR;
+﻿using iTextSharp.text;
+using Microsoft.AspNet.SignalR;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -1093,7 +1094,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
         public override void GetListOfChild()
         {
             var orgCode = ProfileUtilities.User.ORGANIZE_CODE;
-            if(orgCode == "1000")
+            if (orgCode == "1000")
             {
                 var lstOrg = this.UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(
                     x => x.PARENT_CODE == orgCode
@@ -1162,7 +1163,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 }
                 this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
             }
-            
+
         }
 
         /// <summary>
@@ -1452,6 +1453,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             {
                 var template = UnitOfWork.Repository<TemplateRepo>().Get(model.TEMPLATE_CODE);
                 IList<T_MD_KHOAN_MUC_HANG_HOA> data = new List<T_MD_KHOAN_MUC_HANG_HOA>();
+
                 var elements = UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetAll();
 
                 if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
@@ -1467,107 +1469,81 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("N62")).OrderBy(x => x.C_ORDER).ToList();
                 }
 
-                foreach (var el in elements) {
+                foreach (var el in elements)
+                {
                     el.Children = elements.Where(x => x.PARENT_CODE == el.CODE).ToList();
                 }
+
                 var detail = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.TIME_YEAR == model.YEAR).ToList();
 
                 var lstSanBay = detail.GroupBy(x => x.ChiPhiProfitCenter.SAN_BAY_CODE).Select(x => x.First()).ToList();
+                
                 var order = 0;
+
                 var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+
                 if (departmentAssign)
                 {
-                    var lstElementAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x=> x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE).ToList();
+                    var lstElementAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE).ToList();
                     var lstElement = new List<T_MD_KHOAN_MUC_HANG_HOA>();
-                    foreach(var elementAssign in lstElementAssign)
+                    foreach (var elementAssign in lstElementAssign)
                     {
-                        foreach(var element in elements.OrderByDescending(x => x.C_ORDER))
+                        foreach (var element in elements.OrderByDescending(x => x.C_ORDER))
                         {
-                            if(element.CODE == elementAssign.ELEMENT_CODE)
+                            if (element.CODE == elementAssign.ELEMENT_CODE)
                             {
                                 lstElement.Add(element);
                             }
                         }
                     }
-                    foreach(var sb in lstSanBay)
-                    {
-                        foreach (var element in lstElement.OrderByDescending(x => x.C_ORDER))
-                        {
-                            var child = elements.Where(x => x.CODE == element.CODE).SelectMany(x => x.Children).Select(x => x.CODE).ToList();
-
-                            var query = child.Count() == 0 ?
-                                detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() :
-                                detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
-                            var expertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE);
-                            var item = new T_MD_KHOAN_MUC_HANG_HOA
-                            {
-                                CODE = element.CODE,
-                                NAME = element.NAME,
-                                Values = child.Count() == 0 ? new decimal[3]
-                                {
-                                query.Sum(x => x.QUANTITY) ?? 0,
-                                query.Sum(x => x.PRICE) ?? 0,
-                                query.Sum(x => x.AMOUNT) ?? 0,
-                                } : new decimal[3]
-                                {
-                                0,
-                                0,
-                                query.Sum(x => x.AMOUNT) ?? 0,
-                                },
-                                C_ORDER = order,
-                                IS_GROUP = element.IS_GROUP,
-                                Center = sb.ChiPhiProfitCenter,
-                                IsChecked = expertise,
-                                IsHighLight = true
-                            };
-                            data.Add(item);
-                            order++;
-                        }
-                    }
+                    elements = lstElement;
                 }
-                else
+
+                var allExpertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
+
+                var lstItem = elements.OrderByDescending(x => x.C_ORDER);
+
+                foreach (var sb in lstSanBay)
                 {
-                    foreach (var sb in lstSanBay)
+                    foreach (var element in lstItem)
                     {
-                        foreach (var element in elements.OrderByDescending(x => x.C_ORDER))
-                        {
-                            var child = elements.Where(x => x.CODE == element.CODE).SelectMany(x => x.Children).Select(x => x.CODE).ToList();
+                        var child = elements.Where(x => x.CODE == element.CODE).SelectMany(x => x.Children).Select(x => x.CODE).ToList();
 
-                            var query = child.Count() == 0 ?
-                                detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() :
-                                detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
-                            var expertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE);
-                            var item = new T_MD_KHOAN_MUC_HANG_HOA
+                        var query = child.Count() == 0 ?
+                            detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() :
+                            detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
+                        
+                        var expertise = allExpertise.Any(x => x.ELEMENT_CODE == element.CODE);
+                        
+                        var item = new T_MD_KHOAN_MUC_HANG_HOA
+                        {
+                            CODE = element.CODE,
+                            NAME = element.NAME,
+                            Values = child.Count() == 0 ? new decimal[3]
                             {
-                                CODE = element.CODE,
-                                NAME = element.NAME,
-                                Values = child.Count() == 0 ? new decimal[3]
-                                {
                                 query.Sum(x => x.QUANTITY) ?? 0,
                                 query.Sum(x => x.PRICE) ?? 0,
                                 query.Sum(x => x.AMOUNT) ?? 0,
-                                } : new decimal[3]
-                                {
+                            } : new decimal[3]
+                            {
                                 0,
                                 0,
                                 query.Sum(x => x.AMOUNT) ?? 0,
-                                },
-                                C_ORDER = order,
-                                IS_GROUP = element.IS_GROUP,
-                                Center = sb.ChiPhiProfitCenter,
-                                IsChecked = expertise,
-                                IsHighLight = true
-                            };
-                            data.Add(item);
-                            order++;
-                        }
+                            },
+                            C_ORDER = order,
+                            IS_GROUP = element.IS_GROUP,
+                            Center = sb.ChiPhiProfitCenter,
+                            IsChecked = expertise,
+                            IsHighLight = true
+                        };
+                        data.Add(item);
+                        order++;
                     }
                 }
-                
 
                 return data;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 UnitOfWork.Rollback();
                 this.Exception = ex;
@@ -1608,7 +1584,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 //var elements = GetDataCostPreview(out detailOtherKhoanMucHangHoas, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue);
 
                 var templateDetails = new List<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI>();
-                
+
                 var sumElements = new T_MD_KHOAN_MUC_HANG_HOA
                 {
                     // set tổng năm
@@ -2116,7 +2092,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var centerCodeVII = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VII" && x.COST_CENTER_CODE == "100002");
                         var centerCodeVDH = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VDH" && x.COST_CENTER_CODE == "100002");
                         var centerCodeVDO = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VDO" && x.COST_CENTER_CODE == "100002");
-                        
+
                         if (centerCodeVPCN == null || centerCodeHAN == null || centerCodeHPH == null || centerCodeTHD == null || centerCodeVII == null || centerCodeVDH == null || centerCodeVDO == null)
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
@@ -2273,11 +2249,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var centerCodeVCL = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VCL" && x.COST_CENTER_CODE == "100003");
                         var centerCodePXU = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "PXU" && x.COST_CENTER_CODE == "100003");
                         var centerCodeTBB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "TBB" && x.COST_CENTER_CODE == "100003");
-                        if (centerCodeVPCN == null || centerCodeDAD == null || centerCodeCXR == null || centerCodeHUI == null || centerCodeUIH == null || centerCodeVCL == null || centerCodePXU == null ||  centerCodeTBB == null)
+                        if (centerCodeVPCN == null || centerCodeDAD == null || centerCodeCXR == null || centerCodeHUI == null || centerCodeUIH == null || centerCodeVCL == null || centerCodePXU == null || centerCodeTBB == null)
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                         }
-                        
+
                         //VPCN
                         var costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA()
@@ -2398,7 +2374,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         costDataVCL.AMOUNT = costDataVCL.QUANTITY * costDataVCL.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCL);
 
-                        
+
 
                         //PXU
                         var costDataPXU = new T_BP_KE_HOACH_CHI_PHI_DATA();
@@ -2419,11 +2395,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataPXU.AMOUNT = costDataPXU.QUANTITY * costDataPXU.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataPXU);
-                        
-                        
-                        
-                        
-                        
+
+
+
+
+
                         //TBB
                         var costDataTBB = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataTBB = new T_BP_KE_HOACH_CHI_PHI_DATA()
@@ -2443,7 +2419,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataTBB.AMOUNT = costDataTBB.QUANTITY * costDataTBB.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataTBB);
-                          
+
                     }
                     else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
                     {
@@ -2458,7 +2434,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                         }
-                        
+
                         //VPCN
                         var costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA()
@@ -2610,7 +2586,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                         }
-                        
+
                         //VPCN
                         var costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataVPCN = new T_BP_KE_HOACH_CHI_PHI_DATA()
@@ -2630,7 +2606,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * costDataVPCN.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
-                        
+
                         //VTMB
                         var costDataVTMB = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataVTMB = new T_BP_KE_HOACH_CHI_PHI_DATA()
@@ -2650,7 +2626,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVTMB.AMOUNT = costDataVTMB.QUANTITY * costDataVTMB.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMB);
-                        
+
                         //VTMT
                         var costDataVTMT = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataVTMT = new T_BP_KE_HOACH_CHI_PHI_DATA()
@@ -2670,7 +2646,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         costDataVTMT.AMOUNT = costDataVTMT.QUANTITY * costDataVTMT.PRICE;
                         UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMT);
-                        
+
                         //VTMN
                         var costDataVTMN = new T_BP_KE_HOACH_CHI_PHI_DATA();
                         costDataVTMN = new T_BP_KE_HOACH_CHI_PHI_DATA()
@@ -3293,6 +3269,357 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     }
                     numRowCur++;
                     number++;
+                }
+
+                //Xóa dòng thừa cuối cùng khi tạo các dòng cho detail
+                IRow rowLastDetail = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+                ReportUtilities.DeleteRow(ref sheet, rowLastDetail);
+
+                rowLastDetail = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+                ReportUtilities.DeleteRow(ref sheet, rowLastDetail);
+                #endregion
+
+                templateWorkbook.Write(outFileStream);
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.ErrorMessage = "Có lỗi xảy ra trong quá trình tạo file excel!";
+                this.Exception = ex;
+            }
+        }
+
+        private ICellStyle GetCellStyleNumber(IWorkbook templateWorkbook)
+        {
+            ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
+            styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            return styleCellNumber;
+        }
+        public void GenerateData(ref MemoryStream outFileStream, string path, ViewDataCenterModel model, string orgCode)
+        {
+            try
+            {
+                //Mở file Template
+                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                IWorkbook templateWorkbook;
+                templateWorkbook = new XSSFWorkbook(fs);
+                templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
+                fs.Close();
+                ISheet sheet = templateWorkbook.GetSheetAt(0);
+
+                //Số hàng và số cột hiện tại
+                int numRowCur = 0;
+                int NUM_CELL = 22;
+
+                //Style cần dùng
+
+                var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+
+                ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+                styleCellBold.WrapText = true;
+                var fontBold = templateWorkbook.CreateFont();
+                fontBold.Boldweight = (short)FontBoldWeight.Bold;
+                fontBold.FontHeightInPoints = 11;
+                fontBold.FontName = "Times New Roman";
+
+                #region Header
+                var template = UnitOfWork.Repository<TemplateRepo>().Get(model.TEMPLATE_CODE);
+                var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 0, NUM_CELL);
+                ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
+                rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {template.Organize?.Parent?.NAME.ToUpper()}");
+
+                var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
+
+                ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
+                rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
+                rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
+
+                var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
+
+                ReportUtilities.CreateCell(ref rowHeader3, NUM_CELL);
+                rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
+                #endregion
+
+                #region Details
+
+                numRowCur = 8;
+                var number = 1;
+
+                var data = GetData(model);
+
+                switch (orgCode)
+                {
+                    case "100002":
+                        foreach (var item in data.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                        {
+                            IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+
+                            rowCur.Cells[0].SetCellValue(item.CODE);
+                            rowCur.Cells[1].SetCellValue(item.NAME);
+
+                            var VPCN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCN" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[2].SetCellValue(string.IsNullOrEmpty(VPCN) ? 0 : Convert.ToDouble(VPCN));
+                            rowCur.Cells[2].CellStyle = styleCellNumber;
+
+                            var HAN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "HAN" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[3].SetCellValue(string.IsNullOrEmpty(HAN) ? 0 : Convert.ToDouble(HAN));
+                            rowCur.Cells[3].CellStyle = styleCellNumber;
+
+                            var HPH = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "HPH" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[4].SetCellValue(string.IsNullOrEmpty(HPH) ? 0 : Convert.ToDouble(HPH));
+                            rowCur.Cells[4].CellStyle = styleCellNumber;
+
+                            var THD = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "THD" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[5].SetCellValue(string.IsNullOrEmpty(THD) ? 0 : Convert.ToDouble(THD));
+                            rowCur.Cells[5].CellStyle = styleCellNumber;
+
+                            var VII = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VII" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[6].SetCellValue(string.IsNullOrEmpty(VII) ? 0 : Convert.ToDouble(VII));
+                            rowCur.Cells[6].CellStyle = styleCellNumber;
+
+                            var VDH = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VDH" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[7].SetCellValue(string.IsNullOrEmpty(VDH) ? 0 : Convert.ToDouble(VDH));
+                            rowCur.Cells[7].CellStyle = styleCellNumber;
+
+                            var VDO = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VDO" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[8].SetCellValue(string.IsNullOrEmpty(VDO) ? 0 : Convert.ToDouble(VDO));
+                            rowCur.Cells[8].CellStyle = styleCellNumber;
+
+                            var sumQuantity = data.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]);
+                            rowCur.Cells[9].SetCellValue(Convert.ToDouble(sumQuantity));
+                            rowCur.Cells[9].CellStyle = styleCellNumber;
+
+                            var price = data.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1];
+                            rowCur.Cells[10].SetCellValue(price == 0 || price == null ? 0 : Convert.ToDouble(price));
+                            rowCur.Cells[10].CellStyle = styleCellNumber;
+
+                            var totalVPCN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCN" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[11].SetCellValue(string.IsNullOrEmpty(totalVPCN) ? 0 : Convert.ToDouble(totalVPCN));
+                            rowCur.Cells[11].CellStyle = styleCellNumber;
+
+                            var totalHAN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "HAN" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[12].SetCellValue(string.IsNullOrEmpty(totalHAN) ? 0 : Convert.ToDouble(totalHAN));
+                            rowCur.Cells[12].CellStyle = styleCellNumber;
+
+                            var totalHPH = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "HPH" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[13].SetCellValue(string.IsNullOrEmpty(totalHPH) ? 0 : Convert.ToDouble(totalHPH));
+                            rowCur.Cells[13].CellStyle = styleCellNumber;
+
+                            var totalTHD = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "THD" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[14].SetCellValue(string.IsNullOrEmpty(totalTHD) ? 0 : Convert.ToDouble(totalTHD));
+                            rowCur.Cells[14].CellStyle = styleCellNumber;
+
+                            var totalVII = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VII" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[15].SetCellValue(string.IsNullOrEmpty(totalVII) ? 0 : Convert.ToDouble(totalVII));
+                            rowCur.Cells[15].CellStyle = styleCellNumber;
+
+                            var totalVDH = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VDH" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[16].SetCellValue(string.IsNullOrEmpty(totalVDH) ? 0 : Convert.ToDouble(totalVDH));
+                            rowCur.Cells[16].CellStyle = styleCellNumber;
+
+                            var totalVDO = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VDO" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[17].SetCellValue(string.IsNullOrEmpty(totalVDO) ? 0 : Convert.ToDouble(totalVDO));
+                            rowCur.Cells[17].CellStyle = styleCellNumber;
+
+                            var sumTotal = data.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]);
+                            rowCur.Cells[18].SetCellValue(Convert.ToDouble(sumTotal));
+                            rowCur.Cells[18].CellStyle = styleCellNumber;
+
+                            if (item.IS_GROUP)
+                            {
+                                rowCur.Cells[0].CellStyle = styleCellBold;
+                                rowCur.Cells[0].CellStyle.SetFont(fontBold);
+                                rowCur.Cells[1].CellStyle = styleCellBold;
+                                rowCur.Cells[1].CellStyle.SetFont(fontBold);
+                            }
+                            numRowCur++;
+                            number++;
+                        }
+                        break;
+                    case "100003":
+                        foreach (var item in data.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                        {
+                            IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+
+                            rowCur.Cells[0].SetCellValue(item.CODE);
+                            rowCur.Cells[1].SetCellValue(item.NAME);
+
+                            var VPCN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCN" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[2].SetCellValue(string.IsNullOrEmpty(VPCN) ? 0 : Convert.ToDouble(VPCN));
+                            rowCur.Cells[2].CellStyle = styleCellNumber;
+
+                            var DAD = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "DAD" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[3].SetCellValue(string.IsNullOrEmpty(DAD) ? 0 : Convert.ToDouble(DAD));
+                            rowCur.Cells[3].CellStyle = styleCellNumber;
+
+                            var CXR = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "CXR" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[4].SetCellValue(string.IsNullOrEmpty(CXR) ? 0 : Convert.ToDouble(CXR));
+                            rowCur.Cells[4].CellStyle = styleCellNumber;
+
+                            var HUI = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "HUI" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[5].SetCellValue(string.IsNullOrEmpty(HUI) ? 0 : Convert.ToDouble(HUI));
+                            rowCur.Cells[5].CellStyle = styleCellNumber;
+
+                            var UIH = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "UIH" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[6].SetCellValue(string.IsNullOrEmpty(UIH) ? 0 : Convert.ToDouble(UIH));
+                            rowCur.Cells[6].CellStyle = styleCellNumber;
+
+                            var VCL = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VCL" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[7].SetCellValue(string.IsNullOrEmpty(VCL) ? 0 : Convert.ToDouble(VCL));
+                            rowCur.Cells[7].CellStyle = styleCellNumber;
+
+                            var PXU = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "PXU" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[8].SetCellValue(string.IsNullOrEmpty(PXU) ? 0 : Convert.ToDouble(PXU));
+                            rowCur.Cells[8].CellStyle = styleCellNumber;
+
+                            var TBB = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "TBB" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[9].SetCellValue(string.IsNullOrEmpty(TBB) ? 0 : Convert.ToDouble(TBB));
+                            rowCur.Cells[9].CellStyle = styleCellNumber;
+
+                            var sumQuantity = data.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]);
+                            rowCur.Cells[10].SetCellValue(Convert.ToDouble(sumQuantity));
+                            rowCur.Cells[10].CellStyle = styleCellNumber;
+
+                            var price = data.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1];
+                            rowCur.Cells[11].SetCellValue(price == 0 || price == null ? 0 : Convert.ToDouble(price));
+                            rowCur.Cells[11].CellStyle = styleCellNumber;
+
+                            var totalVPCN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCN" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[12].SetCellValue(string.IsNullOrEmpty(totalVPCN) ? 0 : Convert.ToDouble(totalVPCN));
+                            rowCur.Cells[12].CellStyle = styleCellNumber;
+
+                            var totalDAD = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "DAD" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[13].SetCellValue(string.IsNullOrEmpty(totalDAD) ? 0 : Convert.ToDouble(totalDAD));
+                            rowCur.Cells[13].CellStyle = styleCellNumber;
+
+                            var totalCXR = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "CXR" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[14].SetCellValue(string.IsNullOrEmpty(totalCXR) ? 0 : Convert.ToDouble(totalCXR));
+                            rowCur.Cells[14].CellStyle = styleCellNumber;
+
+                            var totalHUI = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "HUI" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[15].SetCellValue(string.IsNullOrEmpty(totalHUI) ? 0 : Convert.ToDouble(totalHUI));
+                            rowCur.Cells[15].CellStyle = styleCellNumber;
+
+                            var totalUIH = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "UIH" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[16].SetCellValue(string.IsNullOrEmpty(totalUIH) ? 0 : Convert.ToDouble(totalUIH));
+                            rowCur.Cells[16].CellStyle = styleCellNumber;
+
+                            var totalVCL = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VCL" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[17].SetCellValue(string.IsNullOrEmpty(totalVCL) ? 0 : Convert.ToDouble(totalVCL));
+                            rowCur.Cells[17].CellStyle = styleCellNumber;
+
+                            var totalPXU = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "PXU" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[18].SetCellValue(string.IsNullOrEmpty(totalPXU) ? 0 : Convert.ToDouble(totalPXU));
+                            rowCur.Cells[18].CellStyle = styleCellNumber;
+
+                            var totalTBB = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "TBB" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[19].SetCellValue(string.IsNullOrEmpty(totalTBB) ? 0 : Convert.ToDouble(totalTBB));
+                            rowCur.Cells[19].CellStyle = styleCellNumber;
+
+                            var sumTotal = data.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]);
+                            rowCur.Cells[20].SetCellValue(Convert.ToDouble(sumTotal));
+                            rowCur.Cells[20].CellStyle = styleCellNumber;
+
+                            if (item.IS_GROUP)
+                            {
+                                rowCur.Cells[0].CellStyle = styleCellBold;
+                                rowCur.Cells[0].CellStyle.SetFont(fontBold);
+                                rowCur.Cells[1].CellStyle = styleCellBold;
+                                rowCur.Cells[1].CellStyle.SetFont(fontBold);
+                            }
+                            numRowCur++;
+                            number++;
+                        }
+                        break;
+                    case "100004":
+                        foreach (var item in data.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                        {
+                            IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+
+                            rowCur.Cells[0].SetCellValue(item.CODE);
+                            rowCur.Cells[1].SetCellValue(item.NAME);
+
+                            var VPCN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCN" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[2].SetCellValue(string.IsNullOrEmpty(VPCN) ? 0 : Convert.ToDouble(VPCN));
+                            rowCur.Cells[2].CellStyle = styleCellNumber;
+
+                            var SGN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "SGN" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[3].SetCellValue(string.IsNullOrEmpty(SGN) ? 0 : Convert.ToDouble(SGN));
+                            rowCur.Cells[3].CellStyle = styleCellNumber;
+
+                            var PQC = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "PQC" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[4].SetCellValue(string.IsNullOrEmpty(PQC) ? 0 : Convert.ToDouble(PQC));
+                            rowCur.Cells[4].CellStyle = styleCellNumber;
+
+                            var DLI = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "DLI" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[5].SetCellValue(string.IsNullOrEmpty(DLI) ? 0 : Convert.ToDouble(DLI));
+                            rowCur.Cells[5].CellStyle = styleCellNumber;
+
+                            var VCA = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VCA" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[6].SetCellValue(string.IsNullOrEmpty(VCA) ? 0 : Convert.ToDouble(VCA));
+                            rowCur.Cells[6].CellStyle = styleCellNumber;
+
+                            var BMV = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "BMV" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[7].SetCellValue(string.IsNullOrEmpty(BMV) ? 0 : Convert.ToDouble(BMV));
+                            rowCur.Cells[7].CellStyle = styleCellNumber;
+
+                            var VCS = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VCS" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[8].SetCellValue(string.IsNullOrEmpty(VCS) ? 0 : Convert.ToDouble(VCS));
+                            rowCur.Cells[8].CellStyle = styleCellNumber;
+
+                            var sumQuantity = data.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]);
+                            rowCur.Cells[9].SetCellValue(Convert.ToDouble(sumQuantity));
+                            rowCur.Cells[9].CellStyle = styleCellNumber;
+
+                            var price = data.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1];
+                            rowCur.Cells[10].SetCellValue(price == 0 || price == null ? 0 : Convert.ToDouble(price));
+                            rowCur.Cells[10].CellStyle = styleCellNumber;
+
+                            var totalVPCN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCN" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[11].SetCellValue(string.IsNullOrEmpty(totalVPCN) ? 0 : Convert.ToDouble(totalVPCN));
+                            rowCur.Cells[11].CellStyle = styleCellNumber;
+
+                            var totalSGN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "SGN" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[12].SetCellValue(string.IsNullOrEmpty(totalSGN) ? 0 : Convert.ToDouble(totalSGN));
+                            rowCur.Cells[12].CellStyle = styleCellNumber;
+
+                            var totalPQC = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "PQC" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[13].SetCellValue(string.IsNullOrEmpty(totalPQC) ? 0 : Convert.ToDouble(totalPQC));
+                            rowCur.Cells[13].CellStyle = styleCellNumber;
+
+                            var totalDLI = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "DLI" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[14].SetCellValue(string.IsNullOrEmpty(totalDLI) ? 0 : Convert.ToDouble(totalDLI));
+                            rowCur.Cells[14].CellStyle = styleCellNumber;
+
+                            var totalVCA = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VCA" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[15].SetCellValue(string.IsNullOrEmpty(totalVCA) ? 0 : Convert.ToDouble(totalVCA));
+                            rowCur.Cells[15].CellStyle = styleCellNumber;
+
+                            var totalBMV = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "BMV" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[16].SetCellValue(string.IsNullOrEmpty(totalBMV) ? 0 : Convert.ToDouble(totalBMV));
+                            rowCur.Cells[16].CellStyle = styleCellNumber;
+
+                            var totalVCS = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VCS" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[17].SetCellValue(string.IsNullOrEmpty(totalVCS) ? 0 : Convert.ToDouble(totalVCS));
+                            rowCur.Cells[17].CellStyle = styleCellNumber;
+
+                            var sumTotal = data.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]);
+                            rowCur.Cells[18].SetCellValue(Convert.ToDouble(sumTotal));
+                            rowCur.Cells[18].CellStyle = styleCellNumber;
+
+                            if (item.IS_GROUP)
+                            {
+                                rowCur.Cells[0].CellStyle = styleCellBold;
+                                rowCur.Cells[0].CellStyle.SetFont(fontBold);
+                                rowCur.Cells[1].CellStyle = styleCellBold;
+                                rowCur.Cells[1].CellStyle.SetFont(fontBold);
+                            }
+                            numRowCur++;
+                            number++;
+                        }
+                        break;
+                    case "100005":
+                        break;
                 }
 
                 //Xóa dòng thừa cuối cùng khi tạo các dòng cho detail
@@ -4543,7 +4870,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 UnitOfWork.BeginTransaction();
                 if (type == "SL")
                 {
-                    var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.ChiPhiProfitCenter.COST_CENTER_CODE == costCenter && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();                   
+                    var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.ChiPhiProfitCenter.COST_CENTER_CODE == costCenter && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
                     if (rowsChange.Count() == 0)
                     {
                         this.State = false;
@@ -4560,7 +4887,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     // Lưu lịch sử
                     UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_EDIT_HISTORY
                     {
-                        ID= Guid.NewGuid(),
+                        ID = Guid.NewGuid(),
                         TEMPLATE_CODE = templateCode,
                         VERSION = version,
                         YEAR = year,
@@ -4574,7 +4901,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         CREATE_DATE = DateTime.Now,
                     });
                 }
-                else if(type == "DG")
+                else if (type == "DG")
                 {
                     var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
                     if (rowsChange.Count() == 0)
@@ -4747,7 +5074,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     CREATE_BY = ProfileUtilities.User.USER_NAME,
                     CREATE_DATE = DateTime.Now,
                 });
-                
+
                 UnitOfWork.Commit();
             }
             catch (Exception ex)
@@ -4778,7 +5105,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             {
                 return UnitOfWork.Repository<CostCenterRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.State = false;
                 this.Exception = ex;
@@ -4878,7 +5205,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             try
             {
                 UnitOfWork.BeginTransaction();
-                var KhoanMuc = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Where(x=> x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
+                var KhoanMuc = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
                 if (KhoanMuc != null)
                 {
                     UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Delete(KhoanMuc);
@@ -4897,9 +5224,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
         {
             base.Search();
             var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.Organize.CODE).FirstOrDefault();
-            if (departmentAssign!= null) {
+            if (departmentAssign != null)
+            {
                 var lstTemplate = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == departmentAssign.TEMPLATE_CODE && x.VERSION == departmentAssign.VERSION && x.TIME_YEAR == departmentAssign.YEAR && x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.KICH_BAN == ObjDetail.KICH_BAN);
-                ObjList.AddRange(lstTemplate);  
+                ObjList.AddRange(lstTemplate);
             }
         }
 
