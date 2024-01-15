@@ -1503,6 +1503,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 var lstItem = elements.OrderByDescending(x => x.C_ORDER);
 
+                var lstEdited = UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
+                var lstCommented = UnitOfWork.Repository<KeHoachChiPhiCommentRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
+
+
                 foreach (var sb in lstSanBay)
                 {
                     foreach (var element in lstItem)
@@ -1514,7 +1518,9 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
                         
                         var expertise = allExpertise.Any(x => x.ELEMENT_CODE == element.CODE);
-                        
+                        var isEdited = lstEdited.Any(x => x.ELEMENT_CODE == element.CODE);
+                        var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
+
                         var item = new T_MD_KHOAN_MUC_HANG_HOA
                         {
                             CODE = element.CODE,
@@ -1534,7 +1540,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             IS_GROUP = element.IS_GROUP,
                             Center = sb.ChiPhiProfitCenter,
                             IsChecked = expertise,
-                            IsHighLight = true
+                            IsHighLight = isEdited || isCommented ? true : false,
                         };
                         data.Add(item);
                         order++;
@@ -3619,6 +3625,68 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         }
                         break;
                     case "100005":
+
+                        foreach (var item in data.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                        {
+                            IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+
+                            rowCur.Cells[0].SetCellValue(item.CODE);
+                            rowCur.Cells[1].SetCellValue(item.NAME);
+
+                            var VPCN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCN" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[2].SetCellValue(string.IsNullOrEmpty(VPCN) ? 0 : Convert.ToDouble(VPCN));
+                            rowCur.Cells[2].CellStyle = styleCellNumber;
+
+                            var VTMB = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VTMB" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[3].SetCellValue(string.IsNullOrEmpty(VTMB) ? 0 : Convert.ToDouble(VTMB));
+                            rowCur.Cells[3].CellStyle = styleCellNumber;
+
+                            var VTMT = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VTMT" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[4].SetCellValue(string.IsNullOrEmpty(VTMT) ? 0 : Convert.ToDouble(VTMT));
+                            rowCur.Cells[4].CellStyle = styleCellNumber;
+
+                            var VTMN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VTMN" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[5].SetCellValue(string.IsNullOrEmpty(VTMN) ? 0 : Convert.ToDouble(VTMN));
+                            rowCur.Cells[5].CellStyle = styleCellNumber;
+                           
+                            var sumQuantity = data.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]);
+                            rowCur.Cells[6].SetCellValue(Convert.ToDouble(sumQuantity));
+                            rowCur.Cells[6].CellStyle = styleCellNumber;
+
+                            var price = data.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1];
+                            rowCur.Cells[7].SetCellValue(price == 0 || price == null ? 0 : Convert.ToDouble(price));
+                            rowCur.Cells[7].CellStyle = styleCellNumber;
+
+                            var totalVPCN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCN" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[8].SetCellValue(string.IsNullOrEmpty(totalVPCN) ? 0 : Convert.ToDouble(totalVPCN));
+                            rowCur.Cells[8].CellStyle = styleCellNumber;
+
+                            var totalVTMB = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VTMB" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[9].SetCellValue(string.IsNullOrEmpty(totalVTMB) ? 0 : Convert.ToDouble(totalVTMB));
+                            rowCur.Cells[9].CellStyle = styleCellNumber;
+
+                            var totalVTMT = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VTMT" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[10].SetCellValue(string.IsNullOrEmpty(totalVTMT) ? 0 : Convert.ToDouble(totalVTMT));
+                            rowCur.Cells[10].CellStyle = styleCellNumber;
+
+                            var totalVTMN = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VTMN" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[11].SetCellValue(string.IsNullOrEmpty(totalVTMN) ? 0 : Convert.ToDouble(totalVTMN));
+                            rowCur.Cells[11].CellStyle = styleCellNumber;
+
+                            var sumTotal = data.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]);
+                            rowCur.Cells[12].SetCellValue(Convert.ToDouble(sumTotal));
+                            rowCur.Cells[12].CellStyle = styleCellNumber;
+
+                            if (item.IS_GROUP)
+                            {
+                                rowCur.Cells[0].CellStyle = styleCellBold;
+                                rowCur.Cells[0].CellStyle.SetFont(fontBold);
+                                rowCur.Cells[1].CellStyle = styleCellBold;
+                                rowCur.Cells[1].CellStyle.SetFont(fontBold);
+                            }
+                            numRowCur++;
+                            number++;
+                        }
                         break;
                 }
 

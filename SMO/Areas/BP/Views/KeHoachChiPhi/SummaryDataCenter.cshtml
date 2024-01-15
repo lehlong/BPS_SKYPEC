@@ -40,8 +40,8 @@
         text-align: center;
     }
 </style>
-<a class="btn btn-default" style=" padding: 8px 6px 0px 4px;" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank">
-    <span class="material-icons">file_download</span>
+<a class="btn btn-default" style=" padding: 8px 6px 2px 4px; display: flex; justify-content: end; width: 100px;" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank">
+    <span class="material-icons col-fecon">file_download</span> Xuất Excel
 </a>
 <div class="export-left-tab">
     <div role="tabpanel" class="tab-pane fade in active">
@@ -83,7 +83,8 @@
                         var classParent = item.IS_GROUP ? "strong" : string.Empty;
                         var isEdit = item.IS_GROUP ? "disabled" : "";
                         var isChecked = item.IsChecked ? "checked" : "";
-                        <tr class="@classParent">
+                        var color = item.IsHighLight ? "red" : "";
+                        <tr class="@classParent" style="color:@color">
                             <td>
                                 <input type="checkbox" @isChecked class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
                                 <label for="@("chkItem" + item.CODE)"></label>
@@ -100,8 +101,8 @@
                                 <td></td>
                             }
 
-                            <td class="pre-whitespace @classParent"><div class="pre-whitespace @classParent">@(item.CODE)</div></td>
-                            <td class="pre-whitespace @classParent"><div class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</div></td>
+                            <td class="@classParent"><div class="@classParent">@(item.CODE)</div></td>
+                            <td class="@classParent"><div class="@classParent">@($"{space.ToString()}{item.NAME}")</div></td>
 
                             @*Số lượng*@
                             @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
