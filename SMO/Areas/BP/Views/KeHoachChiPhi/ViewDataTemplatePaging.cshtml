@@ -1,0 +1,101 @@
+﻿@model IList<T_MD_KHOAN_MUC_HANG_HOA>
+@using SMO.Core.Entities;
+@using SMO.Core.Entities.MD;
+@using SMO.Service.Class;
+@using System.Text;
+@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
+@{
+    var viewId = Guid.NewGuid().ToString();
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
+    var lstDepartment = SelectListUtilities.GetAllCostCenter().ToList();
+    var orgCode = dataCenterModel.ORG_CODE;
+    var tempalteCode = dataCenterModel.TEMPLATE_CODE;
+    var year = dataCenterModel.YEAR;
+    var version = dataCenterModel.VERSION;
+    var skip = ViewBag.Skip;
+    var count = Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Count();
+}
+
+@foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Skip((int)skip).Take(100).Select(x => x.First()))
+{
+    var space = new StringBuilder();
+    for (int i = 0; i < item.LEVEL; i++)
+    {
+        space.Append("\t");
+    }
+    var classParent = item.IS_GROUP ? "strong" : string.Empty;
+    var isEdit = item.IS_GROUP ? "disabled" : "";
+    var isChecked = item.IsChecked ? "checked" : "";
+    var color = item.IsHighLight ? "red" : "";
+    <tr class="@classParent" style="color:@color">
+        <td>
+            <input type="checkbox" @isChecked class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+            <label for="@("chkItem" + item.CODE)"></label>
+        </td>
+        <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
+        <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
+
+        @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
+        {
+            <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
+        }
+        else
+        {
+            <td></td>
+        }
+
+        <td class="@classParent"><div class="@classParent">@(item.CODE)</div></td>
+        <td class="@classParent"><div class="@classParent">@($"{space.ToString()}{item.NAME}")</div></td>
+
+        @*Số lượng*@
+        @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+        {
+            var value = Model.FirstOrDefault(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN();
+            <td class="align-right"><input type="text" class="input-edit" onchange="onEditCell('SL', '@sb.Center.SAN_BAY_CODE','@sb.Center.COST_CENTER_CODE', '@item.CODE', this.value)" value="@(value == "0" ? "" : value)" @isEdit /></td>
+        }
+
+        <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN() == "0" ? "" : Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN())</td>
+
+        @*Đơn giá*@
+        <td class="align-right"><input type="text" class="input-edit" @isEdit onchange="onEditCell('DG', '','', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())" /></td>
+
+        @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+        {
+            <td class="align-right">@(Model.FirstOrDefault(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.CODE == item.CODE)?.Values[2].ToStringVN())</td>
+        }
+
+        <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]).ToStringVN())</td>
+    </tr>
+}
+
+<script>
+    function LoadPagingTBody(type) {
+        var skip = Number('@skip');
+        var count = Number('@count');
+        skip = type == 'next' ? skip + 100 : skip - 100;
+        debugger
+        if (skip == 0 || skip == Number(count) - 100) {
+            return;
+        }
+        skip = skip < 0 ? 0 : skip > Number(count) ? Number(count) - 100 : skip;
+        $("#load-paging").empty();
+        const model = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
+        var ajaxParams = {
+            url: "@Url.Action("ViewDataTemplatePaging")",
+            data: {
+                model: JSON.stringify(model),
+                skip: skip
+            },
+            htmlTarget: '#load-paging',
+        };
+        Forms.LoadAjax(ajaxParams);
+    }
+</script>
+
+
+
+
+
+

@@ -1557,6 +1557,22 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             }
         }
 
+        public IList<string> GetSanBayInTemplate(ViewDataCenterModel model)
+        {
+            try
+            {
+                var detail = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.TIME_YEAR == model.YEAR).ToList();
+                var lstSanBay = detail.GroupBy(x => x.ChiPhiProfitCenter.SAN_BAY_CODE).Select(x => x.First()).Select(x => x.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
+                return lstSanBay;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.Exception = ex;
+                return new List<string>();
+            }
+        }
+
 
         public IList<T_MD_KHOAN_MUC_HANG_HOA> GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_CHI_PHI> detailOtherKhoanMucHangHoas,
             out IList<T_BP_KE_HOACH_CHI_PHI_DATA> detailOtherCostData,

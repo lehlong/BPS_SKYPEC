@@ -1,4 +1,4 @@
-﻿@model IList<T_MD_KHOAN_MUC_HANG_HOA>
+﻿@model IList<string>
 @using SMO.Core.Entities;
 @using SMO.Core.Entities.MD;
 @using SMO.Service.Class;
@@ -14,6 +14,7 @@
     var tempalteCode = dataCenterModel.TEMPLATE_CODE;
     var year = dataCenterModel.YEAR;
     var version = dataCenterModel.VERSION;
+    var skip = ViewBag.Skip;
 }
 <style>
     .icon-function {
@@ -39,6 +40,7 @@
     th {
         text-align: center;
     }
+
     hr {
         margin-top: 6px;
         margin-bottom: 6px;
@@ -59,6 +61,8 @@
                 <div>
                     @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
                     @Html.MyButton("cmdDownload", "Xuất Excel", "ExportExcel();", "Alt+N", "download")
+                    @Html.MyButton("cmdPrevious", "", "LoadPagingTBody('previous')", "Alt+N", "chevron_left")
+                    @Html.MyButton("cmdNext", "", "LoadPagingTBody('next')", "Alt+N", "chevron_right")
                     <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank" hidden></a>
                 </div>
                 <hr />
@@ -70,78 +74,27 @@
                                     <th rowspan="3" colspan="4">HÀNH ĐỘNG</th>
                                     <th rowspan="3">MÃ</th>
                                     <th rowspan="3" style="padding: 0 120px">CHỈ TIÊU</th>
-                                    <th colspan="@(Model.GroupBy(x => x.Center.SAN_BAY_CODE).Count() * 2 + 3)">KẾ HOẠCH CHI TIẾT</th>
+                                    <th colspan="@(Model.Count() * 2 + 3)">KẾ HOẠCH CHI TIẾT</th>
                                 </tr>
                                 <tr>
-                                    <th colspan="@(Model.GroupBy(x => x.Center.SAN_BAY_CODE).Count())">SỐ LƯỢNG</th>
+                                    <th colspan="@(Model.Count())">SỐ LƯỢNG</th>
                                     <th rowspan="2">CỘNG</th>
                                     <th rowspan="2">ĐƠN GIÁ</th>
-                                    <th colspan="@(Model.GroupBy(x => x.Center.SAN_BAY_CODE).Count())">THÀNH TIỀN</th>
+                                    <th colspan="@(Model.Count())">THÀNH TIỀN</th>
                                     <th rowspan="2">CỘNG</th>
                                 </tr>
                                 <tr>
-                                    @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                    @foreach (var sb in Model)
                                     {
-                                        <th>@sb.Center.SAN_BAY_CODE</th>
+                                        <th>@sb</th>
                                     }
-                                    @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                    @foreach (var sb in Model)
                                     {
-                                        <th>@sb.Center.SAN_BAY_CODE</th>
+                                        <th>@sb</th>
                                     }
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
-                                {
-                                    var space = new StringBuilder();
-                                    for (int i = 0; i < item.LEVEL; i++)
-                                    {
-                                        space.Append("\t");
-                                    }
-                                    var classParent = item.IS_GROUP ? "strong" : string.Empty;
-                                    var isEdit = item.IS_GROUP ? "disabled" : "";
-                                    var isChecked = item.IsChecked ? "checked" : "";
-                                    var color = item.IsHighLight ? "red" : "";
-                                    <tr class="@classParent" style="color:@color">
-                                        <td>
-                                            <input type="checkbox" @isChecked class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
-                                            <label for="@("chkItem" + item.CODE)"></label>
-                                        </td>
-                                        <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
-                                        <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
-
-                                        @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
-                                        {
-                                            <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
-                                        }
-                                        else
-                                        {
-                                            <td></td>
-                                        }
-
-                                        <td class="@classParent"><div class="@classParent">@(item.CODE)</div></td>
-                                        <td class="@classParent"><div class="@classParent">@($"{space.ToString()}{item.NAME}")</div></td>
-
-                                        @*Số lượng*@
-                                        @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
-                                        {
-                                            var value = Model.FirstOrDefault(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN();
-                                            <td class="align-right"><input type="text" class="input-edit" onchange="onEditCell('SL', '@sb.Center.SAN_BAY_CODE','@sb.Center.COST_CENTER_CODE', '@item.CODE', this.value)" value="@(value == "0" ? "" : value)" @isEdit /></td>
-                                        }
-
-                                        <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN() == "0" ? "" : Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN())</td>
-
-                                        @*Đơn giá*@
-                                        <td class="align-right"><input type="text" class="input-edit" @isEdit onchange="onEditCell('DG', '','', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())" /></td>
-
-                                        @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
-                                        {
-                                            <td class="align-right">@(Model.FirstOrDefault(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.CODE == item.CODE)?.Values[2].ToStringVN())</td>
-                                        }
-
-                                        <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]).ToStringVN())</td>
-                                    </tr>
-                                }
+                            <tbody id="load-paging">
                             </tbody>
                         </table>
                     </div>
@@ -154,13 +107,32 @@
     function ExportExcel() {
         document.getElementById('download-data').click();
     }
+
+    function LoadPaging() {
+        $("#load-paging").empty();
+        const model = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
+        var ajaxParams = {
+            url: "@Url.Action("ViewDataTemplatePaging")",
+            data: {
+                model: JSON.stringify(model),
+                skip: 0
+            },
+            htmlTarget: '#load-paging',
+        };
+        Forms.LoadAjax(ajaxParams);
+    }
+
+    $(function () {
+        LoadPaging()
+    });
+
     function onEditCell(type, sanBay, costCenter, elementCode, value) {
         if (value == null || value == "") {
             return;
         }
-        var templateCode = $("#TEMPLATE_CODE").val();
-        var version = $("#VERSION").val();
-        var year = $("#YEAR").val();
+        var templateCode = '@dataCenterModel.TEMPLATE_CODE';
+        var version = @dataCenterModel.VERSION;
+        var year = @dataCenterModel.YEAR;
         var ajaxParams = {
             url: 'BP/KeHoachChiPhi/UpdateCellValue',
             type: "POST",
@@ -183,9 +155,9 @@
     }
 
     function getHistoryEditElement(elementCode) {
-        var templateCode = $("#TEMPLATE_CODE").val();
-        var version = $("#VERSION").val();
-        var year = $("#YEAR").val();
+        var templateCode = '@dataCenterModel.TEMPLATE_CODE';
+        var version = @dataCenterModel.VERSION;
+        var year = @dataCenterModel.YEAR;
         var ajaxParams = {
             url: 'BP/KeHoachChiPhi/GetHistoryEditElement',
             type: "POST",
@@ -200,9 +172,9 @@
     }
 
     function getCommentElement(elementCode) {
-        var templateCode = $("#TEMPLATE_CODE").val();
-        var version = $("#VERSION").val();
-        var year = $("#YEAR").val();
+        var templateCode = '@dataCenterModel.TEMPLATE_CODE';
+        var version = @dataCenterModel.VERSION;
+        var year = @dataCenterModel.YEAR;
         var ajaxParams = {
             url: 'BP/KeHoachChiPhi/GetCommentElement',
             type: "POST",
@@ -217,9 +189,9 @@
     }
 
     function getAssignDepartmentElement(elementCode) {
-        var templateCode = $("#TEMPLATE_CODE").val();
-        var version = $("#VERSION").val();
-        var year = $("#YEAR").val();
+        var templateCode = '@dataCenterModel.TEMPLATE_CODE';
+        var version = @dataCenterModel.VERSION;
+        var year = @dataCenterModel.YEAR;
         var ajaxParams = {
             url: 'BP/KeHoachChiPhi/GetAssignDepartmentElement',
             type: "POST",

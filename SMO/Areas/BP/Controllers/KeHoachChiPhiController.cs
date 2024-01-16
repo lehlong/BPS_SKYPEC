@@ -142,8 +142,19 @@ namespace SMO.Areas.BP.Controllers
         public ActionResult ViewDataTemplate(string model)
         {
             var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
+            var data = _service.GetSanBayInTemplate(modelJson);
+            ViewBag.dataCenterModel = modelJson;
+            ViewBag.Skip = 0;
+            return PartialView(data);
+        }
+
+        public ActionResult ViewDataTemplatePaging(string model, int skip)
+        {
+            var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
             var data = _service.GetData(modelJson);
             ViewBag.dataCenterModel = modelJson;
+            skip = skip < 0 ? 0 : skip;
+            ViewBag.Skip = skip;
             return PartialView(data);
         }
 
