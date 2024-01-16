@@ -203,6 +203,7 @@
     <Compile Include="Implement\BP\SUA_CHUA_LON\SuaChuaLonDataRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_LON\SuaChuaLonDepartmentAssignRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_LON\SuaChuaLonDepartmentExpertiseRepo.cs" />
+    <Compile Include="Implement\BP\SUA_CHUA_LON\SuaChuaLonEditHistoryRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_LON\SuaChuaLonHistoryRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_LON\SuaChuaLonRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_LON\SuaChuaLonReviewCommentRepo.cs" />
@@ -460,6 +461,7 @@
     <Compile Include="Interface\BP\SUA_CHUA_LON\ISuaChuaLonDataRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_LON\ISuaChuaLonDepartmentAssignRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_LON\ISuaChuaLonDepartmentExpertiseRepo.cs" />
+    <Compile Include="Interface\BP\SUA_CHUA_LON\ISuaChuaLonEditHistoryRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_LON\ISuaChuaLonHistoryRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_LON\ISuaChuaLonRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_LON\ISuaChuaLonReviewCommentRepo.cs" />
@@ -713,6 +715,7 @@
     <Compile Include="Mapping\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_DATA_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_DEPARTMENT_ASSIGN_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_DEPARTMENT_EXPERTISE_Map.cs" />
+    <Compile Include="Mapping\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_EDIT_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_REVIEW_COMMENT_Map.cs" />

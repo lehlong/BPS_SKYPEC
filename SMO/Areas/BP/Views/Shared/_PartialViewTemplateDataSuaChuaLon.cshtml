@@ -19,6 +19,10 @@
         background-color: #FFFFFF !important;
     }
 
+    .icon-function{
+        cursor: pointer;
+    }
+
     td {
         overflow: hidden;
     }
@@ -65,11 +69,10 @@ else
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">CHỈ TIÊU</td>
                             <td class="pre-whitespace" rowspan="2">QUY MÔ</td>
 
-                            <td class="pre-whitespace" style="text-align:center" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 2)">KINH PHÍ</td>
+                            <td class="pre-whitespace" style="text-align:center" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 1)">KINH PHÍ</td>
                             <td rowspan="2">GHI CHÚ</td>
                         </tr>
                         <tr class="sticky-row strong" data-xls-row="header">
-                            <td class="pre-whitespace">VPCN</td>
                             @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                             {
                                 <td class="pre-whitespace">@sb.Center.SanBay.NAME</td>
@@ -106,10 +109,9 @@ else
                                 }
                                 <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                 <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO)</td>
-                                <td class="pre-whitespace"></td>
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
-                                    <td class="pre-whitespace">@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())</td>
+                                    <td class="pre-whitespace"><input class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())"/></td>
                                 }
                                 <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
                                 <td>@item.DESCRIPTION</td>
@@ -126,6 +128,45 @@ else
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
         function mask(e) {
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+
+        function EditValue(sanBayCode, element, value) {
+            if (value == null || value == "") {
+                return;
+            }
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/SuaChuaLon/EditCellValue',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    elementCode: element,
+                    sanBayCode: sanBayCode,
+                    value: value
+                },
+            };
+            Forms.Ajax(ajaxParams);
+        }
+
+        function getHistoryEditElement(elementCode) {
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/SuaChuaLon/GetHistoryElement',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    elementCode: elementCode,
+                },
+            };
+            Forms.LoadAjaxModal(ajaxParams);
         }
 
         function getCommentElement(elementCode) {
@@ -163,73 +204,73 @@ else
         }
 
         function IsDoneExpertise(isCheck, element) {
-        var originalCheckboxState = $('#chkItem' + element).prop('checked');
-        if (!isCheck) {
-            Swal.fire({
-                title: "Lưu ý?",
-                text: "Hạng mục này đã được thẩm định! Hành động này sẽ không được lưu lại!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Đồng ý",
-                cancelButtonText: "Huỷ"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var ajaxParams = {
-                        url: 'BP/SuaChuaLon/UnExpertise',
-                        type: 'POST',
-                        data: {
-                            templateCode: '@tempalteCode',
-                            version: '@version',
-                            year: '@year',
-                            elementCode: element,
-                        },
-                        dataType: 'json',
-                        success: function (response) {
-                            Message.execute(response)
-                        }
-                    };
-                    Forms.Ajax(ajaxParams);
-                }
-                else {
-                    $('#chkItem' + element).prop('checked', !originalCheckboxState);
-                }
-            });
-            return;
-        } else {
-            Swal.fire({
-                title: "Lưu ý?",
-                text: "Bạn có chắc hoàn thành thẩm định chỉ tiêu này?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Đồng ý",
-                cancelButtonText: "Huỷ"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var ajaxParams = {
-                        url: 'BP/SuaChuaLon/Expertise',
-                        type: 'POST',
-                        data: {
-                            templateCode: '@tempalteCode',
-                            version: '@version',
-                            year: '@year',
-                            elementCode: element,
-                        },
-                        dataType: 'json',
-                        success: function (response) {
-                            Message.execute(response)
-                        }
-                    };
-                    Forms.Ajax(ajaxParams);
-                }
-                else {
-                    $('#chkItem' + element).prop('checked', !originalCheckboxState);
-                }
-            });
+            var originalCheckboxState = $('#chkItem' + element).prop('checked');
+            if (!isCheck) {
+                Swal.fire({
+                    title: "Lưu ý?",
+                    text: "Hạng mục này đã được thẩm định! Hành động này sẽ không được lưu lại!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Đồng ý",
+                    cancelButtonText: "Huỷ"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var ajaxParams = {
+                            url: 'BP/SuaChuaLon/UnExpertise',
+                            type: 'POST',
+                            data: {
+                                templateCode: '@tempalteCode',
+                                version: '@version',
+                                year: '@year',
+                                elementCode: element,
+                            },
+                            dataType: 'json',
+                            success: function (response) {
+                                Message.execute(response)
+                            }
+                        };
+                        Forms.Ajax(ajaxParams);
+                    }
+                    else {
+                        $('#chkItem' + element).prop('checked', !originalCheckboxState);
+                    }
+                });
+                return;
+            } else {
+                Swal.fire({
+                    title: "Lưu ý?",
+                    text: "Bạn có chắc hoàn thành thẩm định chỉ tiêu này?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Đồng ý",
+                    cancelButtonText: "Huỷ"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var ajaxParams = {
+                            url: 'BP/SuaChuaLon/Expertise',
+                            type: 'POST',
+                            data: {
+                                templateCode: '@tempalteCode',
+                                version: '@version',
+                                year: '@year',
+                                elementCode: element,
+                            },
+                            dataType: 'json',
+                            success: function (response) {
+                                Message.execute(response)
+                            }
+                        };
+                        Forms.Ajax(ajaxParams);
+                    }
+                    else {
+                        $('#chkItem' + element).prop('checked', !originalCheckboxState);
+                    }
+                });
+            }
         }
-    }
     </script>
 }

@@ -226,6 +226,7 @@
     <Compile Include="Entities\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_DATA_HISTORY.cs" />
     <Compile Include="Entities\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_DEPARTMENT_ASSIGN.cs" />
     <Compile Include="Entities\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_DEPARTMENT_EXPERTISE.cs" />
+    <Compile Include="Entities\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_EDIT_HISTORY.cs" />
     <Compile Include="Entities\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_HISTORY.cs" />
     <Compile Include="Entities\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_REVIEW.cs" />
     <Compile Include="Entities\BP\SUA_CHUA_LON\T_BP_SUA_CHUA_LON_REVIEW_COMMENT.cs" />

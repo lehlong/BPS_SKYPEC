@@ -1088,7 +1088,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
         public override void GetListOfChild()
         {
             var orgCode = ProfileUtilities.User.ORGANIZE_CODE;
-            if(orgCode == "1000")
+            if (orgCode == "1000")
             {
                 var lstOrg = this.UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(
                     x => x.PARENT_CODE == orgCode
@@ -1157,7 +1157,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 }
                 this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
             }
-            
+
         }
 
         /// <summary>
@@ -1471,7 +1471,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                     lstOrgs.Add(model.ORG_CODE);
                 }
                 var elements = GetDataCostPreview(out detailOtherKhoanMucSuaChuas, model.TEMPLATE_CODE, lstOrgs, model.YEAR, model.VERSION, isHasValue);
-                
+
                 var sumElements = new T_MD_KHOAN_MUC_SUA_CHUA
                 {
                     // set tổng năm
@@ -1497,11 +1497,11 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                     {
                         sumElements.Values[i] += item.Values[i];
                     }
-                    
+
                 }
                 elements.Add(sumElements);
 
-                foreach(var element in elements)
+                foreach (var element in elements)
                 {
                     var expertise = UnitOfWork.Repository<SuaChuaLonDepartmentExpertiseRepo>().Queryable().Any(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR && x.ELEMENT_CODE == element.CODE && x.TYPE == BudgetType.SuaChuaLon);
                     if (expertise)
@@ -1550,7 +1550,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             }
         }
 
-        public IList<T_MD_KHOAN_MUC_SUA_CHUA> SummarySuaChua(out IList<T_BP_SUA_CHUA_LON_DATA> plDataOtherKhoanMucSuaChuas,  string orgCode, int year, int? version)
+        public IList<T_MD_KHOAN_MUC_SUA_CHUA> SummarySuaChua(out IList<T_BP_SUA_CHUA_LON_DATA> plDataOtherKhoanMucSuaChuas, string orgCode, int year, int? version)
         {
             plDataOtherKhoanMucSuaChuas = UnitOfWork.Repository<SuaChuaLonDataRepo>()
                     .GetCFDataByOrgCode(orgCode, year, string.Empty, version);
@@ -2185,7 +2185,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                                                 x => x.SAN_BAY_CODE == tableData.Rows[i][2].ToString().Trim() &&
                                                 x.COST_CENTER_CODE == tableData.Rows[i][0].ToString().Trim())?.CODE;
                     }
-                    
+
 
                     if (centerCode == null)
                     {
@@ -2208,12 +2208,12 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                             KHOAN_MUC_SUA_CHUA_CODE = tableData.Rows[i][4].ToString().Trim(),
                             QUY_MO = tableData.Rows[i][6].ToString().Trim(),
                             VALUE = tableData.Rows[i][7] as decimal? == null ? 0 : tableData.Rows[i][7] as decimal?,
-                            
+
                             DESCRIPTION = tableData.Rows[i][20].ToString(),
                             CREATE_BY = currentUser
                         };
                     }
-                    
+
                     UnitOfWork.Repository<SuaChuaLonDataRepo>().Create(costData);
                 }
                 UnitOfWork.Commit();
@@ -2419,7 +2419,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                         VALUE = lookUp[key].Sum(x => UtilsCore.StringToDecimal(x[11].ToString())),
                         CREATE_BY = currentUser
                     };
-                    
+
                     SuaChuaLonDataRepo.Create(costData);
                 }
 
@@ -2456,7 +2456,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
                         QUANTITY = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
                         TIME = tableData.Rows[i][j++].ToString().Trim(),
-                        PRICE= UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
+                        PRICE = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
                         AMOUNT = UtilsCore.StringToDecimal(tableData.Rows[i][j++].ToString().Trim()),
 
                         DESCRIPTION = tableData.Rows[i][ListColumnNameDataBase.Count - 1].ToString().Trim(),
@@ -2490,7 +2490,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
         public override IList<T_BP_SUA_CHUA_LON_VERSION> GetVersions(string orgCode, string templateId, int year)
         {
             templateId = templateId ?? string.Empty;
-            var lstVersions = GetVersionsNumber(orgCode, templateId, year,"", "");
+            var lstVersions = GetVersionsNumber(orgCode, templateId, year, "", "");
             return UnitOfWork.Repository<SuaChuaLonVersionRepo>()
                 .GetManyByExpression(x => x.TEMPLATE_CODE == templateId
                 && x.TIME_YEAR == year
@@ -2814,7 +2814,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 var rowHeightDetail = sheet.GetRow(6).Height;
                 foreach (var detail in detailOtherKhoanMucSuaChuas.GroupBy(x => x.CENTER_CODE)
                     .Select(x => x.First())
-                    .OrderBy(x => x.Center.SanBay.CODE).ThenBy(x=> x.Center.SanBay.CODE))
+                    .OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.SanBay.CODE))
                 {
                     foreach (var item in dataOtherCost
                             .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
@@ -3511,7 +3511,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
                 // insert to pl data history
                 UnitOfWork.Repository<SuaChuaLonDataHistoryRepo>().Create((from pl in lstOtherCostPlDataOldVersion
-                                                                                select (T_BP_SUA_CHUA_LON_DATA_HISTORY)pl).ToList());
+                                                                           select (T_BP_SUA_CHUA_LON_DATA_HISTORY)pl).ToList());
 
                 // insert to pl history
                 UnitOfWork.Repository<SuaChuaLonHistoryRepo>().Create(new T_BP_SUA_CHUA_LON_HISTORY
@@ -4100,7 +4100,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                                 {
                                     var values = new decimal[14];
                                     values[0] = treeData.Sum(x => x.VALUE) ?? 0;
-                                   
+
                                     i.Values = values;
                                     var clone = (T_MD_KHOAN_MUC_SUA_CHUA)i.Clone();
                                     //yield return clone;
@@ -4118,7 +4118,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                     if (treeData != null && treeData.Count() > 0)
                     {
                         item.Values[0] += treeData.Sum(x => x.VALUE) ?? 0;
-                       
+
                     }
                     var clone = (T_MD_KHOAN_MUC_SUA_CHUA)item.Clone();
                     lstResult.Add(clone);
@@ -4140,7 +4140,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                             item.Values = new decimal[1]
                             {
                                 data.Sum(x => x.VALUE) ?? 0,
-                                
+
                             };
                         }
                     }
@@ -4183,7 +4183,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             var NUM_CELL_MONTH = metaDataMonth.MetaTBody[0].Count;
 
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTableByYear(ref workbook,
                 ref sheetMonth,
                 metaDataMonth.MetaTBody,
@@ -4248,8 +4248,9 @@ namespace SMO.Service.BP.SUA_CHUA_LON
         {
             return UnitOfWork.Repository<TypeRepo>().GetFirstWithFetch(x => x.OBJECT_TYPE == TemplateObjectType.Project && x.ELEMENT_TYPE == ElementType.ChiPhi && x.BUDGET_TYPE == BudgetType.DongTien);
         }
-        
-        public T_BP_SUA_CHUA_LON CheckTemplate(string template, int year, string orgCode) {
+
+        public T_BP_SUA_CHUA_LON CheckTemplate(string template, int year, string orgCode)
+        {
             try
             {
                 var checkTemplate = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == template && x.TIME_YEAR == year && x.ORG_CODE == orgCode);
@@ -4268,7 +4269,68 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 this.Exception = ex;
                 return null;
             }
-            
+
+        }
+
+        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, decimal value)
+        {
+            try
+            {
+                var item = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
+                var itemHistory = UnitOfWork.Repository<SuaChuaLonDataHistoryRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
+                if (item == null && itemHistory == null)
+                {
+                    return;
+                }
+                UnitOfWork.BeginTransaction();
+                if (item != null)
+                {
+                    var oldValue = item.VALUE;
+                    item.VALUE = value;
+                    UnitOfWork.Repository<SuaChuaLonDataRepo>().Update(item);
+                    UnitOfWork.Repository<SuaChuaLonEditHistoryRepo>().Create(new T_BP_SUA_CHUA_LON_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        SAN_BAY_CODE = sanBayCode,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = value,
+                        ACTIVE = true,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now
+                    });
+                }
+                else
+                {
+                    var oldValue = itemHistory.VALUE;
+                    itemHistory.VALUE = value;
+                    UnitOfWork.Repository<SuaChuaLonDataHistoryRepo>().Update(itemHistory);
+                    UnitOfWork.Repository<SuaChuaLonEditHistoryRepo>().Create(new T_BP_SUA_CHUA_LON_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        SAN_BAY_CODE = sanBayCode,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = value,
+                        ACTIVE = true,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now
+                    });
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                State = false;
+                this.Exception = ex;
+            }
         }
 
         public override void Search()
@@ -4381,6 +4443,20 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 this.State = false;
                 this.Exception = ex;
                 return new List<T_BP_SUA_CHUA_LON_DEPARTMENT_ASSIGN>();
+            }
+        }
+
+        public IList<T_BP_SUA_CHUA_LON_EDIT_HISTORY> GetEditHistory(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                return UnitOfWork.Repository<SuaChuaLonEditHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_SUA_CHUA_LON_EDIT_HISTORY>();
             }
         }
 
