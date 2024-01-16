@@ -199,7 +199,9 @@
         $(function () {
             $("#dllTimeYear").change();
                 $("#dllKichBan").val("TB");
-                $("#dllKichBan").change();
+            $("#dllKichBan").change();
+                $("#dllPhienBan").val("PB1");
+                $("#dllPhienBan").change();
             Forms.CompleteUI();
             Forms.SubmitByEnter("@Model.FormId");
         });

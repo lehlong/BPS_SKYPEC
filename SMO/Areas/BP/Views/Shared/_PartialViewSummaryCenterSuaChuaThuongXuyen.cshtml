@@ -96,7 +96,11 @@ else
                                 <td class="pre-whitespace"></td>
                                 @foreach (var sb in lstCenter.GroupBy(x => x.SanBay.CODE).Select(x => x.First()))
                                 {
-                                    if (item.IS_GROUP)
+                                    if (string.IsNullOrEmpty(item.CODE))
+                                    {
+                                        <td>@Model.Where(x => x.CENTER_CODE == sb.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
+                                    }
+                                    else if (item.IS_GROUP)
                                     {
                                         <td class="pre-whitespace">@(Model.Where(x => x.CENTER_CODE == sb.CODE).Sum(x => x.Values[0]).ToStringVN())</td>
                                     }

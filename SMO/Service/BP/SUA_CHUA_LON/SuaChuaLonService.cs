@@ -1566,7 +1566,8 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                     Values = new decimal[1]
                     {
                         item.VALUE??0
-                    }
+                    },
+                    PARENT_CODE = item.KhoanMucSuaChua.PARENT_CODE
                 };
                 lstElementSuaChua.Add(element);
             }
