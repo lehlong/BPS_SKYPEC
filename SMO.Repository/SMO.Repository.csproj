@@ -214,6 +214,7 @@
     <Compile Include="Implement\BP\SUA_CHUA_LON\SuaChuaLonVersionRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_LON\SUA_CHUA_LON_DATA_BASE\SuaChuaLonDataBaseHistoryRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_LON\SUA_CHUA_LON_DATA_BASE\SuaChuaLonDataBaseRepo.cs" />
+    <Compile Include="Implement\BP\SUA_CHUA_THUONG_XUYEN\SuaChuaThuongXuyenEditHistoryRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_THUONG_XUYEN\SuaChuaThuongXuyenCommentRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_THUONG_XUYEN\SuaChuaThuongXuyenDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\SUA_CHUA_THUONG_XUYEN\SuaChuaThuongXuyenDataRepo.cs" />
@@ -477,6 +478,7 @@
     <Compile Include="Interface\BP\SUA_CHUA_THUONG_XUYEN\ISuaChuaThuongXuyenDataRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_THUONG_XUYEN\ISuaChuaThuongXuyenDepartmentAssignRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_THUONG_XUYEN\ISuaChuaThuongXuyenDepartmentExpertiseRepo.cs" />
+    <Compile Include="Interface\BP\SUA_CHUA_THUONG_XUYEN\ISuaChuaThuongXuyenEditHistoryRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_THUONG_XUYEN\ISuaChuaThuongXuyenHistoryRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_THUONG_XUYEN\ISuaChuaThuongXuyenRepo.cs" />
     <Compile Include="Interface\BP\SUA_CHUA_THUONG_XUYEN\ISuaChuaThuongXuyenReviewCommentRepo.cs" />
@@ -731,6 +733,7 @@
     <Compile Include="Mapping\BP\SUA_CHUA_THUONG_XUYEN\T_BP_SUA_CHUA_THUONG_XUYEN_DATA_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_THUONG_XUYEN\T_BP_SUA_CHUA_THUONG_XUYEN_DEPARTMENT_ASSIGN_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_THUONG_XUYEN\T_BP_SUA_CHUA_THUONG_XUYEN_DEPARTMENT_EXPERTISE_Map.cs" />
+    <Compile Include="Mapping\BP\SUA_CHUA_THUONG_XUYEN\T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_THUONG_XUYEN\T_BP_SUA_CHUA_THUONG_XUYEN_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_THUONG_XUYEN\T_BP_SUA_CHUA_THUONG_XUYEN_Map.cs" />
     <Compile Include="Mapping\BP\SUA_CHUA_THUONG_XUYEN\T_BP_SUA_CHUA_THUONG_XUYEN_REVIEW_COMMENT_Map.cs" />

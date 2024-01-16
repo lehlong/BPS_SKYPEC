@@ -289,5 +289,34 @@ namespace SMO.Areas.BP.Controllers
             ViewBag.ElementCode = elementCode;
             return PartialView(data);
         }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, decimal value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.EditCellValue(templateCode, version, year, elementCode, sanBayCode, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult GetHistoryElement(string templateCode, int version, int year, string elementCode)
+        {
+            var data = _service.GetEditHistory(templateCode, version, year, elementCode);
+            return PartialView(data);
+        }
     }
 }

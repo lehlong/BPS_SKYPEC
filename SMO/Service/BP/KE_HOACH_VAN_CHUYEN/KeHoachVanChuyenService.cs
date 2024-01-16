@@ -1500,8 +1500,32 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
             {
                 // xem dữ liệu được tổng hợp cho đơn vị
                 detailOtherKhoanMucVanChuyens = null;
-                return SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);
+                /*return SummaryCenterVersion(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION, model.IS_DRILL_DOWN);*/
+                return SummaryVanChuyen(out detailOtherCostData, model.ORG_CODE, model.YEAR, model.VERSION);
             }
+        }
+
+        public IList<T_MD_KHOAN_MUC_VAN_CHUYEN> SummaryVanChuyen(out IList<T_BP_KE_HOACH_VAN_CHUYEN_DATA> plDataOtherKhoanMucVanChuyens, string orgCode, int year, int? version)
+        {
+            plDataOtherKhoanMucVanChuyens = UnitOfWork.Repository<KeHoachVanChuyenDataRepo>()
+                    .GetCFDataByOrgCode(orgCode, year, string.Empty, version);
+            var lstElementDauTu = new List<T_MD_KHOAN_MUC_VAN_CHUYEN>();
+            foreach (var item in plDataOtherKhoanMucVanChuyens)
+            {
+                var element = new T_MD_KHOAN_MUC_VAN_CHUYEN
+                {
+                    VanChuyenProfitCenter = item.VanChuyenProfitCenter == null ? new T_MD_VAN_CHUYEN_PROFIT_CENTER() : item.VanChuyenProfitCenter,
+                    CODE = item.KHOAN_MUC_VAN_CHUYEN_CODE,
+                    CENTER_CODE = item.VAN_CHUYEN_PROFIT_CENTER_CODE,
+                    PROCESS = item.PROCESS,
+                    Values = new decimal[1]
+                    {
+                        item.VALUE??0
+                    }
+                };
+                lstElementDauTu.Add(element);
+            }
+            return lstElementDauTu;
         }
 
         public override IList<T_MD_KHOAN_MUC_VAN_CHUYEN> GetDetailPreviewSumUp(string centerCode, string elementCode, int year)
@@ -3143,7 +3167,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                 }
 
                 // sumup element code with the same element code
-                var lookup = revenuePlDataApproved.ToLookup(x => x.KHOAN_MUC_VAN_CHUYEN_CODE);
+                var lookup = revenuePlDataApproved.ToLookup(x => Tuple.Create(x.KHOAN_MUC_VAN_CHUYEN_CODE, x.VAN_CHUYEN_PROFIT_CENTER_CODE));
                 foreach (var code in lookup.Select(x => x.Key))
                 {
                     // TODO: check if all value of months are equal 0
@@ -3156,7 +3180,8 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                         lstData.Add(new T_BP_KE_HOACH_VAN_CHUYEN_DATA
                         {
                             VALUE = lookup[code].Sum(x => x.VALUE),
-                            KHOAN_MUC_VAN_CHUYEN_CODE = lookup[code].First().KHOAN_MUC_VAN_CHUYEN_CODE
+                            KHOAN_MUC_VAN_CHUYEN_CODE = lookup[code].First().KHOAN_MUC_VAN_CHUYEN_CODE,
+                            VAN_CHUYEN_PROFIT_CENTER_CODE = code.Item2
                         });
                     }
                 }
@@ -3213,7 +3238,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                 foreach (var item in lstData)
                 {
                     item.ORG_CODE = centerCode;
-                    item.VAN_CHUYEN_PROFIT_CENTER_CODE = string.Empty;
+                    item.VAN_CHUYEN_PROFIT_CENTER_CODE = item.VAN_CHUYEN_PROFIT_CENTER_CODE;
                     item.TEMPLATE_CODE = string.Empty;
                     item.PKID = Guid.NewGuid().ToString();
                     item.VERSION = versionPl;

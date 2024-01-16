@@ -4,6 +4,7 @@ using NPOI.XSSF.UserModel;
 using SMO.AppCode.Utilities;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
+using SMO.Core.Entities.BP.SUA_CHUA_LON;
 using SMO.Core.Entities.BP.SUA_CHUA_THUONG_XUYEN;
 using SMO.Core.Entities.BP.SUA_CHUA_THUONG_XUYEN.SUA_CHUA_THUONG_XUYEN_DATA_BASE;
 using SMO.Core.Entities.MD;
@@ -4264,6 +4265,80 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             
         }
 
+        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, decimal value)
+        {
+            try
+            {
+                var item = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
+                var itemHistory = UnitOfWork.Repository<SuaChuaThuongXuyenDataHistoryRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
+                if (item == null && itemHistory == null)
+                {
+                    return;
+                }
+                UnitOfWork.BeginTransaction();
+                if (item != null)
+                {
+                    var oldValue = item.VALUE;
+                    item.VALUE = value;
+                    UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Update(item);
+                    UnitOfWork.Repository<SuaChuaThuongXuyenEditHistoryRepo>().Create(new T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        SAN_BAY_CODE = sanBayCode,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = value,
+                        ACTIVE = true,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now
+                    });
+                }
+                else
+                {
+                    var oldValue = itemHistory.VALUE;
+                    itemHistory.VALUE = value;
+                    UnitOfWork.Repository<SuaChuaThuongXuyenDataHistoryRepo>().Update(itemHistory);
+                    UnitOfWork.Repository<SuaChuaThuongXuyenEditHistoryRepo>().Create(new T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        SAN_BAY_CODE = sanBayCode,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = value,
+                        ACTIVE = true,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now
+                    });
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public IList<T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY> GetEditHistory(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                return UnitOfWork.Repository<SuaChuaThuongXuyenEditHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY>();
+            }
+        }
         public override void Search()
         {
             base.Search();
