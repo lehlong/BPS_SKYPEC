@@ -1,6 +1,8 @@
 ﻿
 @model SMO.Core.Entities.T_BP_KE_HOACH_CHI_PHI
 @using SMO.Core.Entities;
+@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
 @{
     var number = ViewBag.number as int?;
     var periodTime = ViewBag.periodTime as T_MD_PERIOD_TIME;
@@ -9,13 +11,13 @@
     model.TEMPLATE_CODE = Model.TEMPLATE_CODE;
     model.YEAR = Model.TIME_YEAR;
     model.ORG_CODE = Model.ORG_CODE;
-    model.VERSION = model.VERSION;
+    model.VERSION = Model.VERSION;
 }
 <div class="m-b-5">
     @if (SMOUtilities.CheckRight("R301"))
     {
         <button type="button" class="btn btn-default waves-effect col-deep-orange"
-                onclick="@($"Forms.LoadAjax('{Url.Action("ViewDataTemplate", new { model = model })}');")">
+                onclick="@($"Forms.LoadAjax('{Url.Action("ViewDataTemplate", new { model = JsonConvert.SerializeObject(model) })}');")">
             Xem dữ liệu
         </button>
     }

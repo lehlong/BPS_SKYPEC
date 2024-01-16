@@ -1468,6 +1468,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 {
                     elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("N62")).OrderBy(x => x.C_ORDER).ToList();
                 }
+                else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("VT62")).OrderBy(x => x.C_ORDER).ToList();
+                }
 
                 foreach (var el in elements)
                 {
