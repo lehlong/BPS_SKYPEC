@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static iTextSharp.text.pdf.AcroFields;
 
 namespace SMO.Service.MD
 {
@@ -208,6 +209,122 @@ namespace SMO.Service.MD
                 this.State = false;
                 this.Exception = ex;
                 return new List<RevenueReportModel>();
+            }
+        }
+
+        public RevenueByFeeReportModel GetDataDoanhThuTheoPhi(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            try
+            {
+                var data = new RevenueByFeeReportModel();
+                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().ToList();
+                lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
+
+                var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                if (dataHeaderDoanhThu.Count() == 0)
+                {
+                    return new RevenueByFeeReportModel();
+                }
+
+                var dataInHeader = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var dataDetailsTab1 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002").ToList();
+                var dataDetailsTab2 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2003" || x.KHOAN_MUC_DOANH_THU_CODE == "2004").ToList();
+                var dataDetailsTab3 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "10010" || x.KHOAN_MUC_DOANH_THU_CODE == "10020").ToList();
+
+                var shareData = UnitOfWork.Repository<SharedDataRepo>().Queryable().First(x => x.CODE == "18").VALUE;
+
+                var order = 0;
+                foreach (var hhk in lstHangHangKhong)
+                {
+                    var tab1 = new RevenueReportModel
+                    {
+                        Name = hhk.CODE,
+                        Value1 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JAN) ?? 0,
+                        Value2 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_FEB) ?? 0,
+                        Value3 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_MAR) ?? 0,
+                        Value4 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_APR) ?? 0,
+                        Value5 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_MAY) ?? 0,
+                        Value6 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JUN) ?? 0,
+                        Value7 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JUL) ?? 0,
+                        Value8 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_AUG) ?? 0,
+                        Value9 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SEP) ?? 0,
+                        Value10 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_OCT) ?? 0,
+                        Value11 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_NOV) ?? 0,
+                        Value12 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SEP) ?? 0,
+                        ValueSumYear = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Order = order,
+                    };
+                    data.Tab1.Add(tab1);
+
+                    var tab2 = new RevenueReportModel
+                    {
+                        Name = hhk.CODE,
+                        Value1 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JAN) ?? 0,
+                        Value2 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_FEB) ?? 0,
+                        Value3 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_MAR) ?? 0,
+                        Value4 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_APR) ?? 0,
+                        Value5 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_MAY) ?? 0,
+                        Value6 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JUN) ?? 0,
+                        Value7 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JUL) ?? 0,
+                        Value8 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_AUG) ?? 0,
+                        Value9 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SEP) ?? 0,
+                        Value10 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_OCT) ?? 0,
+                        Value11 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_NOV) ?? 0,
+                        Value12 = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SEP) ?? 0,
+                        ValueSumYear = dataDetailsTab2.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Order = order,
+                    };
+                    data.Tab2.Add(tab2);
+
+                    var tab3 = new RevenueReportModel
+                    {
+                        Name = hhk.CODE,
+                        Value1 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JAN) * shareData ?? 0,
+                        Value2 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_FEB) * shareData ?? 0,
+                        Value3 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_MAR) * shareData ?? 0,
+                        Value4 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_APR) * shareData ?? 0,
+                        Value5 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_MAY) * shareData ?? 0,
+                        Value6 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JUN) * shareData ?? 0,
+                        Value7 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_JUL) * shareData ?? 0,
+                        Value8 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_AUG) * shareData ?? 0,
+                        Value9 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SEP) * shareData ?? 0,
+                        Value10 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_OCT) * shareData ?? 0,
+                        Value11 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_NOV) * shareData ?? 0,
+                        Value12 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SEP) * shareData ?? 0,
+                        ValueSumYear = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SUM_YEAR) * shareData ?? 0,
+                        Order = order,
+                    };
+                    data.Tab3.Add(tab3);
+
+                    data.Tab4.Add(new RevenueReportModel
+                    {
+                        Name = hhk.CODE,
+                        Value1 = tab1.Value1 + tab2.Value1 + tab3.Value1,
+                        Value2 = tab1.Value2 + tab2.Value2 + tab3.Value2,
+                        Value3 = tab1.Value3 + tab2.Value3 + tab3.Value3,
+                        Value4 = tab1.Value4 + tab2.Value4 + tab3.Value4,
+                        Value5 = tab1.Value5 + tab2.Value5 + tab3.Value5,
+                        Value6 = tab1.Value6 + tab2.Value6 + tab3.Value6,
+                        Value7 = tab1.Value7 + tab2.Value7 + tab3.Value7,
+                        Value8 = tab1.Value8 + tab2.Value8 + tab3.Value8,
+                        Value9 = tab1.Value9 + tab2.Value9 + tab3.Value9,
+                        Value10 = tab1.Value10 + tab2.Value10 + tab3.Value10,
+                        Value11 = tab1.Value11 + tab2.Value11 + tab3.Value11,
+                        Value12 = tab1.Value12 + tab2.Value12 + tab3.Value12,
+                        ValueSumYear = tab1.ValueSumYear + tab2.ValueSumYear + tab3.ValueSumYear,
+                        Order = order,
+                    });
+                    order ++;
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+                return new RevenueByFeeReportModel();
             }
         }
 
@@ -1084,6 +1201,87 @@ namespace SMO.Service.MD
                     rowCur.Cells[3].SetCellValue(data[i]?.Value1 == null ? 0 : (double)data[i]?.Value1);
                     rowCur.Cells[4].SetCellValue(data[i]?.Value2 == null ? 0 : (double)data[i]?.Value2);
                     rowCur.Cells[5].SetCellValue(data[i]?.Value3 == null ? 0 : (double)data[i]?.Value3);
+                }
+                templateWorkbook.Write(outFileStream);
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.ErrorMessage = "Có lỗi xẩy ra trong quá trình tạo file excel!";
+                this.Exception = ex;
+            }
+        }
+
+        private ICellStyle GetCellStyleNumber(IWorkbook templateWorkbook)
+        {
+            ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
+            styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            return styleCellNumber;
+        }
+
+        internal void ExportExcelDoanhThu(ref MemoryStream outFileStream, string path, int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                IWorkbook templateWorkbook;
+                templateWorkbook = new XSSFWorkbook(fs);
+                fs.Close();
+                ISheet sheet = templateWorkbook.GetSheetAt(0);
+                //var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+                //var styleCellNumberDecimal = GetCellStyleNumberDecimal(templateWorkbook);
+
+                ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+                styleCellBold.WrapText = true;
+                var fontBold = templateWorkbook.CreateFont();
+                fontBold.Boldweight = (short)FontBoldWeight.Bold;
+                fontBold.FontHeightInPoints = 11;
+                fontBold.FontName = "Times New Roman";
+
+                var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+
+                var data = GetDataDoanhThu(year, phienBan, kichBan, hangHangKhong);
+
+                if (data.Count <= 1)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Không có dữ liệu!";
+                    return;
+                }
+
+                var startRow = 6;
+
+                for (int i = 0; i < data.Count(); i++)
+                {
+                    var dataRow = data[i];
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, 14);
+                    rowCur.Cells[0].SetCellValue(data[i].Name.ToString());
+                    rowCur.Cells[1].SetCellValue(data[i]?.ValueSumYear == null ? 0 : (double)data[i]?.ValueSumYear);
+                    rowCur.Cells[2].SetCellValue(data[i]?.Value1 == null ? 0 : (double)data[i]?.Value1);
+                    rowCur.Cells[3].SetCellValue(data[i]?.Value2 == null ? 0 : (double)data[i]?.Value2);
+                    rowCur.Cells[4].SetCellValue(data[i]?.Value3 == null ? 0 : (double)data[i]?.Value3);
+                    rowCur.Cells[5].SetCellValue(data[i]?.Value4 == null ? 0 : (double)data[i]?.Value4);
+                    rowCur.Cells[6].SetCellValue(data[i]?.Value5 == null ? 0 : (double)data[i]?.Value5);
+                    rowCur.Cells[7].SetCellValue(data[i]?.Value6 == null ? 0 : (double)data[i]?.Value6);
+                    rowCur.Cells[8].SetCellValue(data[i]?.Value7 == null ? 0 : (double)data[i]?.Value7);
+                    rowCur.Cells[9].SetCellValue(data[i]?.Value8 == null ? 0 : (double)data[i]?.Value8);
+                    rowCur.Cells[10].SetCellValue(data[i]?.Value9 == null ? 0 : (double)data[i]?.Value9);
+                    rowCur.Cells[11].SetCellValue(data[i]?.Value10 == null ? 0 : (double)data[i]?.Value10);
+                    rowCur.Cells[12].SetCellValue(data[i]?.Value11 == null ? 0 : (double)data[i]?.Value11);
+                    rowCur.Cells[13].SetCellValue(data[i]?.Value12 == null ? 0 : (double)data[i]?.Value12);
+
+                    if (data[i].IsBold)
+                    {
+                        for (var j = 0; j <= 13; j++)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    for (var j = 1; j <= 13; j++)
+                    {
+                        rowCur.Cells[j].CellStyle = styleCellNumber;
+                    }
                 }
                 templateWorkbook.Write(outFileStream);
             }

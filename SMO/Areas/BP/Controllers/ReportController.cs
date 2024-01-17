@@ -75,11 +75,34 @@ namespace SMO.Areas.BP.Controllers
             ViewBag.Year = year;
             return PartialView(data);
         }
-        public ActionResult ExportExcelDataDoanhThu(int year, string phienBan)
+        public ActionResult ExportExcelDataDoanhThu(int year, string phienBan, string kichBan, string hangHangKhong)
         {
             MemoryStream outFileStream = new MemoryStream();
-            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
-            _servicePhienBan.ExportExcel(ref outFileStream, path, year, phienBan);
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_DOANH_THU.xlsx");
+            _servicePhienBan.ExportExcelDoanhThu(ref outFileStream, path, year,  phienBan, kichBan, hangHangKhong);
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
+        }
+
+        public ActionResult IndexDoanhThuTheoPhi()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataDoanhThuTheoPhi(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            var data = _servicePhienBan.GetDataDoanhThuTheoPhi(year, phienBan, kichBan, hangHangKhong);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+        public ActionResult ExportExcelDataDoanhThuTheoPhi(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            MemoryStream outFileStream = new MemoryStream();
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_DOANH_THU.xlsx");
+            _servicePhienBan.ExportExcelDoanhThu(ref outFileStream, path, year, phienBan, kichBan, hangHangKhong);
             if (!_servicePhienBan.State)
             {
                 return Content(_servicePhienBan.ErrorMessage);

@@ -2013,6 +2013,8 @@
     <Content Include="Areas\BP\Views\SuaChuaLon\GetHistoryElement.cshtml" />
     <Content Include="Areas\BP\Views\Report\IndexDoanhThu.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataDoanhThu.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexDoanhThuTheoPhi.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataDoanhThuTheoPhi.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

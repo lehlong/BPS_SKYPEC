@@ -427,8 +427,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Chi phí nhân công
-            var value_23_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "300010101" || x.KHOAN_MUC_HANG_HOA_CODE == "300010102") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_23_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6271")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -447,8 +447,8 @@ namespace SMO.Service.MD
             });
 
             #region + Quỹ lương
-            var value_25_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "300010101") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_25_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6271A001")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -460,8 +460,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region + Các khoản đóng góp (BHXH, BHYT, BHTN, KPCĐ)
-            var value_26_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "300010102") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_26_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6271A001") && x.KHOAN_MUC_HANG_HOA_CODE != "B6271A001" && x.KHOAN_MUC_HANG_HOA_CODE != "T6271A001" && x.KHOAN_MUC_HANG_HOA_CODE != "N6271A001" && x.KHOAN_MUC_HANG_HOA_CODE != "VT6271A001") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -473,8 +473,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region  - Chi phí nguyên vật liệu, vật tư, vốn hàng
-            var value_27_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000102") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_27_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6272")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -486,8 +486,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Khấu hao tài sản cố định
-            var value_28_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000103") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_28_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6274")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -499,7 +499,7 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Chi phí bảo dưỡng sửa chữa tài sản
-            var value_29_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+            var value_29_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
                               join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000104") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
@@ -512,8 +512,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Chi phí dụng cụ sản xuất
-            var value_30_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000105") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_30_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6273")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -525,8 +525,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Chi phí dịch vụ mua ngoài (*)
-            var value_31_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000106") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_31_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -538,8 +538,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Chi phí khác bằng tiền (*)
-            var value_32_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000107") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_32_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -551,7 +551,7 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Dự phòng trợ cấp mất việc
-            var value_33_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+            var value_33_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
                               join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000108") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
@@ -564,8 +564,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Thuế, phí lệ phí
-            var value_34_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000109") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_34_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6275")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -577,8 +577,8 @@ namespace SMO.Service.MD
             #endregion
 
             #region - Chi phí dự phòng
-            var value_35_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "3000110") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+            var value_35_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+                              join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6276")) on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
@@ -602,7 +602,7 @@ namespace SMO.Service.MD
             #endregion
 
             #region Chi phí khác
-            var value_37_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
+            var value_37_5 = (from x in UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
                               join y in UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "30003") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel

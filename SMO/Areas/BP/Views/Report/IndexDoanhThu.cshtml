@@ -98,9 +98,11 @@
     });
 
     function ExportData() {
-        var year = $("#time-year").val();
-        var kichBan = $("#phien-ban").val();
-        window.open(`/BP/Report/ExportExcelDataPhienBan?year=${year}&phienBan=${kichBan}`, '_blank');
+        var year = $("#time-year").val()
+        var phienBan = $("#phien-ban").val()
+        var kichBan = $("#kich-ban").val()
+        var hangHangKhong = $("#hang-hang-khong").val()
+        window.open(`/BP/Report/ExportExcelDataDoanhThu?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
     }
 </script>
 

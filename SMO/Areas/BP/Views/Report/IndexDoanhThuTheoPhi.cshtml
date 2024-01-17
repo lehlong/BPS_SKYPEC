@@ -1,6 +1,8 @@
-﻿@{ 
+﻿@{
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var lstPhienBan = SelectListUtilities.GetAllPhienBan();
+    var lstKichBan = SelectListUtilities.GetAllKichBan();
+    var lstHangHangKhong = SelectListUtilities.GetSelectHangHangKhong();
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
 }
 <div class="container-fluid child-content">
@@ -8,17 +10,17 @@
         <div class="body" style="padding-top: 0px;">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active">
-                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> KẾ HOẠCH SẢN XUẤT KINH DOANH NĂM 2023 (KỊCH BẢN CAO/TRUNG BÌNH/THẤP)</a>
+                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> BÁO CÁO TỔNG HỢP KẾ HOẠCH DOANH THU THEO PHÍ</a>
                 </li>
             </ul>
-            <div class="tab-content">
-                <div class="page-function" style="width:100%">
+            <div class="tab-content" style="padding-bottom:0">
+                <div class="page-function" style="width:100%; margin-bottom:0">
                     <div class="page-function-button m-r-20" style="float:left">
                         @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
                     </div>
-                    <div class="input-group page-function-search row" style="margin-bottom: 7px !important">
-                        <div class="col-md-6">
+                    <div class="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px">
+                        <div class="col-md-2">
                             <select class="form-control selectpicker show-tick" id="time-year">
                                 @foreach (var temp in lstTimeYear)
                                 {
@@ -34,7 +36,15 @@
                                 }
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-2">
+                            <select class="form-control selectpicker show-tick" id="kich-ban">
+                                @foreach (var item in lstKichBan)
+                                {
+                                    <option value="@item.Value">@(item.Text)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
                             <select class="form-control selectpicker show-tick" id="phien-ban">
                                 @foreach (var item in lstPhienBan)
                                 {
@@ -42,8 +52,17 @@
                                 }
                             </select>
                         </div>
-                        
-                        
+
+                        <div class="col-md-5">
+                            <select class="form-control selectpicker show-tick" id="hang-hang-khong">
+                                @foreach (var item in lstHangHangKhong)
+                                {
+                                    <option value="@item.Value">@(item.Text)</option>
+                                }
+                            </select>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -61,10 +80,12 @@
     function ViewData() {
         $("#divReport").empty();
         var ajaxParams = {
-            url: "@Url.Action("GenDataPhienBan")",
+            url: "@Url.Action("GenDataDoanhThuTheoPhi")",
             data: {
                 year: $("#time-year").val(),
-                phienBan: $("#phien-ban").val()
+                phienBan: $("#phien-ban").val(),
+                kichBan: $("#kich-ban").val(),
+                hangHangKhong: $("#hang-hang-khong").val(),
             },
             htmlTarget:'#divReport',
         };
@@ -77,9 +98,13 @@
     });
 
     function ExportData() {
-        var year = $("#time-year").val();
-        var kichBan = $("#phien-ban").val();
-        window.open(`/BP/Report/ExportExcelDataPhienBan?year=${year}&phienBan=${kichBan}`, '_blank');
+        var year = $("#time-year").val()
+        var phienBan = $("#phien-ban").val()
+        var kichBan = $("#kich-ban").val()
+        var hangHangKhong = $("#hang-hang-khong").val()
+        window.open(`/BP/Report/ExportExcelDataDoanhThuTheoPhi?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
     }
 </script>
+
+
 

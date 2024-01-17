@@ -5,6 +5,13 @@ using System.Web;
 
 namespace SMO.Models
 {
+    public class RevenueByFeeReportModel
+    {
+        public IList<RevenueReportModel> Tab1 { get; set; } = new List<RevenueReportModel> { };
+        public IList<RevenueReportModel> Tab2 { get; set; } = new List<RevenueReportModel> { };
+        public IList<RevenueReportModel> Tab3 { get; set; } = new List<RevenueReportModel> { };
+        public IList<RevenueReportModel> Tab4 { get; set; } = new List<RevenueReportModel> { };
+    }
     public class RevenueReportModel
     {
         public string Stt { get; set; }
