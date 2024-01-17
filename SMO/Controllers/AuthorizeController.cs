@@ -23,23 +23,15 @@ namespace SMO.Controllers
             if (Request.Cookies["Login"] != null)
             {
                 _service.ObjUser.USER_NAME = Request.Cookies["Login"].Values["USER_NAME"];
-                //_models.User.PASSWORD = Request.Cookies["Login"].Values["PASSWORD"];
             }
             _service.ReturnUrl = ReturnUrl;
             return PartialView(_service);
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        //[ValidateRecaptcha]
         public ActionResult Login(AuthorizeService service)
         {
-            //if (ModelState.ContainsKey("Recaptcha"))
-            //{
-            //    ViewBag.Error = "3";
-            //    return PartialView(service);
-            //}
-
+           
             var historyService = new UserHistoryService();
             historyService.ObjDetail.PKID = Guid.NewGuid().ToString();
             historyService.ObjDetail.USER_NAME = service.ObjUser.USER_NAME;
@@ -51,10 +43,7 @@ namespace SMO.Controllers
             historyService.ObjDetail.MANUFACTURER = Request.Browser.MobileDeviceManufacturer;
             historyService.ObjDetail.OS = Request.Browser.Platform;
             historyService.ObjDetail.IP_ADDRESS = System.Web.HttpContext.Current.Request.ServerVariables["X_FORWARDED_FOR"];
-            //if (string.IsNullOrEmpty(historyService.ObjDetail.IP_ADDRESS))
-            //{
-            //    historyService.ObjDetail.IP_ADDRESS = System.Web.HttpContext.Current.Request.ServerVariables["X_FORWARDED_FOR"];
-            //}
+           
             if (string.IsNullOrEmpty(historyService.ObjDetail.IP_ADDRESS))
             {
                 historyService.ObjDetail.IP_ADDRESS = System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
@@ -69,21 +58,19 @@ namespace SMO.Controllers
                     historyService.Create();
                     return PartialView(service);
                 }
-                //Context.User.Identity.
+
                 FormsAuthentication.SetAuthCookie(service.ObjUser.USER_NAME, service.IsRemember);
-                //service.ObjUser.IS_IGNORE_USER = true;
+
                 if (!service.ObjUser.IS_IGNORE_USER)
                 {
                     service.GetUserRight(service.ObjUser.ORGANIZE_CODE);
                 }
                 service.GetUserOrg();
-                //_models.GetUserRight();
 
                 if (Request["User.REMEMBER"] == "on")
                 {
                     HttpCookie cookie = new HttpCookie("Login");
                     cookie.Values.Add("USER_NAME", service.ObjUser.USER_NAME);
-                    //cookie.Values.Add("PASSWORD", _models.User.PASSWORD);
                     cookie.Expires = DateTime.Now.AddDays(15);
                     Response.Cookies.Add(cookie);
                 }

@@ -4986,12 +4986,12 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
 
                     if (unitPrice != null)
                     {
-                        if (unitPrice.CURRENCY_ID == "USD")
+                        if (unitPrice.CURRENCY_ID == "USD" && unitPrice.UNIT_ID == "Gal")
                         {
-                            price = unitPrice.SERVICE_PRICE * currencyUSD;
-                            pricePump = unitPrice.PUMP_FEE * currencyUSD;
+                            price = unitPrice.SERVICE_PRICE * currencyUSD * currencyGal;
+                            pricePump = unitPrice.PUMP_FEE * currencyUSD * currencyGal;
                         }
-                        else if (unitPrice.CURRENCY_ID == "Gal")
+                        else if (unitPrice.CURRENCY_ID == "VND" && unitPrice.UNIT_ID == "Gal")
                         {
                             price = unitPrice.SERVICE_PRICE * currencyGal;
                             pricePump = unitPrice.PUMP_FEE * currencyGal;

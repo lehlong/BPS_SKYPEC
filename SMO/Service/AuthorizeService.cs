@@ -127,13 +127,6 @@ namespace SMO.Service
 
         public void IsValid()
         {
-            //this.IsValidAD();
-
-            //if (this.State == true)
-            //{
-            //    return;
-            //}
-
             State = false;
             try
             {
