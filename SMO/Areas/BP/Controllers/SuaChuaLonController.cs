@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.SUA_CHUA_LON;
 using SMO.Core.Entities.MD;
@@ -117,6 +118,16 @@ namespace SMO.Areas.BP.Controllers
             model.IS_DRILL_DOWN = isDrillDownApply;
             model.EXCHANGE_RATE = 12;
             ViewBag.dataCenterModel = model;
+            return PartialView(dataCost);
+        }
+
+        [HttpPost]
+        public ActionResult DownloadDataSCL(string model)
+        {
+            var jsonModel = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
+            var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON> detailCostElements,
+                out IList<T_BP_SUA_CHUA_LON_DATA> detailCostData, out bool isDrillDownApply, jsonModel);
+
             return PartialView(dataCost);
         }
 

@@ -13,6 +13,7 @@
     var tempalteCode = dataCenterModel.TEMPLATE_CODE;
     var year = dataCenterModel.YEAR;
     var version = dataCenterModel.VERSION;
+    var formIdExportExcel = Guid.NewGuid().ToString();
 }
 
 <style>
@@ -127,10 +128,19 @@ else
         </div>
     </div>
 
+    <div class="hidden">
+        <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("DownloadDataSCL", new { model = JsonConvert.SerializeObject(dataCenterModel)})">
+        </form>
+    </div>
+
     <script>
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
         function mask(e) {
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+
+        function DownloadDataSCL() {
+            $('#@formIdExportExcel').submit();
         }
 
         function EditValue(sanBayCode, element, value) {
