@@ -1581,6 +1581,12 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             return lstProfitCenter;
         }
 
+        public IList<T_MD_SUA_CHUA_PROFIT_CENTER> GetSanBaySuaChuaWithTemplate(ViewDataCenterModel model)
+        {
+            var lstProfitCenterCode = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR && x.TEMPLATE_CODE == model.TEMPLATE_CODE).Select(x => x.SUA_CHUA_PROFIT_CENTER_CODE).ToList();
+            var lstProfitCenter = UnitOfWork.Repository<SuaChuaProfitCenterRepo>().Queryable().Where(x => lstProfitCenterCode.Contains(x.CODE)).ToList();
+            return lstProfitCenter;
+        }
         public override IList<T_MD_KHOAN_MUC_SUA_CHUA> GetDetailPreviewSumUp(string centerCode, string elementCode, int year)
         {
             var plVersionRepo = UnitOfWork.Repository<SuaChuaLonRepo>();
@@ -4517,6 +4523,65 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             {
                 UnitOfWork.Rollback();
                 this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void GenerateData(ref MemoryStream outFileStream, string path, IList<T_MD_SUA_CHUA_PROFIT_CENTER> lstSanBay, IList<T_MD_KHOAN_MUC_SUA_CHUA> dataCost)
+        {
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                IWorkbook templateWorkbook;
+                templateWorkbook = new XSSFWorkbook(fs);
+                templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.SuaChuaLon));
+                fs.Close();
+                ISheet sheet = templateWorkbook.GetSheetAt(0);
+
+                //StyleCell
+                ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
+                styleCellHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
+                styleCellHeader.WrapText = true;
+                styleCellHeader.Alignment = HorizontalAlignment.Center;
+                //Header
+                var numRowCur = 5;
+                var NUM_CELL = 6 + lstSanBay.Count();
+                var numRowHeader = 2;
+                for(int row = 0; row < numRowHeader; row++)
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+                    for (int i = 0; i< NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellHeader;
+                    }
+                    if (row == 0)
+                    {
+                        rowCur.Cells[0].SetCellValue("MÃ");
+                        rowCur.Cells[1].SetCellValue("CHỈ TIÊU");
+                        rowCur.Cells[2].SetCellValue("QUY MÔ");
+                        rowCur.Cells[3].SetCellValue("KINH PHÍ");
+                        rowCur.Cells[NUM_CELL-1].SetCellValue("KINH PHÍ");
+                    }
+                    else if(row == 1)
+                    {
+                        var columns = 3;
+                        foreach(var sanbay in lstSanBay)
+                        {
+                            rowCur.Cells[columns].SetCellValue(sanbay.NAME);
+                            columns++;
+                        }
+                        rowCur.Cells[NUM_CELL - 2].SetCellValue("CỘNG");
+                    }
+                }
+                //Body
+
+
+                templateWorkbook.Write(outFileStream);
+            }
+            catch(Exception ex)
+            {
+                this.State = false;
+                this.ErrorMessage = "Có lỗi xảy ra trong quá trình tạo file excel!";
                 this.Exception = ex;
             }
         }

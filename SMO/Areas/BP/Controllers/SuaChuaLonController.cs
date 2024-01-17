@@ -122,13 +122,19 @@ namespace SMO.Areas.BP.Controllers
         }
 
         [HttpPost]
-        public ActionResult DownloadDataSCL(string model)
+        public FileContentResult DownloadDataSCL(string model)
         {
             var jsonModel = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
             var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON> detailCostElements,
                 out IList<T_BP_SUA_CHUA_LON_DATA> detailCostData, out bool isDrillDownApply, jsonModel);
-
-            return PartialView(dataCost);
+            var lstSanBay = _service.GetSanBaySuaChuaWithTemplate(jsonModel);
+            var template = _service.GetTemplate(jsonModel.TEMPLATE_CODE);
+            MemoryStream outFileStream = new MemoryStream();
+            var templateExcel = "Template_SuaChuaLon";
+            string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
+            _service.GenerateData(ref outFileStream, path, lstSanBay, dataCost);
+            var fileName = template.NAME;
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
 
         public override ActionResult SummaryCenter(string centerCode, int? year, int? version, bool isRenderPartial = false)
