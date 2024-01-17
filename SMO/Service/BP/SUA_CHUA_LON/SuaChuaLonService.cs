@@ -1,4 +1,5 @@
 ﻿using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 
 using SMO.AppCode.Utilities;
@@ -4527,7 +4528,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             }
         }
 
-        public void GenerateData(ref MemoryStream outFileStream, string path, IList<T_MD_SUA_CHUA_PROFIT_CENTER> lstSanBay, IList<T_MD_KHOAN_MUC_SUA_CHUA> dataCost)
+        public void GenerateData(ref MemoryStream outFileStream, string path, IList<T_MD_SUA_CHUA_PROFIT_CENTER> lstSanBay, IList<T_MD_KHOAN_MUC_SUA_CHUA> dataCost, IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON> detailCostElements)
         {
             try
             {
@@ -4543,9 +4544,14 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 styleCellHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
                 styleCellHeader.WrapText = true;
                 styleCellHeader.Alignment = HorizontalAlignment.Center;
+
+                ICellStyle styleCellBody = templateWorkbook.CreateCellStyle();
+                styleCellBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+                styleCellBody.WrapText = true;
+                styleCellBody.Alignment = HorizontalAlignment.Center;
                 //Header
                 var numRowCur = 5;
-                var NUM_CELL = 6 + lstSanBay.Count();
+                var NUM_CELL = 5 + lstSanBay.Count();
                 var numRowHeader = 2;
                 for(int row = 0; row < numRowHeader; row++)
                 {
@@ -4560,21 +4566,48 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                         rowCur.Cells[1].SetCellValue("CHỈ TIÊU");
                         rowCur.Cells[2].SetCellValue("QUY MÔ");
                         rowCur.Cells[3].SetCellValue("KINH PHÍ");
-                        rowCur.Cells[NUM_CELL-1].SetCellValue("KINH PHÍ");
+                        rowCur.Cells[NUM_CELL-1].SetCellValue("GHI CHÚ");
                     }
                     else if(row == 1)
                     {
                         var columns = 3;
-                        foreach(var sanbay in lstSanBay)
+                        foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                         {
-                            rowCur.Cells[columns].SetCellValue(sanbay.NAME);
+                            rowCur.Cells[columns].SetCellValue(sb.Center.SAN_BAY_CODE);
                             columns++;
                         }
                         rowCur.Cells[NUM_CELL - 2].SetCellValue("CỘNG");
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 5, 3, NUM_CELL - 2));
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 6, 0, 0));
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 6, 1, 1));
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 6, 2, 2));
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 6, NUM_CELL-1, NUM_CELL-1));
                     }
+                    numRowCur++;
                 }
                 //Body
-
+                var rowStartBody = 7;
+                foreach(var item in dataCost.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                {
+                    
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, rowStartBody, NUM_CELL);
+                    for (int i = 0; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellBody;
+                    }
+                    var columns = 3;
+                    rowCur.Cells[0].SetCellValue(item.CODE);
+                    rowCur.Cells[1].SetCellValue(item.NAME);
+                    rowCur.Cells[2].SetCellValue(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO);
+                    foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                    {
+                        rowCur.Cells[columns].SetCellValue(dataCost.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN());
+                        columns++;
+                    }
+                    rowCur.Cells[NUM_CELL - 2].SetCellValue(dataCost.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN());
+                    rowCur.Cells[NUM_CELL - 1].SetCellValue(item.DESCRIPTION);
+                    rowStartBody++;
+                }
 
                 templateWorkbook.Write(outFileStream);
             }

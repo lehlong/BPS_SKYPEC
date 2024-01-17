@@ -1,4 +1,5 @@
 ﻿using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 
 using SMO.AppCode.Utilities;
@@ -4509,6 +4510,99 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             {
                 UnitOfWork.Rollback();
                 this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void GenerateData(ref MemoryStream outFileStream,string path, IList<T_MD_KHOAN_MUC_SUA_CHUA> dataCost, IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_THUONG_XUYEN> detailCostElements)
+        {
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                IWorkbook templateWorkbook;
+                templateWorkbook = new XSSFWorkbook(fs);
+                templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.SuaChuaLon));
+                fs.Close();
+                ISheet sheet = templateWorkbook.GetSheetAt(0);
+
+                //StyleCell
+                ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
+                styleCellHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
+                styleCellHeader.WrapText = true;
+                styleCellHeader.Alignment = HorizontalAlignment.Center;
+
+                ICellStyle styleCellBody = templateWorkbook.CreateCellStyle();
+                styleCellBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+                styleCellBody.WrapText = true;
+                styleCellBody.Alignment = HorizontalAlignment.Center;
+                //Header
+                var numRowCur = 5;
+                var NUM_CELL = 6 + detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()).Count();
+                var numRowHeader = 2;
+                for (int row = 0; row < numRowHeader; row++)
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
+                    for (int i = 0; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellHeader;
+                    }
+                    if (row == 0)
+                    {
+                        rowCur.Cells[0].SetCellValue("MÃ");
+                        rowCur.Cells[1].SetCellValue("CHỈ TIÊU");
+                        rowCur.Cells[2].SetCellValue("QUY MÔ");
+                        rowCur.Cells[3].SetCellValue("KINH PHÍ");
+                        rowCur.Cells[NUM_CELL - 1].SetCellValue("GHI CHÚ");
+                    }
+                    else if (row == 1)
+                    {
+                        rowCur.Cells[3].SetCellValue("VPCN");
+                        var columns = 4;
+                        foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                        {
+                            rowCur.Cells[columns].SetCellValue(sb.Center.SanBay.NAME);
+                            columns++;
+                        }
+                        rowCur.Cells[NUM_CELL - 2].SetCellValue("CỘNG");
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 5, 3, NUM_CELL - 2));
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 6, 0, 0));
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 6, 1, 1));
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 6, 2, 2));
+                        sheet.AddMergedRegion(new CellRangeAddress(5, 6, NUM_CELL - 1, NUM_CELL - 1));
+                    }
+                    numRowCur++;
+                }
+                //Body
+                var rowStartBody = 7;
+                foreach (var item in dataCost.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                {
+
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, rowStartBody, NUM_CELL);
+                    for (int i = 0; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellBody;
+                    }
+                    var columns = 4;
+                    rowCur.Cells[0].SetCellValue(item.CODE);
+                    rowCur.Cells[1].SetCellValue(item.NAME);
+                    rowCur.Cells[2].SetCellValue(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO);
+                    rowCur.Cells[3].SetCellValue("");
+                    foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                    {
+                        rowCur.Cells[columns].SetCellValue(dataCost.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN());
+                        columns++;
+                    }
+                    rowCur.Cells[NUM_CELL - 2].SetCellValue(dataCost.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN());
+                    rowCur.Cells[NUM_CELL - 1].SetCellValue(item.DESCRIPTION);
+                    rowStartBody++;
+                }
+
+                templateWorkbook.Write(outFileStream);
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.ErrorMessage = "Có lỗi xảy ra trong quá trình tạo file excel!";
                 this.Exception = ex;
             }
         }

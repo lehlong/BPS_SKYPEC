@@ -1,5 +1,7 @@
 ﻿
+using Newtonsoft.Json;
 using SMO.Core.Entities;
+using SMO.Core.Entities.BP.SUA_CHUA_LON;
 using SMO.Core.Entities.BP.SUA_CHUA_THUONG_XUYEN;
 using SMO.Core.Entities.MD;
 using SMO.Repository.Implement.BP;
@@ -116,6 +118,21 @@ namespace SMO.Areas.BP.Controllers
             model.EXCHANGE_RATE = 12;
             ViewBag.dataCenterModel = model;
             return PartialView(dataCost);
+        }
+
+        [HttpPost]
+        public FileContentResult DownloadDataSCL(string model)
+        {
+            var jsonModel = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
+            var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_THUONG_XUYEN> detailCostElements,
+                out IList<T_BP_SUA_CHUA_THUONG_XUYEN_DATA> detailCostData, out bool isDrillDownApply, jsonModel);
+            var template = _service.GetTemplate(jsonModel.TEMPLATE_CODE);
+            MemoryStream outFileStream = new MemoryStream();
+            var templateExcel = "Template_SuaChuaLon.xlsx";
+            string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
+            _service.GenerateData(ref outFileStream, path, dataCost, detailCostElements);
+            var fileName = template.NAME;
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
 
         public override ActionResult SummaryCenter(string centerCode, int? year, int? version, bool isRenderPartial = false)

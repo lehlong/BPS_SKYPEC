@@ -130,9 +130,9 @@ namespace SMO.Areas.BP.Controllers
             var lstSanBay = _service.GetSanBaySuaChuaWithTemplate(jsonModel);
             var template = _service.GetTemplate(jsonModel.TEMPLATE_CODE);
             MemoryStream outFileStream = new MemoryStream();
-            var templateExcel = "Template_SuaChuaLon";
+            var templateExcel = "Template_SuaChuaLon.xlsx";
             string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
-            _service.GenerateData(ref outFileStream, path, lstSanBay, dataCost);
+            _service.GenerateData(ref outFileStream, path, lstSanBay, dataCost, detailCostElements);
             var fileName = template.NAME;
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
