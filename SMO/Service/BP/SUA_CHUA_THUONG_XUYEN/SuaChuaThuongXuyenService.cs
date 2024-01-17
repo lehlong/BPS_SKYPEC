@@ -4525,6 +4525,13 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                 fs.Close();
                 ISheet sheet = templateWorkbook.GetSheetAt(0);
 
+                ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+                styleCellBold.WrapText = true;
+                var fontBold = templateWorkbook.CreateFont();
+                fontBold.Boldweight = (short)FontBoldWeight.Bold;
+                fontBold.FontHeightInPoints = 11;
+                fontBold.FontName = "Times New Roman";
+
                 //StyleCell
                 ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
                 styleCellHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
@@ -4534,7 +4541,6 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                 ICellStyle styleCellBody = templateWorkbook.CreateCellStyle();
                 styleCellBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
                 styleCellBody.WrapText = true;
-                styleCellBody.Alignment = HorizontalAlignment.Center;
                 //Header
                 var numRowCur = 5;
                 var NUM_CELL = 6 + detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()).Count();
@@ -4590,6 +4596,13 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                     foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                     {
                         rowCur.Cells[columns].SetCellValue(dataCost.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN());
+                        if (item.IS_GROUP)
+                        {
+                            rowCur.Cells[0].CellStyle = styleCellBold;
+                            rowCur.Cells[0].CellStyle.SetFont(fontBold);
+                            rowCur.Cells[1].CellStyle = styleCellBold;
+                            rowCur.Cells[1].CellStyle.SetFont(fontBold);
+                        }
                         columns++;
                     }
                     rowCur.Cells[NUM_CELL - 2].SetCellValue(dataCost.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN());

@@ -313,9 +313,14 @@
                         scrollContent(delta, true);
                     }
 
-                    // stop window scroll
-                    if (e.preventDefault && !releaseScroll) { e.preventDefault(); }
-                    if (!releaseScroll) { e.returnValue = false; }
+                    try {
+                        // stop window scroll
+                        if (e.preventDefault && !releaseScroll) { e.preventDefault(); }
+                        if (!releaseScroll) { e.returnValue = false; }
+                    } catch (ex) {
+                        console.log(ex)
+                    }
+                    
                 }
 
                 function scrollContent(y, isWheel, isJump) {

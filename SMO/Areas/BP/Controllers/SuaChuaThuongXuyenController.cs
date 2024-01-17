@@ -128,7 +128,7 @@ namespace SMO.Areas.BP.Controllers
                 out IList<T_BP_SUA_CHUA_THUONG_XUYEN_DATA> detailCostData, out bool isDrillDownApply, jsonModel);
             var template = _service.GetTemplate(jsonModel.TEMPLATE_CODE);
             MemoryStream outFileStream = new MemoryStream();
-            var templateExcel = "Template_SuaChuaLon.xlsx";
+            var templateExcel = "Template_Export_SuaChua.xlsx";
             string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
             _service.GenerateData(ref outFileStream, path, dataCost, detailCostElements);
             var fileName = template.NAME;

@@ -130,7 +130,7 @@ namespace SMO.Areas.BP.Controllers
             var lstSanBay = _service.GetSanBaySuaChuaWithTemplate(jsonModel);
             var template = _service.GetTemplate(jsonModel.TEMPLATE_CODE);
             MemoryStream outFileStream = new MemoryStream();
-            var templateExcel = "Template_SuaChuaLon.xlsx";
+            var templateExcel = "Template_Export_SuaChua.xlsx";
             string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
             _service.GenerateData(ref outFileStream, path, lstSanBay, dataCost, detailCostElements);
             var fileName = template.NAME;

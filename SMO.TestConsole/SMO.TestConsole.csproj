@@ -99,10 +99,6 @@
       <Project>{6fbbaa1a-8adf-4e7d-9bfb-ced5268cc985}</Project>
       <Name>SMO.Repository</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SMO.SAPINT\SMO.SAPINT.csproj">
-      <Project>{96ca3f86-59b6-4351-a87e-a04bb189b8e1}</Project>
-      <Name>SMO.SAPINT</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SMO\SMO.csproj">
       <Project>{f3a779b8-48fe-40d8-aec8-8a6ee7c070e2}</Project>
       <Name>SMO</Name>
