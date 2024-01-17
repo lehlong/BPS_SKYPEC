@@ -3,7 +3,8 @@
 @using SMO.Core.Entities.MD;
 @using System.Text;
 @using SMO.Service.Class;
-
+@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
 @{
     var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON>;
     var costCFHeader = ViewBag.costCFHeader as T_BP_SUA_CHUA_LON_VERSION;
@@ -19,7 +20,7 @@
         background-color: #FFFFFF !important;
     }
 
-    .icon-function{
+    .icon-function {
         cursor: pointer;
     }
 
@@ -66,6 +67,7 @@ else
                     <tbody>
                         <tr class="sticky-row strong" data-xls-row="header">
                             <th rowspan="2" colspan="4">HÀNH ĐỘNG</th>
+                            <td class="pre-whitespace" rowspan="2" style="text-align:center">MÃ</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">CHỈ TIÊU</td>
                             <td class="pre-whitespace" rowspan="2">QUY MÔ</td>
 
@@ -75,7 +77,7 @@ else
                         <tr class="sticky-row strong" data-xls-row="header">
                             @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                             {
-                                <td class="pre-whitespace">@sb.Center.SanBay.NAME</td>
+                                <td class="pre-whitespace">@sb.Center.SAN_BAY_CODE</td>
                             }
                             <td class="pre-whitespace">Cộng</td>
                         </tr>
@@ -107,11 +109,12 @@ else
                                 {
                                     <td></td>
                                 }
+                                <td class="pre-whitespace @classParent">@(item.CODE)</td>
                                 <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                 <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO)</td>
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
-                                    <td class="pre-whitespace"><input class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())"/></td>
+                                    <td class="pre-whitespace"><input class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
                                 }
                                 <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
                                 <td>@item.DESCRIPTION</td>

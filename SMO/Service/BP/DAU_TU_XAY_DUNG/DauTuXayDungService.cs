@@ -2022,13 +2022,13 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
 
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
-                        var value4001 = Convert.ToDecimal(tableData.Rows[i][2] ?? 0);
-                        var value4002 = Convert.ToDecimal(tableData.Rows[i][3] ?? 0);
-                        var value4010 = Convert.ToDecimal(tableData.Rows[i][5] ?? 0);
-                        var value4011 = Convert.ToDecimal(tableData.Rows[i][6] ?? 0);
-                        var value4012 = Convert.ToDecimal(tableData.Rows[i][7] ?? 0);
-                        var value4020 = Convert.ToDecimal(tableData.Rows[i][8] ?? 0);
-                        var value4021 = Convert.ToDecimal(tableData.Rows[i][9] ?? 0);
+                        var value4001 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? 0 : tableData.Rows[i][2]);
+                        var value4002 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
+                        var value4010 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? 0 : tableData.Rows[i][5]);
+                        var value4011 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
+                        var value4012 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
+                        var value4020 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
+                        var value4021 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
                         foreach (var ele in lstElement.Where(x => x.CENTER_CODE == centerCode))
                         {
                             costData = new T_BP_DAU_TU_XAY_DUNG_DATA()
