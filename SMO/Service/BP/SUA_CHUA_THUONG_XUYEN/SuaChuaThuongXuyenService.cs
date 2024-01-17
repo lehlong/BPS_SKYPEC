@@ -4578,6 +4578,24 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                     }
                     numRowCur++;
                 }
+
+                #region Header
+                var template = UnitOfWork.Repository<TemplateRepo>().Get(detailCostElements.FirstOrDefault().TEMPLATE_CODE);
+                var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 0, NUM_CELL);
+                ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
+                rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {template.Organize?.Parent?.NAME.ToUpper()}");
+
+                var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
+
+                ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
+                rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
+                rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
+
+                var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
+
+                ReportUtilities.CreateCell(ref rowHeader3, NUM_CELL);
+                rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
+                #endregion
                 //Body
                 var rowStartBody = 7;
                 foreach (var item in dataCost.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))

@@ -68,16 +68,15 @@ else
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">CHỈ TIÊU</td>
                             <td class="pre-whitespace" rowspan="2">QUY MÔ</td>
 
-                            <td class="pre-whitespace" style="text-align:center" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 2)">KINH PHÍ</td>
+                            <td class="pre-whitespace" style="text-align:center" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 1)">KINH PHÍ</td>
                             <td rowspan="2">GHI CHÚ</td>
                         </tr>
                         <tr class="sticky-row strong" data-xls-row="header">
-                            <td class="pre-whitespace">VPCN</td>
                             @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                             {
-                                <td class="pre-whitespace">@sb.Center.SanBay.NAME</td>
+                                <td class="pre-whitespace">@sb.Center.SAN_BAY_CODE</td>
                             }
-                            <td class="pre-whitespace">Cộng</td>
+                            <td class="pre-whitespace">CỘNG</td>
                         </tr>
 
 
@@ -108,7 +107,6 @@ else
                                     <td></td>
                                 }
                                 <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
-                                <td class="pre-whitespace"></td>
                                 <td class="pre-whitespace"></td>
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
