@@ -651,6 +651,7 @@
     <Compile Include="Models\DataCenterModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\RevenueReportModel.cs" />
     <Compile Include="Models\StepBudgetItem.cs" />
     <Compile Include="Models\StepBudgetModel.cs" />
     <Compile Include="Models\SummaryReviewDataCenterModel.cs" />
@@ -2010,6 +2011,8 @@
     <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewDataTemplate.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewDataTemplatePaging.cshtml" />
     <Content Include="Areas\BP\Views\SuaChuaLon\GetHistoryElement.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexDoanhThu.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataDoanhThu.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

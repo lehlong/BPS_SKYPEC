@@ -63,5 +63,28 @@ namespace SMO.Areas.BP.Controllers
             }
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
         }
+
+        public ActionResult IndexDoanhThu()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataDoanhThu(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            var data = _servicePhienBan.GetDataDoanhThu(year, phienBan, kichBan, hangHangKhong);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+        public ActionResult ExportExcelDataDoanhThu(int year, string phienBan)
+        {
+            MemoryStream outFileStream = new MemoryStream();
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
+            _servicePhienBan.ExportExcel(ref outFileStream, path, year, phienBan);
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
+        }
     }
 }

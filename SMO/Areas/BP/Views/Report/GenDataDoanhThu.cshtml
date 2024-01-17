@@ -1,0 +1,62 @@
+﻿@model List<SMO.Models.RevenueReportModel>
+@using System.Text;
+@{
+    var year = ViewBag.Year as int?;
+}
+<style>
+    .header-table {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td>Chỉ tiêu</td>
+                <td>Cộng năm</td>
+                <td>Tháng 1</td>
+                <td>Tháng 2</td>
+                <td>Tháng 3</td>
+                <td>Tháng 4</td>
+                <td>Tháng 5</td>
+                <td>Tháng 6</td>
+                <td>Tháng 7</td>
+                <td>Tháng 8</td>
+                <td>Tháng 9</td>
+                <td>Tháng 10</td>
+                <td>Tháng 11</td>
+                <td>Tháng 12</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.Level; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
+                    <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
+                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                    <td class="align-right">@item.Value4.ToStringVN()</td>
+                    <td class="align-right">@item.Value5.ToStringVN()</td>
+                    <td class="align-right">@item.Value6.ToStringVN()</td>
+                    <td class="align-right">@item.Value7.ToStringVN()</td>
+                    <td class="align-right">@item.Value8.ToStringVN()</td>
+                    <td class="align-right">@item.Value9.ToStringVN()</td>
+                    <td class="align-right">@item.Value10.ToStringVN()</td>
+                    <td class="align-right">@item.Value11.ToStringVN()</td>
+                    <td class="align-right">@item.Value12.ToStringVN()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
