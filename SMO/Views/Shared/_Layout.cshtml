@@ -287,11 +287,15 @@
 
     </section>
 
-    <script type="text/html" id="RowTemplateNotify">
+
+    @*<script type="text/html" id="RowTemplateNotify">
         <li data-bind="html: CONTENTS, css: CLASS_IS_NOT_READED, attr : {id : PKID}"></li>
     </script>
     <script src="~/Scripts/jquery.signalR-2.3.0.min.js"></script>
-    <script src="~/signalr/hubs"></script>
+    <script src="~/signalr/hubs"></script>*@
+
+
+
     <script src="~/Theme/plugins/momentjs/moment.js"></script>
 
     <script src="~/Theme/plugins/bootstrap-datepicker-1.6.4/js/bootstrap-datepicker.min.js"></script>
@@ -339,42 +343,14 @@
     @{
         JsonSerializerSettings serializerSetting = new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
     }
-    <script type="text/javascript">
+
+
+    @*<script type="text/javascript">
         var notifyService = @Html.Raw(JsonConvert.SerializeObject(ViewBag.NotifyService, serializerSetting));
     </script>
-    <script src="~/Scripts/layout.js?v=2"></script>
-    <script type="text/javascript">
-
-        function SendNotifyIsViewed() {
-            if (modelNotify.IntCountNew() != "" || modelNotify.IntCountNew() != 0) {
-                notification.server.notifyIsViewed('@ProfileUtilities.User.USER_NAME');
-            }
-        }
-
-        function SendNotifyIsReaded(pkId) {
-            notification.server.notifyIsReaded(pkId,'@ProfileUtilities.User.USER_NAME');
-        }
-
-        function ChangeLanguage(lang) {
-            document.cookie = "lang=" + lang;
-            location.reload();
-        }
-
-        $(function () {            if ("@isChangePass" == 1) {
-                //Forms.LoadAjaxModal('/Authorize/ChangePassword')
-            }
-
-            @*@if(ProfileUtilities.User.USER_TYPE == UserType.Fecon)
-            {
-                @: $('.bars').click();
-            }*@
 
 
-            history.pushState(null, null, location.href);
-            window.onpopstate = function () {
-                history.go(1);
-            };
-        });
-    </script>
+    <script src="~/Scripts/layout.js?v=2"></script>*@
+
 </body>
 </html>
