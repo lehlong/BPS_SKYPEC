@@ -33,7 +33,7 @@ namespace SMO.Service.CM
             return lstComment;
         }
 
-        public IList<T_CM_BP_COMMENT_DETAILs> GetAll()
+        public IList<T_CM_BP_COMMENT_DETAILs> GetAllComment()
         {
             var lstComment = UnitOfWork.Repository<CommentDetailsRepo>().Queryable().ToList();
             return lstComment;

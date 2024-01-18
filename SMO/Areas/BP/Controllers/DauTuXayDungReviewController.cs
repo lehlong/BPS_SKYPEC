@@ -3,7 +3,6 @@ using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
 using SMO.Models;
 using SMO.Repository.Implement.MD;
 using SMO.Service.BP.DAU_TU_XAY_DUNG;
-using SMO.Service.BP.DAU_TU_XAY_DUNG;
 using SMO.Service.Class;
 using SMO.Service.Class.Base;
 

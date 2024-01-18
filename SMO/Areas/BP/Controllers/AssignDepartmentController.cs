@@ -67,7 +67,7 @@ namespace SMO.Areas.BP.Controllers
         [HttpGet]
         public ActionResult List()
         {
-            var lstComment = _service.GetAll();
+            var lstComment = _service.GetAllAssignDepartment();
             return Json(lstComment, JsonRequestBehavior.AllowGet);
         }
     }

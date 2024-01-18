@@ -148,6 +148,7 @@ namespace SMO.Service.MD
             }
             catch (Exception ex)
             {
+                var exception = ex;
                 return -1;
             }
         }
@@ -284,6 +285,7 @@ namespace SMO.Service.MD
             }
             catch (Exception ex)
             {
+                var exception = ex;
                 return -1;
             }
         }
@@ -462,6 +464,7 @@ namespace SMO.Service.MD
             catch (Exception ex)
             {
                 this.State = false;
+                this.Exception = ex;
                 UnitOfWork.Rollback();
                 return new DataCenterModel();
             }
@@ -506,6 +509,7 @@ namespace SMO.Service.MD
             catch (Exception ex)
             {
                 this.State = false;
+                this.Exception = ex;
                 UnitOfWork.Rollback();
                 return new DataCenterModel();
             }

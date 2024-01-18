@@ -89,8 +89,9 @@ namespace SMO.HangfireJobs
                 }
                 unitOfWork.Commit();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                var exception = ex;
                 unitOfWork.Rollback();
                 // notify to admin
             }

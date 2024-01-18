@@ -4503,7 +4503,6 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
 
             ISheet sheetTraNapQuocTe = workbook.GetSheetAt(2);
             var metaDataTraNapQuocTe = ExcelHelper.GetExcelMeta(htmlTraNapQuocTe);
-            var NUM_CELL_DOANH_THU_QUOC_TE = 18;
 
             InitHeaderFile(ref sheetTraNapQuocTe, year, centerCode, version, NUM_CELL_DOANH_THU_NOI_DIA, templateId, "Tấn", exchangeRate);
             ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetTraNapQuocTe, metaDataTraNapQuocTe.MetaTHead, NUM_CELL_DOANH_THU_NOI_DIA,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));

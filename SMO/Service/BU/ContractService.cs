@@ -303,7 +303,7 @@ namespace SMO.Service.BU
             return data;
         }
 
-        public void Search()
+        public override void Search()
         {
             try
             {
@@ -518,6 +518,8 @@ namespace SMO.Service.BU
             }
             catch (Exception ex)
             {
+                this.State = false;
+                this.Exception = ex;
                 return null;
             }
         }

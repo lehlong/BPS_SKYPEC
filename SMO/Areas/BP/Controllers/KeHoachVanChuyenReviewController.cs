@@ -3,7 +3,6 @@ using SMO.Core.Entities.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Models;
 using SMO.Repository.Implement.MD;
 using SMO.Service.BP.KE_HOACH_VAN_CHUYEN;
-using SMO.Service.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Service.Class;
 using SMO.Service.Class.Base;
 

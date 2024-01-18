@@ -40,7 +40,7 @@ namespace SMO.Service.CM
             return lstDepartment;
         }
 
-        public IList<T_CM_ASSIGN_DEPARTMENT> GetAll()
+        public IList<T_CM_ASSIGN_DEPARTMENT> GetAllAssignDepartment()
         {
             var lstDepartment = UnitOfWork.Repository<AssignDepartmentRepo>().Queryable().ToList();
             return lstDepartment;
