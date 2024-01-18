@@ -4543,7 +4543,7 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                 styleCellBody.WrapText = true;
                 //Header
                 var numRowCur = 5;
-                var NUM_CELL = 6 + detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()).Count();
+                var NUM_CELL = 5 + detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()).Count();
                 var numRowHeader = 2;
                 for (int row = 0; row < numRowHeader; row++)
                 {
@@ -4562,8 +4562,7 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                     }
                     else if (row == 1)
                     {
-                        rowCur.Cells[3].SetCellValue("VPCN");
-                        var columns = 4;
+                        var columns = 3;
                         foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                         {
                             rowCur.Cells[columns].SetCellValue(sb.Center.SanBay.NAME);
@@ -4606,11 +4605,10 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                     {
                         rowCur.Cells[i].CellStyle = styleCellBody;
                     }
-                    var columns = 4;
+                    var columns = 3;
                     rowCur.Cells[0].SetCellValue(item.CODE);
                     rowCur.Cells[1].SetCellValue(item.NAME);
                     rowCur.Cells[2].SetCellValue(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO);
-                    rowCur.Cells[3].SetCellValue("");
                     foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                     {
                         rowCur.Cells[columns].SetCellValue(dataCost.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN());
