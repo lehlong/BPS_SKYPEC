@@ -4768,6 +4768,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 }
 
                 var allSanLuongProfitCenters = UnitOfWork.Repository<SanLuongProfitCenterRepo>().GetAll();
+                List<T_BP_KE_HOACH_SAN_LUONG_DATA> lstData = new List<T_BP_KE_HOACH_SAN_LUONG_DATA>();
                 // Insert dữ liệu vào bảng data
                 for (int i = 0; i < actualRows; i++)
                 {
@@ -4827,9 +4828,51 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
 
                     if (costData.VALUE_SUM_YEAR != 0 && costData.VALUE_SUM_YEAR != null)
                     {
+                        lstData.Add(costData);
+                    }
+                    /*if (costData.VALUE_SUM_YEAR != 0 && costData.VALUE_SUM_YEAR != null)
+                    {
                         UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Create(costData);
-                    }                    
+                    }   */
                 }
+                // Sum dữ liệu
+                var groupedData = lstData
+                .GroupBy(item => Tuple.Create(item.SAN_LUONG_PROFIT_CENTER_CODE, item.KHOAN_MUC_SAN_LUONG_CODE))
+                .ToDictionary(
+                    group => group.Key,
+                    group => new T_BP_KE_HOACH_SAN_LUONG_DATA
+                    {
+                        PKID = Guid.NewGuid().ToString(),
+                        ORG_CODE = orgCode,
+                        SAN_LUONG_PROFIT_CENTER_CODE = group.Key.Item1,
+                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                        TIME_YEAR = ObjDetail.TIME_YEAR,
+                        STATUS = Approve_Status.ChuaTrinhDuyet,
+                        VERSION = versionNext,
+                        KHOAN_MUC_SAN_LUONG_CODE = group.Key.Item2,
+                        VALUE_JAN = group.Sum(item => item.VALUE_JAN ),
+                        VALUE_FEB = group.Sum(item => item.VALUE_FEB ),
+                        VALUE_MAR = group.Sum(item => item.VALUE_MAR ),
+                        VALUE_APR = group.Sum(item => item.VALUE_APR ),
+                        VALUE_MAY = group.Sum(item => item.VALUE_MAY ),
+                        VALUE_JUN = group.Sum(item => item.VALUE_JUN ),
+                        VALUE_JUL = group.Sum(item => item.VALUE_JUL ),
+                        VALUE_AUG = group.Sum(item => item.VALUE_AUG ),
+                        VALUE_SEP = group.Sum(item => item.VALUE_SEP ),
+                        VALUE_OCT = group.Sum(item => item.VALUE_OCT ),
+                        VALUE_NOV = group.Sum(item => item.VALUE_NOV ),
+                        VALUE_DEC = group.Sum(item => item.VALUE_DEC),
+                        VALUE_SUM_YEAR = group.Sum(item => item.VALUE_SUM_YEAR),
+                        VALUE_SUM_YEAR_PREVENTIVE = group.Sum(item => item.VALUE_SUM_YEAR_PREVENTIVE),
+                        DESCRIPTION = "",
+                        CREATE_BY = currentUser
+                    }
+                    );
+                foreach(var item in groupedData)
+                {
+                    UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Create(item.Value);
+                }
+
                 UnitOfWork.Commit();
                 NotifyUtilities.CreateNotify(
                     new NotifyPara()

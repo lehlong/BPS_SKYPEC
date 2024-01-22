@@ -35,6 +35,12 @@ namespace SMO.Areas.MD.Controllers
         {
             return PartialView(_service);
         }
+
+        [MyValidateAntiForgeryToken]
+        public ActionResult IndexKeHoachGiaVon()
+        {
+            return PartialView(_service);
+        }
         public ActionResult GetDataKeHoachTaiChinh(int year)
         {
             ViewBag.LstSharedData = _service.UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
@@ -46,6 +52,13 @@ namespace SMO.Areas.MD.Controllers
         {
             ViewBag.LstSharedData = _service.UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
             var data = _service.GetDataKeHoachGiaThanh(year);
+            return PartialView(data);
+        }
+
+        public ActionResult GetDataKeHoachGiaVon(int year)
+        {
+            ViewBag.LstSharedData = _service.UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
+            var data = _service.GetDataKeHoachGiaVon(year);
             return PartialView(data);
         }
 

@@ -1,0 +1,92 @@
+﻿@model SMO.Service.MD.ElementService
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+    var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+    var yearDefault = Convert.ToString(lstTimeYear.SelectedValue);
+}
+<div id='@Model.ViewId' class="container-fluid child-content">
+
+    <div class="card border-grey">
+        <div class="body" style="padding-top: 0px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> KẾ HOẠCH GIÁ VỐN</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="page-function">
+                    <div class="page-function-button m-r-20" style="float:left">
+                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdAdd", "Xuất Excel", "DownloadData();", "Alt+N", "file_download")
+                    </div>
+                    <div class="input-group page-function-search">
+                        <select id="TIME_YEAR" class="form-control selectpicker show-tick" data_live_search="true" data_container="body" onchange="onChangeTimeYear(this.value)">
+                            @foreach (var temp in lstTimeYear)
+                            {
+                                if (temp.Value == yearDefault)
+                                {
+                                    <option value="@temp.Value" selected>@temp.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@temp.Value">@temp.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div id="divResult">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function SubmitIndex() {
+            Forms.SubmitForm('@Model.FormId');
+        }
+
+        function DownloadData() {
+            Swal.fire({
+                title: "Oppsss?",
+                text: "Đang trong quá trình code! Đừng bấm nữa?",
+                icon: "warning"
+            });
+        }
+
+        function GetDataKeHoachGiaVon(value) {
+            $("#@Model.ViewId #divResult").empty();
+            var ajaxParams = {
+                url: "@Url.Action("GetDataKeHoachGiaVon")",
+                data: {
+                    year: value,
+                },
+                htmlTarget: '#divResult',
+            };
+            Forms.LoadAjax(ajaxParams);
+        }
+
+        function onChangeTimeYear(value) {
+            GetDataKeHoachGiaVon(value);
+        }
+
+        $(function () {
+            Forms.CompleteUI();
+            onChangeTimeYear($("#TIME_YEAR").val())
+        });
+
+        $(function () {
+            Forms.SubmitForm('@Model.FormId');
+            Forms.CompleteUI();
+            Forms.SubmitByEnter("@Model.FormId");
+        });
+    </script>
+</div>
+
+
+
+
+

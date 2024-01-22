@@ -470,6 +470,40 @@ namespace SMO.Service.MD
             }
         }
 
+        public DataCenterModel GetDataKeHoachGiaVon(int year)
+        {
+            try
+            {
+                var data = new DataCenterModel();
+                var lstWarehouse = UnitOfWork.Repository<WarehouseRepo>().GetAll().ToList();
+                var lstDeliveryConditions = UnitOfWork.Repository<DeliveryConditionsRepo>().GetAll().ToList();
+                var lstSharedData = UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
+                var lstRoute = UnitOfWork.Repository<RouteRepo>().GetAll().ToList();
+                var lstElement = UnitOfWork.Repository<ElementRepo>().GetAll().ToList();
+
+                //Pre kho 1
+                foreach (var warehouse in lstWarehouse)
+                {
+                    foreach (var deliveryCondition in lstDeliveryConditions)
+                    {
+                        var dataCalculate = CalculateValueElement(year, warehouse.CODE, deliveryCondition.CODE);
+                        dataCalculate.WarehouseCode = warehouse.CODE;
+                        dataCalculate.Warehouse = warehouse.TEXT;
+                        dataCalculate.DeliveryConditionsCode = deliveryCondition.CODE;
+                        dataCalculate.DeliveryConditions = deliveryCondition.TEXT;
+                        data.KeHoachGiaThanhData.Add(dataCalculate);
+                    }
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                UnitOfWork.Rollback();
+                return new DataCenterModel();
+            }
+        }
         public DataCenterModel GetDataKeHoachTaiChinh(int year)
         {
             try
