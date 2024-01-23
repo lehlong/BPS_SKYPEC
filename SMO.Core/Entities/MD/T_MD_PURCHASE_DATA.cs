@@ -9,13 +9,18 @@ namespace SMO.Core.Entities
         public virtual string WAREHOUSE_CODE { get; set; }
         public virtual string DELIVERY_CONDITIONS_CODE { get; set; }
         public virtual int TIME_YEAR { get; set; }
-        public virtual decimal? S0001 { get; set; }
-        public virtual decimal? S0002 { get; set; }
-        public virtual decimal? S0003 { get; set; }
-        public virtual decimal? S0004 { get; set; }
-        public virtual decimal? S0005 { get; set; }
-        public virtual decimal? S0006 { get;set; }
-        public virtual decimal? S0007 { get; set; }
+        public virtual decimal S0001 { get; set; }
+        public virtual decimal S0002 { get; set; }
+        public virtual decimal S0003 { get; set; }
+        public virtual decimal S0004 { get; set; }
+        public virtual decimal S0005 { get; set; }
+        public virtual decimal S0006 { get;set; }
+        public virtual decimal S0007 { get; set; }
+        public virtual int ID_KHNH { get; set; }
+        public virtual string NAME { get; set; }
+        public virtual int YEAR { get; set; }
+        public virtual string SIZE_ID { get; set; }
+        public virtual string AREA_ID { get; set; }
 
         private T_MD_WAREHOUSE _Warehouse;
         public virtual T_MD_WAREHOUSE Warehouse

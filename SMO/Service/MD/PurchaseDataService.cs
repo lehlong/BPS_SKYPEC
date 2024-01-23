@@ -1,10 +1,15 @@
-﻿using SMO.Core.Entities;
-using SMO.Models;
+﻿using NHibernate.Linq;
+using NPOI.HSSF.Record.Chart;
+using SMO.Core.Entities;
 using SMO.Repository.Implement.MD;
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using static iTextSharp.text.pdf.AcroFields;
 
 namespace SMO.Service.MD
 {
@@ -15,75 +20,83 @@ namespace SMO.Service.MD
 
         }
 
-        public IList<T_MD_PURCHASE_DATA> GetDataByTimeYear(int year)
+        public void SynchornizeData(int year)
         {
             try
             {
-                var checkData = UnitOfWork.Repository<PurchaseDataRepo>().Queryable().Any(x => x.TIME_YEAR == year);
-                if (!checkData)
+                string connection = ConfigurationManager.ConnectionStrings["SKYPEC"].ConnectionString;
+                DataTable tableData = new DataTable();
+                using (SqlConnection con = new SqlConnection(connection))
                 {
-                    UnitOfWork.BeginTransaction();
-                    var lstWarehouse = UnitOfWork.Repository<WarehouseRepo>().GetAll().ToList();
-                    var lstDeliveryConditions = UnitOfWork.Repository<DeliveryConditionsRepo>().GetAll().ToList();
-                    foreach (var warehouse in lstWarehouse)
+                    SqlCommand cmd = new SqlCommand($"SELECT * FROM LGS_KH_NHAPHANG", con);
+                    cmd.CommandType = CommandType.Text;
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    try
                     {
-                        foreach (var deliveryCondition in lstDeliveryConditions)
-                        {
-                            var item = new T_MD_PURCHASE_DATA
-                            {
-                                ID = Guid.NewGuid(),
-                                WAREHOUSE_CODE = warehouse.CODE,
-                                DELIVERY_CONDITIONS_CODE = deliveryCondition.CODE,
-                                TIME_YEAR = year
-                            };
-                            UnitOfWork.Repository<PurchaseDataRepo>().Create(item);
-                        }
+                        adapter.Fill(tableData);
                     }
-                    UnitOfWork.Commit();
+                    catch (Exception ex)
+                    {
+                        this.State = false;
+                        this.Exception = ex;
+                    }
                 }
-                return UnitOfWork.Repository<PurchaseDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+
+                var data = ConvertDataTableToPurchaseData(tableData);
+
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<PurchaseDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).Delete();
+                foreach (var item in data)
+                {
+                    var sumWarehouse = data.Where(x => x.WAREHOUSE_CODE == item.WAREHOUSE_CODE).Sum(x => x.S0002);
+                    var sumArea = data.Where(x => x.AREA_ID == item.AREA_ID).Sum(x => x.S0002);
+                    item.S0001 = sumWarehouse == 0 || sumArea == 0 ? 0 : sumWarehouse / sumArea;
+                    item.TIME_YEAR = year;
+                    item.ACTIVE = true;
+                    UnitOfWork.Repository<PurchaseDataRepo>().Create(item);
+                }
+                UnitOfWork.Commit();
             }
             catch (Exception ex)
             {
                 UnitOfWork.Rollback();
-                this.State = false;
-                this.Exception = ex;
-                return new List<T_MD_PURCHASE_DATA>();
+                State = false;
+                Exception = ex;
             }
         }
 
-        public void UpdatePurchaseData(List<T_MD_PURCHASE_DATA> data)
+        public List<T_MD_PURCHASE_DATA> ConvertDataTableToPurchaseData(DataTable dt)
         {
             try
             {
-                UnitOfWork.BeginTransaction();
-                foreach(var item in data)
-                {
-                    var pdata = UnitOfWork.Repository<PurchaseDataRepo>().Queryable().FirstOrDefault(x => x.TIME_YEAR == item.TIME_YEAR && x.WAREHOUSE_CODE == item.WAREHOUSE_CODE && x.DELIVERY_CONDITIONS_CODE == item.DELIVERY_CONDITIONS_CODE);
-                    if (pdata != null)
-                    {
-                        pdata.S0001 = item.S0001;
-                        pdata.S0002 = item.S0002;
-                        pdata.S0003 = item.S0003;
-                        pdata.S0004 = item.S0004;
-                        pdata.S0005 = item.S0005;
-                        pdata.S0006 = item.S0006;
-                        pdata.S0007 = item.S0007;
-                        UnitOfWork.Repository<PurchaseDataRepo>().Update(pdata);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                UnitOfWork.Commit();    
+                var convertedList = from rw in dt.AsEnumerable()
+                                    select new T_MD_PURCHASE_DATA()
+                                    {
+                                        ID = Guid.NewGuid(),
+                                        WAREHOUSE_CODE = Convert.ToString(rw["MaKho"]).Replace(" ",""),
+                                        DELIVERY_CONDITIONS_CODE = Convert.ToString(rw["DKGH"]).Replace(" ", ""),
+                                        ID_KHNH = rw["ID_KHNH"].ToString() == null || rw["ID_KHNH"].ToString() == "" ? 0 : Convert.ToInt32(rw["ID_KHNH"]),
+                                        NAME = Convert.ToString(rw["ObjectName"]),
+                                        S0002 = rw["Quantity"].ToString() == null || rw["Quantity"].ToString() == "" ? 0 : Convert.ToDecimal(rw["Quantity"]),
+                                        S0003 = rw["Premium"].ToString() == null || rw["Premium"].ToString() == "" ? 0 : Convert.ToDecimal(rw["Premium"]),
+                                        S0004 = rw["Pre_tau"].ToString() == null || rw["Pre_tau"].ToString() == "" ? 0 : Convert.ToDecimal(rw["Pre_tau"]),
+                                        S0005 = rw["thung_Tan"].ToString() == null || rw["thung_Tan"].ToString() == "" ? 0 : Convert.ToDecimal(rw["thung_Tan"]),
+                                        S0006 = rw["Bao_hiem"].ToString() == null || rw["Bao_hiem"].ToString() == "" ? 0 : Convert.ToDecimal(rw["Bao_hiem"]),
+                                        S0007 = rw["ImportVATRate"].ToString() == null || rw["ImportVATRate"].ToString() == "" ? 0 : Convert.ToDecimal(rw["ImportVATRate"]),
+                                        SIZE_ID = Convert.ToString(rw["SizeID"]),
+                                        AREA_ID = Convert.ToString(rw["AreaID"]),
+                                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                                        CREATE_DATE = DateTime.Now,
+                                    };
+                return convertedList.ToList();
             }
             catch (Exception ex)
             {
-                UnitOfWork.Rollback();
-                this.State = false;
-                this.Exception = ex;
+                State = false;
+                Exception = ex;
+                return null;
             }
+
         }
     }
 }

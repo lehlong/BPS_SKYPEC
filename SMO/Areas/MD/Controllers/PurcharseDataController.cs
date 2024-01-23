@@ -1,8 +1,5 @@
-﻿using iTextSharp.text;
-using Newtonsoft.Json;
-using SMO.Core.Entities;
-using SMO.Service.MD;
-using System.Collections.Generic;
+﻿using SMO.Service.MD;
+using System;
 using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
@@ -23,21 +20,83 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        public ActionResult GetDataByTimeYear(int year)
+        [ValidateAntiForgeryToken]
+        public ActionResult List(PurchaseDataService service)
         {
-            var data = _service.GetDataByTimeYear(year);
-            return PartialView(data);
+            service.Search();
+            return PartialView(service);
         }
-      
-        [HttpPost]
-        public ActionResult Update(string data)
+
+        [MyValidateAntiForgeryToken]
+        public ActionResult Create()
         {
-            var jsonData = JsonConvert.DeserializeObject<List<T_MD_PURCHASE_DATA>>(data);
+            return PartialView(_service);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(PurchaseDataService service)
+        {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
-            _service.UpdatePurchaseData(jsonData);
+            service.ObjDetail.ID = Guid.NewGuid();
+            service.Create();
+            if (service.State)
+            {
+                SMOUtilities.GetMessage("1001", service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1004", service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [MyValidateAntiForgeryToken]
+        public ActionResult Edit(Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                _service.Get(id);
+            }
+            return PartialView(_service);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update(PurchaseDataService service)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            service.Update();
+            if (service.State)
+            {
+                SMOUtilities.GetMessage("1002", service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult SynchornizeData(int year)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.SynchornizeData(year);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

@@ -2,68 +2,70 @@
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
-    var lstTimeYear = SelectListUtilities.GetTimeYear(false);
-    var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
-    <div class="card border-grey">
-        <div class="body" style="padding-top: 0px;">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> DỮ LIỆU MUA HÀNG</a>
-                </li>
-            </ul>
+    @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.FormId)
+        <div class="card border-grey">
+            <div class="body" style="padding-top: 0px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> DANH SÁCH DỮ LIỆU MUA HÀNG</a>
+                    </li>
+                </ul>
 
-            <div class="tab-content">
-                <div class="page-function">
-                    <div class="page-function-button m-r-20" style="float:left">
-                        @Html.MyButton("cmdAdd", "Lưu dữ liệu", "savePurchaseData();", "Alt+N", "done_all")
+                <div class="tab-content">
+                    <div class="page-function">
+                        <div class="page-function-button m-r-20" style="float:left">
+                            @Html.MyButton("cmdAdd", "Đồng bộ", "SynchornizeData()", "Alt+N", "sync")
+                        </div>
+                        <div class="input-group page-function-search" style="margin-bottom: 7px !important; max-width:720px">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    @Html.MyDropDownListFor(m => m.ObjDetail.TIME_YEAR, SelectListUtilities.GetTimeYear(false), new { @onchange = "SubmitIndex();", @id = "ddlTimeYear", @data_live_search = "true", @class = "selectpicker show-tick", data_container = "body", @data_val = false })
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="input-group page-function-search">
-                        <select id="TIME_YEAR" class="form-control selectpicker show-tick" data_live_search="true" data_container="body" onchange="onChangeTimeYear(this.value)">
-                            @foreach (var temp in lstTimeYear)
-                            {
-                                if (temp.Value == yearDefault)
-                                {
-                                    <option value="@temp.Value" selected>@temp.Text</option>
-                                    break;
-                                }
-                                else
-                                {
-                                    <option value="@temp.Value">@temp.Text</option>
-                                }
-                            }
-                        </select>
+
+                    <div id="divResult">
+
                     </div>
-                </div>
-
-                <div id="divResult">
-
                 </div>
             </div>
         </div>
-    </div>
-    <script type="text/javascript">
+    }
 
-        function onChangeTimeYear(value) {
-            $("#@Model.ViewId #divResult").empty();
-            var ajaxParams = {
-                url: "@Url.Action("GetDataByTimeYear")",
-                data: {
-                    year: value,
-                },
-                htmlTarget: '#divResult',
-            };
-            Forms.LoadAjax(ajaxParams);
+    <script type="text/javascript">
+        function SubmitIndex() {
+            Forms.SubmitForm('@Model.FormId');
         }
 
         $(function () {
+            Forms.SubmitForm('@Model.FormId');
             Forms.CompleteUI();
-            onChangeTimeYear($("#TIME_YEAR").val())
+            Forms.SubmitByEnter("@Model.FormId");
         });
+
+    function SynchornizeData() {
+        var year = $("#ddlTimeYear").val();
+        var ajaxParams = {
+            url: '@Url.Action("SynchornizeData")',
+            type: "POST",
+            data: { year: year },
+            dataType: 'json',
+            success: function (response) {
+                Message.execute(response);
+                SubmitIndex();
+            }
+        };
+        Forms.Ajax(ajaxParams);
+    }
     </script>
 </div>
-
 
 
 

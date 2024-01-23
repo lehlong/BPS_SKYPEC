@@ -22,6 +22,7 @@ namespace SMO.Models
     {
         public string WarehouseCode { get; set; }
         public string Warehouse { get; set; }
+        public string AreaCode { get; set; }
         public string DeliveryConditions { get; set; }
         public string DeliveryConditionsCode { get; set; }
         public decimal S0001 { get; set;}

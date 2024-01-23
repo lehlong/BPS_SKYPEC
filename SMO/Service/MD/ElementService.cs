@@ -153,7 +153,7 @@ namespace SMO.Service.MD
             }
         }
 
-        public KeHoachGiaThanhData CalculateValueElement(int year, string warehouseCode, string deliveryConditionsCode)
+        public KeHoachGiaThanhData CalculateValueElement(int year, string warehouseCode, string deliveryConditionsCode, int id)
         {
             try
             {
@@ -163,7 +163,7 @@ namespace SMO.Service.MD
                 {
                     try
                     {
-                        var value = UnitOfWork.GetSession().CreateSQLQuery($"{element.QUERY.Replace("[KHO]", warehouseCode).Replace("[DKGH]", deliveryConditionsCode).Replace("[YEAR]", year.ToString())}").List()[0];
+                        var value = UnitOfWork.GetSession().CreateSQLQuery($"{element.QUERY.Replace("[KHO]", warehouseCode).Replace("[DKGH]", deliveryConditionsCode).Replace("[ID_KHNH]", id.ToString()).Replace("[YEAR]", year.ToString())}").List()[0];
                         switch (element.CODE)
                         {
                             case "S0001":
@@ -300,18 +300,17 @@ namespace SMO.Service.MD
                 var lstRoute = UnitOfWork.Repository<RouteRepo>().GetAll().ToList();
                 var lstElement = UnitOfWork.Repository<ElementRepo>().GetAll().ToList();
 
+                var puchaseData = UnitOfWork.Repository<PurchaseDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+
                 //Pre kho 1
-                foreach (var warehouse in lstWarehouse)
+                foreach (var item in puchaseData)
                 {
-                    foreach (var deliveryCondition in lstDeliveryConditions)
-                    {
-                        var dataCalculate = CalculateValueElement(year, warehouse.CODE, deliveryCondition.CODE);
-                        dataCalculate.WarehouseCode = warehouse.CODE;
-                        dataCalculate.Warehouse = warehouse.TEXT;
-                        dataCalculate.DeliveryConditionsCode = deliveryCondition.CODE;
-                        dataCalculate.DeliveryConditions = deliveryCondition.TEXT;
-                        data.KeHoachGiaThanhData.Add(dataCalculate);
-                    }
+                    var dataCalculate = CalculateValueElement(year, item.WAREHOUSE_CODE, item.DELIVERY_CONDITIONS_CODE, item.ID_KHNH);
+                    dataCalculate.WarehouseCode = item.WAREHOUSE_CODE;
+                    dataCalculate.Warehouse = item.WAREHOUSE_CODE;
+                    dataCalculate.DeliveryConditionsCode = item.DELIVERY_CONDITIONS_CODE;
+                    dataCalculate.DeliveryConditions = item.DELIVERY_CONDITIONS_CODE;
+                    data.KeHoachGiaThanhData.Add(dataCalculate);
                 }
 
                 //Pre TB Kho
@@ -470,7 +469,7 @@ namespace SMO.Service.MD
             }
         }
 
-        public DataCenterModel GetDataKeHoachGiaVon(int year)
+        public DataCenterModel GetDataKeHoachGiaVon(int year, string area)
         {
             try
             {
@@ -481,18 +480,21 @@ namespace SMO.Service.MD
                 var lstRoute = UnitOfWork.Repository<RouteRepo>().GetAll().ToList();
                 var lstElement = UnitOfWork.Repository<ElementRepo>().GetAll().ToList();
 
-                //Pre kho 1
-                foreach (var warehouse in lstWarehouse)
+                var puchaseData = UnitOfWork.Repository<PurchaseDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+                if (!string.IsNullOrEmpty(area))
                 {
-                    foreach (var deliveryCondition in lstDeliveryConditions)
-                    {
-                        var dataCalculate = CalculateValueElement(year, warehouse.CODE, deliveryCondition.CODE);
-                        dataCalculate.WarehouseCode = warehouse.CODE;
-                        dataCalculate.Warehouse = warehouse.TEXT;
-                        dataCalculate.DeliveryConditionsCode = deliveryCondition.CODE;
-                        dataCalculate.DeliveryConditions = deliveryCondition.TEXT;
-                        data.KeHoachGiaThanhData.Add(dataCalculate);
-                    }
+                    puchaseData = puchaseData.Where(x => x.AREA_ID == area).ToList();
+                }
+                //Pre kho 1
+                foreach (var item in puchaseData)
+                {
+                    var dataCalculate = CalculateValueElement(year, item.WAREHOUSE_CODE, item.DELIVERY_CONDITIONS_CODE, item.ID_KHNH);
+                    dataCalculate.WarehouseCode = item.WAREHOUSE_CODE;
+                    dataCalculate.Warehouse = item.WAREHOUSE_CODE;
+                    dataCalculate.DeliveryConditionsCode = item.DELIVERY_CONDITIONS_CODE;
+                    dataCalculate.DeliveryConditions = item.DELIVERY_CONDITIONS_CODE;
+                    dataCalculate.AreaCode = item.AREA_ID;
+                    data.KeHoachGiaThanhData.Add(dataCalculate);
                 }
                 return data;
             }

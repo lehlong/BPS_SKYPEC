@@ -55,10 +55,10 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(data);
         }
 
-        public ActionResult GetDataKeHoachGiaVon(int year)
+        public ActionResult GetDataKeHoachGiaVon(int year, string area)
         {
             ViewBag.LstSharedData = _service.UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
-            var data = _service.GetDataKeHoachGiaVon(year);
+            var data = _service.GetDataKeHoachGiaVon(year, area);
             return PartialView(data);
         }
 

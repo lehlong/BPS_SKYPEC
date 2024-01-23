@@ -21,20 +21,33 @@
                         @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "DownloadData();", "Alt+N", "file_download")
                     </div>
-                    <div class="input-group page-function-search">
-                        <select id="TIME_YEAR" class="form-control selectpicker show-tick" data_live_search="true" data_container="body" onchange="onChangeTimeYear(this.value)">
-                            @foreach (var temp in lstTimeYear)
-                            {
-                                if (temp.Value == yearDefault)
-                                {
-                                    <option value="@temp.Value" selected>@temp.Text</option>
-                                }
-                                else
-                                {
-                                    <option value="@temp.Value">@temp.Text</option>
-                                }
-                            }
-                        </select>
+                   
+                    <div class="input-group page-function-search" style="margin-bottom: 7px !important; max-width:720px">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select id="TIME_YEAR" class="form-control selectpicker show-tick" data_live_search="true" data_container="body" onchange="onChangeTimeYear()">
+                                    @foreach (var temp in lstTimeYear)
+                                    {
+                                        if (temp.Value == yearDefault)
+                                        {
+                                            <option value="@temp.Value" selected>@temp.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@temp.Value">@temp.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select id="AREA_ID" class="form-control selectpicker show-tick" data_live_search="true" data_container="body" onchange="onChangeTimeYear()">
+                                    <option value="" selected>-</option>
+                                    <option value="MB">Miền Bắc</option>
+                                    <option value="MT">Miền Trung</option>
+                                    <option value="MN">Miền Nam</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -59,10 +72,13 @@
 
         function GetDataKeHoachGiaVon(value) {
             $("#@Model.ViewId #divResult").empty();
+            var year = $("#@Model.ViewId #TIME_YEAR").val();
+            var area = $("#@Model.ViewId #AREA_ID").val();
             var ajaxParams = {
                 url: "@Url.Action("GetDataKeHoachGiaVon")",
                 data: {
-                    year: value,
+                    year: year,
+                    area: area,
                 },
                 htmlTarget: '#divResult',
             };

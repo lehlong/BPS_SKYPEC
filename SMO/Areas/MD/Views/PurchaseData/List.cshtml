@@ -1,0 +1,46 @@
+﻿@model SMO.Service.MD.PurchaseDataService
+
+<div class="table-responsive">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Mã kho</th>
+                <th>Size tàu</th>
+                <th>Khu vực</th>
+                <th>ĐK giao hàng</th>
+                <th>Tên</th>
+                <th>Tỷ lệ nhập kho</th>
+                <th>SL nhập theo kho</th>
+                <th>Pre hàng</th>
+                <th>Pre tàu</th>
+                <th>Thùng/tấn</th>
+                <th>Bảo hiểm</th>
+                <th>Thuế suất</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList.OrderBy(x => x.WAREHOUSE_CODE).ThenBy(x => x.DELIVERY_CONDITIONS_CODE).ThenBy(x => x.AREA_ID))
+            {
+
+                <tr>
+                    <td>@item.ID_KHNH</td>
+                    <td>@item.WAREHOUSE_CODE</td>
+                    <td>@item.SIZE_ID</td>
+                    <td>@item.AREA_ID</td>
+                    <td>@item.DELIVERY_CONDITIONS_CODE</td>
+                    <td>@item.NAME</td>
+                    <td>@item.S0001.ToStringVN()</td>
+                    <td>@item.S0002.ToStringVN()</td>
+                    <td>@item.S0003.ToStringVN()</td>
+                    <td>@item.S0004.ToStringVN()</td>
+                    <td>@item.S0005.ToStringVN()</td>
+                    <td>@item.S0006.ToStringVN()</td>
+                    <td>@item.S0007.ToStringVN()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{ Html.RenderPartial("Paging", Model); }
+

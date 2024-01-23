@@ -20,6 +20,11 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.S0005);
             Map(x => x.S0006);
             Map(x => x.S0007);
+            Map(x => x.ID_KHNH);
+            Map(x => x.NAME);
+            Map(x => x.YEAR);
+            Map(x => x.SIZE_ID);
+            Map(x => x.AREA_ID);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
             References(x => x.Warehouse).Column("WAREHOUSE_CODE").Not.Insert().Not.Update().LazyLoad();
             References(x => x.DeliveryConditions).Column("DELIVERY_CONDITIONS_CODE").Not.Insert().Not.Update().LazyLoad();

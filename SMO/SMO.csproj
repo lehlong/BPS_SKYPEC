@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>true</Use64BitIISExpress>
     <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -2043,6 +2043,7 @@
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Areas\MD\Views\Element\IndexKeHoachGiaVon.cshtml" />
     <Content Include="Areas\MD\Views\Element\GetDataKeHoachGiaVon.cshtml" />
+    <Content Include="Areas\MD\Views\PurchaseData\List.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
