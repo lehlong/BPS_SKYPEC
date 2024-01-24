@@ -6,6 +6,8 @@ using NPOI.XSSF.UserModel;
 using SMO.Core.Entities;
 using SMO.Helper;
 using SMO.Models;
+using SMO.Repository.Implement.BP.KE_HOACH_DOANH_THU;
+using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.MD;
 
 using System;
@@ -480,6 +482,9 @@ namespace SMO.Service.MD
                 var lstRoute = UnitOfWork.Repository<RouteRepo>().GetAll().ToList();
                 var lstElement = UnitOfWork.Repository<ElementRepo>().GetAll().ToList();
 
+                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().ToList();
+                var sanBayGroup = UnitOfWork.Repository<NhomSanBayRepo>().GetAll().ToList();
+
                 var puchaseData = UnitOfWork.Repository<PurchaseDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
                 if (!string.IsNullOrEmpty(area))
                 {
@@ -496,6 +501,113 @@ namespace SMO.Service.MD
                     dataCalculate.AreaCode = item.AREA_ID;
                     data.KeHoachGiaThanhData.Add(dataCalculate);
                 }
+
+                var dataHeaderSanLuong = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == "TB" && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                if (dataHeaderSanLuong.Count() != 0)
+                {
+                    var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSanLuong.Contains(x.TEMPLATE_CODE)).ToList();
+
+                    //Tab2
+                    int countGroup = sanBayGroup.Count();
+                    int order = 0;
+
+                    data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                    {
+                        Name = "TỔNG CỘNG",
+                        Value1 = dataInHeader.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        IsBold = true,
+                        Order = -1,
+                        Level = 0
+                    });
+
+                    foreach (var hhk in lstHangHangKhong)
+                    {
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = hhk.NAME,
+                            Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                            IsBold = true,
+                            Order = order,
+                            Level = 0
+                        });
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "Nội địa",
+                            Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == hhk.CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                            IsBold = true,
+                            Order = order + 1,
+                            Level = 1
+                        });
+
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "Qua xe",
+                            Order = order + 2,
+                            Level = 2
+                        });
+
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "Qua FHS",
+                            IsBold = true,
+                            Order = order + 3,
+                            Level = 2
+                        });
+
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "FHS NBA",
+                            Order = order + 4,
+                            Level = 3
+                        });
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "FHS TNS",
+                            Order = order + 5,
+                            Level = 3
+                        });
+
+
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "Quốc tế",
+                            IsBold = true,
+                            Order = order + 6,
+                            Level = 1
+                        });
+
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "Qua xe",
+                            Order = order + 7,
+                            Level = 2
+                        });
+
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "Qua FHS",
+                            IsBold = true,
+                            Order = order + 8,
+                            Level = 2
+                        });
+
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "FHS NBA",
+                            Order = order + 9,
+                            Level = 3
+                        });
+                        data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                        {
+                            Name = "FHS TNS",
+                            Order = order + 10,
+                            Level = 3
+                        });
+
+                        order += 11;
+                    }
+                }
+                
                 return data;
             }
             catch (Exception ex)

@@ -1,13 +1,22 @@
 ﻿@model SMO.Models.DataCenterModel
 @using SMO.Models;
+@using System.Text;
 
+<style>
+    table thead tr th{
+        text-align: center
+    }
+</style>
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
     <li role="presentation" class="active" style="cursor: pointer;">
-        <a href="#pre-kho-1" title="Kế hoạch theo tháng" data-toggle="tab">KH Nhập nhiên liệu</a>
+        <a href="#tab-1" title="Kế hoạch theo tháng" data-toggle="tab">KH Nhập nhiên liệu</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a href="#tab-2" title="Kế hoạch theo tháng" data-toggle="tab">KH giá vốn</a>
     </li>
 </ul>
 <div class="tab-content" style="padding-bottom:0">
-    <div role="tabpanel" class="tab-pane fade in active" id="pre-kho-1">
+    <div role="tabpanel" class="tab-pane fade in active" id="tab-1">
         <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
             <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
                 <table class="table table-condensed table-bordered table-striped" style="text-align:center">
@@ -78,6 +87,82 @@
             </div>
         </div>
     </div>
+    <div role="tabpanel" class="tab-pane fade in" id="tab-2">
+        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th rowspan="3">Khách hàng</th>
+                            <th rowspan="3">Sản lượng</th>
+                            <th colspan="9">Chi tiết giá vốn (USD/tấn)</th>
+                            <th rowspan="3">Tỷ giá</th>
+                            <th colspan="2">Giá vốn</th>
+                            <th colspan="7">Thành tiền (VNĐ)</th>
+                        </tr>
+                        <tr>
+                            <th rowspan="2">MOPS ($/tấn)</th>
+                            <th rowspan="2">Pre+BH ($/tấn)</th>
+                            <th rowspan="2">CIF ($/tấn)</th>
+                            <th rowspan="2">Thuế ($/tấn)</th>
+                            <th rowspan="2">CP mua hàng ($/tấn)</th>
+                            <th colspan="3">Hao hụt ($/tấn)</th>
+                            <th rowspan="2">Phí FHS</th>
 
-    
+                            <th rowspan="2">Cộng đ.giá (đ/tấn)</th>
+                            <th rowspan="2">Tổng Giá vốn (trVNĐ)</th>
+                            <th rowspan="2">MOPS</th>
+                            <th rowspan="2">Premium & BH</th>
+                            <th rowspan="2">Thuế NK</th>
+                            <th rowspan="2">DV mua ngoài</th>
+                            <th colspan="2">Hao hụt</th>
+                            <th rowspan="2">FHS</th>
+                        </tr>
+                        <tr>
+                            <th>Cộng HH</th>
+                            <th>CƯ</th>
+                            <th>TN</th>
+                            <th>HH CƯ</th>
+                            <th>HH TN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.KeHoachGiaVonData.OrderBy(x => x.Order))
+                        {
+                            var space = new StringBuilder();
+                            for (int i = 0; i < item.Level; i++)
+                            {
+                                space.Append("\t");
+                            }
+                            var bold = item.IsBold == true ? "bold" : "";
+                            <tr style="font-weight:@bold">
+                                <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
+                                <td>@item.Value1.ToStringVN()</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 </div>
