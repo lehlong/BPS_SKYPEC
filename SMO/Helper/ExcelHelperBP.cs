@@ -121,10 +121,10 @@ namespace SMO.Helper
             //Xóa dòng thừa cuối cùng khi tạo các dòng cho detail
             IRow rowLastDetail = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
             ReportUtilities.DeleteRow(ref sheet, rowLastDetail);
-
-            foreach (var cell in sheet.GetRow(numRowCur - 1).Cells)
+            var rowcur = sheet.GetRow(numRowCur - 1);
+            for(int i = 0; i < 19; i++)
             {
-                cell.CellStyle = styleCellLastDetail;
+                rowcur.Cells[i].CellStyle = styleCellLastDetail;
             }
 
             rowLastDetail = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
@@ -710,14 +710,11 @@ namespace SMO.Helper
                 {
                     foreach (var cell in row)
                     {
-
                         rowCur.Height = -1;
+                        rowCur.Cells[columns].CellStyle = styleCellHeader;
                         rowCur.Cells[columns].SetCellValue(cell.Content);
                         columns++;
                     }
-                    
-
-
                 }
                 numRowCur++;
             }
