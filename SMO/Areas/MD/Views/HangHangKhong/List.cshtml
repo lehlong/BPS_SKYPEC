@@ -12,6 +12,7 @@
                 <th>Nội địa | Quốc tế</th>
                 <th>Thuộc VNA</th>
                 <th>Mã PM hệ thống khác</th>
+                <th>Nhóm</th>
             </tr>
         </thead>
         <tbody>
@@ -42,6 +43,7 @@
                     <td ondblclick="@vdbclickAction">@nameType</td>
                     <td ondblclick="@vdbclickAction"><input type="checkbox" class="form-control" @isVna style="position:unset; opacity: 1" /></td>
                     <td ondblclick="@vdbclickAction">@item.OTHER_PM_CODE</td>
+                    <td ondblclick="@vdbclickAction">@item.GROUP_ITEM</td>
                 </tr>
             }
         </tbody>

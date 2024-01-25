@@ -3,9 +3,29 @@
 @using System.Text;
 
 <style>
-    table thead tr th{
-        text-align: center
+   
+    table {
+        position: relative;
+        border-collapse: collapse;
     }
+    thead {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: #eee;
+    }
+    .frozen {
+        position: -webkit-sticky; /* for Safari */
+        position: sticky;
+        left: 0;
+        background: #eee;
+    }
+
+    td, th, tr {
+        border: solid 1px #c2c2c2 !important;
+    }
+    
 </style>
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
     <li role="presentation" class="active" style="cursor: pointer;">
@@ -22,8 +42,8 @@
                 <table class="table table-condensed table-bordered table-striped" style="text-align:center">
                     <thead>
                         <tr>
-                            <th rowspan="2">Kho đầu nguồn</th>
-                            <th rowspan="2">Khu vực</th>
+                            <th rowspan="2" class="frozen">Kho đầu nguồn</th>
+                            <th rowspan="2" >Khu vực</th>
                             <th rowspan="2">ĐK giao hàng</th>
                             <th colspan="2" class="align-center">Tỷ lệ nhập</th>
                             <th rowspan="2">Platt's ($/thùng)</th>
@@ -60,7 +80,7 @@
                                 continue;
                             }
                             <tr>
-                                <td>@item.Warehouse</td>
+                                <td  class="frozen">@item.Warehouse</td>
                                 <td>@item.AreaCode</td>
                                 <td>@item.DeliveryConditions</td>
                                 <td>@item.S0001.ToStringVN()</td>
@@ -89,23 +109,23 @@
     </div>
     <div role="tabpanel" class="tab-pane fade in" id="tab-2">
         <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-            <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+            <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
                 <table class="table table-condensed table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th rowspan="3">Khách hàng</th>
+                    <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+                        <tr class="header-table">
+                            <th rowspan="3" class="frozen">Khách hàng</th>
                             <th rowspan="3">Sản lượng</th>
                             <th colspan="9">Chi tiết giá vốn (USD/tấn)</th>
                             <th rowspan="3">Tỷ giá</th>
                             <th colspan="2">Giá vốn</th>
                             <th colspan="7">Thành tiền (VNĐ)</th>
                         </tr>
-                        <tr>
+                        <tr class="header-table">
                             <th rowspan="2">MOPS ($/tấn)</th>
                             <th rowspan="2">Pre+BH ($/tấn)</th>
                             <th rowspan="2">CIF ($/tấn)</th>
                             <th rowspan="2">Thuế ($/tấn)</th>
-                            <th rowspan="2">CP mua hàng ($/tấn)</th>
+                            <th rowspan="2">CP mua hàng (đ/tấn)</th>
                             <th colspan="3">Hao hụt ($/tấn)</th>
                             <th rowspan="2">Phí FHS</th>
 
@@ -118,7 +138,7 @@
                             <th colspan="2">Hao hụt</th>
                             <th rowspan="2">FHS</th>
                         </tr>
-                        <tr>
+                        <tr class="header-table">
                             <th>Cộng HH</th>
                             <th>CƯ</th>
                             <th>TN</th>
@@ -136,27 +156,27 @@
                             }
                             var bold = item.IsBold == true ? "bold" : "";
                             <tr style="font-weight:@bold">
-                                <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                                <td>@item.Value1.ToStringVN()</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td class="pre-whitespace frozen">@($"{space.ToString()}{item.Name}")</td>
+                                <td class="align-right">@(item.Value1.ToStringVN() == "0" ? "" : item.Value1.ToStringVN())</td>
+                                <td class="align-center">@(item.Value2.ToStringVN() == "0" ? "" : item.Value2.ToStringVN())</td>
+                                <td class="align-center">@(item.Value3.ToStringVN() == "0" ? "" : item.Value3.ToStringVN())</td>
+                                <td class="align-center">@(item.Value4.ToStringVN() == "0" ? "" : item.Value4.ToStringVN())</td>
+                                <td class="align-center">@(item.Value5.ToStringVN() == "0" ? "" : item.Value5.ToStringVN())</td>
+                                <td class="align-center">@(item.Value6.ToStringVN() == "0" ? "" : item.Value6.ToStringVN())</td>
+                                <td class="align-center">@(item.Value7.ToStringVN() == "0" ? "" : item.Value7.ToStringVN())</td>
+                                <td class="align-center">@(item.Value8.ToStringVN() == "0" ? "" : item.Value8.ToStringVN())</td>
+                                <td class="align-center">@(item.Value9.ToStringVN() == "0" ? "" : item.Value9.ToStringVN())</td>
+                                <td class="align-center">@(item.Value10.ToStringVN() == "0" ? "" : item.Value10.ToStringVN())</td>
+                                <td class="align-center">@(item.Value11.ToStringVN() == "0" ? "" : item.Value11.ToStringVN())</td>
+                                <td class="align-center">@(item.Value12.ToStringVN() == "0" ? "" : item.Value12.ToStringVN())</td>
+                                <td class="align-center">@(item.Value13.ToStringVN() == "0" ? "" : item.Value13.ToStringVN())</td>
+                                <td class="align-center">@(item.Value14.ToStringVN() == "0" ? "" : item.Value14.ToStringVN())</td>
+                                <td class="align-center">@(item.Value15.ToStringVN() == "0" ? "" : item.Value15.ToStringVN())</td>
+                                <td class="align-center">@(item.Value16.ToStringVN() == "0" ? "" : item.Value16.ToStringVN())</td>
+                                <td class="align-center">@(item.Value17.ToStringVN() == "0" ? "" : item.Value17.ToStringVN())</td>
+                                <td class="align-center">@(item.Value18.ToStringVN() == "0" ? "" : item.Value18.ToStringVN())</td>
+                                <td class="align-center">@(item.Value19.ToStringVN() == "0" ? "" : item.Value19.ToStringVN())</td>
+                                <td class="align-center">@(item.Value20.ToStringVN() == "0" ? "" : item.Value20.ToStringVN())</td>
                             </tr>
                         }
                     </tbody>

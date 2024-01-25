@@ -48,6 +48,8 @@ namespace SMO.Models
 
     public class KeHoachGiaVonData
     {
+        public string Code { get; set; }
+        public string ParentCode { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
         public int Level { get; set; }

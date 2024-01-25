@@ -10,9 +10,10 @@ namespace SMO.Repository.Mapping.MD
         {
             Table("T_MD_HANG_HANG_KHONG");
             Id(x => x.CODE);
-            Map(x => x.NAME).Nullable();
-            Map(x => x.TYPE).Nullable();
-            Map(x => x.OTHER_PM_CODE).Nullable();
+            Map(x => x.NAME);
+            Map(x => x.TYPE);
+            Map(x => x.OTHER_PM_CODE);
+            Map(x => x.GROUP_ITEM);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
             Map(x => x.IS_VNA).CustomType<YesNoType>();
         }

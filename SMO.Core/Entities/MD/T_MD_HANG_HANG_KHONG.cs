@@ -18,7 +18,6 @@ namespace SMO.Core.Entities.MD
         public virtual string TYPE { get; set; }
         public virtual bool IS_VNA { get; set; }
         public virtual string OTHER_PM_CODE { get; set; }
-
-        
+        public virtual string GROUP_ITEM { get; set; }
     }
 }

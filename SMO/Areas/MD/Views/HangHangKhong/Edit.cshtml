@@ -59,12 +59,19 @@
 
                             <label>Thuộc VNA</label>
                             @Html.MyCheckBoxFor(m => m.ObjDetail.IS_VNA, new { @style = "position:unset; opacity: 1" })
-                                
+
 
                             <label>Mã PM hệ thống khác</label>
                             <div class="form-group">
                                 <div class="form-line">
                                     @Html.MyTextBoxFor(m => m.ObjDetail.OTHER_PM_CODE)
+                                </div>
+                            </div>
+
+                            <label>Nhóm</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.GROUP_ITEM)
                                 </div>
                             </div>
                         </div>
