@@ -2023,7 +2023,6 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
                         var value4001 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? 0 : tableData.Rows[i][2]);
-                        var value4002 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
                         var value4010 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? 0 : tableData.Rows[i][5]);
                         var value4011 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
                         var value4012 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
@@ -2041,9 +2040,10 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 STATUS = Approve_Status.ChuaTrinhDuyet,
                                 VERSION = versionNext,
                                 KHOAN_MUC_DAU_TU_CODE = ele.ELEMENT_CODE,
-                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4002" ? value4002 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4012" ? value4012 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
+                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4012" ? value4012 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
                                 DESCRIPTION = tableData.Rows[i][10].ToString(),
                                 PROCESS = tableData.Rows[i][4].ToString(),
+                                EQUITY_SOURCES = tableData.Rows[i][3].ToString(),
                                 CREATE_BY = currentUser
                             };
                             UnitOfWork.Repository<DauTuXayDungDataRepo>().Create(costData);
@@ -2062,7 +2062,6 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                             VERSION = versionNext,
                             KHOAN_MUC_DAU_TU_CODE = (tableData.Rows[i][9].ToString().Trim() == "0") ? "10010" : "10020",
                             VALUE = tableData.Rows[i][11] as decimal? == null ? 0 : tableData.Rows[i][11] as decimal?,
-                          
                             DESCRIPTION = "",
                             CREATE_BY = currentUser
                         };
@@ -3444,7 +3443,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 {
                                     item.Values[0] += treeData.VALUE ?? 0;
                                     item.HasAssignValue = true;
-
+                                    i.EQUITY_SOURCES = treeData.EQUITY_SOURCES;
                                     i.Values[0] = treeData.VALUE ?? 0;
                                     i.DESCRIPTION = treeData.DESCRIPTION;
                                     i.PROCESS = treeData.PROCESS;

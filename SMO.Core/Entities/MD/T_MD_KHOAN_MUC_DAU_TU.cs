@@ -66,7 +66,7 @@ namespace SMO.Core.Entities.MD
         {
             Values = new decimal[6];
         }
-
+        public virtual string EQUITY_SOURCES { get; set; }
         public virtual object Clone()
         {
             return MemberwiseClone();
