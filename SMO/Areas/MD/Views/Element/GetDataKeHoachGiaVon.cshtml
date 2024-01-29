@@ -24,6 +24,7 @@
 
     td, th, tr {
         border: solid 1px #c2c2c2 !important;
+        text-align: center;
     }
     
 </style>
@@ -39,7 +40,7 @@
     <div role="tabpanel" class="tab-pane fade in active" id="tab-1">
         <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
             <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
-                <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                <table class="table table-condensed table-bordered" style="text-align:center">
                     <thead>
                         <tr>
                             <th rowspan="2" class="frozen">Kho đầu nguồn</th>
@@ -110,7 +111,7 @@
     <div role="tabpanel" class="tab-pane fade in" id="tab-2">
         <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
             <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-                <table class="table table-condensed table-bordered table-striped">
+                <table class="table table-condensed table-bordered">
                     <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
                         <tr class="header-table">
                             <th rowspan="3" class="frozen">Khách hàng</th>
@@ -156,7 +157,7 @@
                             }
                             var bold = item.IsBold == true ? "bold" : "";
                             <tr style="font-weight:@bold">
-                                <td class="pre-whitespace frozen">@($"{space.ToString()}{item.Name}")</td>
+                                <td class="pre-whitespace frozen align-left">@($"{space.ToString()}{item.Name}")</td>
                                 <td class="align-right">@(item.Value1.ToStringVN() == "0" ? "" : item.Value1.ToStringVN())</td>
                                 <td class="align-center">@(item.Value2.ToStringVN() == "0" ? "" : item.Value2.ToStringVN())</td>
                                 <td class="align-center">@(item.Value3.ToStringVN() == "0" ? "" : item.Value3.ToStringVN())</td>
