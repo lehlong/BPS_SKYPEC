@@ -75,6 +75,19 @@ namespace SMO.Areas.BP.Controllers
             ViewBag.Year = year;
             return PartialView(data);
         }
+
+        public ActionResult IndexSanLuong()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataSanLuong(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            var data = _servicePhienBan.GetDataSanLuong(year, phienBan, kichBan, hangHangKhong);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
         public ActionResult ExportExcelDataDoanhThu(int year, string phienBan, string kichBan, string hangHangKhong)
         {
             MemoryStream outFileStream = new MemoryStream();

@@ -15,6 +15,7 @@ namespace SMO.Models
     public class RevenueReportModel
     {
         public string Stt { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public decimal Value1 { get; set; }
         public decimal Value2 { get; set; }
@@ -29,6 +30,7 @@ namespace SMO.Models
         public decimal Value11 { get; set; }
         public decimal Value12 { get; set; }
         public decimal ValueSumYear { get; set; }
+        public decimal ValueSumYearAll { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
         public int Level { get; set; }

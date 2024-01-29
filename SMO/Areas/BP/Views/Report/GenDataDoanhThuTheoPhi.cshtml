@@ -30,7 +30,7 @@
                 <table class="table table-condensed table-bordered table-striped" style="text-align:center">
                     <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
                         <tr class="header-table">
-                            <td>Chỉ tiêu</td>
+                            <td>Hãng HK</td>
                             <td>Cộng năm</td>
                             <td>Tháng 1</td>
                             <td>Tháng 2</td>
@@ -47,6 +47,22 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr style="font-weight: bold">
+                            <td class="align-left">TỔNG CỘNG</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.ValueSumYear).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value1).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value2).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value3).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value4).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value5).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value6).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value7).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value8).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value9).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value10).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value11).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab1.Sum(x => x.Value12).ToStringVN()</td>
+                        </tr>
                         @foreach (var item in Model.Tab1.OrderBy(x => x.Order))
                         {
                             <tr>
@@ -77,7 +93,7 @@
                 <table class="table table-condensed table-bordered table-striped" style="text-align:center">
                     <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
                         <tr class="header-table">
-                            <td>Chỉ tiêu</td>
+                            <td>Hãng HK</td>
                             <td>Cộng năm</td>
                             <td>Tháng 1</td>
                             <td>Tháng 2</td>
@@ -94,6 +110,22 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr style="font-weight: bold">
+                            <td class="align-left">TỔNG CỘNG</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.ValueSumYear).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value1).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value2).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value3).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value4).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value5).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value6).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value7).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value8).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value9).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value10).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value11).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab2.Sum(x => x.Value12).ToStringVN()</td>
+                        </tr>
                         @foreach (var item in Model.Tab2.OrderBy(x => x.Order))
                         {
                             <tr>
@@ -124,7 +156,7 @@
                 <table class="table table-condensed table-bordered table-striped" style="text-align:center">
                     <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
                         <tr class="header-table">
-                            <td>Chỉ tiêu</td>
+                            <td>Hãng HK</td>
                             <td>Cộng năm</td>
                             <td>Tháng 1</td>
                             <td>Tháng 2</td>
@@ -141,6 +173,22 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr style="font-weight: bold">
+                            <td class="align-left">TỔNG CỘNG</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.ValueSumYear).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value1).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value2).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value3).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value4).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value5).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value6).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value7).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value8).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value9).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value10).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value11).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab3.Sum(x => x.Value12).ToStringVN()</td>
+                        </trstyle="font-weight:>
                         @foreach (var item in Model.Tab3.OrderBy(x => x.Order))
                         {
                             <tr>
@@ -171,7 +219,7 @@
                 <table class="table table-condensed table-bordered table-striped" style="text-align:center">
                     <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
                         <tr class="header-table">
-                            <td>Chỉ tiêu</td>
+                            <td>Hãng HK</td>
                             <td>Cộng năm</td>
                             <td>Tháng 1</td>
                             <td>Tháng 2</td>
@@ -188,6 +236,22 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr style="font-weight: bold">
+                            <td class="align-left">TỔNG CỘNG</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.ValueSumYear).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value1).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value2).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value3).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value4).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value5).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value6).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value7).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value8).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value9).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value10).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value11).ToStringVN()</td>
+                            <td class="align-right">@Model.Tab4.Sum(x => x.Value12).ToStringVN()</td>
+                        </tr>
                         @foreach (var item in Model.Tab4.OrderBy(x => x.Order))
                         {
                             <tr>
