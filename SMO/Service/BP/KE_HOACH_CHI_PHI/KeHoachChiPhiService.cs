@@ -1456,7 +1456,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 var elements = UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetAll();
 
-                if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
+                if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100001"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("CQ62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+                else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
                 {
                     elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("B62")).OrderBy(x => x.C_ORDER).ToList();
                 }
@@ -2112,24 +2116,24 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                     if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100001"))
                     {
-                        var centerCodeVPCQ = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCQ" && x.COST_CENTER_CODE == "100001");
+                        var centerCodeVPCT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCT" && x.COST_CENTER_CODE == "100001");
                         var centerCodeMB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "MB" && x.COST_CENTER_CODE == "100001");
                         var centerCodeMT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "MT" && x.COST_CENTER_CODE == "100001");
                         var centerCodeCR = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "CR" && x.COST_CENTER_CODE == "100001");
                         var centerCodeMN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "MN" && x.COST_CENTER_CODE == "100001");
                         
-                        if (centerCodeVPCQ == null || centerCodeMB == null || centerCodeMT == null || centerCodeCR == null || centerCodeMN == null)
+                        if (centerCodeVPCT == null || centerCodeMB == null || centerCodeMT == null || centerCodeCR == null || centerCodeMN == null)
                         {
                             throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                         }
 
-                        //VPCQ
-                        var costDataVPCQ = new T_BP_KE_HOACH_CHI_PHI_DATA();
-                        costDataVPCQ = new T_BP_KE_HOACH_CHI_PHI_DATA()
+                        //VPCT
+                        var costDataVPCT = new T_BP_KE_HOACH_CHI_PHI_DATA();
+                        costDataVPCT = new T_BP_KE_HOACH_CHI_PHI_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
                             ORG_CODE = orgCode,
-                            CHI_PHI_PROFIT_CENTER_CODE = centerCodeVPCQ.CODE,
+                            CHI_PHI_PROFIT_CENTER_CODE = centerCodeVPCT.CODE,
                             TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
                             TIME_YEAR = ObjDetail.TIME_YEAR,
                             STATUS = Approve_Status.ChuaTrinhDuyet,
@@ -2140,8 +2144,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             DESCRIPTION = tableData.Rows[i][15].ToString(),
                             CREATE_BY = currentUser
                         };
-                        costDataVPCQ.AMOUNT = costDataVPCQ.QUANTITY * costDataVPCQ.PRICE;
-                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCQ);
+                        costDataVPCT.AMOUNT = costDataVPCT.QUANTITY * costDataVPCT.PRICE;
+                        UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCT);
 
                         //MB
                         var costDataMB = new T_BP_KE_HOACH_CHI_PHI_DATA();
@@ -3497,8 +3501,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             rowCur.Cells[0].SetCellValue(item.CODE);
                             rowCur.Cells[1].SetCellValue(item.NAME);
 
-                            var VPCQ = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCQ" && x.CODE == item.CODE)?.Values[0].ToString();
-                            rowCur.Cells[2].SetCellValue(string.IsNullOrEmpty(VPCQ) ? 0 : Convert.ToDouble(VPCQ));
+                            var VPCT = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCT" && x.CODE == item.CODE)?.Values[0].ToString();
+                            rowCur.Cells[2].SetCellValue(string.IsNullOrEmpty(VPCT) ? 0 : Convert.ToDouble(VPCT));
                             rowCur.Cells[2].CellStyle = styleCellNumber;
 
                             var MB = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "MB" && x.CODE == item.CODE)?.Values[0].ToString();
@@ -3525,8 +3529,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             rowCur.Cells[8].SetCellValue(price == 0 || price == null ? 0 : Convert.ToDouble(price));
                             rowCur.Cells[8].CellStyle = styleCellNumber;
 
-                            var totalVPCQ = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCQ" && x.CODE == item.CODE)?.Values[2].ToString();
-                            rowCur.Cells[9].SetCellValue(string.IsNullOrEmpty(totalVPCQ) ? 0 : Convert.ToDouble(totalVPCQ));
+                            var totalVPCT = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "VPCT" && x.CODE == item.CODE)?.Values[2].ToString();
+                            rowCur.Cells[9].SetCellValue(string.IsNullOrEmpty(totalVPCT) ? 0 : Convert.ToDouble(totalVPCT));
                             rowCur.Cells[9].CellStyle = styleCellNumber;
 
                             var totalMB = data.FirstOrDefault(x => x.Center.SAN_BAY_CODE == "MB" && x.CODE == item.CODE)?.Values[2].ToString();
