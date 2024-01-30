@@ -2821,7 +2821,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     {
                         centerCode = UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong && x.SAN_BAY_CODE == sanbay).Select(x => x.CODE).ToList();
                     }
-                    templateCode = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x=>centerCode.Contains(x.DOANH_THU_PROFIT_CENTER_CODE)).Select(x => x.TEMPLATE_CODE).FirstOrDefault();
+                    templateCode = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x=>centerCode.Contains(x.DOANH_THU_PROFIT_CENTER_CODE) && x.TEMPLATE_CODE == templateId).Select(x => x.TEMPLATE_CODE).FirstOrDefault();
                     return UnitOfWork.Repository<KeHoachDoanhThuVersionRepo>()
                     .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
                     .Select(x => x.VERSION)

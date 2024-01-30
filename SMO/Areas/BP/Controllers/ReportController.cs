@@ -114,13 +114,13 @@ namespace SMO.Areas.BP.Controllers
         public ActionResult ExportExcelDataDoanhThuTheoPhi(int year, string phienBan, string kichBan, string hangHangKhong)
         {
             MemoryStream outFileStream = new MemoryStream();
-            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_DOANH_THU.xlsx");
-            _servicePhienBan.ExportExcelDoanhThu(ref outFileStream, path, year, phienBan, kichBan, hangHangKhong);
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_DOANH_THU_THEO_CHI_PHI.xlsx");
+            _servicePhienBan.ExportExcelDoanhThuTheoChiPhi(ref outFileStream, path, year, phienBan, kichBan, hangHangKhong);
             if (!_servicePhienBan.State)
             {
                 return Content(_servicePhienBan.ErrorMessage);
             }
-            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_DOANH_THU_THEO_CHI_PHI.xlsx");
         }
     }
 }

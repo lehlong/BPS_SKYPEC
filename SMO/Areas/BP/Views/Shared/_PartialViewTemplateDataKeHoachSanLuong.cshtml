@@ -3,12 +3,13 @@
 @using SMO.Core.Entities.MD;
 @using System.Text;
 @using SMO.Service.Class;
-
+@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
 @{
     var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG>;
     var costCFHeader = ViewBag.costCFHeader as T_BP_KE_HOACH_SAN_LUONG_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
-
+    var formIdExportExcel = Guid.NewGuid();
     var lstSanBay = SelectListUtilities.GetListSanBay();
     var query = from a in lstSanBay.Where(x => x.OTHER_PM_CODE != "" && x.OTHER_PM_CODE != null)
                 join b in detailCostElements on a.CODE equals b.Center.SanBay.CODE
@@ -58,10 +59,12 @@
         width: 100%;
         text-align: right;
     }
+
     .table-screen {
         height: calc(100vh - 212px);
-        margin-bottom:0
+        margin-bottom: 0
     }
+
     .full-screen-table {
         height: calc(100vh -100px) !important;
     }
@@ -76,12 +79,12 @@
 }
 else
 {
-    
+
 
     Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
 
 
-<div class="export-left-tab">
+    <div class="export-left-tab">
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active" style="cursor: pointer; left: 0;">
                 <a href="#month" title="Kế hoạch theo tháng" data-toggle="tab">Kế hoạch theo tháng</a>
@@ -119,39 +122,36 @@ else
                             </tr>
 
                             @{
-                               
-                                
-                                
-                                    var sumElement = Model.FirstOrDefault(x => string.IsNullOrEmpty(x.CODE));
-                                    if (sumElement != null)
-                                    {
-                                        <tr class="strong">
-                                            <td class="sticky-cell pre-whitespace"></td>
-                                            <td level="0" class="sticky-cell"></td>
-                                            <td class="sticky-cell pre-whitespace strong">@(sumElement.NAME)</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[0].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[1].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[2].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[3].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[4].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[5].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[6].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[7].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[8].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[9].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[10].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[11].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[12].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@sumElement.Values[13].ToStringVN()</td>
-                                            <td class="align-right pre-whitespace">@((sumElement.Values[12] / 12).ToStringVN())</td>
-                                            <td></td>
-                                        </tr>
-                                    }
-                                
+                                var sumElement = Model.FirstOrDefault(x => string.IsNullOrEmpty(x.CODE));
+                                if (sumElement != null)
+                                {
+                                    <tr class="strong">
+                                        <td class="sticky-cell pre-whitespace"></td>
+                                        <td level="0" class="sticky-cell"></td>
+                                        <td class="sticky-cell pre-whitespace strong">@(sumElement.NAME)</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[0].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[1].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[2].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[3].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[4].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[5].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[6].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[7].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[8].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[9].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[10].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[11].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[12].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@sumElement.Values[13].ToStringVN()</td>
+                                        <td class="align-right pre-whitespace">@((sumElement.Values[12] / 12).ToStringVN())</td>
+                                        <td></td>
+                                    </tr>
+                                }
+
                             }
                             @foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
                             {
-                               
+
                                 foreach (var item in Model
                                     .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
                                     .OrderBy(x => x.C_ORDER)
@@ -213,9 +213,9 @@ else
 
                             @foreach (var item in dataYear)
                             {
-                                if (dataCenterModel.SAN_BAY_CODE!= null || dataCenterModel.AREA_CODE != null || dataCenterModel.NHOM_SAN_BAY_CODE != null)
+                                if (dataCenterModel.SAN_BAY_CODE != null || dataCenterModel.AREA_CODE != null || dataCenterModel.NHOM_SAN_BAY_CODE != null)
                                 {
-                                    if(dataCenterModel.SAN_BAY_CODE != item.SAN_BAY_CODE)
+                                    if (dataCenterModel.SAN_BAY_CODE != item.SAN_BAY_CODE)
                                     {
                                         continue;
                                     }
@@ -244,11 +244,19 @@ else
             </div>
         </div>
     </div>
-
+    <div class="hidden">
+        <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("DownloadDataKHSL", new { model = JsonConvert.SerializeObject(dataCenterModel)})">
+        </form>
+    </div>
     <script>
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
         function mask(e) {
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
         }
+
+        function DownloadDataKHSL() {
+            $('#@formIdExportExcel').submit();
+        }
+
     </script>
 }

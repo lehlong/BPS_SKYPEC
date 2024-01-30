@@ -1589,5 +1589,97 @@ namespace SMO.Service.MD
                 this.Exception = ex;
             }
         }
+
+
+        internal void ExportExcelDoanhThuTheoChiPhi(ref MemoryStream outFileStream, string path, int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                IWorkbook templateWorkbook;
+                templateWorkbook = new XSSFWorkbook(fs);
+                fs.Close();
+                //Doanh thu giá dịch vụ
+                ISheet sheetTab1 = templateWorkbook.GetSheetAt(0);
+                var data = GetDataDoanhThuTheoPhi(year, phienBan, kichBan, hangHangKhong);
+
+                /*if (data.Tab1.Count <= 1 || data.Tab2.Count <= 1 || data.Tab3.Count <= 1 || data.Tab4.Count <= 1)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Không có dữ liệu!";
+                    return;
+                }*/
+                var startRow = 6;
+                InsertDataToTableDTCP(templateWorkbook, sheetTab1, data.Tab1, startRow);
+                // Phí ngầm
+                ISheet sheetTab2 = templateWorkbook.GetSheetAt(1);
+                InsertDataToTableDTCP(templateWorkbook, sheetTab2, data.Tab2, startRow);
+                //Doanh thu tiền nhiên liệu
+                ISheet sheetTab3 = templateWorkbook.GetSheetAt(2);
+                InsertDataToTableDTCP(templateWorkbook, sheetTab3, data.Tab3, startRow);
+                //Tổng doanh thu
+                ISheet sheetTab4 = templateWorkbook.GetSheetAt(3);
+                InsertDataToTableDTCP(templateWorkbook, sheetTab4, data.Tab4, startRow);
+
+                templateWorkbook.Write(outFileStream);
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.ErrorMessage = "Có lỗi xẩy ra trong quá trình tạo file excel!";
+                this.Exception = ex;
+            }
+        }
+
+        internal void InsertDataToTableDTCP(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails,int startRow)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.WrapText = true;
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                var dataRow = dataDetails[i];
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, 14);
+                rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
+                rowCur.Cells[1].SetCellValue(dataDetails[i]?.ValueSumYear == null ? 0 : (double)dataDetails[i]?.ValueSumYear);
+                rowCur.Cells[2].SetCellValue(dataDetails[i]?.Value1 == null ? 0 : (double)dataDetails[i]?.Value1);
+                rowCur.Cells[3].SetCellValue(dataDetails[i]?.Value2 == null ? 0 : (double)dataDetails[i]?.Value2);
+                rowCur.Cells[4].SetCellValue(dataDetails[i]?.Value3 == null ? 0 : (double)dataDetails[i]?.Value3);
+                rowCur.Cells[5].SetCellValue(dataDetails[i]?.Value4 == null ? 0 : (double)dataDetails[i]?.Value4);
+                rowCur.Cells[6].SetCellValue(dataDetails[i]?.Value5 == null ? 0 : (double)dataDetails[i]?.Value5);
+                rowCur.Cells[7].SetCellValue(dataDetails[i]?.Value6 == null ? 0 : (double)dataDetails[i]?.Value6);
+                rowCur.Cells[8].SetCellValue(dataDetails[i]?.Value7 == null ? 0 : (double)dataDetails[i]?.Value7);
+                rowCur.Cells[9].SetCellValue(dataDetails[i]?.Value8 == null ? 0 : (double)dataDetails[i]?.Value8);
+                rowCur.Cells[10].SetCellValue(dataDetails[i]?.Value9 == null ? 0 : (double)dataDetails[i]?.Value9);
+                rowCur.Cells[11].SetCellValue(dataDetails[i]?.Value10 == null ? 0 : (double)dataDetails[i]?.Value10);
+                rowCur.Cells[12].SetCellValue(dataDetails[i]?.Value11 == null ? 0 : (double)dataDetails[i]?.Value11);
+                rowCur.Cells[13].SetCellValue(dataDetails[i]?.Value12 == null ? 0 : (double)dataDetails[i]?.Value12);
+
+                if (dataDetails[i].IsBold)
+                {
+                    for (var j = 0; j <= 13; j++)
+                    {
+                        rowCur.Cells[j].CellStyle = styleCellBold;
+                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                    }
+                }
+                rowCur.Cells[0].CellStyle = styleName;
+                for (var j = 1; j <= 13; j++)
+                {
+                    rowCur.Cells[j].CellStyle = styleBody;
+                }
+            }
+        }
     }
 }

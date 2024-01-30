@@ -1,4 +1,6 @@
-﻿@model SMO.Service.Class.ViewDataCenterModel
+﻿@using Newtonsoft.Json.Serialization;
+@using Newtonsoft.Json;
+@model SMO.Service.Class.ViewDataCenterModel
 @{
     var viewId = Guid.NewGuid().ToString();
     var formId = Guid.NewGuid().ToString();
@@ -38,7 +40,7 @@
                                 new KeyValuePair<string, object>("objectType", TemplateObjectType.SanLuong),
                                 new KeyValuePair<string, object>("budgetType", BudgetType.SanLuong),
                                 new KeyValuePair<string, object>("elementType", ElementType.SanLuong),
-            });
+    });
                     }
                 </div>
                 <div class="export-left-tab" id="divExportTab_@viewId">
@@ -82,7 +84,7 @@
 
             </div>
             <div class="hidden">
-                <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("exportExcel")">
+                <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("exportExcelKHSL", new { model = JsonConvert.SerializeObject(Model)})">
                     @Html.Hidden("htmlMonth")
                     @Html.Hidden("htmlYear")
                     @Html.Hidden("exportExcelYear", Model.YEAR)

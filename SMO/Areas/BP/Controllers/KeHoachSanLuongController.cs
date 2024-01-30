@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Core.Entities.MD;
@@ -125,6 +126,41 @@ namespace SMO.Areas.BP.Controllers
             model.EXCHANGE_RATE = 12;
             ViewBag.dataCenterModel = model;
             return PartialView(dataCost);
+        }
+
+        
+        public FileContentResult ExportExcelKHSL(string model,int exportExcelYear, int? exportExcelVersion, string exportExcelCenterCode, string exportExcelTemplate, string exportExcelUnit, decimal exportExcelExchangeRate, string kichBan, string moduleType)
+        {
+            var htmlMonth = HttpUtility.UrlDecode(Request.Form["htmlMonth"]);
+            var htmlYear = HttpUtility.UrlDecode(Request.Form["htmlYear"]);
+            var jsonModel = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
+            var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG> detailCostElements,
+                out IList<T_BP_KE_HOACH_SAN_LUONG_DATA> detailCostData, out bool isDrillDownApply, jsonModel);
+            if (htmlMonth is null && htmlYear is null)
+            {
+                throw new ArgumentNullException(nameof(htmlMonth));
+            }
+            var obj = new
+            {
+                htmlMonth = htmlMonth,
+                htmlYear = htmlYear
+            };
+            if (exportExcelCenterCode is null)
+            {
+                throw new ArgumentNullException(nameof(exportExcelCenterCode));
+            }
+
+            if (exportExcelTemplate is null)
+            {
+                throw new ArgumentNullException(nameof(exportExcelTemplate));
+            }
+
+            var path = Server.MapPath("~/TemplateExcel/" + "Template_Export_SanLuong.xlsx");
+            MemoryStream outFileStream = new MemoryStream();
+            _service.GenerateExportExcelKHSL(ref outFileStream, obj, path, exportExcelYear, exportExcelCenterCode, exportExcelVersion, exportExcelTemplate, exportExcelUnit, exportExcelExchangeRate, dataCost, detailCostElements);
+
+            var fileName = $"{exportExcelTemplate}_{exportExcelYear}_{kichBan}_V{exportExcelVersion}_{moduleType}";
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
 
         public override ActionResult SummaryCenter(string centerCode, int? year, int? version, bool isRenderPartial = false)

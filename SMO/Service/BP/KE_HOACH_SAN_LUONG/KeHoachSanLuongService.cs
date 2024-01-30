@@ -1,4 +1,7 @@
-﻿using NPOI.SS.UserModel;
+﻿using NHibernate.SqlCommand;
+using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 
 using SMO.AppCode.Utilities;
@@ -27,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-
+using System.Web.UI.HtmlControls;
 using static SMO.SelectListUtilities;
 
 namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
@@ -2820,7 +2823,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     {
                         centerCode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().Where(x => x.HANG_HANG_KHONG_CODE == hanghangkhong && x.SAN_BAY_CODE == sanbay).Select(x => x.CODE).ToList();
                     }
-                    templateCode = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => centerCode.Contains(x.SAN_LUONG_PROFIT_CENTER_CODE)).Select(x => x.TEMPLATE_CODE).FirstOrDefault();
+                    templateCode = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => centerCode.Contains(x.SAN_LUONG_PROFIT_CENTER_CODE) && x.TEMPLATE_CODE == templateId).Select(x => x.TEMPLATE_CODE).FirstOrDefault();
                     return UnitOfWork.Repository<KeHoachSanLuongVersionRepo>()
                     .GetManyWithFetch(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.PHIEN_BAN == phienBan)
                     .Select(x => x.VERSION)
@@ -4426,6 +4429,42 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         #endregion
 
         #region Export excel from data center view
+        public void GenerateExportExcelKHSL(ref MemoryStream outFileStream, dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate, IList<T_MD_KHOAN_MUC_SAN_LUONG> dataCost, IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG> detailCostElements)
+        {
+            // Create a new workbook and a sheet named "User Accounts"
+            //Mở file Template
+            var htmlMonth = table.htmlMonth;
+            var htmlYear = table.htmlYear;
+            var module = "KeHoachSanLuong";
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook workbook;
+            workbook = new XSSFWorkbook(fs);
+            workbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachSanLuong));
+            fs.Close();
+            ISheet sheetMonth = workbook.GetSheetAt(0);
+            var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
+            InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
+            GenerateData(ref workbook,ref sheetMonth, dataCost, detailCostElements);
+
+            ISheet sheetYear = workbook.GetSheetAt(1);
+            var metaDataYear = ExcelHelper.GetExcelMeta(htmlYear);
+            var NUM_CELL_YEAR = 7;
+
+            InitHeaderFile(ref sheetYear, year, centerCode, version, NUM_CELL_YEAR, templateId, "Tấn", exchangeRate);
+            //ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetYear, metaDataYear.MetaTHead, NUM_CELL_YEAR, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertBodyTableByYear(ref workbook,
+                ref sheetYear,
+                metaDataYear.MetaTBody,
+                NUM_CELL_YEAR,
+                module,
+                ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && !GetTemplate(templateId).IS_BASE));
+
+
+
+
+            // Save the Excel spreadsheet to a MemoryStream and return it to the client
+            workbook.Write(outFileStream);
+        }
         public override void GenerateExportExcel(ref MemoryStream outFileStream, dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)
         {
             // Create a new workbook and a sheet named "User Accounts"
@@ -4438,14 +4477,12 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             workbook = new XSSFWorkbook(fs);
             workbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachSanLuong));
             fs.Close();
-
-
             ISheet sheetMonth = workbook.GetSheetAt(0);
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
             var NUM_CELL_MONTH = string.IsNullOrEmpty(templateId) ? 18 : 22;
             var a = GetTemplate(templateId).IS_BASE;
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
-            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
+            ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH, module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTable(ref workbook,
                 ref sheetMonth,
                 metaDataMonth.MetaTBody,
@@ -4474,7 +4511,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
 
         private void InitHeaderFile(ref ISheet sheet, int year, string centerCode, int? version, int NUM_CELL, string templateId, string unit, decimal exchangeRate)
         {
-            var name = "DỮ LIỆU KẾ HOẠCH SẢN LƯỢNG";
+            var name = "";
             var centerName = GetCenter(centerCode).NAME.ToUpper();
             var template = GetTemplate(templateId);
             var templateName = template != null ? $"Mẫu khai báo: {template.CODE} - {template.NAME}" : "Tổng hợp dữ liệu";
@@ -4891,6 +4928,115 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 UnitOfWork.Rollback();
                 State = false;
                 Exception = ex;
+            }
+        }
+
+        public void GenerateData(ref IWorkbook templateWorkbook, ref ISheet sheet, IList<T_MD_KHOAN_MUC_SAN_LUONG> dataCost, IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG> detailCostElements)
+        {
+            try
+            {
+                ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+                styleCellBold.WrapText = true;
+                var fontBold = templateWorkbook.CreateFont();
+                fontBold.Boldweight = (short)FontBoldWeight.Bold;
+                fontBold.FontHeightInPoints = 11;
+                fontBold.FontName = "Times New Roman";
+
+                //StyleCell
+                ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
+                styleCellHeader.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+                styleCellHeader.WrapText = true;
+                styleCellHeader.Alignment = HorizontalAlignment.Center;
+
+                ICellStyle styleCellBody = templateWorkbook.CreateCellStyle();
+                styleCellBody.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+                styleCellBody.WrapText = true;
+
+                //Header
+                var NUM_CELL = 19;
+
+                #region Header
+                var template = UnitOfWork.Repository<TemplateRepo>().Get(detailCostElements.FirstOrDefault().TEMPLATE_CODE);
+                var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 0, NUM_CELL);
+                ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
+                rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {template.Organize?.Parent?.NAME.ToUpper()}");
+
+                var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
+
+                ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
+                rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
+                rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
+                #endregion
+
+                //Body
+                var rowStartBody = 8;
+                var sumElement = dataCost.FirstOrDefault(x => string.IsNullOrEmpty(x.CODE));
+                if (sumElement != null)
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, rowStartBody, NUM_CELL);
+                    for (int i = 0; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellBody;
+                    }
+                    rowCur.Cells[2].SetCellValue(sumElement.NAME);
+                    rowCur.Cells[3].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[0]));
+                    rowCur.Cells[4].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[1]));
+                    rowCur.Cells[5].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[2]));
+                    rowCur.Cells[6].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[3]));
+                    rowCur.Cells[7].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[4]));
+                    rowCur.Cells[8].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[5]));
+                    rowCur.Cells[9].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[6]));
+                    rowCur.Cells[10].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[7]));
+                    rowCur.Cells[11].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[8]));
+                    rowCur.Cells[12].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[9]));
+                    rowCur.Cells[13].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[10]));
+                    rowCur.Cells[14].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[11]));
+                    rowCur.Cells[15].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[12]));
+                    rowCur.Cells[16].SetCellValue(UtilsCore.DecimalToString(sumElement.Values[13]));
+                    rowCur.Cells[17].SetCellValue(UtilsCore.DecimalToString((sumElement.Values[12]/12)));
+                    rowStartBody++;
+                }
+                foreach (var detail in detailCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.SanBay.CODE).ThenBy(x => x.Center.HangHangKhong.CODE))
+                {
+                    foreach (var item in dataCost
+                                    .Where(x => x.CENTER_CODE == detail.CENTER_CODE)
+                                    .OrderBy(x => x.C_ORDER)
+                                    .GroupBy(x => x.CODE)
+                                    .Select(x => x.First()))
+                    {
+                        IRow rowCur = ReportUtilities.CreateRow(ref sheet, rowStartBody, NUM_CELL);
+                        for (int i = 0; i < NUM_CELL; i++)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBody;
+                        }
+                        rowCur.Cells[0].SetCellValue(detail.Center.SAN_BAY_CODE + "-" + detail.Center.SanBay.NAME);
+                        rowCur.Cells[1].SetCellValue(detail.Center.HANG_HANG_KHONG_CODE +"-"+ detail.Center.HangHangKhong.NAME);
+                        rowCur.Cells[2].SetCellValue(item.NAME);
+                        rowCur.Cells[3].SetCellValue(UtilsCore.DecimalToString(item.Values[0]));
+                        rowCur.Cells[4].SetCellValue(UtilsCore.DecimalToString(item.Values[1]));
+                        rowCur.Cells[5].SetCellValue(UtilsCore.DecimalToString(item.Values[2]));
+                        rowCur.Cells[6].SetCellValue(UtilsCore.DecimalToString(item.Values[3]));
+                        rowCur.Cells[7].SetCellValue(UtilsCore.DecimalToString(item.Values[4]));
+                        rowCur.Cells[8].SetCellValue(UtilsCore.DecimalToString(item.Values[5]));
+                        rowCur.Cells[9].SetCellValue(UtilsCore.DecimalToString(item.Values[6]));
+                        rowCur.Cells[10].SetCellValue(UtilsCore.DecimalToString(item.Values[7]));
+                        rowCur.Cells[11].SetCellValue(UtilsCore.DecimalToString(item.Values[8]));
+                        rowCur.Cells[12].SetCellValue(UtilsCore.DecimalToString(item.Values[9]));
+                        rowCur.Cells[13].SetCellValue(UtilsCore.DecimalToString(item.Values[10]));
+                        rowCur.Cells[14].SetCellValue(UtilsCore.DecimalToString(item.Values[11]));
+                        rowCur.Cells[15].SetCellValue(UtilsCore.DecimalToString(item.Values[12]));
+                        rowCur.Cells[16].SetCellValue(UtilsCore.DecimalToString(item.Values[13]));
+                        rowCur.Cells[17].SetCellValue(UtilsCore.DecimalToString((item.Values[12] / 12)));
+                        rowCur.Cells[18].SetCellValue(item.DESCRIPTION);
+                        rowStartBody++;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.ErrorMessage = "Có lỗi xảy ra trong quá trình tạo file excel!";
+                this.Exception = ex;
             }
         }
 
