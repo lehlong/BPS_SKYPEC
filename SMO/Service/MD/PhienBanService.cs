@@ -1509,11 +1509,185 @@ namespace SMO.Service.MD
             }
         }
 
+        
+
         private ICellStyle GetCellStyleNumber(IWorkbook templateWorkbook)
         {
             ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
             styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             return styleCellNumber;
+        }
+
+        internal void ExportExcelSanLuong(ref MemoryStream outFileStream, string path, int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                IWorkbook templateWorkbook;
+                templateWorkbook = new XSSFWorkbook(fs);
+                fs.Close();
+                //Sản Lượng theo tháng
+                ISheet sheetTab1 = templateWorkbook.GetSheetAt(0);
+                var data = GetDataSanLuong(year, phienBan, kichBan, hangHangKhong);
+                var startRow = 6;
+                var NUM_CELL = 14;
+                InsertDataSanLuongTab1(templateWorkbook, sheetTab1, data.Tab1, startRow, NUM_CELL);
+                // Sản lượng theo chi nhánh
+                var startRowTab2 = 6;
+                var NUM_CELL_Tab2 = 5;
+                ISheet sheetTab2 = templateWorkbook.GetSheetAt(1);
+                InsertDataSanLuongTab2(templateWorkbook, sheetTab2, data.Tab2, startRowTab2, NUM_CELL_Tab2);
+                //Sản lượng theo sân bay
+                var startRowTab3 = 7;
+                var NUM_CELL_Tab3 = 12;
+                ISheet sheetTab3 = templateWorkbook.GetSheetAt(2);
+                InsertDataSanLuongTab3(templateWorkbook, sheetTab3, data.Tab3, startRowTab3, NUM_CELL_Tab3);
+
+                templateWorkbook.Write(outFileStream);
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.ErrorMessage = "Có lỗi xẩy ra trong quá trình tạo file excel!";
+                this.Exception = ex;
+            }
+        }
+
+        internal void InsertDataSanLuongTab1(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                var dataRow = dataDetails[i];
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
+                rowCur.Cells[1].SetCellValue(dataDetails[i]?.ValueSumYear == null ? 0 : (double)dataDetails[i]?.ValueSumYear);
+                rowCur.Cells[2].SetCellValue(dataDetails[i]?.Value1 == null ? 0 : (double)dataDetails[i]?.Value1);
+                rowCur.Cells[3].SetCellValue(dataDetails[i]?.Value2 == null ? 0 : (double)dataDetails[i]?.Value2);
+                rowCur.Cells[4].SetCellValue(dataDetails[i]?.Value3 == null ? 0 : (double)dataDetails[i]?.Value3);
+                rowCur.Cells[5].SetCellValue(dataDetails[i]?.Value4 == null ? 0 : (double)dataDetails[i]?.Value4);
+                rowCur.Cells[6].SetCellValue(dataDetails[i]?.Value5 == null ? 0 : (double)dataDetails[i]?.Value5);
+                rowCur.Cells[7].SetCellValue(dataDetails[i]?.Value6 == null ? 0 : (double)dataDetails[i]?.Value6);
+                rowCur.Cells[8].SetCellValue(dataDetails[i]?.Value7 == null ? 0 : (double)dataDetails[i]?.Value7);
+                rowCur.Cells[9].SetCellValue(dataDetails[i]?.Value8 == null ? 0 : (double)dataDetails[i]?.Value8);
+                rowCur.Cells[10].SetCellValue(dataDetails[i]?.Value9 == null ? 0 : (double)dataDetails[i]?.Value9);
+                rowCur.Cells[11].SetCellValue(dataDetails[i]?.Value10 == null ? 0 : (double)dataDetails[i]?.Value10);
+                rowCur.Cells[12].SetCellValue(dataDetails[i]?.Value11 == null ? 0 : (double)dataDetails[i]?.Value11);
+                rowCur.Cells[13].SetCellValue(dataDetails[i]?.Value12 == null ? 0 : (double)dataDetails[i]?.Value12);
+
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (dataDetails[i].IsBold)
+                    {
+                        rowCur.Cells[j].CellStyle = styleCellBold;
+                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                    }
+                    else
+                    {
+                        rowCur.Cells[j].CellStyle = styleBody;
+                    }
+                }
+            }
+        }
+
+        internal void InsertDataSanLuongTab2(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                var dataRow = dataDetails[i];
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
+                rowCur.Cells[1].SetCellValue(dataDetails[i]?.ValueSumYear == null ? 0 : (double)dataDetails[i]?.ValueSumYear);
+                rowCur.Cells[2].SetCellValue(dataDetails[i]?.Value1 == null ? 0 : (double)dataDetails[i]?.Value1);
+                rowCur.Cells[3].SetCellValue(dataDetails[i]?.Value2 == null ? 0 : (double)dataDetails[i]?.Value2);
+                rowCur.Cells[4].SetCellValue(dataDetails[i]?.Value3 == null ? 0 : (double)dataDetails[i]?.Value3);
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (dataDetails[i].IsBold)
+                    {
+                        rowCur.Cells[j].CellStyle = styleCellBold;
+                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                    }
+                    else
+                    {
+                        rowCur.Cells[j].CellStyle = styleBody;
+                    }
+                }
+            }
+        }
+
+        internal void InsertDataSanLuongTab3(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                var dataRow = dataDetails[i];
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
+                rowCur.Cells[1].SetCellValue(dataDetails[i]?.Code == null ? "" : dataDetails[i]?.Code) ;
+                rowCur.Cells[2].SetCellValue(dataDetails[i]?.Value1 == null ? 0 : (double)dataDetails[i]?.Value1);
+                rowCur.Cells[3].SetCellValue(dataDetails[i]?.Value2 == null ? 0 : (double)dataDetails[i]?.Value2);
+                rowCur.Cells[4].SetCellValue(dataDetails[i]?.Value3 == null ? 0 : (double)dataDetails[i]?.Value3);
+                rowCur.Cells[5].SetCellValue(dataDetails[i]?.Value4 == null ? 0 : (double)dataDetails[i]?.Value4);
+                rowCur.Cells[6].SetCellValue(dataDetails[i]?.Value5 == null ? 0 : (double)dataDetails[i]?.Value5);
+                rowCur.Cells[7].SetCellValue(dataDetails[i]?.Value6 == null ? 0 : (double)dataDetails[i]?.Value6);
+                rowCur.Cells[8].SetCellValue(dataDetails[i]?.Value7 == null ? 0 : (double)dataDetails[i]?.Value7);
+                rowCur.Cells[9].SetCellValue(dataDetails[i]?.Value8 == null ? 0 : (double)dataDetails[i]?.Value8);
+                rowCur.Cells[10].SetCellValue(dataDetails[i]?.Value9 == null ? 0 : (double)dataDetails[i]?.Value9);
+                rowCur.Cells[11].SetCellValue(dataDetails[i]?.Value10 == null ? 0 : (double)dataDetails[i]?.Value10);
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (dataDetails[i].IsBold)
+                    {
+                        rowCur.Cells[j].CellStyle = styleCellBold;
+                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                    }
+                    else
+                    {
+                        rowCur.Cells[j].CellStyle = styleBody;
+                    }
+                }
+            }
         }
 
         internal void ExportExcelDoanhThu(ref MemoryStream outFileStream, string path, int year, string phienBan, string kichBan, string hangHangKhong)

@@ -4936,7 +4936,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             try
             {
                 ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
-                styleCellBold.WrapText = true;
+                styleCellBold.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
                 var fontBold = templateWorkbook.CreateFont();
                 fontBold.Boldweight = (short)FontBoldWeight.Bold;
                 fontBold.FontHeightInPoints = 11;
@@ -5007,7 +5007,15 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                         IRow rowCur = ReportUtilities.CreateRow(ref sheet, rowStartBody, NUM_CELL);
                         for (int i = 0; i < NUM_CELL; i++)
                         {
-                            rowCur.Cells[i].CellStyle = styleCellBody;
+                            if (item.IS_GROUP)
+                            {
+                                rowCur.Cells[i].CellStyle = styleCellBold;
+                                rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                            }
+                            else
+                            {
+                                rowCur.Cells[i].CellStyle = styleCellBody;
+                            }
                         }
                         rowCur.Cells[0].SetCellValue(detail.Center.SAN_BAY_CODE + "-" + detail.Center.SanBay.NAME);
                         rowCur.Cells[1].SetCellValue(detail.Center.HANG_HANG_KHONG_CODE +"-"+ detail.Center.HangHangKhong.NAME);

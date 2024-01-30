@@ -88,6 +88,18 @@ namespace SMO.Areas.BP.Controllers
             return PartialView(data);
         }
 
+        public ActionResult ExportExcelDataSanLuong(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            MemoryStream outFileStream = new MemoryStream();
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_SAN_LUONG.xlsx");
+            _servicePhienBan.ExportExcelSanLuong(ref outFileStream, path, year, phienBan, kichBan, hangHangKhong);
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
+        }
+
         public ActionResult ExportExcelDataDoanhThu(int year, string phienBan, string kichBan, string hangHangKhong)
         {
             MemoryStream outFileStream = new MemoryStream();
