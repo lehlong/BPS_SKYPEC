@@ -1488,11 +1488,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 
                 var order = 0;
 
-                var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+                var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.YEAR == model.YEAR);
 
                 if (departmentAssign)
                 {
-                    var lstElementAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE).ToList();
+                    var lstElementAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.YEAR == model.YEAR).ToList();
                     var lstElement = new List<T_MD_KHOAN_MUC_HANG_HOA>();
                     foreach (var elementAssign in lstElementAssign)
                     {
