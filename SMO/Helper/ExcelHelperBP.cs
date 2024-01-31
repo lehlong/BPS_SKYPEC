@@ -122,7 +122,7 @@ namespace SMO.Helper
             IRow rowLastDetail = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
             ReportUtilities.DeleteRow(ref sheet, rowLastDetail);
             var rowcur = sheet.GetRow(numRowCur - 1);
-            for(int i = 0; i < 19; i++)
+            for(int i = 0; i < NUM_CELL; i++)
             {
                 rowcur.Cells[i].CellStyle = styleCellLastDetail;
             }
