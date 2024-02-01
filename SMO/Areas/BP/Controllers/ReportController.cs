@@ -88,6 +88,18 @@ namespace SMO.Areas.BP.Controllers
             return PartialView(data);
         }
 
+        public ActionResult IndexKeHoachTongHop()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            var data = _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, hangHangKhong);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
         public ActionResult ExportExcelDataSanLuong(int year, string phienBan, string kichBan, string hangHangKhong)
         {
             MemoryStream outFileStream = new MemoryStream();

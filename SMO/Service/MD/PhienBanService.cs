@@ -509,6 +509,92 @@ namespace SMO.Service.MD
             }
         }
 
+        public SynthesizeThePlanReportModel GetDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
+        {
+            try
+            {
+                var data = new SynthesizeThePlanReportModel();
+                var lstSanBay = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != null && x.OTHER_PM_CODE != "").ToList();
+                lstSanBay = !string.IsNullOrEmpty(area) ? lstSanBay.Where(x => x.AREA_CODE == area).ToList() : lstSanBay;
+                
+                #region KẾ HOẠCH SẢN LƯỢNG
+                var dataHeaderSanLuong = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                if (dataHeaderSanLuong.Count() == 0)
+                {
+                    return new SynthesizeThePlanReportModel();
+                }
+
+                var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSanLuong.Contains(x.TEMPLATE_CODE)).ToList();
+                var orderSL = 1;
+                foreach (var sb in lstSanBay)
+                {
+                    var item = new SanLuong
+                    {
+                        Code = sb.CODE,
+                        Name = sb.NAME,
+                        Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE && x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value2 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE && !x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value3 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value4 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE && x.SanLuongProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value5 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Order = orderSL,
+                    };
+                    data.SanLuong.Add(item);
+                    orderSL += 1;
+                }
+                data.SanLuong.Add(new SanLuong
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = data.SanLuong.Sum(x => x.Value1),
+                    Value2 = data.SanLuong.Sum(x => x.Value2),
+                    Value3 = data.SanLuong.Sum(x => x.Value3),
+                    Value4 = data.SanLuong.Sum(x => x.Value4),
+                    Value5 = data.SanLuong.Sum(x => x.Value5),
+                    Order = 0,
+                    IsBold = true,
+                });
+                #endregion
+
+                #region KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ
+                var dataHeaderDTXD = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                if (dataHeaderDTXD.Count() + dataHeaderDTTTB.Count() == 0)
+                {
+                    return new SynthesizeThePlanReportModel();
+                }
+
+                var dataInHeaderDTXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD.Contains(x.TEMPLATE_CODE)).ToList();
+                var dataInHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTTTB.Contains(x.TEMPLATE_CODE)).ToList();
+               
+                var lstProject = UnitOfWork.Repository<ProjectRepo>().GetAll().ToList();
+                lstProject = !string.IsNullOrEmpty(area) ? lstProject.Where(x => x.AREA_CODE == area).ToList() : lstProject;
+                var orderDT = 1;
+                foreach(var pj in lstProject)
+                {
+                    var item = new DauTu
+                    {
+                        Name = pj.NAME,
+                        Value2 = dataInHeaderDTXD.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4032").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4032").Sum(x => x.VALUE) ?? 0,
+                    Order = orderDT,
+                    };
+                    data.DauTu.Add(item);
+                    orderDT += 1;
+                }
+
+
+                #endregion
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+                return new SynthesizeThePlanReportModel();
+            }
+        }
+
         public RevenueByFeeReportModel GetDataDoanhThuTheoPhi(int year, string phienBan, string kichBan, string hangHangKhong)
         {
             try
@@ -612,7 +698,7 @@ namespace SMO.Service.MD
                         ValueSumYear = tab1.ValueSumYear + tab2.ValueSumYear + tab3.ValueSumYear,
                         Order = order,
                     });
-                    order ++;
+                    order++;
                 }
                 return data;
             }
@@ -1509,7 +1595,7 @@ namespace SMO.Service.MD
             }
         }
 
-        
+
 
         private ICellStyle GetCellStyleNumber(IWorkbook templateWorkbook)
         {
@@ -1664,7 +1750,7 @@ namespace SMO.Service.MD
                 var dataRow = dataDetails[i];
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                 rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
-                rowCur.Cells[1].SetCellValue(dataDetails[i]?.Code == null ? "" : dataDetails[i]?.Code) ;
+                rowCur.Cells[1].SetCellValue(dataDetails[i]?.Code == null ? "" : dataDetails[i]?.Code);
                 rowCur.Cells[2].SetCellValue(dataDetails[i]?.Value1 == null ? 0 : (double)dataDetails[i]?.Value1);
                 rowCur.Cells[3].SetCellValue(dataDetails[i]?.Value2 == null ? 0 : (double)dataDetails[i]?.Value2);
                 rowCur.Cells[4].SetCellValue(dataDetails[i]?.Value3 == null ? 0 : (double)dataDetails[i]?.Value3);
@@ -1805,7 +1891,7 @@ namespace SMO.Service.MD
             }
         }
 
-        internal void InsertDataToTableDTCP(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails,int startRow)
+        internal void InsertDataToTableDTCP(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails, int startRow)
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
             styleCellBold.WrapText = true;

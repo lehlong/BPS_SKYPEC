@@ -16,6 +16,24 @@ namespace SMO.Core.Entities
         public virtual int YEAR { get; set; }
         public virtual string NGANH_NGHE { get; set; }
         public virtual string PHAN_LOAI { get; set; }
+        public virtual string AREA_CODE { get; set; }
+
+        private T_MD_AREA _Area;
+        public virtual T_MD_AREA Area
+        {
+            get
+            {
+                if (_Area == null)
+                {
+                    _Area = new T_MD_AREA();
+                }
+                return _Area;
+            }
+            set
+            {
+                _Area = value;
+            }
+        }
 
         private T_MD_LOAI_HINH_DAU_TU _LoaiHinh;
         public virtual T_MD_LOAI_HINH_DAU_TU LoaiHinh

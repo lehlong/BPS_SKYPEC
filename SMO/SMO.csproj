@@ -2047,6 +2047,8 @@
     <Content Include="Areas\BP\Views\Report\IndexSanLuong.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataSanLuong.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewTemplateKeHoachChiPhiCoQuanCongTy.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexKeHoachTongHop.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataKeHoachTongHop.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

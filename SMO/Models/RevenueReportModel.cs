@@ -35,4 +35,41 @@ namespace SMO.Models
         public int Order { get; set; }
         public int Level { get; set; }
     }
+
+
+    public class SynthesizeThePlanReportModel
+    {
+        public IList<SanLuong> SanLuong { get; set; } = new List<SanLuong> { };
+        public IList<DauTu> DauTu { get; set; } = new List<DauTu> { };
+    }
+
+    public class SanLuong
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public decimal Value1 { get; set; }
+        public decimal Value2 { get; set; }
+        public decimal Value3 { get; set; }
+        public decimal Value4 { get; set; }
+        public decimal Value5 { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+
+    }
+
+    public class DauTu
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Value1 { get; set; }
+        public decimal Value2 { get; set; }
+        public decimal Value3 { get; set; }
+        public string Value4 { get; set; }
+        public string Value5 { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+
+    }
 }

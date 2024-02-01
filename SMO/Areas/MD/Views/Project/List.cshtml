@@ -15,6 +15,7 @@
                 <th>Năm bắt đầu</th>
                 <th>Ngành nghề</th>
                 <th>Phân loại</th>
+                <th>Khu vực</th>
             </tr>
         </thead>
         <tbody>
@@ -32,6 +33,7 @@
                     <td ondblclick="@vdbclickAction">@(item.YEAR)</td>
                     <td ondblclick="@vdbclickAction">@(item?.NganhNghe?.TEXT)</td>
                     <td ondblclick="@vdbclickAction">@(item?.PhanLoai?.TEXT)</td>
+                    <td ondblclick="@vdbclickAction">@(item?.Area?.TEXT)</td>
                 </tr>
             }
         </tbody>
