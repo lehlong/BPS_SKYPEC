@@ -1,5 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
-using NHibernate.Mapping;
+﻿using NHibernate.Mapping;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
@@ -810,7 +809,132 @@ namespace SMO.Helper
             }
         }
 
+        public static void insertBodyKeHoachGiaVon(ref IWorkbook workbook, DataCenterModel data, string module, ref ISheet sheet, int NUM_CELL)
+        {
+            
+            if (module.Trim() == "KeHoachGiaVon")
+            {
+                int startRow = 7;
+                ICellStyle styleCellNumber = workbook.CreateCellStyle();
+                styleCellNumber.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+                styleCellNumber.WrapText = true;
+
+                ICellStyle styleCellName = workbook.CreateCellStyle();
+                styleCellName.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+                styleCellName.WrapText = true;
+
+                ICellStyle styleCellBold = workbook.CreateCellStyle();
+                styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+
+                ICellStyle styleCellHeader = workbook.CreateCellStyle();
+                styleCellHeader.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+                foreach (var item in data.KeHoachGiaThanhData.OrderBy(x => x.AreaCode).ThenBy(x => x.Warehouse))
+                {
+                    if (item.S0001 == 0 && item.S0002 == 0 && item.U0001 == 0 && item.S0003 == 0 && item.S0004 == 0
+                        && item.U0002 == 0 && item.S0005 == 0 && item.U0003 == 0 && item.S0006 == 0 && item.S0007 == 0
+                        && item.U0004 == 0 && item.U0005 == 0 && item.U0006 == 0 && item.U0007 == 0 && item.U0008 == 0
+                        && item.U0009 == 0 && item.U0010 == 0)
+                    {
+                        continue;
+                    }
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                    for (int i = 3; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellNumber;
+                    }
+                    rowCur.Cells[0].CellStyle = styleCellName;
+                    rowCur.Cells[1].CellStyle = styleCellName;
+                    rowCur.Cells[2].CellStyle = styleCellName;
+                    rowCur.Cells[0].SetCellValue(item.Warehouse);
+                    rowCur.Cells[1].SetCellValue(item.AreaCode);
+                    rowCur.Cells[2].SetCellValue(item.DeliveryConditions);
+                    rowCur.Cells[3].SetCellValue((double)item.S0001);
+                    rowCur.Cells[4].SetCellValue((double)item.S0002);
+                    rowCur.Cells[5].SetCellValue((double)item.U0001);
+                    rowCur.Cells[6].SetCellValue((double)item.S0003);
+                    rowCur.Cells[7].SetCellValue((double)item.S0004);
+                    rowCur.Cells[8].SetCellValue((double)item.U0002);
+                    rowCur.Cells[9].SetCellValue((double)item.S0005);
+                    rowCur.Cells[10].SetCellValue((double)item.U0003);
+                    rowCur.Cells[11].SetCellValue((double)item.S0006);
+                    rowCur.Cells[12].SetCellValue((double)item.S0007);
+                    rowCur.Cells[13].SetCellValue((double)item.U0004);
+                    rowCur.Cells[14].SetCellValue((double)item.U0005);
+                    rowCur.Cells[15].SetCellValue((double)item.U0006);
+                    rowCur.Cells[16].SetCellValue((double)item.U0007);
+                    rowCur.Cells[17].SetCellValue((double)item.U0008);
+                    rowCur.Cells[18].SetCellValue((double)item.U0009);
+                    rowCur.Cells[19].SetCellValue((double)item.U0010);
+                }
+            }
+            else
+            {
+                ICellStyle styleCellNumber = workbook.CreateCellStyle();
+                styleCellNumber.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
+                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+                styleCellNumber.WrapText = true;
+
+                ICellStyle styleCellName = workbook.CreateCellStyle();
+                styleCellName.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
+                styleCellName.WrapText = true;
+
+
+                ICellStyle styleCellBold = workbook.CreateCellStyle();
+                styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+                styleCellBold.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+
+                ICellStyle styleCellHeader = workbook.CreateCellStyle();
+                styleCellHeader.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+                int startRow = 8;
+                foreach (var item in data.KeHoachGiaVonData.OrderBy(x=> x.Order))
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                    for(int i = 0; i < NUM_CELL; i++)
+                    {
+                        if (item.IsBold)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellNumber;
+                        }
+                    }
+                    rowCur.Cells[0].SetCellValue(item.Name);
+                    rowCur.Cells[1].SetCellValue((double)(item.Value1));
+                    rowCur.Cells[2].SetCellValue((double)(item.Value2));
+                    rowCur.Cells[3].SetCellValue((double)(item.Value3));
+                    rowCur.Cells[4].SetCellValue((double)(item.Value4));
+                    rowCur.Cells[5].SetCellValue((double)(item.Value5));
+                    rowCur.Cells[6].SetCellValue((double)(item.Value6));
+                    rowCur.Cells[7].SetCellValue((double)(item.Value7));
+                    rowCur.Cells[8].SetCellValue((double)(item.Value8));
+                    rowCur.Cells[9].SetCellValue((double)(item.Value9));
+                    rowCur.Cells[10].SetCellValue((double)(item.Value10));
+                    rowCur.Cells[11].SetCellValue((double)(item.Value11));
+                    rowCur.Cells[12].SetCellValue((double)(item.Value12));
+                    rowCur.Cells[13].SetCellValue((double)(item.Value13));
+                    rowCur.Cells[14].SetCellValue((double)(item.Value14));
+                    rowCur.Cells[15].SetCellValue((double)(item.Value15));
+                    rowCur.Cells[16].SetCellValue((double)(item.Value16));
+                    rowCur.Cells[17].SetCellValue((double)(item.Value17));
+                    rowCur.Cells[18].SetCellValue((double)(item.Value18));
+                    rowCur.Cells[19].SetCellValue((double)(item.Value19));
+                    rowCur.Cells[20].SetCellValue((double)(item.Value20));
+
+                }
+            }
+        }
+
         public static void InsertHeaderKeHoachTaiChinh(ref IWorkbook workbook, string year, string module, ref ISheet sheet, int NUM_CELL)
+        {
+            IRow rowCur = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
+            var yearKH = $"Năm ngân sách: {year}";
+            rowCur.Cells[0].SetCellValue(yearKH);
+        }
+
+        public static void InsertHeaderKeHoachGiaVon(ref IWorkbook workbook, string year, string module, ref ISheet sheet, int NUM_CELL)
         {
             IRow rowCur = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
             var yearKH = $"Năm ngân sách: {year}";

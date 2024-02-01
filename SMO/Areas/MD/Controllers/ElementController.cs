@@ -145,5 +145,22 @@ namespace SMO.Areas.MD.Controllers
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
 
+        [HttpPost]
+        public FileContentResult DownloadDataKHGV(string year, string area)
+        {
+            if (year == null || year == "")
+            {
+                throw new ArgumentNullException(nameof(year));
+            }
+            var yearKH = Convert.ToInt32(year);
+            var data = _service.GetDataKeHoachGiaVon(yearKH, area);
+            var path = Server.MapPath("~/TemplateExcel/" + "DuLieuKeHoachGiaVon.xlsx");
+            MemoryStream outFileStream = new MemoryStream();
+            _service.DowloadExcelKHGV(ref outFileStream, data, year, path);
+
+            var fileName = $"KẾ-HOẠCH-GIÁ-VỐN-NĂM-{yearKH}";
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+        }
+
     }
 }

@@ -819,5 +819,28 @@ namespace SMO.Service.MD
             ExcelHelperBP.insertBodyKeHoachTaiChinh(ref workbook, dataDetails, module2, ref sheetKHTC2, NUM_CELL);
             workbook.Write(outFileStream);
         }
+
+        public void DowloadExcelKHGV(ref MemoryStream outFileStream, DataCenterModel data, string year, string path)
+        {
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook workbook;
+            workbook = new XSSFWorkbook(fs);
+            workbook.SetSheetName(0, ModulType.GetTextSheetName("Kế-hoạch-giá-vốn"));
+            fs.Close();
+
+            ISheet sheetYear = workbook.GetSheetAt(0);
+            var NUM_CELL = 20;
+            var module = "KeHoachGiaVon";
+            ExcelHelperBP.InsertHeaderKeHoachGiaVon(ref workbook, year, module, ref sheetYear, NUM_CELL);
+            ExcelHelperBP.insertBodyKeHoachGiaVon(ref workbook, data, module, ref sheetYear, NUM_CELL);
+            workbook.SetSheetName(1, ModulType.GetTextSheetName("Kế-hoạch-giá-vốn-2"));
+            ISheet sheetKHTC2 = workbook.GetSheetAt(1);
+            var NUM_CELL2 = 21;
+            var module2 = "KeHoachGiaVon2";
+            ExcelHelperBP.InsertHeaderKeHoachGiaVon(ref workbook, year, module, ref sheetKHTC2, NUM_CELL2);
+
+            ExcelHelperBP.insertBodyKeHoachGiaVon(ref workbook, data, module2, ref sheetKHTC2, NUM_CELL2);
+            workbook.Write(outFileStream);
+        }
     }
 }

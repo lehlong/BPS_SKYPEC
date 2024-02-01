@@ -4,6 +4,7 @@
     Model.FormId = Guid.NewGuid().ToString();
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var yearDefault = Convert.ToString(lstTimeYear.SelectedValue);
+    var formIdExportExcel = Guid.NewGuid();
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
 
@@ -21,7 +22,7 @@
                         @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "DownloadData();", "Alt+N", "file_download")
                     </div>
-                   
+
                     <div class="input-group page-function-search" style="margin-bottom: 7px !important; max-width:720px">
                         <div class="row">
                             <div class="col-md-4">
@@ -54,6 +55,12 @@
                 <div id="divResult">
 
                 </div>
+                <div class="hidden">
+                    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("DownloadDataKHGV")">
+                        @Html.Hidden("year")
+                        @Html.Hidden("area")
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -63,11 +70,11 @@
         }
 
         function DownloadData() {
-            Swal.fire({
-                title: "Oppsss?",
-                text: "Đang trong quá trình code! Đừng bấm nữa?",
-                icon: "warning"
-            });
+            var year = $('#TIME_YEAR').val();
+            var area = $("#@Model.ViewId #AREA_ID").val();
+            $('#@formIdExportExcel #year').val(year);
+            $('#@formIdExportExcel #area').val(area);
+             $('#@formIdExportExcel').submit();
         }
 
         function GetDataKeHoachGiaVon(value) {
