@@ -4804,7 +4804,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Delete(item);
                 }
 
-                var allSanLuongProfitCenters = UnitOfWork.Repository<SanLuongProfitCenterRepo>().GetAll();
+                var allSanLuongProfitCenters = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x=>x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).Select(x=> x.Center);
                 List<T_BP_KE_HOACH_SAN_LUONG_DATA> lstData = new List<T_BP_KE_HOACH_SAN_LUONG_DATA>();
                 // Insert dữ liệu vào bảng data
                 for (int i = 0; i < actualRows; i++)
