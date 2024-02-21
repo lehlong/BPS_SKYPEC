@@ -354,6 +354,7 @@
     <Compile Include="Entities\MD\T_MD_TRANSPORT_GROUP.cs" />
     <Compile Include="Entities\MD\T_MD_UNIT.cs" />
     <Compile Include="Entities\MD\T_MD_UNIT_PRICE.cs" />
+    <Compile Include="Entities\MD\T_MD_UNIT_PRICE_PLAN.cs" />
     <Compile Include="Entities\MD\T_MD_USER_REVIEW.cs" />
     <Compile Include="Entities\MD\T_MD_VAN_CHUYEN_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_VEHICLE.cs" />

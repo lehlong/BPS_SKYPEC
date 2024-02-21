@@ -332,6 +332,7 @@
     <Compile Include="Implement\MD\TemplateDetailSuaChuaThuongXuyenRepo.cs" />
     <Compile Include="Implement\MD\TemplateRepo.cs" />
     <Compile Include="Implement\MD\TransportGroupRepo.cs" />
+    <Compile Include="Implement\MD\UnitPricePlanRepo.cs" />
     <Compile Include="Implement\MD\UnitPriceRepo.cs" />
     <Compile Include="Implement\MD\UnitRepo.cs" />
     <Compile Include="Implement\MD\UserReviewRepo.cs" />
@@ -590,6 +591,7 @@
     <Compile Include="Interface\MD\ITemplateDetailSuaChuaThuongXuyenRepo.cs" />
     <Compile Include="Interface\MD\ITemplateRepo.cs" />
     <Compile Include="Interface\MD\ITransportGroupRepo.cs" />
+    <Compile Include="Interface\MD\IUnitPricePlanRepo.cs" />
     <Compile Include="Interface\MD\IUnitPriceRepo.cs" />
     <Compile Include="Interface\MD\IUnitRepo.cs" />
     <Compile Include="Interface\MD\IUserReviewRepo.cs" />
@@ -849,6 +851,7 @@
     <Compile Include="Mapping\MD\T_MD_TRANSPORT_GROUP_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_UNIT_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_UNIT_PRICE_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_UNIT_PRICE_PLAN_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_USER_REVIEW_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_VAN_CHUYEN_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_VEHICLE_Map.cs" />

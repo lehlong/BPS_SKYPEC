@@ -602,6 +602,7 @@
     <Compile Include="Areas\MD\Controllers\TransportGroupController.cs" />
     <Compile Include="Areas\MD\Controllers\UnitController.cs" />
     <Compile Include="Areas\MD\Controllers\UnitPriceController.cs" />
+    <Compile Include="Areas\MD\Controllers\UnitPricePlanController.cs" />
     <Compile Include="Areas\MD\Controllers\UserReviewController.cs" />
     <Compile Include="Areas\MD\Controllers\VanChuyenProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\VehicleController.cs" />
@@ -867,6 +868,7 @@
     <Compile Include="Service\MD\TemplateBaseService.cs" />
     <Compile Include="Service\MD\TemplateService.cs" />
     <Compile Include="Service\MD\TransportGroupService.cs" />
+    <Compile Include="Service\MD\UnitPricePlanService.cs" />
     <Compile Include="Service\MD\UnitPriceService.cs" />
     <Compile Include="Service\MD\UnitService.cs" />
     <Compile Include="Service\MD\UserReviewService.cs" />
@@ -2049,6 +2051,10 @@
     <Content Include="Areas\BP\Views\KeHoachChiPhi\ViewTemplateKeHoachChiPhiCoQuanCongTy.cshtml" />
     <Content Include="Areas\BP\Views\Report\IndexKeHoachTongHop.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataKeHoachTongHop.cshtml" />
+    <Content Include="Areas\MD\Views\UnitPricePlan\Index.cshtml" />
+    <Content Include="Areas\MD\Views\UnitPricePlan\List.cshtml" />
+    <Content Include="Areas\MD\Views\UnitPricePlan\Create.cshtml" />
+    <Content Include="Areas\MD\Views\UnitPricePlan\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

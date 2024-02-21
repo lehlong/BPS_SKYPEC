@@ -1,0 +1,46 @@
+﻿@model SMO.Service.MD.UnitPricePlanService
+@{
+    var number = 1;
+}
+
+<div class="table-responsive">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Sân bay</th>
+                <th>VN</th>
+                <th>0V</th>
+                <th>BL</th>
+                <th>VJ</th>
+                <th>QH</th>
+                <th>VU</th>
+                <th>HKTN#</th>
+                <th>HKNN nội địa</th>
+                <th>HKNN quốc tế</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList)
+            {
+                number++;
+                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.ID }));
+                <tr>
+                    <td ondblclick="@vdbclickAction">
+                        <a href="#" onclick="@vdbclickAction">@item.SAN_BAY_CODE</a>
+                    </td>
+                    <td ondblclick="@vdbclickAction">@item.VN.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.OV.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.BL.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.VJ.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.QH.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.VU.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.HKTN_OTHER.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.HKNN_ND.ToStringVN()</td>
+                    <td ondblclick="@vdbclickAction">@item.HKNN_QT.ToStringVN()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{ Html.RenderPartial("Paging", Model); }
+
