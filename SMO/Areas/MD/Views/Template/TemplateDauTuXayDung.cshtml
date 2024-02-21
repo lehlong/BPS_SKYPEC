@@ -63,9 +63,9 @@
                                             <label>Loại đối tượng chịu kế hoạch</label>
                                             <div class="form-group">
                                                 <div class="form-line">
-                                                    @Html.MyDropDownListFor(m => m.ObjDetail.OBJECT_TYPE, SelectListUtilities.GetTemplateObjectTypes(), new { @disabled = "true" })
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.ORG_CODE, SelectListUtilities.GetCostCenter(), new { @disabled = "true" })
                                                 </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.OBJECT_TYPE)
+                                                @Html.ValidationMessageFor(m => m.ObjDetail.ORG_CODE)
                                             </div>
 
                                             <label>Loại khoản mục</label>
@@ -85,19 +85,19 @@
                                             </div>
 
                                             @*<label>Đơn vị khai báo dữ liệu</label>
-                                                <div class="form-group">
-                                                    @Html.MyDropDownListFor(x => x.ObjDetail.ORG_CODE,
-                                                    SelectListUtilities.GetChildOrg<T_MD_COST_CENTER, CostCenterRepo>
-                                                        (),
-                                                        new
-                                                        {
-                                                        @class = "selectpicker show-tick",
-                                                        @data_live_search = "true",
-                                                        @data_container = "body",
-                                                        @disabled = "true"
-                                                        })
-                                                        @Html.ValidationMessageFor(m => m.ObjDetail.ORG_CODE)
-                                                </div>*@
+        <div class="form-group">
+            @Html.MyDropDownListFor(x => x.ObjDetail.ORG_CODE,
+            SelectListUtilities.GetChildOrg<T_MD_COST_CENTER, CostCenterRepo>
+                (),
+                new
+                {
+                @class = "selectpicker show-tick",
+                @data_live_search = "true",
+                @data_container = "body",
+                @disabled = "true"
+                })
+                @Html.ValidationMessageFor(m => m.ObjDetail.ORG_CODE)
+        </div>*@
 
                                             <label>Mã mẫu khai báo</label>
                                             <div class="form-group">

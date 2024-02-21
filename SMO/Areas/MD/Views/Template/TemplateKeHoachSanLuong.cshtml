@@ -63,9 +63,9 @@
                                             <label>Loại đối tượng chịu kế hoạch</label>
                                             <div class="form-group">
                                                 <div class="form-line">
-                                                    @Html.MyDropDownListFor(m => m.ObjDetail.OBJECT_TYPE, SelectListUtilities.GetTemplateObjectTypes(), new { @disabled = "true" })
+                                                    @Html.MyDropDownListFor(m => m.ObjDetail.ORG_CODE, SelectListUtilities.GetCostCenter(), new { @disabled = "true" })
                                                 </div>
-                                                @Html.ValidationMessageFor(m => m.ObjDetail.OBJECT_TYPE)
+                                                @Html.ValidationMessageFor(m => m.ObjDetail.ORG_CODE)
                                             </div>
 
                                             <label>Loại khoản mục</label>

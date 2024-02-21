@@ -706,8 +706,15 @@ namespace SMO
             {
                 lstData.Add(new Data() { Value = "", Text = " - " });
             }
+            lstData.Add(new Data { Value = ElementType.SanLuong, Text = "Sản lượng" });
             lstData.Add(new Data { Value = ElementType.ChiPhi, Text = "Chi phí" });
+            lstData.Add(new Data { Value = ElementType.DauTuNgoaiDoanhNghiep, Text = "Đầu tư xây dựng ngoài doanh nghiệp" });
+            lstData.Add(new Data { Value = ElementType.DauTuTrangThietBi, Text = "Đầu tư xây dựng trang thiết bị" });
+            lstData.Add(new Data { Value = ElementType.DauTuXayDung, Text = "Đầu tư xây dựng" });
             lstData.Add(new Data { Value = ElementType.DoanhThu, Text = "Doanh thu" });
+            lstData.Add(new Data { Value = ElementType.VanChuyen, Text = "Vận chuyển" });
+            lstData.Add(new Data { Value = ElementType.SuaChuaLon, Text = "Sửa chữa lớn" });
+            lstData.Add(new Data { Value = ElementType.SuaChuaThuongXuyen, Text = "Sửa chữa thường xuyên" });
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
         public static SelectList GetTemplateObjectTypes(bool isAddBlank = false, string selected = "")
@@ -731,6 +738,15 @@ namespace SMO
                 lstData.Add(new Data() { Value = "", Text = " - " });
             }
             lstData.Add(new Data { Value = BudgetType.KinhDoanh, Text = "Kinh doanh" });
+            lstData.Add(new Data { Value = BudgetType.SanLuong, Text = "Sản lượng" });
+            lstData.Add(new Data { Value = BudgetType.ChiPhi, Text = "Chi phí" });
+            lstData.Add(new Data { Value = BudgetType.DauTuNgoaiDoanhNghiep, Text = "Đầu tư xây dựng ngoài doanh nghiệp" });
+            lstData.Add(new Data { Value = BudgetType.DauTuTrangThietBi, Text = "Đầu tư xây dựng trang thiết bị" });
+            lstData.Add(new Data { Value = BudgetType.DauTuXayDung, Text = "Đầu tư xây dựng" });
+            lstData.Add(new Data { Value = BudgetType.DoanhThu, Text = "Doanh thu" });
+            lstData.Add(new Data { Value = BudgetType.VanChuyen, Text = "Vận chuyển" });
+            lstData.Add(new Data { Value = BudgetType.SuaChuaLon, Text = "Sửa chữa lớn" });
+            lstData.Add(new Data { Value = BudgetType.SuaChuaThuongXuyen, Text = "Sửa chữa thường xuyên" });
             lstData.Add(new Data { Value = BudgetType.DongTien, Text = "Dòng tiền" });
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
