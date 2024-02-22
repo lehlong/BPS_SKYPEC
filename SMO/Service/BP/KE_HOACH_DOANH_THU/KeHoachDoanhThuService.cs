@@ -4944,7 +4944,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             try
             {
                 UnitOfWork.BeginTransaction();
-                var lstUnitPrice = UnitOfWork.Repository<UnitPriceRepo>().Queryable().Where(x => x.YEAR == year).ToList();
+                var lstUnitPrice = UnitOfWork.Repository<UnitPricePlanRepo>().Queryable().Where(x => x.YEAR == year).ToList();
                 if (lstUnitPrice.Count() == 0)
                 {
                     this.State = false;
@@ -4976,16 +4976,14 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     var itemQuocTeHistoryDT_Pump = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2004");
 
                     var currencyUSD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
-                    var currencyGal = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "17").VALUE;
+                    /*var currencyGal = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "17").VALUE;*/
 
                     decimal price = 0;
-                    decimal pricePump = 0;
-
-                    var unitPrice = lstUnitPrice.FirstOrDefault(x => x.WAREHOUSE_ID == itemNoiDiaSL.DoanhThuProfitCenter.SanBay.OTHER_PM_CODE && x.OBJECT_ID == itemNoiDiaSL.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE);
+                    var unitPrice = lstUnitPrice.FirstOrDefault(x => x.SAN_BAY_CODE == itemNoiDiaSL.DoanhThuProfitCenter.SAN_BAY_CODE);
 
                     if (unitPrice != null)
                     {
-                        if (unitPrice.CURRENCY_ID == "USD" && unitPrice.UNIT_ID == "Gal")
+                        /*if (unitPrice.CURRENCY_ID == "USD" && unitPrice.UNIT_ID == "Gal")
                         {
                             price = unitPrice.SERVICE_PRICE * currencyUSD * currencyGal;
                             pricePump = unitPrice.PUMP_FEE * currencyUSD * currencyGal;
@@ -4999,9 +4997,24 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                         {
                             price = unitPrice.SERVICE_PRICE;
                             pricePump = unitPrice.PUMP_FEE;
-                        }
-                    }
+                        }*/
 
+                        var groupSb = itemNoiDiaSL.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM;
+                        price = groupSb == "VN" ? unitPrice.VN : groupSb == "OV" ? unitPrice.OV : groupSb == "BL" ? unitPrice.BL : groupSb == "VJ" ? unitPrice.VJ : groupSb == "QH" ? unitPrice.QH : groupSb == "VU" ? unitPrice.VU : groupSb == "HKTN#" ? unitPrice.HKTN_OTHER : (groupSb == "HKQT" && itemNoiDiaSL.DoanhThuProfitCenter.HangHangKhong.TYPE == "ND") ? unitPrice.HKNN_ND : unitPrice.HKNN_QT;
+                    }
+                    decimal pricePump = 0;
+                    var sanBayCode = itemNoiDiaDT.DoanhThuProfitCenter.SAN_BAY_CODE;
+
+                    sanBayCode = sanBayCode == "NAF" ? "NBA" : sanBayCode == "TAP" ? "TNS" : sanBayCode;
+                     
+                    var hangHangKhongCode = itemNoiDiaDT.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM;
+                    var shareDataCode = "FHS" + "-" + sanBayCode + "-" + hangHangKhongCode;
+
+                    var phiNgam = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x=> x.CODE == shareDataCode);
+                    if(phiNgam != null)
+                    {
+                        pricePump = phiNgam.VALUE * currencyUSD;
+                    }
                     //Tính toán doanh thu nội địa
                     itemNoiDiaDT.VALUE_JAN = itemNoiDiaSL.VALUE_JAN * price;
                     itemNoiDiaDT.VALUE_FEB = itemNoiDiaSL.VALUE_FEB * price;
@@ -5019,7 +5032,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemNoiDiaDT.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaSL.VALUE_SUM_YEAR_PREVENTIVE * price;
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemNoiDiaDT);
 
-                    //Tính toán doanh thu nội địa Pump
+                    #region Tính toán doanh thu nội địa Pump
                     itemNoiDiaDT_Pump.VALUE_JAN = itemNoiDiaSL.VALUE_JAN * pricePump;
                     itemNoiDiaDT_Pump.VALUE_FEB = itemNoiDiaSL.VALUE_FEB * pricePump;
                     itemNoiDiaDT_Pump.VALUE_MAR = itemNoiDiaSL.VALUE_MAR * pricePump;
@@ -5035,7 +5048,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemNoiDiaDT_Pump.VALUE_SUM_YEAR = itemNoiDiaSL.VALUE_SUM_YEAR * pricePump;
                     itemNoiDiaDT_Pump.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaSL.VALUE_SUM_YEAR_PREVENTIVE * pricePump;
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemNoiDiaDT_Pump);
-
+                    #endregion
                     //Tính toán doanh thu quốc tế
                     itemQuocTeDT.VALUE_JAN = itemQuocTeSL.VALUE_JAN * price;
                     itemQuocTeDT.VALUE_FEB = itemQuocTeSL.VALUE_FEB * price;
@@ -5053,7 +5066,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemQuocTeDT.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeSL.VALUE_SUM_YEAR_PREVENTIVE * price;
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemQuocTeDT);
 
-                    //Tính toán doanh thu quốc tế Pump
+                    #region Tính toán doanh thu quốc tế Pump
                     itemQuocTeDT_Pump.VALUE_JAN = itemQuocTeSL.VALUE_JAN * pricePump;
                     itemQuocTeDT_Pump.VALUE_FEB = itemQuocTeSL.VALUE_FEB * pricePump;
                     itemQuocTeDT_Pump.VALUE_MAR = itemQuocTeSL.VALUE_MAR * pricePump;
@@ -5069,7 +5082,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemQuocTeDT_Pump.VALUE_SUM_YEAR = itemQuocTeSL.VALUE_SUM_YEAR * pricePump;
                     itemQuocTeDT_Pump.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeSL.VALUE_SUM_YEAR_PREVENTIVE * pricePump;
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemQuocTeDT_Pump);
-
+                    #endregion
                     //Tính toán doanh thu nội địa history
                     itemNoiDiaHistoryDT.VALUE_JAN = itemNoiDiaHistorySL.VALUE_JAN * price;
                     itemNoiDiaHistoryDT.VALUE_FEB = itemNoiDiaHistorySL.VALUE_FEB * price;
@@ -5087,7 +5100,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemNoiDiaHistoryDT.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaHistorySL.VALUE_SUM_YEAR_PREVENTIVE * price;
                     UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemNoiDiaHistoryDT);
 
-                    //Tính toán doanh thu nội địa history Pump
+                    #region Tính toán doanh thu nội địa history Pump
                     itemNoiDiaHistoryDT_Pump.VALUE_JAN = itemNoiDiaHistorySL.VALUE_JAN * pricePump;
                     itemNoiDiaHistoryDT_Pump.VALUE_FEB = itemNoiDiaHistorySL.VALUE_FEB * pricePump;
                     itemNoiDiaHistoryDT_Pump.VALUE_MAR = itemNoiDiaHistorySL.VALUE_MAR * pricePump;
@@ -5120,7 +5133,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemQuocTeHistoryDT_Pump.VALUE_SUM_YEAR = itemQuocTeHistorySL.VALUE_SUM_YEAR * pricePump;
                     itemQuocTeHistoryDT_Pump.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeHistorySL.VALUE_SUM_YEAR_PREVENTIVE * pricePump;
                     UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemQuocTeHistoryDT_Pump);
-
+                    #endregion
                     //Tính toán doanh thu quốc tế history
                     itemQuocTeHistoryDT.VALUE_JAN = itemQuocTeHistorySL.VALUE_JAN * price;
                     itemQuocTeHistoryDT.VALUE_FEB = itemQuocTeHistorySL.VALUE_FEB * price;
