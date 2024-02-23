@@ -14,10 +14,13 @@
         <a href="#tab1" data-toggle="tab">Doanh thu giá dịch vụ</a>
     </li>
     <li role="presentation" style="cursor: pointer;">
-        <a  data-toggle="tab" href="#tab2">Phí ngầm</a>
+        <a data-toggle="tab" href="#tab2">Phí ngầm</a>
     </li>
     <li role="presentation" style="cursor: pointer;">
         <a data-toggle="tab" href="#tab3">Doanh thu tiền nhiên liệu</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a data-toggle="tab" href="#tab5">Thuế nhập khẩu</a>
     </li>
     <li role="presentation" style="cursor: pointer;">
         <a data-toggle="tab" href="#tab4">Tổng doanh thu</a>
@@ -188,9 +191,9 @@
                             <td class="align-right">@Model.Tab3.Sum(x => x.Value10).ToStringVN()</td>
                             <td class="align-right">@Model.Tab3.Sum(x => x.Value11).ToStringVN()</td>
                             <td class="align-right">@Model.Tab3.Sum(x => x.Value12).ToStringVN()</td>
-                        </trstyle="font-weight:>
-                        @foreach (var item in Model.Tab3.OrderBy(x => x.Order))
-                        {
+                            </trstyle="font-weight:>
+                            @foreach (var item in Model.Tab3.OrderBy(x => x.Order))
+                            {
                             <tr>
                                 <td class="align-left">@item.Name</td>
                                 <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
@@ -208,73 +211,137 @@
                                 <td class="align-right">@item.Value12.ToStringVN()</td>
                             </tr>
                         }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-    <div role="tabpanel" class="tab-pane fade" id="tab4">
-        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-            <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
-                <table class="table table-condensed table-bordered table-striped" style="text-align:center">
-                    <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-                        <tr class="header-table">
-                            <td>Hãng HK</td>
-                            <td>Cộng năm</td>
-                            <td>Tháng 1</td>
-                            <td>Tháng 2</td>
-                            <td>Tháng 3</td>
-                            <td>Tháng 4</td>
-                            <td>Tháng 5</td>
-                            <td>Tháng 6</td>
-                            <td>Tháng 7</td>
-                            <td>Tháng 8</td>
-                            <td>Tháng 9</td>
-                            <td>Tháng 10</td>
-                            <td>Tháng 11</td>
-                            <td>Tháng 12</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="font-weight: bold">
-                            <td class="align-left">TỔNG CỘNG</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.ValueSumYear).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value1).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value2).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value3).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value4).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value5).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value6).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value7).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value8).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value9).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value10).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value11).ToStringVN()</td>
-                            <td class="align-right">@Model.Tab4.Sum(x => x.Value12).ToStringVN()</td>
-                        </tr>
-                        @foreach (var item in Model.Tab4.OrderBy(x => x.Order))
-                        {
-                            <tr>
-                                <td class="align-left">@item.Name</td>
-                                <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
-                                <td class="align-right">@item.Value1.ToStringVN()</td>
-                                <td class="align-right">@item.Value2.ToStringVN()</td>
-                                <td class="align-right">@item.Value3.ToStringVN()</td>
-                                <td class="align-right">@item.Value4.ToStringVN()</td>
-                                <td class="align-right">@item.Value5.ToStringVN()</td>
-                                <td class="align-right">@item.Value6.ToStringVN()</td>
-                                <td class="align-right">@item.Value7.ToStringVN()</td>
-                                <td class="align-right">@item.Value8.ToStringVN()</td>
-                                <td class="align-right">@item.Value9.ToStringVN()</td>
-                                <td class="align-right">@item.Value10.ToStringVN()</td>
-                                <td class="align-right">@item.Value11.ToStringVN()</td>
-                                <td class="align-right">@item.Value12.ToStringVN()</td>
+
+        <div role="tabpanel" class="tab-pane fade" id="tab5">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                    <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+                            <tr class="header-table">
+                                <td>Hãng HK</td>
+                                <td>Cộng năm</td>
+                                <td>Tháng 1</td>
+                                <td>Tháng 2</td>
+                                <td>Tháng 3</td>
+                                <td>Tháng 4</td>
+                                <td>Tháng 5</td>
+                                <td>Tháng 6</td>
+                                <td>Tháng 7</td>
+                                <td>Tháng 8</td>
+                                <td>Tháng 9</td>
+                                <td>Tháng 10</td>
+                                <td>Tháng 11</td>
+                                <td>Tháng 12</td>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <tr style="font-weight: bold">
+                                <td class="align-left">TỔNG CỘNG</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.ValueSumYear).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value1).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value2).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value3).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value4).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value5).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value6).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value7).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value8).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value9).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value10).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value11).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab5.Sum(x => x.Value12).ToStringVN()</td>
+                            </tr>
+                            @foreach (var item in Model.Tab5.OrderBy(x => x.Order))
+                            {
+                                <tr>
+                                    <td class="align-left">@item.Name</td>
+                                    <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
+                                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                                    <td class="align-right">@item.Value4.ToStringVN()</td>
+                                    <td class="align-right">@item.Value5.ToStringVN()</td>
+                                    <td class="align-right">@item.Value6.ToStringVN()</td>
+                                    <td class="align-right">@item.Value7.ToStringVN()</td>
+                                    <td class="align-right">@item.Value8.ToStringVN()</td>
+                                    <td class="align-right">@item.Value9.ToStringVN()</td>
+                                    <td class="align-right">@item.Value10.ToStringVN()</td>
+                                    <td class="align-right">@item.Value11.ToStringVN()</td>
+                                    <td class="align-right">@item.Value12.ToStringVN()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="tab4">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
+                    <table class="table table-condensed table-bordered table-striped" style="text-align:center">
+                        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+                            <tr class="header-table">
+                                <td>Hãng HK</td>
+                                <td>Cộng năm</td>
+                                <td>Tháng 1</td>
+                                <td>Tháng 2</td>
+                                <td>Tháng 3</td>
+                                <td>Tháng 4</td>
+                                <td>Tháng 5</td>
+                                <td>Tháng 6</td>
+                                <td>Tháng 7</td>
+                                <td>Tháng 8</td>
+                                <td>Tháng 9</td>
+                                <td>Tháng 10</td>
+                                <td>Tháng 11</td>
+                                <td>Tháng 12</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="font-weight: bold">
+                                <td class="align-left">TỔNG CỘNG</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.ValueSumYear).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value1).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value2).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value3).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value4).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value5).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value6).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value7).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value8).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value9).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value10).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value11).ToStringVN()</td>
+                                <td class="align-right">@Model.Tab4.Sum(x => x.Value12).ToStringVN()</td>
+                            </tr>
+                            @foreach (var item in Model.Tab4.OrderBy(x => x.Order))
+                            {
+                                <tr>
+                                    <td class="align-left">@item.Name</td>
+                                    <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
+                                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                                    <td class="align-right">@item.Value4.ToStringVN()</td>
+                                    <td class="align-right">@item.Value5.ToStringVN()</td>
+                                    <td class="align-right">@item.Value6.ToStringVN()</td>
+                                    <td class="align-right">@item.Value7.ToStringVN()</td>
+                                    <td class="align-right">@item.Value8.ToStringVN()</td>
+                                    <td class="align-right">@item.Value9.ToStringVN()</td>
+                                    <td class="align-right">@item.Value10.ToStringVN()</td>
+                                    <td class="align-right">@item.Value11.ToStringVN()</td>
+                                    <td class="align-right">@item.Value12.ToStringVN()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 

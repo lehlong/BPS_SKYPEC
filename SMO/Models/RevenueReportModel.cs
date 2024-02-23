@@ -11,6 +11,8 @@ namespace SMO.Models
         public IList<RevenueReportModel> Tab2 { get; set; } = new List<RevenueReportModel> { };
         public IList<RevenueReportModel> Tab3 { get; set; } = new List<RevenueReportModel> { };
         public IList<RevenueReportModel> Tab4 { get; set; } = new List<RevenueReportModel> { };
+        public IList<RevenueReportModel> Tab5 { get; set; } = new List<RevenueReportModel> { };
+
     }
     public class RevenueReportModel
     {

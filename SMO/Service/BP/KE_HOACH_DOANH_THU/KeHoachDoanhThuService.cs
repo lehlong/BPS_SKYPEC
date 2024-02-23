@@ -4976,31 +4976,14 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     var itemQuocTeHistoryDT_Pump = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2004");
 
                     var currencyUSD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
-                    /*var currencyGal = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "17").VALUE;*/
 
                     decimal price = 0;
                     var unitPrice = lstUnitPrice.FirstOrDefault(x => x.SAN_BAY_CODE == itemNoiDiaSL.DoanhThuProfitCenter.SAN_BAY_CODE);
 
                     if (unitPrice != null)
                     {
-                        /*if (unitPrice.CURRENCY_ID == "USD" && unitPrice.UNIT_ID == "Gal")
-                        {
-                            price = unitPrice.SERVICE_PRICE * currencyUSD * currencyGal;
-                            pricePump = unitPrice.PUMP_FEE * currencyUSD * currencyGal;
-                        }
-                        else if (unitPrice.CURRENCY_ID == "VND" && unitPrice.UNIT_ID == "Gal")
-                        {
-                            price = unitPrice.SERVICE_PRICE * currencyGal;
-                            pricePump = unitPrice.PUMP_FEE * currencyGal;
-                        }
-                        else
-                        {
-                            price = unitPrice.SERVICE_PRICE;
-                            pricePump = unitPrice.PUMP_FEE;
-                        }*/
-
                         var groupSb = itemNoiDiaSL.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM;
-                        price = groupSb == "VN" ? unitPrice.VN : groupSb == "OV" ? unitPrice.OV : groupSb == "BL" ? unitPrice.BL : groupSb == "VJ" ? unitPrice.VJ : groupSb == "QH" ? unitPrice.QH : groupSb == "VU" ? unitPrice.VU : groupSb == "HKTN#" ? unitPrice.HKTN_OTHER : (groupSb == "HKQT" && itemNoiDiaSL.DoanhThuProfitCenter.HangHangKhong.TYPE == "ND") ? unitPrice.HKNN_ND : unitPrice.HKNN_QT;
+                        price = groupSb == "VN" ? unitPrice.VN : groupSb == "0V" ? unitPrice.OV : groupSb == "BL" ? unitPrice.BL : groupSb == "VJ" ? unitPrice.VJ : groupSb == "QH" ? unitPrice.QH : groupSb == "VU" ? unitPrice.VU : groupSb == "HKTN#" ? unitPrice.HKTN_OTHER : (groupSb == "HKQT" && itemNoiDiaSL.DoanhThuProfitCenter.HangHangKhong.TYPE == "ND") ? unitPrice.HKNN_ND : unitPrice.HKNN_QT;
                     }
                     decimal pricePump = 0;
                     var sanBayCode = itemNoiDiaDT.DoanhThuProfitCenter.SAN_BAY_CODE;
