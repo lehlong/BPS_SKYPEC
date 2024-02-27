@@ -15,8 +15,13 @@ namespace SMO.Areas.MD.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        public ActionResult Index()
+        public ActionResult Index(int? year)
         {
+            if (!year.HasValue)
+            {
+                year = DateTime.Now.Year;
+            }
+            _service.ObjDetail.TIME_YEAR = year.Value;
             return PartialView(_service);
         }
 

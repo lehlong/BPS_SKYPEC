@@ -112,5 +112,27 @@ else
         function mask(e) {
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
         }
+
+        function HandleSearch(inputElement) {
+            var value = inputElement.value;
+            var filter = value.toLowerCase();
+            var table = document.getElementById("table_month");
+            var tr = table.getElementsByTagName('tr');
+            var indexCell = 0;
+
+            for (let i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName('td')[indexCell];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    }
+                    else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+
+        }
     </script>
 }

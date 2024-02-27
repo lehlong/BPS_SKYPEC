@@ -120,6 +120,7 @@
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiVersionRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DAU_TU_TRANG_THIET_BI_DATA_BASE\DauTuTrangThietBiDataBaseHistoryRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DAU_TU_TRANG_THIET_BI_DATA_BASE\DauTuTrangThietBiDataBaseRepo.cs" />
+    <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DauTuXayDungCommentRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DauTuXayDungDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DauTuXayDungDataRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DauTuXayDungHistoryRepo.cs" />
@@ -391,6 +392,7 @@
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiVersionRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\IDauTuXayDungDataBaseHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\IDauTuXayDungDataBaseRepo.cs" />
+    <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungCommentRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungDataHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungDataRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungHistoryRepo.cs" />
@@ -651,6 +653,7 @@
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_VERSION_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\T_BP_DAU_TU_XAY_DUNG_DATA_BASE_HISTORY_Mapping.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\T_BP_DAU_TU_XAY_DUNG_DATA_BASE_Mapping.cs" />
+    <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_COMMENT_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_DATA_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_DATA_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_HISTORY_Map.cs" />

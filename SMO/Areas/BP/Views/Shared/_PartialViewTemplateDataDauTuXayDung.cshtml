@@ -10,12 +10,15 @@
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
 
     var lstSanBay = SelectListUtilities.GetListSanBay();
-   
 }
 
 <style>
     .header-year {
         background-color: #FFFFFF !important;
+    }
+
+    .icon-function {
+        cursor: pointer;
     }
 
     td {
@@ -56,6 +59,7 @@ else
             <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
                 <tbody>
                     <tr class="sticky-row strong" data-xls-row="header" style="text-align: center;">
+                        <td class="sticky-cell pre-whitespace" style="z-index:11" rowspan="2">COMMENT</td>
                         <td class="sticky-cell pre-whitespace" style="z-index:11" rowspan="2">MÃ DỰ ÁN</td>
                         <td class="sticky-cell pre-whitespace" style="z-index:11" rowspan="2">TÊN DỰ ÁN</td>
                         <td class="pre-whitespace" colspan="3">THÔNG TIN VỀ DANH MỤC ĐẦU TƯ</td>
@@ -65,18 +69,29 @@ else
                     </tr>
                     <tr class="sticky-row strong" data-xls-row="header">
                         <td class="pre-whitespace">TỔNG MỨC ĐẦU TƯ</td>
-                        <td class="pre-whitespace">NGUỒN VCSH</td>
+                        <td class="pre-whitespace">NGUỒN VỐN</td>
                         <td class="pre-whitespace">TIẾN ĐỘ THỰC HIỆN</td>
                         <td class="pre-whitespace">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
                         <td class="pre-whitespace">KH NĂM</td>
                         <td class="pre-whitespace">TIẾN ĐỘ TRIỂN KHAI TH NĂM KH</td>
                         <td class="pre-whitespace">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
-                        <td class="pre-whitespace">QKH NĂM</td>
+                        <td class="pre-whitespace">KH NĂM</td>
                     </tr>
                     @foreach (var detail in Model.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
                     {
                         var item = Model.Where(x => x.CENTER_CODE == detail).ToList();
                         <tr>
+                            @{ 
+                                var code = item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE;
+                            }
+                            @if (!string.IsNullOrEmpty(code))
+                                {
+                                    <td style="text-align:center;"><i class="material-icons icon-function" onclick="getCommentElement('@code')">comment</i></td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
                             <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE)</td>
                             <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.NAME)</td>
                             <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4001").Sum(x => x.Values[0]).ToStringVN())</td>
@@ -99,6 +114,45 @@ else
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
         function mask(e) {
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+
+        function getCommentElement(elementCode) {
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/DauTuXayDung/GetCommentElement',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    elementCode: elementCode,
+                },
+            };
+            Forms.LoadAjaxModal(ajaxParams);
+        }
+
+        function HandleSearch(inputElement) {
+            var value = inputElement.value;
+            var filter = value.toLowerCase();
+            var table = document.getElementById("table_month");
+            var tr = table.getElementsByTagName('tr');
+            var indexCell = 1;
+
+            for (let i = 2; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName('td')[indexCell];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    }
+                    else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+
         }
     </script>
 }

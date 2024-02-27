@@ -158,6 +158,7 @@
     <Compile Include="Entities\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\T_BP_DAU_TU_XAY_DUNG_DATA_BASE.cs" />
     <Compile Include="Entities\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\T_BP_DAU_TU_XAY_DUNG_DATA_BASE_HISTORY.cs" />
     <Compile Include="Entities\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG.cs" />
+    <Compile Include="Entities\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_COMMENT.cs" />
     <Compile Include="Entities\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_DATA.cs" />
     <Compile Include="Entities\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_DATA_HISTORY.cs" />
     <Compile Include="Entities\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_HISTORY.cs" />

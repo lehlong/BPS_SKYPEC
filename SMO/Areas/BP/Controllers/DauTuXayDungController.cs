@@ -139,5 +139,39 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult GetCommentElement(string templateCode, int version, int year, string elementCode)
+        {
+            var data = _service.GetCommentElement(templateCode, version, year, elementCode);
+            ViewBag.TemplateCode = templateCode;
+            ViewBag.Version = version;
+            ViewBag.Year = year;
+            ViewBag.ElementCode = elementCode;
+            return PartialView(data);
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.InsertComment(templateCode, version, year, type, sanBay, costCenter, elementCode, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
     }
 }

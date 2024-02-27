@@ -6,12 +6,14 @@ using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
 using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
 using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG.DAU_TU_XAY_DUNG_DATA_BASE;
+using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
 using SMO.Helper;
 using SMO.Models;
 using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG.DAU_TU_XAY_DUNG_DATA_BASE;
+using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Class;
 using SMO.Service.Common;
@@ -3956,7 +3958,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
             var NUM_CELL_MONTH = metaDataMonth.MetaTBody[0].Count;
 
-            InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Tấn", exchangeRate);
+            InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Triệu đồng", exchangeRate);
             ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTableByYear(ref workbook,
                 ref sheetMonth,
@@ -3976,7 +3978,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             var template = GetTemplate(templateId);
             var templateName = template != null ? $"Mẫu khai báo: {template.CODE} - {template.NAME}" : "Tổng hợp dữ liệu";
 
-            ExcelHelperBP.InitHeaderFile(ref sheet, year, centerName, version, NUM_CELL, templateName, "Tấn", name, exchangeRate);
+            ExcelHelperBP.InitHeaderFile(ref sheet, year, centerName, version, NUM_CELL, templateName, "Triệu đồng", name, exchangeRate);
         }
 
         #endregion
@@ -4040,10 +4042,46 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             
         }
 
-        /*public IList<T_BP_DAU_TU_XAY_DUNG_DATA> GetLstChildData()
+        public IList<T_BP_DAU_TU_XAY_DUNG_COMMENT> GetCommentElement(string templateCode, int version, int year, string elementCode)
         {
-            var lstTemplateChild = UnitOfWork.Repository<DauTuXayDungSumUpDetailRepo>().Queryable().Where(x=>x.)
-        }*/
+            try
+            {
+                return UnitOfWork.Repository<DauTuXayDungCommentRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_DAU_TU_XAY_DUNG_COMMENT>();
+            }
+        }
+
+        public void InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<DauTuXayDungCommentRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_COMMENT
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    COMMENT = value,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
 
     }
 }

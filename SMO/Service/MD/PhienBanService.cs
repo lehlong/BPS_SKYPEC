@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using static iTextSharp.text.pdf.AcroFields;
 
 namespace SMO.Service.MD
@@ -509,6 +510,590 @@ namespace SMO.Service.MD
             }
         }
 
+        private readonly object lockObject = new object();
+
+        public async Task<IList<SupplyReportModel>> GetDataTraNapCungUng(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            try
+            {
+                var data = new List<SupplyReportModel>();
+                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).ToList();
+                var sanBayGroup = UnitOfWork.Repository<NhomSanBayRepo>().GetAll().ToList();
+                var sanBayFHS = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.NHOM_SAN_BAY_CODE == "NI-N").ToList();
+                lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
+
+                var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                if (dataHeaderDoanhThu.Count() == 0)
+                {
+                    return new List<SupplyReportModel>();
+                }
+
+                var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var dataDetails = dataInHeader.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020").ToList();
+
+                int countGroup = sanBayGroup.Count();
+                int countFHS = sanBayFHS.Count();
+                int order = 0;
+                
+                #region Tab1
+
+                var valueSum = new SupplyReportModel
+                {
+                    Name = "DOANH THU JET HK",
+                    IsBold = true,
+                    Order = -1,
+                    Level = 0
+                };
+                foreach (var hhk in lstHangHangKhong)
+                {
+                    //Hãng hàng không
+                    var valueHhk = new SupplyReportModel
+                    {
+                        Name = hhk.GROUP_ITEM,
+                        IsBold = true,
+                        Order = order,
+                        Level = 0
+                    };
+                    //Nội địa
+                    var valueND = new SupplyReportModel
+                    {
+                        Name = "Nội địa",
+                        IsBold = true,
+                        Order = order + 1,
+                        Level = 1
+                    };
+
+                    var valueNDXe = new SupplyReportModel
+                    {
+                        Name = "Qua xe",
+                        IsBold = true,
+                        Order = order + 2,
+                        Level = 2
+                    };
+
+                    var valueNDFhs = new SupplyReportModel
+                    {
+                        Name = "Qua FHS",
+                        IsBold = true,
+                        Order = order + 3 + countGroup,
+                        Level = 2
+                    };
+                    // Quốc tế
+                    var valueQT = new SupplyReportModel
+                    {
+                        Name = "Quốc tế",
+                        IsBold = true,
+                        Order = order + 4 + countGroup + countFHS,
+                        Level = 1
+                    };
+
+                    var valueQTXe = new SupplyReportModel
+                    {
+                        Name = "Qua xe",
+                        IsBold = true,
+                        Order = order + 5 + countGroup + countFHS,
+                        Level = 2
+                    };
+
+                    var valueQTFhs = new SupplyReportModel
+                    {
+                        Name = "Qua FHS",
+                        IsBold = true,
+                        Order = order + 6 + countGroup + countFHS + countGroup,
+                        Level = 2
+                    };
+
+                    // ND Qua xe
+                    Task task1 = Task.Run(() =>
+                    {
+                        lock (lockObject)
+                        {
+                            //Lấy giá
+                            var tnkCode = "TNK" + "-" + hhk.GROUP_ITEM;
+                            // Giá thuế nhập khẩu
+                            var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == tnkCode).VALUE;
+                            // Giá mops
+                            var priceMops = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "18").VALUE;
+                            for (var i = 0; i < sanBayGroup.Count(); i++)
+                            {
+                                var sanBayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().FirstOrDefault(x => x.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE).CODE;
+                                // Giá dịch vụ
+                                decimal priceD = 0;
+                                var unitPrice = UnitOfWork.Repository<UnitPricePlanRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sanBayCode);
+
+                                if (unitPrice != null)
+                                {
+                                    var groupSb = hhk.GROUP_ITEM;
+                                    // giá tiền nhiên liệu
+                                    priceD = groupSb == "VN" ? unitPrice.VN : groupSb == "0V" ? unitPrice.OV : groupSb == "BL" ? unitPrice.BL : groupSb == "VJ" ? unitPrice.VJ : groupSb == "QH" ? unitPrice.QH : groupSb == "VU" ? unitPrice.VU : groupSb == "HKTN#" ? unitPrice.HKTN_OTHER : (groupSb == "HKQT" && hhk.TYPE == "ND") ? unitPrice.HKNN_ND : unitPrice.HKNN_QT;
+                                }
+                                //Sản lượng
+                                var valueSL = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                // Đơn giá
+                                var priceDG = priceMops + priceTNK + priceD;
+                                var item = new SupplyReportModel
+                                {
+                                    Name = sanBayGroup[i].TEXT,
+                                    ValueSL = valueSL,
+                                    ValueDG = priceDG,
+                                    ValueMOPS = priceMops,
+                                    ValueTNK = priceTNK,
+                                    ValueD = priceD,
+                                    ValueDT = valueSL * priceDG,
+                                    ValueDTMOPS = valueSL * priceMops,
+                                    ValueDTTNK = valueSL * priceTNK,
+                                    ValueDTD = valueSL * priceD,
+                                    Order = order + 3 + i,
+                                    Level = 3
+                                };
+                                data.Add(item);
+                                // Giá trị qua xe
+                                valueNDXe.ValueSL = valueNDXe.ValueSL + item.ValueSL;
+                                valueNDXe.ValueDT = valueNDXe.ValueDT + item.ValueDT;
+                                valueNDXe.ValueDTMOPS = valueNDXe.ValueDTMOPS + item.ValueDTMOPS;
+                                valueNDXe.ValueDTTNK = valueNDXe.ValueDTTNK + item.ValueDTTNK;
+                                valueNDXe.ValueDTD = valueNDXe.ValueDTD + item.ValueDTD;
+                            }
+
+                            data.Add(valueNDXe);
+                        }
+                    });
+                    //ND Qua FHS
+                    Task task2 = Task.Run(() =>
+                    {
+                        lock (lockObject)
+                        {
+                            //Lấy giá
+                            var tnkCode = "TNK" + "-" + hhk.GROUP_ITEM;
+                            // Giá thuế nhập khẩu
+                            var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == tnkCode).VALUE;
+                            // Giá mops
+                            var priceMops = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "18").VALUE;
+                            for (var i = 0; i < sanBayFHS.Count(); i++)
+                            {
+                                var sanBayCode = sanBayFHS[i].CODE;
+                                var currencyUSD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
+                                // Giá dịch vụ
+                                decimal priceD = 0;
+                                var unitPrice = UnitOfWork.Repository<UnitPricePlanRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sanBayCode);
+
+                                if (unitPrice != null)
+                                {
+                                    var groupSb = hhk.GROUP_ITEM;
+                                    // giá tiền nhiên liệu
+                                    priceD = groupSb == "VN" ? unitPrice.VN : groupSb == "0V" ? unitPrice.OV : groupSb == "BL" ? unitPrice.BL : groupSb == "VJ" ? unitPrice.VJ : groupSb == "QH" ? unitPrice.QH : groupSb == "VU" ? unitPrice.VU : groupSb == "HKTN#" ? unitPrice.HKTN_OTHER : (groupSb == "HKQT" && hhk.TYPE == "ND") ? unitPrice.HKNN_ND : unitPrice.HKNN_QT;
+                                }
+                                //Giá phí ngầm
+                                decimal priceFhs = 0;
+                                sanBayCode = sanBayCode == "NAF" ? "NBA" : sanBayCode == "TAP" ? "TNS" : sanBayCode;
+
+                                var hangHangKhongCode = hhk.GROUP_ITEM;
+                                var shareDataCode = "FHS" + "-" + sanBayCode + "-" + hangHangKhongCode;
+
+                                var phiNgam = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == shareDataCode);
+                                if (phiNgam != null)
+                                {
+                                    priceFhs = phiNgam.VALUE * currencyUSD;
+                                }
+                                // Đơn giá
+                                var priceDG = priceMops + priceTNK + priceD + priceFhs;
+                                var item = new SupplyReportModel
+                                {
+                                    Name = sanBayCode,
+                                    ValueDG = priceDG,
+                                    ValueMOPS = priceMops,
+                                    ValueTNK = priceTNK,
+                                    ValueD = priceD,
+                                    ValueFH = priceFhs,
+                                    Order = order + 4 + countGroup + i,
+                                    Level = 3
+                                };
+                                data.Add(item);
+                            }
+                            data.Add(valueNDFhs);
+                        }
+                    });
+                    //QT Qua xe
+                    Task task3 = Task.Run(() =>
+                    {
+                        lock (lockObject)
+                        {
+                            //Lấy giá
+                            // Giá mops
+                            var priceMops = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "18").VALUE;
+                            for (var i = 0; i < sanBayGroup.Count(); i++)
+                            {
+                                var sanBayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().FirstOrDefault(x => x.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE).CODE;
+                                // Giá dịch vụ
+                                decimal priceD = 0;
+                                var unitPrice = UnitOfWork.Repository<UnitPricePlanRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sanBayCode);
+
+                                if (unitPrice != null)
+                                {
+                                    var groupSb = hhk.GROUP_ITEM;
+                                    // giá tiền nhiên liệu
+                                    priceD = groupSb == "VN" ? unitPrice.VN : groupSb == "0V" ? unitPrice.OV : groupSb == "BL" ? unitPrice.BL : groupSb == "VJ" ? unitPrice.VJ : groupSb == "QH" ? unitPrice.QH : groupSb == "VU" ? unitPrice.VU : groupSb == "HKTN#" ? unitPrice.HKTN_OTHER : (groupSb == "HKQT" && hhk.TYPE == "ND") ? unitPrice.HKNN_ND : unitPrice.HKNN_QT;
+                                }
+                                //Sản lượng
+                                var valueSL = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                // Đơn giá
+                                var priceDG = priceMops + priceD;
+                                var item = new SupplyReportModel
+                                {
+                                    Name = sanBayGroup[i].TEXT,
+                                    ValueSL = valueSL,
+                                    ValueDG = priceDG,
+                                    ValueMOPS = priceMops,
+                                    ValueD = priceD,
+                                    ValueDT = valueSL * priceDG,
+                                    ValueDTMOPS = valueSL * priceMops,
+                                    ValueDTD = valueSL * priceD,
+                                    Order = order + 6 + countGroup + countFHS + i,
+                                    Level = 3
+                                };
+                                data.Add(item);
+                                // Giá trị qua xe
+                                valueQTXe.ValueSL = valueQTXe.ValueSL + item.ValueSL;
+                                valueQTXe.ValueDT = valueQTXe.ValueDT + item.ValueDT;
+                                valueQTXe.ValueDTMOPS = valueQTXe.ValueDTMOPS + item.ValueDTMOPS;
+                                valueQTXe.ValueDTTNK = valueQTXe.ValueDTTNK + item.ValueDTTNK;
+                                valueQTXe.ValueDTD = valueQTXe.ValueDTD + item.ValueDTD;
+                            }
+                            data.Add(valueQTXe);
+                        }
+                    });
+                    // QT Qua FHS
+                    Task task4 = Task.Run(() =>
+                    {
+                        lock (lockObject)
+                        {
+                            //Lấy giá
+                           
+                            // Giá mops
+                            var priceMops = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "18").VALUE;
+                            for (var i = 0; i < sanBayFHS.Count(); i++)
+                            {
+                                var sanBayCode = sanBayFHS[i].CODE;
+                                var currencyUSD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
+                                // Giá dịch vụ
+                                decimal priceD = 0;
+                                var unitPrice = UnitOfWork.Repository<UnitPricePlanRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sanBayCode);
+
+                                if (unitPrice != null)
+                                {
+                                    var groupSb = hhk.GROUP_ITEM;
+                                    // giá tiền nhiên liệu
+                                    priceD = groupSb == "VN" ? unitPrice.VN : groupSb == "0V" ? unitPrice.OV : groupSb == "BL" ? unitPrice.BL : groupSb == "VJ" ? unitPrice.VJ : groupSb == "QH" ? unitPrice.QH : groupSb == "VU" ? unitPrice.VU : groupSb == "HKTN#" ? unitPrice.HKTN_OTHER : (groupSb == "HKQT" && hhk.TYPE == "ND") ? unitPrice.HKNN_ND : unitPrice.HKNN_QT;
+                                }
+                                var valueSL = dataDetails.Where(x=> x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == sanBayFHS[i].CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                //Giá phí ngầm
+                                decimal priceFhs = 0;
+                                sanBayCode = sanBayCode == "NAF" ? "NBA" : sanBayCode == "TAP" ? "TNS" : sanBayCode;
+
+                                var hangHangKhongCode = hhk.GROUP_ITEM;
+                                var shareDataCode = "FHS" + "-" + sanBayCode + "-" + hangHangKhongCode;
+
+                                var phiNgam = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == shareDataCode);
+                                if (phiNgam != null)
+                                {
+                                    priceFhs = phiNgam.VALUE * currencyUSD;
+                                }
+                                // Đơn giá
+                                var priceDG = priceMops + priceD + priceFhs;
+                                var item = new SupplyReportModel
+                                {
+                                    Name = sanBayCode,
+                                    ValueSL = valueSL,
+                                    ValueDG = priceDG,
+                                    ValueMOPS = priceMops,
+                                    ValueD = priceD,
+                                    ValueFH = priceFhs,
+                                    ValueDT = valueSL * priceDG,
+                                    ValueDTMOPS = valueSL * priceMops,
+                                    ValueDTD = valueSL * priceD,
+                                    ValueDTFH = valueSL * priceFhs,
+                                    Order = order + 7 + countGroup + countFHS + countGroup + i,
+                                    Level = 3
+                                };
+                                data.Add(item);
+                                // gía trị phí ngầm
+                                valueQTFhs.ValueSL = valueQTFhs.ValueSL + item.ValueSL;
+                                valueQTFhs.ValueDT = valueQTFhs.ValueDT + item.ValueDT;
+                                valueQTFhs.ValueDTMOPS = valueQTFhs.ValueDTMOPS + item.ValueDTMOPS;
+                                valueQTFhs.ValueDTD = valueQTFhs.ValueDTD + item.ValueDTD;
+                                valueQTFhs.ValueDTFH = valueQTFhs.ValueDTFH + item.ValueDTFH;
+                            }
+                            data.Add(valueQTFhs);
+                        }
+                    });
+
+                    await Task.WhenAll(task1, task2, task3, task4);
+
+                    // tổng nội địa
+                    valueND.ValueSL = valueNDXe.ValueSL + valueNDFhs.ValueSL;
+                    valueND.ValueDT = valueNDXe.ValueDT + valueNDFhs.ValueDT;
+                    valueND.ValueDTMOPS = valueNDXe.ValueDTMOPS + valueNDFhs.ValueDTMOPS;
+                    valueND.ValueDTTNK = valueNDXe.ValueDTTNK + valueNDFhs.ValueDTTNK;
+                    valueND.ValueDTD = valueNDXe.ValueDTD + valueNDFhs.ValueDTD;
+                    data.Add(valueND);
+                    // tổng quốc tế
+                    valueQT.ValueSL = valueQTXe.ValueSL + valueQTFhs.ValueSL;
+                    valueQT.ValueDT = valueQTXe.ValueDT + valueQTFhs.ValueDT;
+                    valueQT.ValueDTMOPS = valueQTXe.ValueDTMOPS + valueQTFhs.ValueDTMOPS;
+                    valueQT.ValueDTD = valueQTXe.ValueDTD + valueQTFhs.ValueDTD;
+                    valueQT.ValueDTFH = valueQTXe.ValueDTFH + valueQTFhs.ValueDTFH;
+                    data.Add(valueQT);
+                    // tổng hhk
+                    valueHhk.ValueSL = valueND.ValueSL + valueQT.ValueSL;
+                    valueHhk.ValueDT = valueND.ValueDT + valueQT.ValueDT;
+                    valueHhk.ValueDTMOPS = valueND.ValueDTMOPS + valueQT.ValueDTMOPS;
+                    valueHhk.ValueDTTNK = valueND.ValueDTTNK + valueQT.ValueDTTNK;
+                    valueHhk.ValueDTD = valueND.ValueDTD + valueQT.ValueDTD;
+                    valueHhk.ValueDTFH = valueND.ValueDTFH + valueQT.ValueDTFH;
+                    data.Add(valueHhk);
+
+                    /* //Nội địa
+                     data.Tab1.Add(new RevenueReportModel
+                     {
+                         Name = "Nội địa",
+                         Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JAN) ?? 0,
+                         Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_FEB) ?? 0,
+                         Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAR) ?? 0,
+                         Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_APR) ?? 0,
+                         Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAY) ?? 0,
+                         Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUN) ?? 0,
+                         Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUL) ?? 0,
+                         Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_AUG) ?? 0,
+                         Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
+                         Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
+                         Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                         IsBold = true,
+                         Order = order + 1,
+                         Level = 1
+                     });
+                     //Nội địa qua xe
+                     data.Tab1.Add(new RevenueReportModel
+                     {
+                         Name = "Qua xe",
+                         Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JAN) ?? 0,
+                         Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_FEB) ?? 0,
+                         Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAR) ?? 0,
+                         Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_APR) ?? 0,
+                         Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAY) ?? 0,
+                         Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUN) ?? 0,
+                         Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUL) ?? 0,
+                         Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_AUG) ?? 0,
+                         Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
+                         Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
+                         Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                         IsBold = true,
+                         Order = order + 2,
+                         Level = 2
+                     });
+                     //Nhóm xe
+                     for (var i = 0; i < sanBayGroup.Count(); i++)
+                     {
+                         data.Tab1.Add(new RevenueReportModel
+                         {
+                             Name = sanBayGroup[i].TEXT,
+                             Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JAN) ?? 0,
+                             Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_FEB) ?? 0,
+                             Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAR) ?? 0,
+                             Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_APR) ?? 0,
+                             Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAY) ?? 0,
+                             Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUN) ?? 0,
+                             Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUL) ?? 0,
+                             Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_AUG) ?? 0,
+                             Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                             Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
+                             Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
+                             Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                             ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                             Order = order + 3 + i,
+                             Level = 3
+                         });
+                     }
+                     //Nội địa qua FHS
+                     data.Tab1.Add(new RevenueReportModel
+                     {
+                         Name = "Qua FHS",
+                         Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JAN) ?? 0,
+                         Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_FEB) ?? 0,
+                         Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAR) ?? 0,
+                         Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_APR) ?? 0,
+                         Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAY) ?? 0,
+                         Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUN) ?? 0,
+                         Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUL) ?? 0,
+                         Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_AUG) ?? 0,
+                         Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
+                         Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
+                         Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                         IsBold = true,
+                         Order = order + 3 + countGroup,
+                         Level = 2
+                     });
+                     //Nhóm sân bay
+                     for (var i = 0; i < sanBayFHS.Count(); i++)
+                     {
+                         data.Tab1.Add(new RevenueReportModel
+                         {
+                             Name = sanBayFHS[i].CODE,
+                             Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JAN) ?? 0,
+                             Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_FEB) ?? 0,
+                             Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAR) ?? 0,
+                             Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_APR) ?? 0,
+                             Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAY) ?? 0,
+                             Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUN) ?? 0,
+                             Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUL) ?? 0,
+                             Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_AUG) ?? 0,
+                             Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                             Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
+                             Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
+                             Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                             ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                             Order = order + 4 + countGroup + i,
+                             Level = 3
+                         });
+                     }
+
+                     //Quốc tế
+                     data.Tab1.Add(new RevenueReportModel
+                     {
+                         Name = "Quốc tế",
+                         Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JAN) ?? 0,
+                         Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_FEB) ?? 0,
+                         Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_MAR) ?? 0,
+                         Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_APR) ?? 0,
+                         Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_MAY) ?? 0,
+                         Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JUN) ?? 0,
+                         Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JUL) ?? 0,
+                         Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_AUG) ?? 0,
+                         Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SEP) ?? 0,
+                         Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_OCT) ?? 0,
+                         Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_NOV) ?? 0,
+                         Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SEP) ?? 0,
+                         ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                         IsBold = true,
+                         Order = order + 4 + countGroup + countFHS,
+                         Level = 1
+                     });
+                     // Quốc tế qua xe
+                     data.Tab1.Add(new RevenueReportModel
+                     {
+                         Name = "Qua xe",
+                         Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JAN) ?? 0,
+                         Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_FEB) ?? 0,
+                         Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAR) ?? 0,
+                         Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_APR) ?? 0,
+                         Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAY) ?? 0,
+                         Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUN) ?? 0,
+                         Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUL) ?? 0,
+                         Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_AUG) ?? 0,
+                         Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
+                         Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
+                         Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                         IsBold = true,
+                         Order = order + 5 + countGroup + countFHS,
+                         Level = 2
+                     });
+                     //Nhóm xe
+                     for (var i = 0; i < sanBayGroup.Count(); i++)
+                     {
+                         data.Tab1.Add(new RevenueReportModel
+                         {
+                             Name = sanBayGroup[i].TEXT,
+                             Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JAN) ?? 0,
+                             Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_FEB) ?? 0,
+                             Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_MAR) ?? 0,
+                             Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_APR) ?? 0,
+                             Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_MAY) ?? 0,
+                             Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JUN) ?? 0,
+                             Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JUL) ?? 0,
+                             Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_AUG) ?? 0,
+                             Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SEP) ?? 0,
+                             Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_OCT) ?? 0,
+                             Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_NOV) ?? 0,
+                             Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SEP) ?? 0,
+                             ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                             Order = order + 6 + countGroup + countFHS + i,
+                             Level = 3
+                         });
+                     }
+                     // Quốc tế qua FHS
+                     data.Tab1.Add(new RevenueReportModel
+                     {
+                         Name = "Qua FHS",
+                         Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JAN) ?? 0,
+                         Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_FEB) ?? 0,
+                         Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAR) ?? 0,
+                         Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_APR) ?? 0,
+                         Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_MAY) ?? 0,
+                         Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUN) ?? 0,
+                         Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JUL) ?? 0,
+                         Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_AUG) ?? 0,
+                         Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
+                         Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
+                         Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                         ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                         IsBold = true,
+                         Order = order + 6 + countGroup + countFHS + countGroup,
+                         Level = 2
+                     });
+                     // Nhóm sân bay
+                     for (var i = 0; i < sanBayFHS.Count(); i++)
+                     {
+                         data.Tab1.Add(new RevenueReportModel
+                         {
+                             Name = sanBayFHS[i].CODE,
+                             Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JAN) ?? 0,
+                             Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_FEB) ?? 0,
+                             Value3 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_MAR) ?? 0,
+                             Value4 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_APR) ?? 0,
+                             Value5 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_MAY) ?? 0,
+                             Value6 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JUN) ?? 0,
+                             Value7 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_JUL) ?? 0,
+                             Value8 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_AUG) ?? 0,
+                             Value9 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SEP) ?? 0,
+                             Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_OCT) ?? 0,
+                             Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_NOV) ?? 0,
+                             Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SEP) ?? 0,
+                             ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.CODE == sanBayFHS[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                             Order = order + 7 + countGroup + countFHS + countGroup + i,
+                             Level = 3
+                         });
+                     }*/
+                    order += 7 + countGroup * 2 + countFHS * 2;
+                    valueSum.ValueSL = valueSum.ValueSL + valueHhk.ValueSL;
+                    valueSum.ValueDT = valueSum.ValueDT + valueHhk.ValueDT;
+                    valueSum.ValueDTMOPS = valueSum.ValueDTMOPS + valueHhk.ValueDTMOPS;
+                    valueSum.ValueDTTNK = valueSum.ValueDTTNK + valueHhk.ValueDTTNK;
+                    valueSum.ValueDTD = valueSum.ValueDTD + valueHhk.ValueDTD;
+                    valueSum.ValueDTFH = valueSum.ValueDTFH + valueHhk.ValueDTFH;
+
+                }
+                data.Add(valueSum);
+                #endregion
+                return data;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+                return new List<SupplyReportModel>();
+            }
+        }
+
         public SynthesizeThePlanReportModel GetDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
         {
             try
@@ -614,6 +1199,8 @@ namespace SMO.Service.MD
                 var dataDetailsTab1 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002").ToList();
                 var dataDetailsTab2 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2003" || x.KHOAN_MUC_DOANH_THU_CODE == "2004").ToList();
                 var dataDetailsTab3 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "10010" || x.KHOAN_MUC_DOANH_THU_CODE == "10020").ToList();
+                var dataDetailsTab5 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "10010").ToList();
+
 
                 var shareData = UnitOfWork.Repository<SharedDataRepo>().Queryable().First(x => x.CODE == "18").VALUE;
                
@@ -680,46 +1267,48 @@ namespace SMO.Service.MD
                     };
                     data.Tab3.Add(tab3);
 
-                    data.Tab4.Add(new RevenueReportModel
-                    {
-                        Name = hhk.GROUP_ITEM,
-                        Value1 = tab1.Value1 + tab2.Value1 + tab3.Value1,
-                        Value2 = tab1.Value2 + tab2.Value2 + tab3.Value2,
-                        Value3 = tab1.Value3 + tab2.Value3 + tab3.Value3,
-                        Value4 = tab1.Value4 + tab2.Value4 + tab3.Value4,
-                        Value5 = tab1.Value5 + tab2.Value5 + tab3.Value5,
-                        Value6 = tab1.Value6 + tab2.Value6 + tab3.Value6,
-                        Value7 = tab1.Value7 + tab2.Value7 + tab3.Value7,
-                        Value8 = tab1.Value8 + tab2.Value8 + tab3.Value8,
-                        Value9 = tab1.Value9 + tab2.Value9 + tab3.Value9,
-                        Value10 = tab1.Value10 + tab2.Value10 + tab3.Value10,
-                        Value11 = tab1.Value11 + tab2.Value11 + tab3.Value11,
-                        Value12 = tab1.Value12 + tab2.Value12 + tab3.Value12,
-                        ValueSumYear = tab1.ValueSumYear + tab2.ValueSumYear + tab3.ValueSumYear,
-                        Order = order,
-                    });
                     //tab5
                     var shareDataCode = "TNK" + "-" + hhk.GROUP_ITEM;
                     var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().First(x => x.CODE == shareDataCode).VALUE;
                     var tab5 = new RevenueReportModel
                     {
                         Name = hhk.GROUP_ITEM,
-                        Value1 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JAN) * priceTNK?? 0,
-                        Value2 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_FEB) * priceTNK?? 0,
-                        Value3 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAR) * priceTNK?? 0,
-                        Value4 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_APR) * priceTNK?? 0,
-                        Value5 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAY) * priceTNK?? 0,
-                        Value6 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUN) * priceTNK?? 0,
-                        Value7 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUL) * priceTNK?? 0,
-                        Value8 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_AUG) * priceTNK?? 0,
-                        Value9 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * priceTNK ?? 0,
-                        Value10 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_OCT) * priceTNK?? 0,
-                        Value11 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_NOV) * priceTNK?? 0,
-                        Value12 = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * priceTNK ?? 0,
-                        ValueSumYear = dataDetailsTab3.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SUM_YEAR) * priceTNK ?? 0,
+                        Value1 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JAN) * priceTNK ?? 0,
+                        Value2 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_FEB) * priceTNK ?? 0,
+                        Value3 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAR) * priceTNK ?? 0,
+                        Value4 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_APR) * priceTNK ?? 0,
+                        Value5 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAY) * priceTNK ?? 0,
+                        Value6 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUN) * priceTNK ?? 0,
+                        Value7 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUL) * priceTNK ?? 0,
+                        Value8 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_AUG) * priceTNK ?? 0,
+                        Value9 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * priceTNK ?? 0,
+                        Value10 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_OCT) * priceTNK ?? 0,
+                        Value11 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_NOV) * priceTNK ?? 0,
+                        Value12 = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * priceTNK ?? 0,
+                        ValueSumYear = dataDetailsTab5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SUM_YEAR) * priceTNK ?? 0,
                         Order = order,
                     };
                     data.Tab5.Add(tab5);
+
+                    data.Tab4.Add(new RevenueReportModel
+                    {
+                        Name = hhk.GROUP_ITEM,
+                        Value1 = tab1.Value1 + tab2.Value1 + tab3.Value1 + tab5.Value1,
+                        Value2 = tab1.Value2 + tab2.Value2 + tab3.Value2 + tab5.Value2,
+                        Value3 = tab1.Value3 + tab2.Value3 + tab3.Value3 + tab5.Value3,
+                        Value4 = tab1.Value4 + tab2.Value4 + tab3.Value4 + tab5.Value4,
+                        Value5 = tab1.Value5 + tab2.Value5 + tab3.Value5 + tab5.Value5,
+                        Value6 = tab1.Value6 + tab2.Value6 + tab3.Value6 + tab5.Value6,
+                        Value7 = tab1.Value7 + tab2.Value7 + tab3.Value7 + tab5.Value7,
+                        Value8 = tab1.Value8 + tab2.Value8 + tab3.Value8 + tab5.Value8,
+                        Value9 = tab1.Value9 + tab2.Value9 + tab3.Value9 + tab5.Value9,
+                        Value10 = tab1.Value10 + tab2.Value10 + tab3.Value10 + tab5.Value10,
+                        Value11 = tab1.Value11 + tab2.Value11 + tab3.Value11 + tab5.Value11,
+                        Value12 = tab1.Value12 + tab2.Value12 + tab3.Value12 + tab5.Value12,
+                        ValueSumYear = tab1.ValueSumYear + tab2.ValueSumYear + tab3.ValueSumYear + tab5.ValueSumYear,
+                        Order = order,
+                    });
+                    
 
                     order++;
                 }

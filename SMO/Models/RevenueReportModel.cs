@@ -5,6 +5,27 @@ using System.Web;
 
 namespace SMO.Models
 {
+    public class SupplyReportModel
+    {
+        public string Name { get; set; }
+        public decimal ValueDG { get; set; }
+        public decimal ValueMOPS { get; set; }
+        public decimal ValueTNK { get; set; }
+        public decimal ValueD { get; set; }
+        public decimal ValueFH { get; set; }
+
+        public decimal ValueThue { get; set; }
+        public decimal ValueDT { get; set; }
+
+        public decimal ValueDTMOPS { get; set; }
+        public decimal ValueDTTNK { get; set; }
+        public decimal ValueDTD { get; set; }
+        public decimal ValueDTFH { get; set; }
+        public decimal ValueSL { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+    }
     public class RevenueByFeeReportModel
     {
         public IList<RevenueReportModel> Tab1 { get; set; } = new List<RevenueReportModel> { };

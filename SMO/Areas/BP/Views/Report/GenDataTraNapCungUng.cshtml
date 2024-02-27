@@ -1,0 +1,78 @@
+﻿@model List<SMO.Models.SupplyReportModel>
+@using System.Text;
+@{
+    var year = ViewBag.Year as int?;
+}
+<style>
+    .header-table {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .nav-tabs + .tab-content {
+        padding: 0px;
+    }
+</style>
+
+<ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
+    <li role="presentation" class="active" style="cursor: pointer;">
+        <a href="#tab1" data-toggle="tab">Tra nạp cung ứng</a>
+    </li>
+</ul>
+<div class="tab-content" style="padding-bottom:0">
+    <div role="tabpanel" class="tab-pane fade in active" id="tab1">
+        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+                        <tr class="header-table">
+                            <td rowspan="2">Doanh thu</td>
+                            <td rowspan="2">Sản lượng(tấn) <br /> PA Trung</td>
+                            <td colspan="5">Đơn giá(VND/tấn)</td>
+                            <td rowspan="2">Thuế BVMT<br />(tr VND)</td>
+                            <td rowspan="2">Doanh thu<br />(tr VND)</td>
+                            <td colspan="4">Doanh thu theo yếu tố (tr. VND)</td>
+                        </tr>
+                        <tr class="header-table">
+                            <td>Đơn giá <br />(VND/tấn)</td>
+                            <td>MOPS <br />(VND/tấn)</td>
+                            <td>TNK <br />(VND/tấn)</td>
+                            <td>D <br />(VND/tấn)</td>
+                            <td>FH <br />(VND/tấn)</td>
+                            <td>MOPS <br />(VND)</td>
+                            <td>TNK <br />(VND)</td>
+                            <td>D <br />(VND)</td>
+                            <td>FH <br />(VND)</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderBy(x=> x.Order))
+                        {
+                            var space = new StringBuilder();
+                            for (int i = 0; i < item.Level; i++)
+                            {
+                                space.Append("\t");
+                            }
+                            var bold = item.IsBold == true ? "bold" : "";
+                            <tr style="font-weight:@bold">
+                                <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
+                                <td class="align-right">@item.ValueSL.ToStringVN()</td>
+                                <td class="align-right">@item.ValueDG.ToStringVN()</td>
+                                <td class="align-right">@item.ValueMOPS.ToStringVN()</td>
+                                <td class="align-right">@item.ValueTNK.ToStringVN()</td>
+                                <td class="align-right">@item.ValueD.ToStringVN()</td>
+                                <td class="align-right">@item.ValueFH.ToStringVN()</td>
+                                <td class="align-right">@item.ValueThue.ToStringVN()</td>
+                                <td class="align-right">@item.ValueDT.ToStringVN()</td>
+                                <td class="align-right">@item.ValueDTMOPS.ToStringVN()</td>
+                                <td class="align-right">@item.ValueDTTNK.ToStringVN()</td>
+                                <td class="align-right">@item.ValueDTD.ToStringVN()</td>
+                                <td class="align-right">@item.ValueDTFH.ToStringVN()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -94,7 +94,7 @@ else
             </li>
         </ul>
         <div class="tab-content" style="padding-bottom:0">
-            <div role="tabpanel" class="tab-pane fade in active" id="month">
+            <div role="tabpanel" class="tab-pane fade in active tab_data" id="month">
                 @*Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);*@
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
@@ -192,7 +192,7 @@ else
                     </table>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="year">
+            <div role="tabpanel" class="tab-pane fade tab_data" id="year">
 
                 <div class="sticky-table sticky-headers sticky-ltr-cells">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_year">
@@ -258,5 +258,28 @@ else
             $('#@formIdExportExcel').submit();
         }
 
+        function HandleSearch(inputElement) {
+            var tabActive = document.querySelector(".tab_data.active");
+            var table_id = tabActive.querySelector("table").id;
+            var value = inputElement.value;
+            var filter = value.toLowerCase();
+            var table = document.getElementById(`${table_id}`);
+            var tr = table.getElementsByTagName('tr');
+            var indexCell = 0;
+
+            for (let i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName('td')[indexCell];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    }
+                    else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+
+        }
     </script>
 }

@@ -15,6 +15,7 @@
     var year = dataCenterModel.YEAR;
     var version = dataCenterModel.VERSION;
     var skip = ViewBag.Skip;
+    var formId = Guid.NewGuid();
 }
 <style>
     .icon-function {
@@ -61,6 +62,7 @@
                 <div>
                     @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
                     @Html.MyButton("cmdDownload", "Xuất Excel", "ExportExcel();", "Alt+N", "download")
+                    @Html.MyButton("cmdDownload", "Kết xuất", "LoadUpdate();", "Alt+N", "search")
                     @Html.MyButton("cmdPrevious", "", "LoadPagingTBody('previous')", "Alt+N", "chevron_left")
                     @Html.MyButton("cmdNext", "", "LoadPagingTBody('next')", "Alt+N", "chevron_right")
                     <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank" hidden></a>
@@ -103,6 +105,7 @@
         </div>
     </div>
 </div>
+<span id="reload_paging" style="display:none;"></span>
 <script>
     function ExportExcel() {
         document.getElementById('download-data').click();
@@ -120,6 +123,11 @@
             htmlTarget: '#load-paging',
         };
         Forms.LoadAjax(ajaxParams);
+    }
+
+
+    function LoadUpdate(){
+        LoadPaging();
     }
 
     $(function () {
@@ -149,6 +157,7 @@
             dataType: 'json',
             success: function (response) {
                 Message.execute(response);
+                $("#reload_paging").click();
             }
         };
         Forms.Ajax(ajaxParams);

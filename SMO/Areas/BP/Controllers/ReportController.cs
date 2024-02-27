@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
@@ -145,6 +146,19 @@ namespace SMO.Areas.BP.Controllers
                 return Content(_servicePhienBan.ErrorMessage);
             }
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_DOANH_THU_THEO_CHI_PHI.xlsx");
+        }
+
+        public ActionResult IndexTraNapCungUng()
+        {
+            return PartialView();
+        }
+
+        public async Task<ActionResult> GenDataTraNapCungUng(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            var data =await _servicePhienBan.GetDataTraNapCungUng(year, phienBan, kichBan, hangHangKhong);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
         }
     }
 }

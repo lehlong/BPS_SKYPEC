@@ -279,5 +279,27 @@ else
             });
         }
     }
+
+        function HandleSearch(inputElement) {
+            var value = inputElement.value;
+            var filter = value.toLowerCase();
+            var table = document.getElementById("table_month");
+            var tr = table.getElementsByTagName('tr');
+            var indexCell = 4;
+
+            for (let i = 2; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName('td')[indexCell];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    }
+                    else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+
+        }
     </script>
 }

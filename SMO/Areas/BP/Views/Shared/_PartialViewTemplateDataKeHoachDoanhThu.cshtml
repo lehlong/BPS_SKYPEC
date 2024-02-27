@@ -65,7 +65,7 @@ else
             </li>
         </ul>
         <div class="tab-content" style="padding-bottom:0">
-            <div role="tabpanel" class="tab-pane fade in active" id="san-luong-tong">
+            <div role="tabpanel" class="tab-pane fade in active tab_data" id="san-luong-tong">
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_ke_hoach_tong">
                         <tbody>
@@ -128,7 +128,7 @@ else
                     </table>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="san-luong-noi-dia">
+            <div role="tabpanel" class="tab-pane fade tab_data" id="san-luong-noi-dia">
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_tra_nap_noi_dia">
                         <tbody>
@@ -187,7 +187,7 @@ else
                     </table>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="san-luong-quoc-te">
+            <div role="tabpanel" class="tab-pane fade tab_data" id="san-luong-quoc-te">
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_tra_nap_quoc_te">
                         <tbody>
@@ -247,7 +247,7 @@ else
                 </div>
             </div>
 
-            <div role="tabpanel" class="tab-pane fade" id="doanh-thu-tong">
+            <div role="tabpanel" class="tab-pane fade tab_data" id="doanh-thu-tong">
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_doanh_thu_tong">
                         <tbody>
@@ -284,7 +284,7 @@ else
                     </table>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="doanh-thu-noi-dia">
+            <div role="tabpanel" class="tab-pane fade tab_data" id="doanh-thu-noi-dia">
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_doanh_thu_noi_dia">
                         <tbody>
@@ -321,7 +321,7 @@ else
                     </table>
                 </div>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="doanh-thu-quoc-te">
+            <div role="tabpanel" class="tab-pane fade tab_data" id="doanh-thu-quoc-te">
                 <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                     <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_doanh_thu_quoc_te">
                         <tbody>
@@ -365,6 +365,30 @@ else
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
         function mask(e) {
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+
+        function HandleSearch(inputElement) {
+            var tabActive = document.querySelector(".tab_data.active");
+            var table_id = tabActive.querySelector("table").id;
+            var value = inputElement.value;
+            var filter = value.toLowerCase();
+            var table = document.getElementById(`${table_id}`);
+            var tr = table.getElementsByTagName('tr');
+            var indexCell = 0;
+
+            for (let i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName('td')[indexCell];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    }
+                    else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+
         }
     </script>
 }
