@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>true</Use64BitIISExpress>
     <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -597,6 +597,7 @@
     <Compile Include="Areas\MD\Controllers\SharedDataController.cs" />
     <Compile Include="Areas\MD\Controllers\SuaChuaProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\SuaChuaThuongXuyenProfitCenterController.cs" />
+    <Compile Include="Areas\MD\Controllers\SyncCostController.cs" />
     <Compile Include="Areas\MD\Controllers\TemplateBaseController.cs" />
     <Compile Include="Areas\MD\Controllers\TemplateController.cs" />
     <Compile Include="Areas\MD\Controllers\TransportGroupController.cs" />
@@ -865,6 +866,7 @@
     <Compile Include="Service\MD\SharedDataService.cs" />
     <Compile Include="Service\MD\SuaChuaProfitCenterService.cs" />
     <Compile Include="Service\MD\SuaChuaThuongXuyenProfitCenterRepo.cs" />
+    <Compile Include="Service\MD\SyncCostService.cs" />
     <Compile Include="Service\MD\TemplateBaseService.cs" />
     <Compile Include="Service\MD\TemplateService.cs" />
     <Compile Include="Service\MD\TransportGroupService.cs" />
@@ -2065,6 +2067,8 @@
     <Content Include="Areas\BP\Views\Report\GenDataSuaChuaThuongXuyen.cshtml" />
     <Content Include="Areas\BP\Views\Report\IndexDauTu.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataDauTu.cshtml" />
+    <Content Include="Areas\MD\Views\SyncCost\Index.cshtml" />
+    <Content Include="Areas\MD\Views\SyncCost\List.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

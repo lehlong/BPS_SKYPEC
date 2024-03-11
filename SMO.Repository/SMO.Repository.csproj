@@ -322,6 +322,7 @@
     <Compile Include="Implement\MD\ElementRepo.cs" />
     <Compile Include="Implement\MD\SharedDataRepo.cs" />
     <Compile Include="Implement\MD\SuaChuaProfitCenterRepo.cs" />
+    <Compile Include="Implement\MD\SyncCostRepo.cs" />
     <Compile Include="Implement\MD\TemplateBaseRepo.cs" />
     <Compile Include="Implement\MD\TemplateDetailDauTuNgoaiDoanhNghiepRepo.cs" />
     <Compile Include="Implement\MD\TemplateDetailDauTuTrangThietBiRepo.cs" />
@@ -583,6 +584,7 @@
     <Compile Include="Interface\MD\ISharedDataRepo.cs" />
     <Compile Include="Interface\MD\ISuaChuaProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\ISuaChuaThuongXuyenProfitCenterRepo.cs" />
+    <Compile Include="Interface\MD\ISyncCostRepo.cs" />
     <Compile Include="Interface\MD\ITemplateBaseRepo.cs" />
     <Compile Include="Interface\MD\ITemplateDetailDauTuNgoaiDoanhNghiepRepo.cs" />
     <Compile Include="Interface\MD\ITemplateDetailDauTuTrangThietBiRepo.cs" />
@@ -844,6 +846,7 @@
     <Compile Include="Mapping\MD\T_MD_SHARED_DATA_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_SUA_CHUA_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_SUA_CHUA_THUONG_XUYEN_PROFIT_CENTER_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_SYNC_COST_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_TEMPLATE_DETAIL_DAU_TU_NGOAI_DOANH_NGHIEP_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG_Map.cs" />

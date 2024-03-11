@@ -1,0 +1,45 @@
+﻿@model SMO.Service.MD.SyncCostService
+
+<div class="table-responsive">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>CHI_NHANH</th>
+                <th>GROUP_3_ID</th>
+                <th>GROUP_NAME_3</th>
+                <th>GROUP_2_ID</th>
+                <th>GROUP_NAME_2</th>
+                <th>GROUP_NAME_E2</th>
+                <th>GROUP_1_ID</th>
+                <th>GROUP_NAME_1</th>
+                <th>VALUE</th>
+                <th>ACCUMULATION</th>
+                <th>MONTH</th>
+                <th>YEAR</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ObjList.OrderBy(x => x.CHI_NHANH).ThenBy(x => x.GROUP_2_ID))
+            {
+
+                <tr>
+                    <td>@item.CHI_NHANH</td>
+                    <td>@item.GROUP_3_ID</td>
+                    <td>@item.GROUP_NAME_3</td>
+                    <td>@item.GROUP_2_ID</td>
+                    <td>@item.GROUP_NAME_2</td>
+                    <td>@item.GROUP_NAME_E2</td>
+                    <td>@item.GROUP_1_ID</td>
+                    <td>@item.GROUP_NAME_1</td>
+                    <td>@item.VALUE.ToStringVN()</td>
+                    <td>@item.ACCUMULATION.ToStringVN()</td>
+                    <td>@item.MONTH</td>
+                    <td>@item.YEAR</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@{ Html.RenderPartial("Paging", Model); }
