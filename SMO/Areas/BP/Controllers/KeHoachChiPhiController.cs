@@ -66,7 +66,7 @@ namespace SMO.Areas.BP.Controllers
             var model = JsonConvert.DeserializeObject<ViewDataCenterModel>(modelJson);
 
             var template = _service.GetTemplate(model.TEMPLATE_CODE);
-
+            var lstSanBay = _service.GetSanBayInTemplate(model).ToList();
             MemoryStream outFileStream = new MemoryStream();
 
             var orgCodeInTemplate = "";
@@ -99,7 +99,7 @@ namespace SMO.Areas.BP.Controllers
             }
 
             string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
-            _service.GenerateData(ref outFileStream, path, model, orgCodeInTemplate);
+            _service.GenerateData(ref outFileStream, path, model, orgCodeInTemplate, lstSanBay);
             var fileName = template.NAME;
 
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
@@ -147,7 +147,10 @@ namespace SMO.Areas.BP.Controllers
         [ValidateAntiForgeryToken]
         public override ActionResult SummaryDataCenter(ViewDataCenterModel model)
         {
-            var data = _service.GetData(model);
+            var modelString = model.ToString();
+            var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(modelString);
+            var lstSanBay = _service.GetSanBayInTemplate(modelJson).ToList();
+            var data = _service.GetData(model, lstSanBay);
             ViewBag.dataCenterModel = model;
             return PartialView(data);
         }
@@ -164,7 +167,8 @@ namespace SMO.Areas.BP.Controllers
         public ActionResult ViewDataTemplatePaging(string model, int skip)
         {
             var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
-            var data = _service.GetData(modelJson);
+            var lstSanBay = _service.GetSanBayInTemplate(modelJson).ToList();
+            var data =  _service.GetData(modelJson, lstSanBay);
             ViewBag.dataCenterModel = modelJson;
             skip = skip < 0 ? 0 : skip;
             ViewBag.Skip = skip;

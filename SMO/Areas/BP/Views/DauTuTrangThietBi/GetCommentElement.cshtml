@@ -1,0 +1,93 @@
+﻿@model IList<SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI.T_BP_DAU_TU_TRANG_THIET_BI_COMMENT>
+@{
+    var templateCode = ViewBag.TemplateCode as string;
+    var version = ViewBag.Version as int?;
+    var year = ViewBag.Year as int?;
+    var elementCode = ViewBag.ElementCode as string;
+}
+<div class="modal-close">
+    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
+</div>
+<div class="modal-body">
+    <div class="content">
+        <div class="card">
+            <div class="body" style="padding-top: 0px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-left:0px"><i class="material-icons">clear_all</i> Ý KIẾN - THẨM ĐỊNH : @elementCode.ToUpper()</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="page-function">
+                        <div class="page-function-button m-r-20" style="float:left">
+                        </div>
+                        <div class="input-group page-function-search">
+                            <span class="input-group-addon">
+                                <i class="material-icons">comment</i>
+                            </span>
+                            <div class="form-line">
+                                <input type="text" id="add-comment" class="form-control" placeholder="Thêm ý kiến - nội dung" />
+                            </div>
+                            <span class="input-group-addon" title="Thẩm định" onclick="InsertComment()">
+                                <i class="material-icons">send</i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div id="divResult">
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20%">Người thẩm định</th>
+                                        <th style="width: 30%">Thời gian</th>
+                                        <th>Nội dung</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderByDescending(x => x.CREATE_DATE))
+                                    {
+                                        <tr>
+                                            <td>@item.CREATE_BY</td>
+                                            <td>@item.CREATE_DATE</td>
+                                            <td>@item.COMMENT</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">✖</button>
+</div>
+
+<script>
+    function InsertComment() {
+        var value = $("#add-comment").val();
+        if (value == null || value == "") {
+            return;
+        }
+        var ajaxParams = {
+            url: 'BP/DauTuTrangThietBi/InsertComment',
+            type: "POST",
+            data: {
+                templateCode: '@templateCode',
+                version: @version,
+                year: @year,
+                elementCode: '@elementCode',
+                value: value
+            },
+            dataType: 'json',
+            success: function (response) {
+                Message.execute(response);
+            }
+        };
+        Forms.Ajax(ajaxParams);
+    }
+</script>
+

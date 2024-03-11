@@ -107,25 +107,32 @@ else
             $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
         }
         function HandleSearch(inputElement) {
-            var value = inputElement.value;
-            var filter = value.toLowerCase();
+            var value = inputElement.value.toLowerCase();
             var table = document.getElementById("table_month");
             var tr = table.getElementsByTagName('tr');
-            var indexCell = 0;
+            var searchColumns = [0, 1]; // Chỉ định các cột bạn muốn tìm kiếm, ở đây là cột 0 và cột 1
 
             for (let i = 3; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName('td')[indexCell];
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                        tr[i].style.display = '';
-                    }
-                    else {
-                        tr[i].style.display = 'none';
+                var matchFound = false;
+
+                for (let j = 0; j < searchColumns.length; j++) {
+                    var indexCell = searchColumns[j];
+                    var td = tr[i].getElementsByTagName('td')[indexCell];
+                    if (td) {
+                        var txtValue = td.textContent || td.innerText;
+                        if (txtValue.toLowerCase().indexOf(value) > -1) {
+                            matchFound = true;
+                            break; // Nếu đã tìm thấy kết quả, thoát khỏi vòng lặp
+                        }
                     }
                 }
-            }
 
+                if (matchFound) {
+                    tr[i].style.display = ''; // Hiển thị hàng nếu có kết quả khớp
+                } else {
+                    tr[i].style.display = 'none'; // Ẩn hàng nếu không có kết quả khớp
+                }
+            }
         }
     </script>
 }

@@ -93,12 +93,24 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string hangHangKhong)
+        public ActionResult GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
         {
-            var data = _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, hangHangKhong);
+            var data = _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
             return PartialView(data);
+        }
+
+        public async Task<ActionResult> ExportExcelDataTongHop(int year, string phienBan, string kichBan, string area)
+        {
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH.xlsx");
+            MemoryStream outFileStream = await _servicePhienBan.ExportExcelTongHop(path, year, phienBan, kichBan, area);
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH.xlsx");
+
         }
 
         public ActionResult ExportExcelDataSanLuong(int year, string phienBan, string kichBan, string hangHangKhong)
@@ -160,5 +172,68 @@ namespace SMO.Areas.BP.Controllers
             ViewBag.Year = year;
             return PartialView(data);
         }
+
+        public async Task<ActionResult> ExportExcelDataTraNapCungUng(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_TRA_NAP_CUNG_UNG.xlsx");
+            MemoryStream outFileStream = await _servicePhienBan.ExportExcelTraNapCungUng(path, year, phienBan, kichBan, hangHangKhong);
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_DOANH_THU_THEO_CHI_PHI.xlsx");
+        }
+
+        public ActionResult IndexSuaChuaLon()
+        {
+            return PartialView();
+        }
+
+
+        public ActionResult GenDataSuaChuaLon(int year, string phienBan, string kichBan, string area)
+        {
+            var data = _servicePhienBan.GetReportDataSuaChuaLon(year, phienBan, kichBan, area);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
+        public ActionResult IndexSuaChuaThuongXuyen()
+        {
+            return PartialView();
+        }
+
+        public ActionResult GenDataSuaChuaThuongXuyen(int year, string phienBan, string kichBan, string area)
+        {
+            var data = _servicePhienBan.GetReportDataSuaChuaThuongXuyen(year, phienBan, kichBan, area);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
+        public ActionResult ExportExcelSuaChuaLon(int year, string phienBan, string kichBan, string area)
+        {
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_SUA_CHUA_LON.xlsx");
+            MemoryStream outFileStream = _servicePhienBan.ExportExcelSuaChuaLon(path, year, phienBan, kichBan, area);
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_SUA_CHUA_LON.xlsx");
+        }
+
+        public ActionResult IndexDauTu()
+        {
+            return PartialView();
+        }
+
+        public ActionResult GenDataDauTu(int year, string phienBan, string kichBan, string area)
+        {
+            var data = _servicePhienBan.GetReportDataDauTu(year, phienBan, kichBan, area);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
     }
 }

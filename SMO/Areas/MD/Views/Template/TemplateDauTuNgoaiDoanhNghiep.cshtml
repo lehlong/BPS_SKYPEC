@@ -177,7 +177,7 @@
                                                 <input class="form-control" id="text-search-project" placeholder="Tìm kiếm dự án" />
                                             </div>
 
-                                            <span class="input-group-addon" title="Tìm kiếm" onclick="SearchTree('divTree', $('#text-search-project').val().trim().toLowerCase(), '#result-center', true)">
+                                            <span class="input-group-addon" title="Tìm kiếm" onclick="SearchTree('divTreeProject', $('#text-search-project').val().trim().toLowerCase(), '#result-center', true)">
                                                 <i class="material-icons">search</i>
                                             </span>
                                             <span class="input-group-addon" title="Chuyển đến dự án phía trước" onclick="MoveBefore('divTreeProject', '#result-project')">
@@ -643,7 +643,6 @@
 
         function SearchTree(treeId, filter, displayResult, isClick) {
             var treeObj = $.fn.zTree.getZTreeObj(treeId);
-
             var allNodes = treeObj.getNodesByFilter(function (node) {
                 return node.search === true;
             });

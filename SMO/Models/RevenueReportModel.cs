@@ -64,7 +64,52 @@ namespace SMO.Models
     {
         public IList<SanLuong> SanLuong { get; set; } = new List<SanLuong> { };
         public IList<DauTu> DauTu { get; set; } = new List<DauTu> { };
+        public IList<SuaChuaLon> SuaChuaLon { get; set; } = new List<SuaChuaLon> { };
+        public IList<ChiPhi> ChiPhi { get; set; } = new List<ChiPhi> { };
+
     }
+
+    public class SuaChuaLonReportModel
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public decimal valueGT { get; set; }
+        public string valueQM { get; set; }
+        public string valueHT { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+    }
+
+    public class SuaChuaThuongXuyenReportModel
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public decimal valueGT { get; set; }
+        public string valueQM { get; set; }
+        public string valueHT { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+    }
+
+    public class DauTuReportModel
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Equity_Source { get; set; }
+        public decimal SumEquity { get; set; }
+        public decimal ValueKPDT { get; set; }
+
+        public string Process { get; set; }
+
+        public string Decription { get; set; }
+
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+    }
+
 
     public class SanLuong
     {
@@ -94,5 +139,34 @@ namespace SMO.Models
         public int Order { get; set; }
         public int Level { get; set; }
 
+    }
+
+    public class SuaChuaLon
+    {
+        public string code { get; set; }
+        public string parentCode { get; set; }
+        public string name { get; set; }
+        public decimal valueKP { get; set; }
+        public string valueQM { get; set; }
+        public string description{ get; set; }
+
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+    }
+
+    public class ChiPhi
+    {
+        public string code { get; set; }
+        public string name { get; set; }
+        public string parenCode { get; set; }
+        public string parentCode2 { get; set; }
+        public decimal valueCP { get; set; }
+        public decimal price { get; set; }
+
+        public string description { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
     }
 }

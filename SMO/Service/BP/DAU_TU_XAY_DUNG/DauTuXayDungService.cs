@@ -3956,9 +3956,17 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
 
             ISheet sheetMonth = workbook.GetSheetAt(0);
             var metaDataMonth = ExcelHelper.GetExcelMeta(htmlMonth);
-            var NUM_CELL_MONTH = metaDataMonth.MetaTBody[0].Count;
+            var NUM_CELL_MONTH = metaDataMonth.MetaTBody[0].Count - 1;
 
             InitHeaderFile(ref sheetMonth, year, centerCode, version, NUM_CELL_MONTH, templateId, "Triệu đồng", exchangeRate);
+            if(metaDataMonth.MetaTHead!= null && metaDataMonth.MetaTBody != null)
+            {
+                metaDataMonth.MetaTHead[0].RemoveAt(0);
+                for(int i = 0; i < metaDataMonth.MetaTBody.Count; i++)
+                {
+                    metaDataMonth.MetaTBody[i].RemoveAt(0);
+                }
+            }
             ExcelHelperBP.InsertHeaderTable(ref workbook, ref sheetMonth, metaDataMonth.MetaTHead, NUM_CELL_MONTH,module, ignoreFirstColumn: string.IsNullOrEmpty(templateId) || (!string.IsNullOrEmpty(templateId) && GetTemplate(templateId).IS_BASE));
             ExcelHelperBP.InsertBodyTableByYear(ref workbook,
                 ref sheetMonth,

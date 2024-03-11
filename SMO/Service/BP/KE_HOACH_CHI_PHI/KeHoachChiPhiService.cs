@@ -27,7 +27,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
+using System.Xml.Linq;
 using static SMO.SelectListUtilities;
 
 namespace SMO.Service.BP.KE_HOACH_CHI_PHI
@@ -1447,7 +1449,116 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 }
             }
         }
-        public IList<T_MD_KHOAN_MUC_HANG_HOA> GetData(ViewDataCenterModel model)
+        #region Test tối ưu
+        /*public IList<T_MD_KHOAN_MUC_HANG_HOA> GetDataChiPhi(ViewDataCenterModel model, List<string> lstSanBay)
+        {
+            try
+            {
+                var template = UnitOfWork.Repository<TemplateRepo>().Get(model.TEMPLATE_CODE);
+                List<T_MD_KHOAN_MUC_HANG_HOA> data =new List<T_MD_KHOAN_MUC_HANG_HOA>();
+                var elements = UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetAll();
+
+                if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100001"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("CQ62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+                else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("B62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+                else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("T62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+                else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("N62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+                else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
+                {
+                    elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("VT62")).OrderBy(x => x.C_ORDER).ToList();
+                }
+                foreach (var el in elements)
+                {
+                    el.Children = elements.Where(x => x.PARENT_CODE == el.CODE).ToList();
+                }
+
+                var detail = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.TIME_YEAR == model.YEAR).ToList();
+                var order = 0;
+
+                var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.YEAR == model.YEAR);
+
+                if (departmentAssign)
+                {
+                    var lstElementAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.YEAR == model.YEAR).ToList();
+                    var lstElement = new List<T_MD_KHOAN_MUC_HANG_HOA>();
+                    foreach (var elementAssign in lstElementAssign)
+                    {
+                        foreach (var element in elements.OrderByDescending(x => x.C_ORDER))
+                        {
+                            if (element.CODE == elementAssign.ELEMENT_CODE)
+                            {
+                                lstElement.Add(element);
+                            }
+                        }
+                    }
+                    elements = lstElement;
+                }
+
+                var allExpertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
+
+                var lstItem = elements.OrderByDescending(x => x.C_ORDER).ToList();
+                
+                var lstEdited = UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
+                var lstCommented = UnitOfWork.Repository<KeHoachChiPhiCommentRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
+                var lstParentCode = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().Select(x => x.PARENT_CODE).ToList();
+                foreach (var element in lstItem)
+                {
+
+                    var expertise = allExpertise.Any(x => x.ELEMENT_CODE == element.CODE);
+                    var isEdited = lstEdited.Any(x => x.ELEMENT_CODE == element.CODE);
+                    var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
+                    var item = new T_MD_KHOAN_MUC_HANG_HOA
+                    {
+                        CODE = element.CODE,
+                        NAME = element.NAME,
+                        C_ORDER = order,
+                        IS_GROUP = element.IS_GROUP,
+                        IsChecked = expertise,
+                        IsHighLight = isEdited || isCommented ? true : false,
+                    };
+                    foreach (var sb in lstSanBay)
+                    {
+                        var query = lstParentCode.Contains(element.CODE) ? detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList() :
+                                 detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
+                        var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
+                        {
+                            0,
+                            0,
+                            query.Sum(x => x.AMOUNT) ?? 0,
+                        } : new decimal[3]{
+                            query.Sum(x => x.QUANTITY) ?? 0,
+                            query.Sum(x => x.PRICE) ?? 0,
+                            query.Sum(x => x.AMOUNT) ?? 0,
+                        };
+                        var center = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sb);
+                        item.valueSb.Add(value);
+                        item.lstCenter.Add(center);
+                    }
+                    data.Add(item);
+                    order++;
+                }
+                return data;
+            }
+            catch(Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.Exception = ex;
+                return new List<T_MD_KHOAN_MUC_HANG_HOA>();
+            }
+        }*/
+        #endregion
+        public IList<T_MD_KHOAN_MUC_HANG_HOA> GetData(ViewDataCenterModel model, List<string> lstSanBay)
         {
             try
             {
@@ -1476,16 +1587,12 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 {
                     elements = elements.Where(x => x.TIME_YEAR == model.YEAR && x.CODE.StartsWith("VT62")).OrderBy(x => x.C_ORDER).ToList();
                 }
-
                 foreach (var el in elements)
                 {
                     el.Children = elements.Where(x => x.PARENT_CODE == el.CODE).ToList();
                 }
 
                 var detail = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.TIME_YEAR == model.YEAR).ToList();
-
-                var lstSanBay = detail.GroupBy(x => x.ChiPhiProfitCenter.SAN_BAY_CODE).Select(x => x.First()).ToList();
-                
                 var order = 0;
 
                 var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.YEAR == model.YEAR);
@@ -1509,49 +1616,102 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 var allExpertise = UnitOfWork.Repository<KeHoachChiPhiDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
 
-                var lstItem = elements.OrderByDescending(x => x.C_ORDER);
+                var lstItem = elements.OrderByDescending(x => x.C_ORDER).ToList();
 
                 var lstEdited = UnitOfWork.Repository<KeHoachChiPhiEditHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
                 var lstCommented = UnitOfWork.Repository<KeHoachChiPhiCommentRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
+                var lstParentCode = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().Select(x => x.PARENT_CODE).ToList();
+                /*foreach (var element in lstItem)
+                {
 
-
+                    var expertise = allExpertise.Any(x => x.ELEMENT_CODE == element.CODE);
+                    var isEdited = lstEdited.Any(x => x.ELEMENT_CODE == element.CODE);
+                    var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
+                    var item = new T_MD_KHOAN_MUC_HANG_HOA
+                    {
+                        CODE = element.CODE,
+                        NAME = element.NAME,
+                        C_ORDER = order,
+                        IS_GROUP = element.IS_GROUP,
+                        IsChecked = expertise,
+                        IsHighLight = isEdited || isCommented ? true : false,
+                    };
+                    foreach (var sb in lstSanBay)
+                    {
+                        var query = lstParentCode.Contains(element.CODE) ? detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList() :
+                                 detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
+                        var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
+                        {
+                            0,
+                            0,
+                            query.Sum(x => x.AMOUNT) ?? 0,
+                        } : new decimal[3]{
+                            query.Sum(x => x.QUANTITY) ?? 0,
+                            query.Sum(x => x.PRICE) ?? 0,
+                            query.Sum(x => x.AMOUNT) ?? 0,
+                        };
+                        var center = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sb);
+                        item.valueSb.Add(value);
+                        item.lstCenter.Add(center);
+                    }
+                    data.Add(item);
+                    order++;
+                }*/
                 foreach (var sb in lstSanBay)
                 {
                     foreach (var element in lstItem)
                     {
-                        var child = elements.Where(x => x.CODE == element.CODE).SelectMany(x => x.Children).Select(x => x.CODE).ToList();
-
-                        var query = child.Count() == 0 ?
-                            detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList() :
-                            detail.Where(x => child.Contains(x.KHOAN_MUC_HANG_HOA_CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb.ChiPhiProfitCenter.SAN_BAY_CODE).ToList();
-                        
-                        var expertise = allExpertise.Any(x => x.ELEMENT_CODE == element.CODE);
-                        var isEdited = lstEdited.Any(x => x.ELEMENT_CODE == element.CODE);
-                        var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
-
-                        var item = new T_MD_KHOAN_MUC_HANG_HOA
+                        if (lstParentCode.Contains(element.CODE))
                         {
-                            CODE = element.CODE,
-                            NAME = element.NAME,
-                            Values = child.Count() == 0 ? new decimal[3]
+                            var query = detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
+                            var expertise = allExpertise.Any(x => x.ELEMENT_CODE == element.CODE);
+                            var isEdited = lstEdited.Any(x => x.ELEMENT_CODE == element.CODE);
+                            var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
+
+                            var item = new T_MD_KHOAN_MUC_HANG_HOA
                             {
-                                query.Sum(x => x.QUANTITY) ?? 0,
-                                query.Sum(x => x.PRICE) ?? 0,
-                                query.Sum(x => x.AMOUNT) ?? 0,
-                            } : new decimal[3]
+                                CODE = element.CODE,
+                                NAME = element.NAME,
+                                Values = new decimal[3]
+                                {
+                                     0,
+                                     0,
+                                     query.Sum(x => x.AMOUNT) ?? 0,
+                                },
+                                C_ORDER = order,
+                                IS_GROUP = element.IS_GROUP,
+                                Center = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sb),
+                                IsChecked = expertise,
+                                IsHighLight = isEdited || isCommented ? true : false,
+                            };
+                            data.Add(item);
+                            order++;
+                        }
+                        else
+                        {
+                            var query = detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb);
+                            var expertise = allExpertise.Any(x => x.ELEMENT_CODE == element.CODE);
+                            var isEdited = lstEdited.Any(x => x.ELEMENT_CODE == element.CODE);
+                            var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
+                            var item = new T_MD_KHOAN_MUC_HANG_HOA
                             {
-                                0,
-                                0,
-                                query.Sum(x => x.AMOUNT) ?? 0,
-                            },
-                            C_ORDER = order,
-                            IS_GROUP = element.IS_GROUP,
-                            Center = sb.ChiPhiProfitCenter,
-                            IsChecked = expertise,
-                            IsHighLight = isEdited || isCommented ? true : false,
-                        };
-                        data.Add(item);
-                        order++;
+                                CODE = element.CODE,
+                                NAME = element.NAME,
+                                Values = new decimal[3]
+                                {
+                                      query.Sum(x => x.QUANTITY) ?? 0,
+                                      query.Sum(x => x.PRICE) ?? 0,
+                                      query.Sum(x => x.AMOUNT) ?? 0,
+                                },
+                                C_ORDER = order,
+                                IS_GROUP = element.IS_GROUP,
+                                Center = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sb),
+                                IsChecked = expertise,
+                                IsHighLight = isEdited || isCommented ? true : false,
+                            };
+                            data.Add(item);
+                            order++;
+                        }
                     }
                 }
 
@@ -3439,7 +3599,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             return styleCellNumber;
         }
-        public void GenerateData(ref MemoryStream outFileStream, string path, ViewDataCenterModel model, string orgCode)
+        public void GenerateData(ref MemoryStream outFileStream, string path, ViewDataCenterModel model, string orgCode, List<string>lstSanBay)
         {
             try
             {
@@ -3489,7 +3649,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 numRowCur = 8;
                 var number = 1;
 
-                var data = GetData(model);
+                var data = GetData(model, lstSanBay);
 
                 switch (orgCode)
                 {

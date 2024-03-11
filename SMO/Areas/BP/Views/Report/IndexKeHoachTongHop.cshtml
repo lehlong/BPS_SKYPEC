@@ -2,8 +2,9 @@
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var lstPhienBan = SelectListUtilities.GetAllPhienBan();
     var lstKichBan = SelectListUtilities.GetAllKichBan();
-    var lstHangHangKhong = SelectListUtilities.GetAllArea();
+    var lstArea = SelectListUtilities.GetAllArea();
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
+    var selectedValue = "TB";
 }
 <div class="container-fluid child-content">
     <div class="card border-grey">
@@ -40,7 +41,8 @@
                             <select class="form-control selectpicker show-tick" id="kich-ban">
                                 @foreach (var item in lstKichBan)
                                 {
-                                    <option value="@item.Value">@(item.Text)</option>
+                                    var isSelected = item.Value == selectedValue ? "selected" : string.Empty;
+                                    <option value="@item.Value" @isSelected>@item.Text</option>
                                 }
                             </select>
                         </div>
@@ -54,8 +56,8 @@
                         </div>
 
                         <div class="col-md-5">
-                            <select class="form-control selectpicker show-tick" id="hang-hang-khong">
-                                @foreach (var item in lstHangHangKhong)
+                            <select class="form-control selectpicker show-tick" id="area">
+                                @foreach (var item in lstArea)
                                 {
                                     <option value="@item.Value">@(item.Text)</option>
                                 }
@@ -85,7 +87,7 @@
                 year: $("#time-year").val(),
                 phienBan: $("#phien-ban").val(),
                 kichBan: $("#kich-ban").val(),
-                hangHangKhong: $("#hang-hang-khong").val(),
+                area: $("#area").val(),
             },
             htmlTarget:'#divReport',
         };
@@ -101,8 +103,8 @@
         var year = $("#time-year").val()
         var phienBan = $("#phien-ban").val()
         var kichBan = $("#kich-ban").val()
-        var hangHangKhong = $("#hang-hang-khong").val()
-        window.open(`/BP/Report/ExportExcelDataSanLuong?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
+        var area = $("#area").val()
+        window.open(`/BP/Report/ExportExcelDataTongHop?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&area=${area}`, '_blank');
     }
 </script>
 

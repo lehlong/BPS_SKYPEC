@@ -4,6 +4,7 @@
     var lstKichBan = SelectListUtilities.GetAllKichBan();
     var lstHangHangKhong = SelectListUtilities.GetSelectHangHangKhong();
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
+    var selectedValue = "TB";
 }
 <div class="container-fluid child-content">
     <div class="card border-grey">
@@ -40,7 +41,8 @@
                             <select class="form-control selectpicker show-tick" id="kich-ban">
                                 @foreach (var item in lstKichBan)
                                 {
-                                    <option value="@item.Value">@(item.Text)</option>
+                                    var isSelected = item.Value == selectedValue ? "selected" : string.Empty;
+                                    <option value="@item.Value" @isSelected>@item.Text</option>
                                 }
                             </select>
                         </div>
@@ -102,7 +104,7 @@
         var phienBan = $("#phien-ban").val()
         var kichBan = $("#kich-ban").val()
         var hangHangKhong = $("#hang-hang-khong").val()
-        window.open(`/BP/Report/ExportExcelDataSanLuong?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
+        window.open(`/BP/Report/ExportExcelDataTraNapCungUng?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
     }
 </script>
 

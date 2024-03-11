@@ -2,7 +2,7 @@
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var lstPhienBan = SelectListUtilities.GetAllPhienBan();
     var lstKichBan = SelectListUtilities.GetAllKichBan();
-    var lstHangHangKhong = SelectListUtilities.GetSelectHangHangKhong();
+    var lstArea = SelectListUtilities.GetAllArea();
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
     var selectedValue = "TB";
 }
@@ -11,7 +11,7 @@
         <div class="body" style="padding-top: 0px;">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active">
-                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> BÁO CÁO TỔNG HỢP KẾ HOẠCH SẢN LƯỢNG</a>
+                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> BÁO CÁO TỔNG HỢP KẾ HOẠCH ĐẦU TƯ</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -56,8 +56,8 @@
                         </div>
 
                         <div class="col-md-5">
-                            <select class="form-control selectpicker show-tick" id="hang-hang-khong">
-                                @foreach (var item in lstHangHangKhong)
+                            <select class="form-control selectpicker show-tick" id="area">
+                                @foreach (var item in lstArea)
                                 {
                                     <option value="@item.Value">@(item.Text)</option>
                                 }
@@ -82,12 +82,12 @@
     function ViewData() {
         $("#divReport").empty();
         var ajaxParams = {
-            url: "@Url.Action("GenDataSanLuong")",
+            url: "@Url.Action("GenDataDauTu")",
             data: {
                 year: $("#time-year").val(),
                 phienBan: $("#phien-ban").val(),
                 kichBan: $("#kich-ban").val(),
-                hangHangKhong: $("#hang-hang-khong").val(),
+                area: $("#area").val(),
             },
             htmlTarget:'#divReport',
         };
@@ -96,17 +96,16 @@
 
     $(function () {
         Forms.CompleteUI();
-        ViewData();
+        /*ViewData();*/
     });
 
     function ExportData() {
         var year = $("#time-year").val()
         var phienBan = $("#phien-ban").val()
         var kichBan = $("#kich-ban").val()
-        var hangHangKhong = $("#hang-hang-khong").val()
-        window.open(`/BP/Report/ExportExcelDataSanLuong?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
+        var area = $("#area").val()
+        window.open(`/BP/Report/ExportExcelSuaChuaLon?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&area=${area}`, '_blank');
     }
 </script>
-
 
 

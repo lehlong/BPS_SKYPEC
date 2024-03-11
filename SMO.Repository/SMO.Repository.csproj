@@ -108,6 +108,7 @@
     <Compile Include="Implement\AD\UserUserGroupRepo.cs" />
     <Compile Include="Implement\BP\BudgetPeriodHistoryRepo.cs" />
     <Compile Include="Implement\BP\BudgetPeriodRepo.cs" />
+    <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiCommentRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiDataRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiHistoryRepo.cs" />
@@ -380,6 +381,7 @@
     <Compile Include="Interface\BP\DAU_TU_NGOAI_DOANH_NGHIEP\IDauTuNgoaiDoanhNghiepVersionRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\DAU_TU_TRANG_THIET_BI_DATA_BASE\IDauTuTrangThietBiDataBaseHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\DAU_TU_TRANG_THIET_BI_DATA_BASE\IDauTuTrangThietBiDataBaseRepo.cs" />
+    <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiCommentRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiDataHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiDataRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiHistoryRepo.cs" />
@@ -641,6 +643,7 @@
     <Compile Include="Mapping\BP\DAU_TU_NGOAI_DOANH_NGHIEP\T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_VERSION_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\DAU_TU_TRANG_THIET_BI_DATA_BASE\T_BP_DAU_TU_TRANG_THIET_BI_DATA_BASE_HISTORY_Mapping.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\DAU_TU_TRANG_THIET_BI_DATA_BASE\T_BP_DAU_TU_TRANG_THIET_BI_DATA_BASE_Mapping.cs" />
+    <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_COMMENT_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_DATA_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_DATA_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_HISTORY_Map.cs" />

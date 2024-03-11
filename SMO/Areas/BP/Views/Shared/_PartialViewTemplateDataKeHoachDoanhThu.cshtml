@@ -374,19 +374,27 @@ else
             var filter = value.toLowerCase();
             var table = document.getElementById(`${table_id}`);
             var tr = table.getElementsByTagName('tr');
-            var indexCell = 0;
+            var searchColumns = [0,1];
 
             for (let i = 1; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName('td')[indexCell];
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                        tr[i].style.display = '';
-                    }
-                    else {
-                        tr[i].style.display = 'none';
+                var matchFound = false;
+                for (let j = 0; j < searchColumns.length; j++) {
+                    var indexCell = searchColumns[j];
+                    var td = tr[i].getElementsByTagName('td')[indexCell];
+                    if (td) {
+                        var txtValue = td.textContent || td.innerText;
+                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                            matchFound = true;
+                            break; // Nếu đã tìm thấy kết quả, thoát khỏi vòng lặp
+                        }
                     }
                 }
+                if (matchFound) {
+                    tr[i].style.display = ''; // Hiển thị hàng nếu có kết quả khớp
+                } else {
+                    tr[i].style.display = 'none'; // Ẩn hàng nếu không có kết quả khớp
+                }
+                
             }
 
         }

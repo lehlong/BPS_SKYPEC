@@ -136,7 +136,7 @@ namespace SMO
         {
             IUnitOfWork UnitOfWork = new NHUnitOfWork();
             var lstData = new List<Data>();
-           
+
             var lstDomain = UnitOfWork.Repository<KichBanRepo>().GetAll();
             foreach (var obj in lstDomain)
             {

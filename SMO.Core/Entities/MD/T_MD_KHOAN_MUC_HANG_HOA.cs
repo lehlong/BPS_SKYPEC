@@ -11,12 +11,17 @@ namespace SMO.Core.Entities.MD
         public T_MD_KHOAN_MUC_HANG_HOA() : base()
         {
             Values = new decimal[6];
+            valueSb = new List<decimal[]>();
+            lstCenter = new List<T_MD_CHI_PHI_PROFIT_CENTER>();
 
         }
         public virtual T_MD_CHI_PHI_PROFIT_CENTER Center { get; set; }
+        public virtual List<T_MD_CHI_PHI_PROFIT_CENTER> lstCenter { get; set; }
+
         public virtual bool IsChecked { get; set; }
         public virtual bool IsHighLight { get; set; }
         public virtual List<T_MD_KHOAN_MUC_HANG_HOA> Children { get; set; }
+        public virtual List<decimal[]> valueSb { get; set; }
         public virtual object Clone()
         {
             return MemberwiseClone();

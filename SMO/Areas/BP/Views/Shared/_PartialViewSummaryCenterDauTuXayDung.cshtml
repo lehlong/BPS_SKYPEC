@@ -33,13 +33,13 @@ else
                     </tr>
                     <tr class="sticky-row strong" data-xls-row="header">
                         <td class="pre-whitespace">TỔNG MỨC ĐẦU TƯ</td>
-                        <td class="pre-whitespace">NGUỒN VCSH</td>
+                        <td class="pre-whitespace">NGUỒN VỐN</td>
                         <td class="pre-whitespace">TIẾN ĐỘ THỰC HIỆN</td>
                         <td class="pre-whitespace">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
                         <td class="pre-whitespace">KH NĂM</td>
                         <td class="pre-whitespace">TIẾN ĐỘ TRIỂN KHAI TH NĂM KH</td>
                         <td class="pre-whitespace">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
-                        <td class="pre-whitespace">QKH NĂM</td>
+                        <td class="pre-whitespace">KH NĂM</td>
                     </tr>
                     @foreach (var detail in Model.Where(x => x.CENTER_CODE != null).GroupBy(x=>x.CENTER_CODE))
                     {

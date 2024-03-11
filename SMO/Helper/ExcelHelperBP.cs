@@ -541,6 +541,7 @@ namespace SMO.Helper
                         rowCur.Cells[NUM_CELL-1].CellStyle = styleCellHeader;
                         sheet.AddMergedRegion(new CellRangeAddress(7, 8, 0, 0));
                         sheet.AddMergedRegion(new CellRangeAddress(7, 8, 1, 1));
+                        sheet.AddMergedRegion(new CellRangeAddress(7, 8, NUM_CELL-1, NUM_CELL-1));
                         sheet.AddMergedRegion(new CellRangeAddress(7, 7, cellInfor, cellValue - 1));
                         sheet.AddMergedRegion(new CellRangeAddress(7, 7, cellValue, cellGiaiNgan - 1));
                         sheet.AddMergedRegion(new CellRangeAddress(7, 7, cellGiaiNgan, NUM_CELL - 2));

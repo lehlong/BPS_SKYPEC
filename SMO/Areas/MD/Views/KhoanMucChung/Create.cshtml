@@ -8,7 +8,6 @@
     @using (Ajax.BeginForm("Create", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(m => m.ObjDetail.PARENT_CODE)
         <div class="card">
             <div class="body" style="padding-top: 0px;">
                 <span class="page-header-icon" onclick="Forms.CloseRightContent();" style="float:right;">
@@ -45,6 +44,16 @@
                                     @Html.MyTextBoxFor(m => m.ObjDetail.NAME)
                                 </div>
                                 @Html.ValidationMessageFor(m => m.ObjDetail.NAME)
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <label>Mã khoản mục cha</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyTextBoxFor(m => m.ObjDetail.PARENT_CODE)
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.PARENT_CODE)
                             </div>
                         </div>
 

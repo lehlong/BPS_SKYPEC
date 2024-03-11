@@ -88,4 +88,73 @@
     </table>
 </div>
 
+<h4>III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH</h4>
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td>STT</td>
+                <td>Danh mục sửa chữa lớn</td>
+                <td>Kế hoạch kinh phí sửa chữa năm 2024</td>
+                <td>Quy mô sửa chữa</td>
+                <td>Ghi chú</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SuaChuaLon.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.Level; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
+                    <td class="align-right">@item.valueKP.ToStringVN()</td>
+                    <td class="align-right">@item.valueQM</td>
+                    <td class="align-right">@item.description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h4>IV. KẾ HOẠCH CHI PHÍ</h4>
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td rowspan="2">STT</td>
+                <td rowspan="2">Danh mục chi phí</td>
+                <td colspan="2">Kế hoạch năm 2024</td>
+                <td rowspan="2">Ghi chú</td>
+            </tr>
+            <tr class="header-table">
+                <td>Chi phí</td>
+                <td>Đơn giá chi phí trên 1 tấn nhiên liệu</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ChiPhi.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.Level; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td ><div>@($"{space.ToString()}{item.name}")</div></td>
+                    <td class="align-right">@item.price.ToStringVN()</td>
+                    <td class="align-right">@item.valueCP</td>
+                    <td class="align-right">@item.description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
