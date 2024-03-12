@@ -129,6 +129,18 @@
                 <td rowspan="2">STT</td>
                 <td rowspan="2">Danh mục chi phí</td>
                 <td colspan="2">Kế hoạch năm 2024</td>
+                <td rowspan="2">Tháng 1</td>
+                <td rowspan="2">Tháng 2</td>
+                <td rowspan="2">Tháng 3</td>
+                <td rowspan="2">Tháng 4</td>
+                <td rowspan="2">Tháng 5</td>
+                <td rowspan="2">Tháng 6</td>
+                <td rowspan="2">Tháng 7</td>
+                <td rowspan="2">Tháng 8</td>
+                <td rowspan="2">Tháng 9</td>
+                <td rowspan="2">Tháng 10</td>
+                <td rowspan="2">Tháng 11</td>
+                <td rowspan="2">Tháng 12</td>
                 <td rowspan="2">Ghi chú</td>
             </tr>
             <tr class="header-table">
@@ -147,10 +159,23 @@
                 var bold = item.IsBold == true ? "bold" : "";
                 <tr style="font-weight:@bold">
                     <td class="align-center">@item.Order</td>
-                    <td ><div>@($"{space.ToString()}{item.name}")</div></td>
+                    <td><div>@($"{space.ToString()}{item.name}")</div></td>
                     <td class="align-right">@item.price.ToStringVN()</td>
                     <td class="align-right">@item.valueCP</td>
+                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                    <td class="align-right">@item.Value4.ToStringVN()</td>
+                    <td class="align-right">@item.Value5.ToStringVN()</td>
+                    <td class="align-right">@item.Value6.ToStringVN()</td>
+                    <td class="align-right">@item.Value7.ToStringVN()</td>
+                    <td class="align-right">@item.Value8.ToStringVN()</td>
+                    <td class="align-right">@item.Value9.ToStringVN()</td>
+                    <td class="align-right">@item.Value10.ToStringVN()</td>
+                    <td class="align-right">@item.Value11.ToStringVN()</td>
+                    <td class="align-right">@item.Value12.ToStringVN()</td>
                     <td class="align-right">@item.description</td>
+
                 </tr>
             }
         </tbody>

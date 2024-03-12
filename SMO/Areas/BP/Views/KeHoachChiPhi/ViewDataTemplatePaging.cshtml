@@ -14,11 +14,9 @@
     var tempalteCode = dataCenterModel.TEMPLATE_CODE;
     var year = dataCenterModel.YEAR;
     var version = dataCenterModel.VERSION;
-    var skip = ViewBag.Skip;
-    var count = Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Count();
 }
 
-@foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Skip((int)skip).Take(100).Select(x => x.First()))
+@foreach (var item in Model.OrderBy(x => x.CODE))
 {
     var space = new StringBuilder();
     for (int i = 0; i < item.LEVEL; i++)
@@ -50,28 +48,40 @@
         <td class="@classParent"><div class="@classParent">@($"{space.ToString()}{item.NAME}")</div></td>
 
         @*Số lượng*@
-        @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+        @{
+            decimal sumSL = 0;
+        }
+        @for (int i = 0; i < item.valueSb.Count(); i++)
         {
-            var value = Model.FirstOrDefault(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN();
-            <td class="align-right"><input type="text" class="input-edit" onchange="onEditCell('SL', '@sb.Center.SAN_BAY_CODE','@sb.Center.COST_CENTER_CODE', '@item.CODE', this.value)" value="@(value == "0" ? "" : value)" @isEdit /></td>
+            var valueSL = item.valueSb[i][0].ToStringVN();
+            var center = item.lstCenter[i];
+            sumSL = sumSL + valueSL.AsDecimal();
+            <td class="align-right"><input type="text" class="input-edit" onchange="onEditCell('SL', '@center.SAN_BAY_CODE','@center.COST_CENTER_CODE', '@item.CODE', this.value)" value="@(valueSL == "0" ? "" : valueSL)" @isEdit /></td>
         }
 
-        <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN() == "0" ? "" : Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN())</td>
+        <td class="align-right">@(sumSL.ToStringVN()=="0"?"": sumSL.ToStringVN())</td>
 
         @*Đơn giá*@
-        <td class="align-right"><input type="text" class="input-edit" @isEdit onchange="onEditCell('DG', '','', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN() == "0" ? "" : Model.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.CODE == item.CODE)?.Values[1].ToStringVN())" /></td>
+        <td class="align-right"><input type="text" class="input-edit" @isEdit onchange="onEditCell('DG', '','', '@item.CODE', this.value)" value="@(item.valueSb[0][1].ToStringVN()== "0"?"":item.valueSb[0][1].ToStringVN())" /></td>
 
-        @foreach (var sb in Model.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+        @{
+            decimal sumTT = 0;
+        }
+        @for (int i = 0; i < item.valueSb.Count(); i++)
         {
-            <td class="align-right">@(Model.FirstOrDefault(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.CODE == item.CODE)?.Values[2].ToStringVN())</td>
+            sumTT = sumTT + item.valueSb[i][2];
+            <td class="align-right">@(item.valueSb[i][2].ToStringVN() == "0" ? "" : item.valueSb[i][2].ToStringVN())</td>
         }
 
-        <td class="align-right">@(Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[2]).ToStringVN())</td>
+        <td class="align-right">@sumTT.ToStringVN()</td>
+
+
+
     </tr>
 }
 
 <script>
-    function LoadPagingTBody(type) {
+    @*function LoadPagingTBody(type) {
         var skip = Number('@skip');
         var count = Number('@count');
         skip = type == 'next' ? skip + 100 : skip - 100;
@@ -91,8 +101,9 @@
             htmlTarget: '#load-paging',
         };
         Forms.LoadAjax(ajaxParams);
-    }
+    }*@
 </script>
+
 
 
 

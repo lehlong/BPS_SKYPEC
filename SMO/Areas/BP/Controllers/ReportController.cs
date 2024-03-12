@@ -93,9 +93,9 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
+        public async Task<ActionResult> GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
         {
-            var data = _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
+            var data =await _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
             return PartialView(data);
@@ -229,7 +229,20 @@ namespace SMO.Areas.BP.Controllers
 
         public ActionResult GenDataDauTu(int year, string phienBan, string kichBan, string area)
         {
-            var data = _servicePhienBan.GetReportDataDauTu(year, phienBan, kichBan, area);
+            var data = _servicePhienBan.GetReportDataSuaChuaThuongXuyen(year, phienBan, kichBan, area);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
+        public ActionResult IndexReportChiPhi()
+        {
+            return PartialView();
+        }
+
+        public ActionResult GenDataChiPhi(int year, string phienBan, string kichBan, string area)
+        {
+            var data = _servicePhienBan.GetReportDataSuaChuaLon(year, phienBan, kichBan, area);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
             return PartialView(data);

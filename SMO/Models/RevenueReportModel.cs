@@ -110,7 +110,20 @@ namespace SMO.Models
         public int Level { get; set; }
     }
 
+    public class ChiPhiReportModel
+    {
+        public string code { get; set; }
+        public string name { get; set; }
+        public decimal valueCQCT { get; set; }
+        public decimal valueMB { get; set; }
+        public decimal valueMT { get; set; }
+        public decimal valueMN { get; set; }
+        public decimal valueVT { get; set; }
 
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+    }
     public class SanLuong
     {
         public string Code { get; set; }
@@ -163,10 +176,29 @@ namespace SMO.Models
         public string parentCode2 { get; set; }
         public decimal valueCP { get; set; }
         public decimal price { get; set; }
-
+        public decimal Value1 { get; set; }
+        public decimal Value2 { get; set; }
+        public decimal Value3 { get; set; }
+        public decimal Value4 { get; set; }
+        public decimal Value5 { get; set; }
+        public decimal Value6 { get; set; }
+        public decimal Value7 { get; set; }
+        public decimal Value8 { get; set; }
+        public decimal Value9 { get; set; }
+        public decimal Value10 { get; set; }
+        public decimal Value11 { get; set; }
+        public decimal Value12 { get; set; }
         public string description { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
         public int Level { get; set; }
+    }
+
+    public class SyncCostModel
+    {
+        public string code { get; set; }
+        public decimal value { get; set; }
+        public decimal accumulation { get; set; }
+        public int month { get; set; }
     }
 }

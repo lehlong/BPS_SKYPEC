@@ -2067,6 +2067,8 @@
     <Content Include="Areas\BP\Views\Report\GenDataSuaChuaThuongXuyen.cshtml" />
     <Content Include="Areas\BP\Views\Report\IndexDauTu.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataDauTu.cshtml" />
+	<Content Include="Areas\BP\Views\Report\IndexReportChiPhi.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataChiPhi.cshtml" />
     <Content Include="Areas\MD\Views\SyncCost\Index.cshtml" />
     <Content Include="Areas\MD\Views\SyncCost\List.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />

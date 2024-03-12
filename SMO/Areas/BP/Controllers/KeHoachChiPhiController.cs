@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
@@ -164,11 +165,11 @@ namespace SMO.Areas.BP.Controllers
             return PartialView(data);
         }
 
-        public ActionResult ViewDataTemplatePaging(string model, int skip)
+        public async Task<ActionResult> ViewDataTemplatePaging(string model, int skip)
         {
             var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
             var lstSanBay = _service.GetSanBayInTemplate(modelJson).ToList();
-            var data =  _service.GetData(modelJson, lstSanBay);
+            var data = await _service.GetDataChiPhi(modelJson, lstSanBay);
             ViewBag.dataCenterModel = modelJson;
             skip = skip < 0 ? 0 : skip;
             ViewBag.Skip = skip;
