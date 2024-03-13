@@ -114,12 +114,8 @@ namespace SMO.Models
     {
         public string code { get; set; }
         public string name { get; set; }
-        public decimal valueCQCT { get; set; }
-        public decimal valueMB { get; set; }
-        public decimal valueMT { get; set; }
-        public decimal valueMN { get; set; }
-        public decimal valueVT { get; set; }
-
+        public string area { get; set; }
+        public decimal value { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
         public int Level { get; set; }

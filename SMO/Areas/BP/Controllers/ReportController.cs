@@ -240,11 +240,13 @@ namespace SMO.Areas.BP.Controllers
             return PartialView();
         }
 
-        public ActionResult GenDataChiPhi(int year, string phienBan, string kichBan, string area)
+        public async Task<ActionResult> GenDataChiPhi(int year, string phienBan, string kichBan)
         {
-            var data = _servicePhienBan.GetReportDataSuaChuaLon(year, phienBan, kichBan, area);
+            var data = await _servicePhienBan.GetReportDataChiPhi(year, phienBan, kichBan);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
+            var lstHeader = new List<string> { "CQ", "MB", "MT", "MN", "VT" };
+            ViewBag.Header = lstHeader;
             return PartialView(data);
         }
 

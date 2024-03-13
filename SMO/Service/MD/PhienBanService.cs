@@ -1,9 +1,11 @@
 ﻿using iTextSharp.text;
 using Microsoft.Office.Interop.Excel;
+using NHibernate.Criterion;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SMO.Core.Entities;
+using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
 using SMO.Models;
 using SMO.Repository.Implement.BP.DAU_TU_NGOAI_DOANH_NGHIEP;
@@ -20,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static iTextSharp.text.pdf.AcroFields;
@@ -1118,6 +1121,8 @@ namespace SMO.Service.MD
                     {"VT", "CNVT" },
                     {"CQ", "CQCT" }
                 };
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                CancellationToken cancellationToken = cancellationTokenSource.Token;
 
                 Task task1 = Task.Run(() =>
                 {
@@ -1125,10 +1130,10 @@ namespace SMO.Service.MD
                     {
                         #region KẾ HOẠCH SẢN LƯỢNG
                         var dataHeaderSanLuong = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        if (dataHeaderSanLuong.Count() == 0)
+                        /*if (dataHeaderSanLuong.Count() == 0)
                         {
-                            return;
-                        }
+                            cancellationTokenSource.Cancel();
+                        }*/
 
                         var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSanLuong.Contains(x.TEMPLATE_CODE)).ToList();
                         var orderSL = 1;
@@ -1171,10 +1176,10 @@ namespace SMO.Service.MD
                         #region KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ
                         var dataHeaderDTXD = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                         var dataHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        if (dataHeaderDTXD.Count() + dataHeaderDTTTB.Count() == 0)
+                       /* if (dataHeaderDTXD.Count() + dataHeaderDTTTB.Count() == 0)
                         {
-                            return;
-                        }
+                            cancellationTokenSource.Cancel();
+                        }*/
 
                         var dataInHeaderDTXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD.Contains(x.TEMPLATE_CODE)).ToList();
                         var dataInHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTTTB.Contains(x.TEMPLATE_CODE)).ToList();
@@ -1187,7 +1192,7 @@ namespace SMO.Service.MD
                             var item = new DauTu
                             {
                                 Name = pj.NAME,
-                                Value2 = dataInHeaderDTXD.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4032").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4032").Sum(x => x.VALUE) ?? 0,
+                                Value2 = dataInHeaderDTXD.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
                                 Order = orderDT,
                             };
                             data.DauTu.Add(item);
@@ -1212,10 +1217,11 @@ namespace SMO.Service.MD
                     {
                         #region KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH
                         var dataHeaderSuaChuaLon = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        if (dataHeaderSuaChuaLon.Count() == 0)
+                        /*if (dataHeaderSuaChuaLon.Count() == 0)
                         {
-                            return;
-                        }
+                            cancellationTokenSource.Cancel();
+
+                        }*/
 
                         var dataInHeaderSCL = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSuaChuaLon.Contains(x.TEMPLATE_CODE)).ToList();
                         var sumSCL = new SuaChuaLon
@@ -3715,6 +3721,182 @@ namespace SMO.Service.MD
                     rowCur.Cells[4].CellStyle = styleNumber;
                 }
             }
+        }
+        
+        internal async Task<List<ChiPhiReportModel>> GetReportDataChiPhi(int year, string phienBan, string kichBan)
+        {
+            try
+            {
+                List<string> charArea = new List<string> { "CQ", "B", "T", "N", "VT" };
+                var data = new List<ChiPhiReportModel>();
+                var dataHeaderCP = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var lstParentCode = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().Select(x => x.PARENT_CODE).ToList();
+                if (dataHeaderCP.Count() == 0)
+                {
+                    return data;
+                }
+                var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderCP.Contains(x.TEMPLATE_CODE)).ToList();
+                var elements = UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetAll();
+                foreach (var el in elements)
+                {
+                    el.Children = elements.Where(x => x.PARENT_CODE == el.CODE).ToList();
+                }
+                var order = 0;
+                var lstDataCQ = elements.Where(x => x.CODE.StartsWith("CQ") && !string.IsNullOrEmpty(x.PARENT_CODE)).ToList();
+                var lstDataMB = elements.Where(x => x.CODE.StartsWith("B")).ToList();
+                var lstDataMT = elements.Where(x => x.CODE.StartsWith("T")).ToList();
+                var lstDataMN = elements.Where(x => x.CODE.StartsWith("N")).ToList();
+                var lstDataVT = elements.Where(x => x.CODE.StartsWith("VT")).ToList();
+                var dataCQ = new List<ChiPhiReportModel>();
+                var dataMB = new List<ChiPhiReportModel>();
+                var dataMT = new List<ChiPhiReportModel>();
+                var dataMN = new List<ChiPhiReportModel>();
+                var dataVT = new List<ChiPhiReportModel>();
+
+                var count = lstDataCQ.Count() + lstDataMB.Count() + lstDataMT.Count() + lstDataMN.Count() + lstDataVT.Count();
+                Task taskCQ = Task.Run(async () =>
+                {
+                    dataCQ = await SyncElement(lstDataCQ, dataInHeaderCP, lstParentCode, "CQ", order);
+                });
+                Task taskMB = Task.Run(async () =>
+                {
+                    dataMB = await SyncElement(lstDataMB, dataInHeaderCP, lstParentCode, "MB", order);
+                });
+                Task taskMT = Task.Run(async () =>
+                {
+                    dataMT = await SyncElement(lstDataMT, dataInHeaderCP, lstParentCode, "MT", order);
+                });
+                Task taskMN = Task.Run(async () =>
+                {
+                    dataMN = await SyncElement(lstDataMN, dataInHeaderCP, lstParentCode, "MN", order);
+                });
+                Task taskVT = Task.Run(async () =>
+                {
+                    dataVT = await SyncElement(lstDataVT, dataInHeaderCP, lstParentCode, "VT", order);
+                });
+                await Task.WhenAll(taskCQ, taskMB, taskMT, taskMN, taskVT);
+                data.AddRange(dataCQ);
+                data.AddRange(dataMB);
+                data.AddRange(dataMN);
+                data.AddRange(dataMT);
+                data.AddRange(dataVT);
+                return data;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        internal async Task<List<ChiPhiReportModel>> SyncElement(IList<T_MD_KHOAN_MUC_HANG_HOA> elements,List<T_BP_KE_HOACH_CHI_PHI_DATA> dataInHeaderCP,List<string> lstParentCode,string area, int order)
+        {
+            var dataAll = new List<ChiPhiReportModel>();
+            var numTake = 0;
+            var numberTask = 4;
+            var orderItem = order;
+            if (elements.Count() > 200)
+            {
+                numTake = elements.Count() / numberTask;
+            }
+            else
+            {
+                numTake = elements.Count();
+            }
+            var lstTask1 = elements.Skip(0).Take(numTake).ToList();
+            var lstTask2 = elements.Skip(numTake).Take(numTake).ToList();
+            var lstTask3 = elements.Skip(numTake*2).Take(numTake).ToList();
+            var lstTask4 = elements.Skip(numTake*3).ToList();
+            var data1 = new List<ChiPhiReportModel>();
+            var data2 = new List<ChiPhiReportModel>();
+            var data3 = new List<ChiPhiReportModel>();
+            var data4 = new List<ChiPhiReportModel>();
+
+            Task task1 = Task.Run(() =>
+            {
+                foreach(var element in  lstTask1)
+                {
+                    var query = lstParentCode.Contains(element.CODE) ? dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE)).ToList() :
+                                      dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE).ToList();
+                    var item = new ChiPhiReportModel
+                    {
+                        code = element.CODE,
+                        name = element.NAME,
+                        area = area,
+                        Order = orderItem,
+                        IsBold = element.IS_GROUP,
+                        value = query.Sum(x=>x.AMOUNT)??0
+                    };
+                    data1.Add(item);
+                    orderItem++;
+                }
+            });
+
+            Task task2 = Task.Run(() =>
+            {
+                foreach (var element in lstTask2)
+                {
+                    var query = lstParentCode.Contains(element.CODE) ? dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE)).ToList() :
+                                      dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE).ToList();
+                    var item = new ChiPhiReportModel
+                    {
+                        code = element.CODE,
+                        name = element.NAME,
+                        area = area,
+                        Order = orderItem,
+                        IsBold = element.IS_GROUP,
+                        value = query.Sum(x => x.AMOUNT) ?? 0
+                    };
+                    data2.Add(item);
+                    orderItem++;
+                }
+            });
+
+            Task task3 = Task.Run(() =>
+            {
+                foreach (var element in lstTask3)
+                {
+                    var query = lstParentCode.Contains(element.CODE) ? dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE)).ToList() :
+                                      dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE).ToList();
+                    var item = new ChiPhiReportModel
+                    {
+                        code = element.CODE,
+                        name = element.NAME,
+                        area = area,
+                        Order = orderItem,
+                        IsBold = element.IS_GROUP,
+                        value = query.Sum(x => x.AMOUNT) ?? 0
+                    };
+                    data3.Add(item);
+                    orderItem++;
+                }
+            });
+
+            Task task4 = Task.Run(() =>
+            {
+                foreach (var element in lstTask4)
+                {
+                    var query = lstParentCode.Contains(element.CODE) ? dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE)).ToList() :
+                                      dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE).ToList();
+                    var item = new ChiPhiReportModel
+                    {
+                        code = element.CODE,
+                        name = element.NAME,
+                        area = area,
+                        Order = orderItem,
+                        IsBold = element.IS_GROUP,
+                        value = query.Sum(x => x.AMOUNT) ?? 0
+                    };
+                    data4.Add(item);
+                    orderItem++;
+                }
+            });
+            await Task.WhenAll(task1, task2, task3, task4);
+            dataAll.AddRange(data1);
+            dataAll.AddRange(data2);
+            dataAll.AddRange(data3);
+            dataAll.AddRange(data4);
+
+            return dataAll;
         }
 
     }
