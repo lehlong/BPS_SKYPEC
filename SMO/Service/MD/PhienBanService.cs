@@ -1174,25 +1174,34 @@ namespace SMO.Service.MD
                     lock (lockObject)
                     {
                         #region KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ
-                        var dataHeaderDTXD = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        var dataHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                       /* if (dataHeaderDTXD.Count() + dataHeaderDTTTB.Count() == 0)
+                        var sapCodeDT = ChiNhanh[area];
+                        var costCenterDT = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCodeDT).CODE;
+
+                        var dataHeaderDTXD =!string.IsNullOrEmpty(area)?UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList():
+                                                                         UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
+                        var dataHeaderDTTTB = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
+                                                                         UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
+                        if (dataHeaderDTXD.Count() + dataHeaderDTTTB.Count() == 0)
                         {
                             cancellationTokenSource.Cancel();
-                        }*/
+                        }
 
                         var dataInHeaderDTXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD.Contains(x.TEMPLATE_CODE)).ToList();
                         var dataInHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTTTB.Contains(x.TEMPLATE_CODE)).ToList();
 
-                        var lstProject = UnitOfWork.Repository<ProjectRepo>().GetAll().ToList();
-                        lstProject = !string.IsNullOrEmpty(area) ? lstProject.Where(x => x.AREA_CODE == area).ToList() : lstProject;
+                        var lstPjInDTXD = dataInHeaderDTXD.Select(x => x.DauTuXayDungProfitCenter.PROJECT_CODE).Distinct().ToList();
+                        var lstPjInDTTTB = dataInHeaderDTTTB.Select(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE).Distinct().ToList();
+                        var lstProject = new List<string>();
+                        lstProject.AddRange(lstPjInDTXD);
+                        lstProject.AddRange(lstPjInDTTTB);
+                        lstProject = lstProject.Distinct().ToList();
                         var orderDT = 1;
                         foreach (var pj in lstProject)
                         {
                             var item = new DauTu
                             {
-                                Name = pj.NAME,
-                                Value2 = dataInHeaderDTXD.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+                                Name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x=>x.CODE == pj).NAME,
+                                Value2 = dataInHeaderDTXD.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
                                 Order = orderDT,
                             };
                             data.DauTu.Add(item);
@@ -1321,9 +1330,9 @@ namespace SMO.Service.MD
                 var sapCode = ChiNhanh[area];
                 var costCenter = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCode).CODE;
 
-                var lstCostCenterChild = UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(x => x.PARENT_CODE == costCenter).Select(x => x.CODE).ToList();
+                /*var lstCostCenterChild = UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(x => x.PARENT_CODE == costCenter).Select(x => x.CODE).ToList();*/
                 // Lấy template theo costCenter
-                var dataHeaderCP = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && lstCostCenterChild.Contains(x.ORG_CODE)).Select(x => x.TEMPLATE_CODE).ToList()
+                var dataHeaderCP = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.ORG_CODE.StartsWith(costCenter)).Select(x => x.TEMPLATE_CODE).ToList()
                                                             : UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 if (dataHeaderCP.Count() == 0)
                 {
@@ -1331,10 +1340,33 @@ namespace SMO.Service.MD
                 }
 
                 var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderCP.Contains(x.TEMPLATE_CODE)).ToList();
-                
-                // Lấy data theo vùng
+                #region test
+                /* var elements = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().Where(x=>x.TIME_YEAR == year).ToList();
+                 if (string.IsNullOrEmpty(area))
+                 {
+                     var lstElementMB = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("B62")).OrderBy(x => x.C_ORDER).ToList();
+                     var lstElementMT = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("T62")).OrderBy(x => x.C_ORDER).ToList();
+                     var lstElementMN = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("N62")).OrderBy(x => x.C_ORDER).ToList();
+                     var lstElementCQ = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("CQ62")).OrderBy(x => x.C_ORDER).ToList();
+                     var lstElementVT = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("VT62")).OrderBy(x => x.C_ORDER).ToList();
+
+                     var dataMB = new ChiPhi();
+                     var dataMT = new ChiPhi();
+                     var dataMN = new ChiPhi();
+                     var dataCQ = new ChiPhi();
+                     var dataVT = new ChiPhi();
+
+                 }
+                 else
+                 {
+                     elements = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("CQ62")).OrderBy(x => x.C_ORDER).ToList();
+                     var dataChild = new ChiPhi();
+                 }*/
+                #endregion
+
+                #region code gốc
                 var lstDataCP = dataInHeaderCP;
-                var lstKhoanMucCP = lstDataCP.GroupBy(x=>x.KHOAN_MUC_HANG_HOA_CODE).Select(x=>x.First()).Select(x=> new {KhoanMucCode = x.KHOAN_MUC_HANG_HOA_CODE, KhoanMucName= x.KhoanMucHangHoa.NAME}).ToList();
+                var lstKhoanMucCP = lstDataCP.GroupBy(x => x.KHOAN_MUC_HANG_HOA_CODE).Select(x => x.First()).Select(x => new { KhoanMucCode = x.KHOAN_MUC_HANG_HOA_CODE, KhoanMucName = x.KhoanMucHangHoa.NAME }).ToList();
                 var orderCP = 1;
                 List<ChiPhi> lstElementCP = new List<ChiPhi>();
                 List<string> lstParenCodeCP = new List<string>();
@@ -1389,8 +1421,8 @@ namespace SMO.Service.MD
                 var countTake = lstElementCP.Count() / 4;
                 var lstTask1 = lstElementCP.Skip(0).Take(countTake).ToList();
                 var lstTask2 = lstElementCP.Skip(countTake).Take(countTake).ToList();
-                var lstTask3 = lstElementCP.Skip(countTake*2).Take(countTake).ToList();
-                var lstTask4 = lstElementCP.Skip(countTake*3).ToList();
+                var lstTask3 = lstElementCP.Skip(countTake * 2).Take(countTake).ToList();
+                var lstTask4 = lstElementCP.Skip(countTake * 3).ToList();
 
                 Task taskchild1 = Task.Run(() =>
                 {
@@ -1493,11 +1525,11 @@ namespace SMO.Service.MD
                     orderCP++;
                 }
                 // Tính giá trị của các tháng
-                foreach(var item in data.ChiPhi)
+                foreach (var item in data.ChiPhi)
                 {
-                    foreach(var syncItem in lstSyncCode)
+                    foreach (var syncItem in lstSyncCode)
                     {
-                        if(item.code == syncItem.code)
+                        if (item.code == syncItem.code)
                         {
                             item.Value1 = syncItem.month == 1 ? syncItem.value : 0;
                             item.Value2 = syncItem.month == 2 ? syncItem.value : 0;
@@ -1539,9 +1571,9 @@ namespace SMO.Service.MD
 
                 };
                 data.ChiPhi.Add(sumCP);
+                #endregion
 
-
-                        #endregion
+                #endregion
                 return data;
             }
             catch (Exception ex)

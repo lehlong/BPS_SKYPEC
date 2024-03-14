@@ -1752,12 +1752,12 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             }
             if (ObjDetail.TYPE_UPLOAD == "01")
             {
-                if (dataTable.Rows.Count == this.StartRowData)
+               /* if (dataTable.Rows.Count == this.StartRowData)
                 {
                     this.State = false;
                     this.ErrorMessage = "File excel này không có dữ liệu!";
                     return;
-                }
+                }*/
             }
 
         }
@@ -4091,5 +4091,151 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             }
         }
 
+        public void UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string valueInput)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var value = valueInput.Replace(".", "");
+                if (elementCode == "4001" || elementCode == "4010" || elementCode== "4011" || elementCode== "4012" || elementCode== "4020" || elementCode== "4021")
+                {
+                    var rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().VALUE;
+                    foreach (var item in rowsChange)
+                    {
+                        item.VALUE = Convert.ToDecimal(value);
+                        UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
+                    }
+                    var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Cập nhật " + typeName,
+                        COST_CENTER_CODE = costCenter,
+                        PROJECT_CODE = projectCode,
+                        ELEMENT_CODE = elementCode,
+                        OLD_VALUE = oldValue,
+                        NEW_VALUE = Convert.ToDecimal(value),
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }else if(elementCode == "4002")
+                {
+                    var rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().EQUITY_SOURCES;
+                    foreach (var item in rowsChange)
+                    {
+                        item.EQUITY_SOURCES = value;
+                        UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
+                    }
+                    var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Cập nhật " + typeName,
+                        COST_CENTER_CODE = costCenter,
+                        PROJECT_CODE = projectCode,
+                        EQUITY_SOURCE = oldValue,
+                        EQUITY_SOURCE_NEW = value,
+                        ELEMENT_CODE = elementCode,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }
+                else if(elementCode == "4003")
+                {
+                    var rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().PROCESS;
+                    foreach (var item in rowsChange)
+                    {
+                        item.PROCESS = value;
+                        UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
+                    }
+                    var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Cập nhật " + typeName,
+                        COST_CENTER_CODE = costCenter,
+                        PROJECT_CODE = projectCode,
+                        PROCESS_OLD = oldValue,
+                        PROCESS_NEW = value,
+                        ELEMENT_CODE = elementCode,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }
+                else
+                {
+                    var rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
+                    if (rowsChange.Count() == 0)
+                    {
+                        this.State = false;
+                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                        return;
+                    }
+                    var oldValue = rowsChange.FirstOrDefault().DESCRIPTION;
+                    foreach (var item in rowsChange)
+                    {
+                        item.DESCRIPTION = value;
+                        UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
+                    }
+                    // Lưu lịch sử
+                    UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
+                    {
+                        ID = Guid.NewGuid(),
+                        TEMPLATE_CODE = templateCode,
+                        VERSION = version,
+                        YEAR = year,
+                        TYPE = "Cập nhật ghi chú",
+                        COST_CENTER_CODE = costCenter,
+                        OLD_DESCRIPTION = oldValue,
+                        NEW_DESCRIPTION = value,
+                        PROJECT_CODE = projectCode,
+                        ELEMENT_CODE = elementCode,
+                        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                        CREATE_DATE = DateTime.Now,
+                    });
+                }
+                
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
     }
 }

@@ -1749,12 +1749,12 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             }
             if (ObjDetail.TYPE_UPLOAD == "01")
             {
-                if (dataTable.Rows.Count == this.StartRowData)
+                /*if (dataTable.Rows.Count == this.StartRowData)
                 {
                     this.State = false;
                     this.ErrorMessage = "File excel này không có dữ liệu!";
                     return;
-                }
+                }*/
             }
 
         }
@@ -4085,5 +4085,50 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             }
         }
 
+        public void UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string valueInput)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                string value = valueInput.Replace(".", "");
+                var rowsChange = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
+                if (rowsChange.Count() == 0)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                    return;
+                }
+                var oldValue = rowsChange.FirstOrDefault().VALUE;
+                foreach (var item in rowsChange)
+                {
+                    item.VALUE = Convert.ToDecimal(value);
+                    UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Update(item);
+                }
+                var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
+                // Lưu lịch sử
+                UnitOfWork.Repository<DauTuTrangThietBiEditHistoryRepo>().Create(new T_BP_DAU_TU_TRANG_THIET_BI_EDIT_HISTORY
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    TYPE = "Cập nhật " + typeName,
+                    COST_CENTER_CODE = costCenter,
+                    PROJECT_CODE = projectCode,
+                    ELEMENT_CODE = elementCode,
+                    OLD_VALUE = oldValue,
+                    NEW_VALUE = Convert.ToDecimal(value),
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
     }
 }

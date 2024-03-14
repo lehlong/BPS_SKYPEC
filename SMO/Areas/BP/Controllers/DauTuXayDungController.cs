@@ -4,6 +4,7 @@ using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
 using SMO.Core.Entities.MD;
 using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
+using SMO.Repository.Implement.MD;
 using SMO.Service.BP;
 using SMO.Service.BP.DAU_TU_XAY_DUNG;
 using SMO.Service.Class;
@@ -173,5 +174,67 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.UpdateCellValue(templateCode, version, year, type, projectCode, costCenter, elementCode, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        public ActionResult ViewDataTemplate(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
+        {
+            orgCode = orgCode ?? ProfileUtilities.User.ORGANIZE_CODE;
+            var viewDataCenterModel = new ViewDataCenterModel();
+            if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
+            {
+                viewDataCenterModel = new ViewDataCenterModel
+                {
+                    ORG_CODE = orgCode,
+                    IS_LEAF = _service.IsLeaf(),
+                    TEMPLATE_CODE = templateCode ?? string.Empty,
+                    KICH_BAN = kichBan,
+                    PHIEN_BAN = phienBan,
+                    YEAR = year,
+                    VERSION = version,
+                    IS_HAS_NOT_VALUE = false,
+                    IS_HAS_VALUE = true,
+                };
+            }
+            else
+            {
+                viewDataCenterModel = new ViewDataCenterModel
+                {
+                    ORG_CODE = _service.CalculateOrgCode(orgCode, templateCode),
+                    IS_LEAF = _service.IsLeaf(),
+                    TEMPLATE_CODE = templateCode ?? string.Empty,
+                    KICH_BAN = kichBan,
+                    PHIEN_BAN = phienBan,
+                    YEAR = year,
+                    VERSION = version,
+                    IS_HAS_NOT_VALUE = false,
+                    IS_HAS_VALUE = true,
+                };
+            }
+
+            ViewBag.currencies = _service.GetAllMasterData<CurrencyRepo, T_MD_CURRENCY>();
+            return PartialView("ViewData", viewDataCenterModel);
+        }
+
     }
 }

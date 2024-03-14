@@ -311,7 +311,7 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        public ActionResult EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, decimal value)
+        public ActionResult EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, string value)
         {
             var result = new TransferObject
             {

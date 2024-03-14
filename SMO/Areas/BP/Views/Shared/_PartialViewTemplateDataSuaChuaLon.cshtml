@@ -38,7 +38,6 @@
     td .input-edit {
         border: none;
         background: border-box;
-        width: 100%;
         text-align: right;
     }
 
@@ -115,7 +114,7 @@ else
                                 <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO)</td>
                                 @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                 {
-                                    <td class="pre-whitespace"><input class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
+                                    <td class="pre-whitespace"><input class="input-edit" type="text" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
                                 }
                                 <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
                                 <td>@item.DESCRIPTION</td>
@@ -161,6 +160,10 @@ else
                     sanBayCode: sanBayCode,
                     value: value
                 },
+                dataType: 'json',
+                success: function (response) {
+                    Message.execute(response);
+                }
             };
             Forms.Ajax(ajaxParams);
         }

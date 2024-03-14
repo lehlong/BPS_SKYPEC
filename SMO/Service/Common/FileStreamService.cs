@@ -137,7 +137,7 @@ namespace SMO.Service.Common
             try
             {
                 var now = DateTime.Now;
-               // parentPath = "D:\\FileAttach";
+                parentPath = "D:\\FileAttach";
                 path = Path.Combine(parentPath, now.Year.ToString(), now.Month.ToString(), now.Day.ToString());
                 Directory.CreateDirectory(path);
             }

@@ -18,6 +18,10 @@
         background-color: #FFFFFF !important;
     }
 
+    .icon-function {
+        cursor: pointer;
+    }
+
     td {
         overflow: hidden;
     }
@@ -31,13 +35,14 @@
     td .input-edit {
         border: none;
         background: border-box;
-        width: 100%;
         text-align: right;
     }
+
     .table-screen {
         height: calc(100vh - 162px);
-        margin-bottom:0
+        margin-bottom: 0
     }
+
     .full-screen-table {
         height: calc(100vh -100px) !important;
     }
@@ -66,7 +71,7 @@ else
                     </tr>
                     <tr class="sticky-row strong" data-xls-row="header">
                         <td class="pre-whitespace" rowspan="2">TỔNG MỨC ĐẦU TƯ</td>
-                        <td class="pre-whitespace" rowspan="2">NGUỒN VỐN</td>
+                        <td class="pre-whitespace align-center" rowspan="2">NGUỒN VỐN</td>
                         <td class="pre-whitespace" rowspan="2">TIẾN ĐỘ THỰC HIỆN</td>
                         <td class="pre-whitespace" rowspan="2">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
                         <td class="pre-whitespace align-center" colspan="3">KH NĂM</td>
@@ -95,19 +100,37 @@ else
                             {
                                 <td></td>
                             }
+                            @{
+                                var isEdit = item.FirstOrDefault().IS_GROUP ? "disabled" : "";
+                                var codePj = item.FirstOrDefault()?.DauTuTrangThietBiProfitCenter.Project?.CODE;
+                            }
                             <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuTrangThietBiProfitCenter.Project?.CODE)</td>
                             <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuTrangThietBiProfitCenter.Project?.NAME)</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4001").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.FirstOrDefault()?.EQUITY_SOURCES)</td>
-                            <td class="pre-whitespace align-right">@(item.FirstOrDefault()?.PROCESS)</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4010").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4030").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4031").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4032").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4012").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4020").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "4021").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.FirstOrDefault()?.DESCRIPTION)</td>
+                            <td class="align-right">
+                                <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4001', this.value)" value="@(item.Where(x => x.CODE == "4001").Sum(x => x.Values[0]).ToStringVN())" />                             
+                            </td>
+                            <td class="pre-whitespace align-right">
+                                @(item.FirstOrDefault()?.EQUITY_SOURCES)
+                            </td>
+                            <td class="pre-whitespace align-right">
+                                @(item.FirstOrDefault()?.PROCESS)
+                            </td>
+                            <td class="align-right"><input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4010', this.value)" value="@(item.Where(x => x.CODE == "4010").Sum(x => x.Values[0]).ToStringVN())" />
+                            </td>
+                            <td class="align-right"><input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4030', this.value)" value="@(item.Where(x => x.CODE == "4030").Sum(x => x.Values[0]).ToStringVN())" />
+                            </td>
+                            <td class="align-right"> <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4031', this.value)" value="@(item.Where(x => x.CODE == "4031").Sum(x => x.Values[0]).ToStringVN())" />
+                            </td>
+                            <td class="align-right"><input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4032', this.value)" value="@(item.Where(x => x.CODE == "4032").Sum(x => x.Values[0]).ToStringVN())" />
+                            </td>
+                            <td class="align-right"><input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4012', this.value)" value="@(item.Where(x => x.CODE == "4012").Sum(x => x.Values[0]).ToStringVN())" />
+                            </td>
+                            <td class="align-right"><input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4020', this.value)" value="@(item.Where(x => x.CODE == "4020").Sum(x => x.Values[0]).ToStringVN())" />
+                            </td>
+                            <td class="align-right"><input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4021', this.value)" value="@(item.Where(x => x.CODE == "4021").Sum(x => x.Values[0]).ToStringVN())" />
+                            </td>
+                            <td class="pre-whitespace align-right">@(item.FirstOrDefault()?.DESCRIPTION)
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -166,6 +189,33 @@ else
                 },
             };
             Forms.LoadAjaxModal(ajaxParams);
+        }
+        function onEditCell(type, projectCode, costCenter, elementCode, value) {
+            if (value == null || value == "") {
+                return;
+            }
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/DauTuTrangThietBi/UpdateCellValue',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    type: type,
+                    projectCode: projectCode,
+                    costCenter: costCenter,
+                    elementCode: elementCode,
+                    value: value
+                },
+                dataType: 'json',
+                success: function (response) {
+                    Message.execute(response);
+                }
+            };
+            Forms.Ajax(ajaxParams);
         }
     </script>
 }

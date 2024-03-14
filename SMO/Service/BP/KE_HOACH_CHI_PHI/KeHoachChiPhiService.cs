@@ -5454,11 +5454,12 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
         }
 
 
-        public void UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        public void UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string valueInput)
         {
             try
             {
                 UnitOfWork.BeginTransaction();
+                string value = valueInput.Replace(".", "");
                 if (type == "SL")
                 {
                     var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.ChiPhiProfitCenter.COST_CENTER_CODE == costCenter && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();

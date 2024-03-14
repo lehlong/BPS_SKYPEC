@@ -1927,12 +1927,12 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             }
             if (ObjDetail.TYPE_UPLOAD == "01")
             {
-                if (dataTable.Rows.Count == this.StartRowData)
+                /*if (dataTable.Rows.Count == this.StartRowData)
                 {
                     this.State = false;
                     this.ErrorMessage = "File excel này không có dữ liệu!";
                     return;
-                }
+                }*/
             }
 
         }
@@ -4266,13 +4266,13 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             
         }
 
-        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, decimal value)
+        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, string valueInput)
         {
             try
             {
+                string value = valueInput.Replace(".", "");
                 var item = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
-                var itemHistory = UnitOfWork.Repository<SuaChuaThuongXuyenDataHistoryRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
-                if (item == null && itemHistory == null)
+                if (item == null)
                 {
                     return;
                 }
@@ -4280,9 +4280,9 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                 if (item != null)
                 {
                     var oldValue = item.VALUE;
-                    item.VALUE = value;
+                    item.VALUE = Convert.ToDecimal(value);
                     UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Update(item);
-                    UnitOfWork.Repository<SuaChuaThuongXuyenEditHistoryRepo>().Create(new T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY
+                    /*UnitOfWork.Repository<SuaChuaThuongXuyenEditHistoryRepo>().Create(new T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY
                     {
                         ID = Guid.NewGuid(),
                         TEMPLATE_CODE = templateCode,
@@ -4291,32 +4291,13 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                         SAN_BAY_CODE = sanBayCode,
                         ELEMENT_CODE = elementCode,
                         OLD_VALUE = oldValue,
-                        NEW_VALUE = value,
+                        NEW_VALUE = Convert.ToDecimal(value),
                         ACTIVE = true,
                         CREATE_BY = ProfileUtilities.User.USER_NAME,
                         CREATE_DATE = DateTime.Now
-                    });
+                    });*/
                 }
-                else
-                {
-                    var oldValue = itemHistory.VALUE;
-                    itemHistory.VALUE = value;
-                    UnitOfWork.Repository<SuaChuaThuongXuyenDataHistoryRepo>().Update(itemHistory);
-                    UnitOfWork.Repository<SuaChuaThuongXuyenEditHistoryRepo>().Create(new T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY
-                    {
-                        ID = Guid.NewGuid(),
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = version,
-                        YEAR = year,
-                        SAN_BAY_CODE = sanBayCode,
-                        ELEMENT_CODE = elementCode,
-                        OLD_VALUE = oldValue,
-                        NEW_VALUE = value,
-                        ACTIVE = true,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now
-                    });
-                }
+                
                 UnitOfWork.Commit();
             }
             catch (Exception ex)

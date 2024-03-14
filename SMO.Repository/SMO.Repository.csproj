@@ -111,6 +111,7 @@
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiCommentRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiDataRepo.cs" />
+    <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiEditHistoryRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiHistoryRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_TRANG_THIET_BI\DauTuTrangThietBiReviewCommentRepo.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DauTuXayDungVersionRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\DauTuXayDungDataBaseHistoryRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\DauTuXayDungDataBaseRepo.cs" />
+    <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DauTuXayDungEditHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiCommentRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDataRepo.cs" />
@@ -385,6 +387,7 @@
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiCommentRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiDataHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiDataRepo.cs" />
+    <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiEditHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_TRANG_THIET_BI\IDauTuTrangThietBiReviewCommentRepo.cs" />
@@ -398,6 +401,7 @@
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungCommentRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungDataHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungDataRepo.cs" />
+    <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungEditHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungHistoryRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungRepo.cs" />
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungReviewCommentRepo.cs" />
@@ -648,6 +652,7 @@
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_COMMENT_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_DATA_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_DATA_Map.cs" />
+    <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_EDIT_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_TRANG_THIET_BI\T_BP_DAU_TU_TRANG_THIET_BI_REVIEW_COMMENT_Map.cs" />
@@ -661,6 +666,7 @@
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_COMMENT_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_DATA_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_DATA_Map.cs" />
+    <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_Map.cs" />
     <Compile Include="Mapping\BP\DAU_TU_XAY_DUNG\T_BP_DAU_TU_XAY_DUNG_REVIEW_COMMENT_Map.cs" />

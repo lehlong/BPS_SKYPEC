@@ -173,5 +173,27 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.UpdateCellValue(templateCode, version, year, type, projectCode, costCenter, elementCode, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
     }
 }

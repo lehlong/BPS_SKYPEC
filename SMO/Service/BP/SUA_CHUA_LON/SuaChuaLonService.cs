@@ -1852,12 +1852,12 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             }
 
             // Kiểm tra file excel có dữ liệu từ dòng thứ StartRowData hay không
-            if (dataTable == null || dataTable.Rows.Count < this.StartRowData)
+            /*if (dataTable == null || dataTable.Rows.Count < this.StartRowData)
             {
                 this.State = false;
                 this.ErrorMessage = "File excel này không có dữ liệu!";
                 return;
-            }
+            }*/
 
             //Kiếm tra có đúng mẫu hay không
             //Kiếm tra có đúng mẫu hay không
@@ -1935,15 +1935,16 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 }
                 return;
             }
-            if (ObjDetail.TYPE_UPLOAD == "01")
+            /*if (ObjDetail.TYPE_UPLOAD == "01")
             {
                 if (dataTable.Rows.Count == this.StartRowData)
                 {
                     this.State = false;
+
                     this.ErrorMessage = "File excel này không có dữ liệu!";
                     return;
                 }
-            }
+            }*/
 
         }
 
@@ -4280,57 +4281,41 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
         }
 
-        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, decimal value)
+        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode,string valueInput)
         {
             try
             {
-                var item = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
-                var itemHistory = UnitOfWork.Repository<SuaChuaLonDataHistoryRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
-                if (item == null && itemHistory == null)
+                UnitOfWork.BeginTransaction();
+                string value = valueInput.Replace(".", "");
+                var rowsChange = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
+                if (rowsChange.Count() == 0)
                 {
+                    this.State = false;
+                    this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
                     return;
                 }
-                UnitOfWork.BeginTransaction();
-                if (item != null)
+                var oldValue = rowsChange.FirstOrDefault().VALUE;
+                foreach(var item in rowsChange)
                 {
-                    var oldValue = item.VALUE;
-                    item.VALUE = value;
+                    item.VALUE = Convert.ToDecimal(value);
                     UnitOfWork.Repository<SuaChuaLonDataRepo>().Update(item);
-                    UnitOfWork.Repository<SuaChuaLonEditHistoryRepo>().Create(new T_BP_SUA_CHUA_LON_EDIT_HISTORY
-                    {
-                        ID = Guid.NewGuid(),
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = version,
-                        YEAR = year,
-                        SAN_BAY_CODE = sanBayCode,
-                        ELEMENT_CODE = elementCode,
-                        OLD_VALUE = oldValue,
-                        NEW_VALUE = value,
-                        ACTIVE = true,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now
-                    });
                 }
-                else
+
+                /*UnitOfWork.Repository<SuaChuaLonEditHistoryRepo>().Create(new T_BP_SUA_CHUA_LON_EDIT_HISTORY
                 {
-                    var oldValue = itemHistory.VALUE;
-                    itemHistory.VALUE = value;
-                    UnitOfWork.Repository<SuaChuaLonDataHistoryRepo>().Update(itemHistory);
-                    UnitOfWork.Repository<SuaChuaLonEditHistoryRepo>().Create(new T_BP_SUA_CHUA_LON_EDIT_HISTORY
-                    {
-                        ID = Guid.NewGuid(),
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = version,
-                        YEAR = year,
-                        SAN_BAY_CODE = sanBayCode,
-                        ELEMENT_CODE = elementCode,
-                        OLD_VALUE = oldValue,
-                        NEW_VALUE = value,
-                        ACTIVE = true,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now
-                    });
-                }
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    SAN_BAY_CODE = sanBayCode,
+                    ELEMENT_CODE = elementCode,
+                    OLD_VALUE = oldValue,
+                    NEW_VALUE = value,
+                    ACTIVE = true,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now
+                });*/
+
                 UnitOfWork.Commit();
             }
             catch (Exception ex)
