@@ -1906,14 +1906,14 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
 
 
                 // Kiểm tra dữ liệu có phải là số hay không
-                if (ObjDetail.TYPE_UPLOAD == "01")
+                /*if (ObjDetail.TYPE_UPLOAD == "01")
                 {
                     this.ConvertData(dataTable, lstElement.ToList(), startColumn: 6, endColumn: ListColumnName.Count - 3, isDataBase);
                 }
                 else
                 {
                     this.ConvertData(dataTable, lstElement.ToList(), startColumn: 11, endColumn: 23, isDataBase);
-                }
+                }*/
             }
             if (this.InvalidCellsList.Count > 0)
             {
@@ -4271,7 +4271,8 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             try
             {
                 string value = valueInput.Replace(".", "");
-                var item = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year);
+                var a = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode&& x.SuaChuaProfitCenter.SAN_BAY_CODE == sanBayCode);
+                var item = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.SuaChuaProfitCenter.SAN_BAY_CODE == sanBayCode && x.TIME_YEAR == year);
                 if (item == null)
                 {
                     return;
@@ -4615,6 +4616,12 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                 this.ErrorMessage = "Có lỗi xảy ra trong quá trình tạo file excel!";
                 this.Exception = ex;
             }
+        }
+
+        public List<T_BP_SUA_CHUA_THUONG_XUYEN_DATA> GetDataSCL(string TemplateCode, int? version, int year)
+        {
+            var lstdata = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == TemplateCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
+            return lstdata;
         }
 
     }

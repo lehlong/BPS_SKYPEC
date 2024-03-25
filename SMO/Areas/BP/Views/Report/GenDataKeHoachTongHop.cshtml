@@ -62,6 +62,7 @@
                 <td>Tổng vốn đầu tư giai đoạn</td>
                 <td>Kế hoạch kinh phí đầu tư năm</td>
                 <td>Tiến độ triển khai giai đoạn đầu tư</td>
+                <td>Dữ liệu thực hiện</td>
                 <td>Ghi chú</td>
             </tr>
         </thead>
@@ -81,6 +82,7 @@
                     <td class="align-right">@item.Value2.ToStringVN()</td>
                     <td class="align-right">@item.Value3.ToStringVN()</td>
                     <td class="align-right">@item.Value4</td>
+                    <td class="align-right">@item.ValueDLTH</td>
                     <td class="align-right">@item.Value5</td>
                 </tr>
             }
@@ -97,6 +99,7 @@
                 <td>Danh mục sửa chữa lớn</td>
                 <td>Kế hoạch kinh phí sửa chữa năm 2024</td>
                 <td>Quy mô sửa chữa</td>
+                <td>Dữ liệu thực hiện</td>
                 <td>Ghi chú</td>
             </tr>
         </thead>
@@ -111,9 +114,10 @@
                 var bold = item.IsBold == true ? "bold" : "";
                 <tr style="font-weight:@bold">
                     <td class="align-center">@item.Order</td>
-                    <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
+                    <td class="">@($"{space.ToString()}{item.name}")</td>
                     <td class="align-right">@item.valueKP.ToStringVN()</td>
                     <td class="align-right">@item.valueQM</td>
+                    <td class="align-right">@item.valueDLTH</td>
                     <td class="align-right">@item.description</td>
                 </tr>
             }

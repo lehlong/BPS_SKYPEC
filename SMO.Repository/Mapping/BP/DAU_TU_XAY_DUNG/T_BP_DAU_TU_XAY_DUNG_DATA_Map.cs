@@ -26,6 +26,8 @@ namespace SMO.Repository.Mapping.BP.DAU_TU_XAY_DUNG
             Map(x => x.PROCESS);
             Map(x => x.EQUITY_SOURCES);
             Map(x => x.STATUS);
+            Map(x => x.TDTK);
+
 
             References(x => x.KhoanMucDauTu).Columns("KHOAN_MUC_DAU_TU_CODE", "TIME_YEAR")
                 .Not.Insert().Not.Update();

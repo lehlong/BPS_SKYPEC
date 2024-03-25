@@ -15,6 +15,8 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
         public virtual string DESCRIPTION { get; set; }
         public virtual string PROCESS { get; set; }
         public virtual string EQUITY_SOURCES { get; set; }
+        public virtual string TDTK { get; set; }
+
         public virtual string STATUS { get; set; }
 
         public virtual T_MD_TEMPLATE Template { get; set; }

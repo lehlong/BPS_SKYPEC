@@ -1695,7 +1695,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 });
 
 
-                await Task.WhenAll(task1);
+                await Task.WhenAll(task1, task2,task3,task4);
                 data.AddRange(data1);
                 data.AddRange(data2);
                 data.AddRange(data3);
@@ -3709,7 +3709,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 numRowCur = 8;
                 var number = 1;
-                var data = dataOtherCost.GroupBy(x => x.CODE).Select(x => x.First()).ToList();
+                var data = dataOtherCost.GroupBy(x => x.CODE).Select(x => x.First()).OrderBy(x=>x.C_ORDER).ToList();
 
                 foreach (var item in data)
                 {

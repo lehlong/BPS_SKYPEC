@@ -1,4 +1,4 @@
-﻿@model  List<SMO.Models.ChiPhiReportModel>
+﻿@model  SMO.Models.ReportChiPhiModel
 @using System.Text;
 @{
     var year = ViewBag.Year as int?;
@@ -58,7 +58,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.OrderBy(x => x.Order))
+            @foreach (var item in Model.chiPhiInReports.OrderBy(x => x.Order))
             {
                 var space = new StringBuilder();
                 for (int i = 0; i < item.Level; i++)
@@ -67,15 +67,17 @@
                 }
                 var bold = item.IsBold == true ? "bold" : "";
                 <tr style="font-weight:@bold">
-                    <td>@item.Order</td>
-                    <td>@item.name</td>
-                    @foreach(var header in lstHeader)
-                    {
-                        if(item.area == header)
-                        {
-                            <td>@item.value</td>
-                        }
-                    }
+                    <td class="align-center">@item.Order</td>
+                    <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
+                    <td class="align-center">@item.valueCQCT.ToStringVN()</td>
+                    <td class="align-center">@item.valueCNMB.ToStringVN()</td>
+                    <td class="align-center">@item.valueCNMT.ToStringVN()</td>
+                    <td class="align-center">@item.valueCNMN.ToStringVN()</td>
+                    <td class="align-center">@item.valueCNVT.ToStringVN()</td>
+                    <td class="align-center"></td>
+                    <td class="align-center"></td>
+                    <td class="align-center"></td>
+
                 </tr>
             }
         </tbody>

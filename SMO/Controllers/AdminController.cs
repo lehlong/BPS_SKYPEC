@@ -105,7 +105,10 @@ namespace SMO.Controllers
         }
 
 
-
+        public ActionResult THMReport()
+        {
+            return PartialView();
+        }
 
         public ActionResult DashboardTableau()
         {

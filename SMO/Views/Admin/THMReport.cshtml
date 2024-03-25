@@ -1,0 +1,243 @@
+﻿@{
+    var title = "";
+    if (ViewBag.Modul == "1")
+    {
+        title = "DỮ LIỆU KẾ HOẠCH";
+    }
+    else if (ViewBag.Modul == "2")
+    {
+        title = "TỔNG KIỂM SOÁT DỮ LIỆU";
+    }
+    else if (ViewBag.Modul == "3")
+    {
+        title = "THẨM ĐỊNH DỮ LIỆU";
+    }
+}
+
+@{
+    ViewBag.ViewId = Guid.NewGuid();
+}
+
+<style>
+    .info-box-3 {
+        height: 86px;
+    }
+
+    .col-skypec {
+        color: #207ce5 !important;
+    }
+</style>
+
+<div id="@ViewBag.ViewId" class="container-fluid child-content">
+
+    <div class="card ">
+        <h4 class="align-center m-b-15" style="margin: 0;padding-top: 26px;">@title</h4>
+        <span class="waves-effect btn-default btn" id="cmdBack" onclick="Forms.Close('@ViewBag.ViewId');" title="" style="margin-left:35px;"><i class="col-fecon material-icons">arrow_back</i><span>Quay lại</span></span>
+
+        <div class="body" style="padding: 0px 22px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH SẢN LƯỢNG, DOANH THU, CHI PHÍ</a>
+                </li>
+            </ul>
+
+            <div class="p-t-10 p-b-5">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachSanLuong")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">assignment</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH SẢN LƯỢNG</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachDoanhThu")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">payment</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH DOANH THU</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachChiPhi")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">monetization_on</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH CHI PHÍ</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachVanChuyen")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">local_shipping</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH VẬN CHUYỂN</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card  m-t-10" style="margin-top:0px">
+        <div class="body" style="padding: 0px 22px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH ĐẦU TƯ</a>
+                </li>
+            </ul>
+
+            <div class="p-t-10 p-b-5">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuXayDung")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">store</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">ĐẦU TƯ CÓ XÂY DỰNG</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuTrangThietBi")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">build</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">ĐẦU TƯ TRANG THIẾT BỊ</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuNgoaiDoanhNghiep")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">domain</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">ĐẦU TƯ NGOÀI DOANH NGHIỆP</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card  m-t-10" style="margin-top:0px">
+        <div class="body" style="padding: 0px 22px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH SỬA CHỮA</a>
+                </li>
+            </ul>
+
+            <div class="p-t-10 p-b-5">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/SuaChuaLon")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">attractions</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH SỬA CHỮA LỚN</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/SuaChuaThuongXuyen")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">settings</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 16px;">KẾ HOẠCH SỬA CHỮA <br />THƯỜNG XUYÊN</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card  m-t-10" style="margin-top:0px">
+        <div class="body" style="padding: 0px 22px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH GIÁ THÀNH</a>
+                </li>
+            </ul>
+
+            <div class="p-t-10 p-b-5">
+                <div class="row" style="margin-bottom: 24px;">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Element")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">help</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">ĐỊNH NGHĨA</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaThanh", "MD/Element")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">functions</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">TÍNH TOÁN GIÁ THÀNH</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachTaiChinh", "MD/Element")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">local_atm</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH TÀI CHÍNH</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaVon", "MD/Element")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">local_atm</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH GIÁ VỐN</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -22,6 +22,13 @@ namespace SMO.Areas.BP.Controllers
         BPControllerBase<DauTuTrangThietBiService, T_BP_DAU_TU_TRANG_THIET_BI, DauTuTrangThietBiRepo, T_MD_KHOAN_MUC_DAU_TU, T_BP_DAU_TU_TRANG_THIET_BI_VERSION, T_BP_DAU_TU_TRANG_THIET_BI_HISTORY, DauTuTrangThietBiHistoryRepo>,
         IBPController<DauTuTrangThietBiService, T_BP_DAU_TU_TRANG_THIET_BI, DauTuTrangThietBiRepo, T_MD_KHOAN_MUC_DAU_TU, T_BP_DAU_TU_TRANG_THIET_BI_VERSION, T_BP_DAU_TU_TRANG_THIET_BI_HISTORY, DauTuTrangThietBiHistoryRepo>
     {
+        [MyValidateAntiForgeryToken]
+        public ActionResult IndexDLTH(int? year)
+        {
+            _service.ObjDetail.TIME_YEAR = year ?? 0;
+            _service.ObjDetail.PHIEN_BAN = "PB5";
+            return PartialView("Index", _service);
+        }
         public override FileContentResult DownloadTemplate(string templateId, int year)
         {
             var template = _service.GetTemplate(templateId);
@@ -100,6 +107,7 @@ namespace SMO.Areas.BP.Controllers
             ViewBag.costCFHeader = _service.GetHeader(model);
             model.IS_DRILL_DOWN = isDrillDownApply;
             model.EXCHANGE_RATE = 12;
+            ViewBag.lstProject = _service.GetProject(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
             ViewBag.dataCenterModel = model;
             return PartialView(dataCost);
         }

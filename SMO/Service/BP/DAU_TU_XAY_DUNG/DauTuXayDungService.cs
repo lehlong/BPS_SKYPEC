@@ -2027,7 +2027,6 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                         var value4001 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? 0 : tableData.Rows[i][2]);
                         var value4010 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? 0 : tableData.Rows[i][5]);
                         var value4011 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
-                        var value4012 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
                         var value4020 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
                         var value4021 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
                         foreach (var ele in lstElement.Where(x => x.CENTER_CODE == centerCode))
@@ -2042,9 +2041,10 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 STATUS = Approve_Status.ChuaTrinhDuyet,
                                 VERSION = versionNext,
                                 KHOAN_MUC_DAU_TU_CODE = ele.ELEMENT_CODE,
-                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4012" ? value4012 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
+                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
                                 DESCRIPTION = tableData.Rows[i][10].ToString(),
                                 PROCESS = tableData.Rows[i][4].ToString(),
+                                TDTK = tableData.Rows[i][7].ToString(),
                                 EQUITY_SOURCES = tableData.Rows[i][3].ToString(),
                                 CREATE_BY = currentUser
                             };
@@ -3449,6 +3449,8 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                     i.Values[0] = treeData.VALUE ?? 0;
                                     i.DESCRIPTION = treeData.DESCRIPTION;
                                     i.PROCESS = treeData.PROCESS;
+                                    i.TDTK = treeData.TDTK;
+
                                 }
                             }
                             yield return i;
@@ -4237,5 +4239,13 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 this.Exception = ex;
             }
         }
+
+        public List<T_BP_DAU_TU_XAY_DUNG_DATA> GetProject(string TemplateCode, int? version, int year)
+        {
+            var lstProject = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == TemplateCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
+            return lstProject;
+        }
+
+        
     }
 }

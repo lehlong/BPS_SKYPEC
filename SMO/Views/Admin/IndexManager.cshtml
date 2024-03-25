@@ -1,12 +1,132 @@
-﻿<div id="divDashBoard" style="height: 100%; width: 100%"></div>
+﻿
+<style>
+    .info-box-3 {
+        height: 86px;
+    }
+    .menu i.material-icons {
+        color: #207ce5 !important;
+    }
+    .col-skypec {
+        color: #207ce5 !important;
+    }
+</style>
 
-@*<script type="text/javascript">
-    $(function () {
-        $.ajax({
-            url: "@Url.Action("DashboardTableau")",
-            success : function (reponse) {
-                $("#divDashBoard").html(reponse);
-            }
-        });
-    });
-</script>*@
+<div class="container-fluid child-content menu">
+
+    <div class="card" style="margin-top:0px">
+        <div class="body" style="padding: 0px 22px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>BÁO CÁO TỔNG HỢP</a>
+                </li>
+            </ul>
+
+            <div class="p-t-10 p-b-5">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexSuaChuaThuongXuyen", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons">storage</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">SỬA CHỮA THƯỜNG XUYÊN</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexSuaChuaLon", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">store</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;"> SỬA CHỮA LỚN</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexKichBan", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">build</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;"> THEO KỊCH BẢN </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexPhienBan", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">attractions</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;"> THEO PHIÊN BẢN</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexSanLuong", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">settings</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">SẢN LƯỢNG TRA NẠP</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexDoanhThu", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">settings</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">DOANH THU</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexDoanhThuTheoPhi", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">settings</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">DOANH THU THEO PHÍ</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexTraNapCungUng", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">settings</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">TRA NẠP CUNG ỨNG</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachTongHop", "BP/Report")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">settings</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH TỔNG HỢP</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

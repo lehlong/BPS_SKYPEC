@@ -338,6 +338,7 @@
     <Compile Include="Entities\MD\T_MD_PROJECT.cs" />
     <Compile Include="Entities\MD\T_MD_PROVINCE.cs" />
     <Compile Include="Entities\MD\T_MD_PURCHASE_DATA.cs" />
+    <Compile Include="Entities\MD\T_MD_REPORT_CHI_PHI_CODE.cs" />
     <Compile Include="Entities\MD\T_MD_ROUTE.cs" />
     <Compile Include="Entities\MD\T_MD_SAN_BAY.cs" />
     <Compile Include="Entities\MD\T_MD_SAN_LUONG_PROFIT_CENTER.cs" />

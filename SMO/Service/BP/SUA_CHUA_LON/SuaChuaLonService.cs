@@ -1852,12 +1852,12 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             }
 
             // Kiểm tra file excel có dữ liệu từ dòng thứ StartRowData hay không
-            /*if (dataTable == null || dataTable.Rows.Count < this.StartRowData)
+            if (dataTable == null || dataTable.Rows.Count < this.StartRowData)
             {
                 this.State = false;
                 this.ErrorMessage = "File excel này không có dữ liệu!";
                 return;
-            }*/
+            }
 
             //Kiếm tra có đúng mẫu hay không
             //Kiếm tra có đúng mẫu hay không
@@ -1872,7 +1872,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                         return;
                     }
                 }
-                this.ConvertData(dataTable, lstElement.ToList(), startColumn: 8, endColumn: ListColumnNameDataBase.Count - 5, isDataBase);
+                /*this.ConvertData(dataTable, lstElement.ToList(), startColumn: 8, endColumn: ListColumnNameDataBase.Count - 5, isDataBase);*/
 
             }
             else
@@ -1916,14 +1916,14 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
 
                 // Kiểm tra dữ liệu có phải là số hay không
-                if (ObjDetail.TYPE_UPLOAD == "01")
+                /*if (ObjDetail.TYPE_UPLOAD == "01")
                 {
                     this.ConvertData(dataTable, lstElement.ToList(), startColumn: 7, endColumn: 9, isDataBase);
                 }
                 else
                 {
                     this.ConvertData(dataTable, lstElement.ToList(), startColumn: 11, endColumn: 23, isDataBase);
-                }
+                }*/
             }
             if (this.InvalidCellsList.Count > 0)
             {
@@ -2221,6 +2221,10 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                             DESCRIPTION = tableData.Rows[i][20].ToString(),
                             CREATE_BY = currentUser
                         };
+                    }
+                    else
+                    {
+
                     }
 
                     UnitOfWork.Repository<SuaChuaLonDataRepo>().Create(costData);
@@ -4287,7 +4291,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             {
                 UnitOfWork.BeginTransaction();
                 string value = valueInput.Replace(".", "");
-                var rowsChange = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
+                var rowsChange = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.SuaChuaProfitCenter.SAN_BAY_CODE == sanBayCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
                 if (rowsChange.Count() == 0)
                 {
                     this.State = false;
@@ -4636,6 +4640,12 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 this.ErrorMessage = "Có lỗi xảy ra trong quá trình tạo file excel!";
                 this.Exception = ex;
             }
+        }
+
+        public List<T_BP_SUA_CHUA_LON_DATA> GetDataSCL(string TemplateCode, int? version, int year)
+        {
+            var lstdata = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == TemplateCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
+            return lstdata;
         }
 
     }

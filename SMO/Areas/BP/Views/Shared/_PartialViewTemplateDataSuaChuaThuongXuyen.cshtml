@@ -13,6 +13,8 @@
     var orgCode = dataCenterModel.ORG_CODE;
     var tempalteCode = dataCenterModel.TEMPLATE_CODE;
     var year = dataCenterModel.YEAR;
+    var lstData = ViewBag.lstData as List<T_BP_SUA_CHUA_THUONG_XUYEN_DATA>;
+    var lstKhoanMuc = lstData.Select(x => x.KhoanMucSuaChua).ToList();
     var version = dataCenterModel.VERSION;
     var formIdExportExcel = Guid.NewGuid().ToString();
 }
@@ -35,7 +37,6 @@
     td .input-edit {
         border: none;
         background: border-box;
-        width: 100%;
         text-align: right;
     }
 
@@ -49,7 +50,7 @@
     }
 </style>
 
-@if (Model == null || Model.Count == 0 ||
+@if (Model == null ||
     detailCostElements == null || detailCostElements.Count == 0 || costCFHeader == null)
 {
     Html.RenderPartial("_NothingData");
@@ -78,44 +79,90 @@ else
                             }
                             <td class="pre-whitespace">CỘNG</td>
                         </tr>
-
-
-                        @foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                        @if (dataCenterModel.PHIEN_BAN == "PB5")
                         {
-                            var space = new StringBuilder();
-                            for (int i = 0; i < item.LEVEL; i++)
+                            foreach (var item in lstKhoanMuc.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
                             {
-                                space.Append("\t");
-                            }
-                            var classParent = item.IS_GROUP ? "strong" : string.Empty;
-                            var isEdit = item.IS_GROUP ? "disabled" : "";
-                            var isChecked = item.IsChecked ? "checked" : "";
-                            <tr class="@classParent">
-                                <td>
-                                    <input type="checkbox" @isChecked class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
-                                    <label for="@("chkItem" + item.CODE)"></label>
-                                </td>
-                                <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
-                                <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
+                                var space = new StringBuilder();
+                                for (int i = 0; i < item.LEVEL; i++)
+                                {
+                                    space.Append("\t");
+                                }
+                                var classParent = item.IS_GROUP ? "strong" : string.Empty;
+                                var isEdit = item.IS_GROUP ? "disabled" : "";
+                                var isChecked = item.IsChecked ? "checked" : "";
+                                <tr class="@classParent">
+                                    <td>
+                                        <input type="checkbox" @isChecked class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                                        <label for="@("chkItem" + item.CODE)"></label>
+                                    </td>
+                                    <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
+                                    <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
 
-                                @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
-                                {
-                                    <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
-                                }
-                                else
-                                {
-                                    <td></td>
-                                }
-                                <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
-                                <td class="pre-whitespace"></td>
-                                @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
-                                {
-                                    <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
-                                }
-                                <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
-                                <td>@item.DESCRIPTION</td>
-                            </tr>
+                                    @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
+                                    {
+                                        <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                    <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                    <td class="pre-whitespace"></td>
+                                    @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                    {
+                                        var sbCheck = detailCostElements.Any(x=>x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
+                                        isEdit = sbCheck ? "" : "disabled";
+                                        <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
+                                    }
+                                    <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
+                                    <td>@item.DESCRIPTION</td>
+                                </tr>
+                            }
                         }
+                        else
+                        {
+                            foreach (var item in Model.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+                            {
+                                var space = new StringBuilder();
+                                for (int i = 0; i < item.LEVEL; i++)
+                                {
+                                    space.Append("\t");
+                                }
+                                var classParent = item.IS_GROUP ? "strong" : string.Empty;
+                                var isEdit = item.IS_GROUP ? "disabled" : "";
+                                var isChecked = item.IsChecked ? "checked" : "";
+                                <tr class="@classParent">
+                                    <td>
+                                        <input type="checkbox" @isChecked class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                                        <label for="@("chkItem" + item.CODE)"></label>
+                                    </td>
+                                    <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
+                                    <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
+
+                                    @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
+                                    {
+                                        <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                    <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
+                                    <td class="pre-whitespace"></td>
+                                    @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                    {
+                                        var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
+                                        isEdit = sbCheck ? "" : "disabled";
+                                        <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
+                                    }
+                                    <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
+                                    <td>@item.DESCRIPTION</td>
+                                </tr>
+                            }
+                        }
+
+
 
                     </tbody>
                 </table>

@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <Use64BitIISExpress>true</Use64BitIISExpress>
+    <Use64BitIISExpress>false</Use64BitIISExpress>
     <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -855,6 +855,7 @@
     <Compile Include="Service\MD\ProjectService.cs" />
     <Compile Include="Service\MD\ProvinceService.cs" />
     <Compile Include="Service\MD\PurchaseDataService.cs" />
+    <Compile Include="Service\MD\ReportChiPhiCodeService.cs" />
     <Compile Include="Service\MD\RouteService.cs" />
     <Compile Include="Service\MD\SanBayService.cs" />
     <Compile Include="Service\MD\SanLuongProfitCenterService.cs" />
@@ -2067,7 +2068,7 @@
     <Content Include="Areas\BP\Views\Report\GenDataSuaChuaThuongXuyen.cshtml" />
     <Content Include="Areas\BP\Views\Report\IndexDauTu.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataDauTu.cshtml" />
-	<Content Include="Areas\BP\Views\Report\IndexReportChiPhi.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexReportChiPhi.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataChiPhi.cshtml" />
     <Content Include="Areas\MD\Views\SyncCost\Index.cshtml" />
     <Content Include="Areas\MD\Views\SyncCost\List.cshtml" />
@@ -6543,6 +6544,7 @@
     <Content Include="Theme\plugins\tinymce\skins\lightgray\fonts\tinymce.eot" />
     <Content Include="Theme\plugins\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Theme\plugins\tinymce\skins\lightgray\fonts\tinymce.woff" />
+    <Content Include="Views\Admin\THMReport.cshtml" />
     <None Include="Web References\EGAS_GW\EGASWebService.disco" />
     <Content Include="Web References\SMS_GW\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>

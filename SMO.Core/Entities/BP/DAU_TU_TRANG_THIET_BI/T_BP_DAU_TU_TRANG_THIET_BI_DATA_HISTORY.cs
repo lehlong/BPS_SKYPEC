@@ -14,6 +14,9 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
         public virtual decimal? VALUE { get; set; }
         public virtual string DESCRIPTION { get; set; }
         public virtual string PROCESS { get; set; }
+        public virtual string EQUITY_SOURCES { get; set; }
+        public virtual string TDTK { get; set; }
+
         public virtual string STATUS { get; set; }
 
         public virtual T_MD_KHOAN_MUC_DAU_TU KhoanMucDauTu { get; set; }
@@ -35,6 +38,8 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
                 TIME_YEAR = history.TIME_YEAR,
                 VALUE = history.VALUE,
 
+                EQUITY_SOURCES = history.EQUITY_SOURCES,
+                TDTK = history.TDTK,
                 DESCRIPTION = history.DESCRIPTION,
                 PROCESS = history.PROCESS,
                 ACTIVE = history.ACTIVE,
@@ -65,6 +70,8 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
                 TIME_YEAR = data.TIME_YEAR,
                 VALUE = data.VALUE,
 
+                EQUITY_SOURCES = data.EQUITY_SOURCES,
+                TDTK = data.TDTK,
                 DESCRIPTION = data.DESCRIPTION,
                 PROCESS = data.PROCESS,
                 ACTIVE = data.ACTIVE,

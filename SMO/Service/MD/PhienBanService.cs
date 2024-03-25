@@ -1,6 +1,7 @@
 ﻿using iTextSharp.text;
 using Microsoft.Office.Interop.Excel;
 using NHibernate.Criterion;
+using NHibernate.Mapping;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -1195,6 +1196,14 @@ namespace SMO.Service.MD
                         lstProject.AddRange(lstPjInDTXD);
                         lstProject.AddRange(lstPjInDTTTB);
                         lstProject = lstProject.Distinct().ToList();
+                        var dataHeaderDTXD_DLTH = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
+                                                                        UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
+                        var dataHeaderTTB_DLTH = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
+                                                                        UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
+                        
+                        var dataInHeaderXD_DLTH = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD_DLTH.Contains(x.TEMPLATE_CODE)).ToList();
+                        var dataInHeaderTTB_DLTH = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderTTB_DLTH.Contains(x.TEMPLATE_CODE)).ToList();
+
                         var orderDT = 1;
                         foreach (var pj in lstProject)
                         {
@@ -1202,15 +1211,18 @@ namespace SMO.Service.MD
                             {
                                 Name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x=>x.CODE == pj).NAME,
                                 Value2 = dataInHeaderDTXD.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+                                ValueDLTH = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
                                 Order = orderDT,
                             };
                             data.DauTu.Add(item);
                             orderDT += 1;
                         }
+
                         data.DauTu.Add(new DauTu
                         {
                             Name = "TỔNG CỘNG",
                             Value2 = data.DauTu.Sum(x => x.Value2),
+                            ValueDLTH = data.DauTu.Sum(x=>x.ValueDLTH),
                             Order = 0,
                             IsBold = true,
                         });
@@ -1231,8 +1243,10 @@ namespace SMO.Service.MD
                             cancellationTokenSource.Cancel();
 
                         }*/
+                        var dataHeaderDLTHSCL = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
 
                         var dataInHeaderSCL = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSuaChuaLon.Contains(x.TEMPLATE_CODE)).ToList();
+                        var dataInHeaderDLTHSCL = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDLTHSCL.Contains(x.TEMPLATE_CODE)).ToList();
                         var sumSCL = new SuaChuaLon
                         {
                             name = "TỔNG CỘNG",
@@ -1240,7 +1254,10 @@ namespace SMO.Service.MD
                             IsBold = true
                         };
                         var lstData = !string.IsNullOrEmpty(area) ? dataInHeaderSCL.Where(x => x.SuaChuaProfitCenter.SanBay.AREA_CODE == area).ToList() : dataInHeaderSCL;
+                        var lstDataDLTH = !string.IsNullOrEmpty(area) ? dataInHeaderDLTHSCL.Where(x => x.SuaChuaProfitCenter.SanBay.AREA_CODE == area).ToList() : dataInHeaderDLTHSCL;
+
                         var lstKhoanMuc = lstData.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
+                        var lstKhoanMucDLTH = lstDataDLTH.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
                         var orderSCL = 1;
 
                         List<SuaChuaLon> lstElementSCL = new List<SuaChuaLon>();
@@ -1254,10 +1271,12 @@ namespace SMO.Service.MD
                                 parentCode = parentCodeItem,
                                 name = name,
                                 valueKP = lstData.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.VALUE) ?? 0,
+                                valueDLTH = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.VALUE) ?? 0,
                                 IsBold = false
                             };
                             lstElementSCL.Add(item);
                             sumSCL.valueKP = sumSCL.valueKP + item.valueKP;
+                            sumSCL.valueDLTH = sumSCL.valueDLTH + item.valueDLTH;
                         }
 
                         var lstParentCode = lstElementSCL.Select(x => x.parentCode).Distinct().ToList();
@@ -1269,6 +1288,7 @@ namespace SMO.Service.MD
                             {
                                 name = name,
                                 valueKP = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.valueKP),
+                                valueDLTH = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.valueDLTH),
                                 Order = orderSCL,
                                 IsBold = true
                             };
@@ -1423,7 +1443,7 @@ namespace SMO.Service.MD
                 var lstTask2 = lstElementCP.Skip(countTake).Take(countTake).ToList();
                 var lstTask3 = lstElementCP.Skip(countTake * 2).Take(countTake).ToList();
                 var lstTask4 = lstElementCP.Skip(countTake * 3).ToList();
-
+               
                 Task taskchild1 = Task.Run(() =>
                 {
                     foreach (var element in lstTask1)
@@ -1543,14 +1563,30 @@ namespace SMO.Service.MD
                             item.Value10 = syncItem.month == 10 ? syncItem.value : 0;
                             item.Value11 = syncItem.month == 11 ? syncItem.value : 0;
                             item.Value12 = syncItem.month == 12 ? syncItem.value : 0;
-                        }
-                        else
-                        {
-
-                        }
+                        }                
                     }
                 }
-                var sumCP = new ChiPhi
+                foreach (var item in data.ChiPhi)
+                {
+                    if (lstParenCodeCP.Contains(item.code))
+                    {
+                        item.Value1 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x=>x.Value1);
+                        item.Value2 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value2);
+                        item.Value3 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value3);
+                        item.Value4 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value4);
+                        item.Value5 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value5);
+                        item.Value6 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value6);
+                        item.Value7 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value7);
+                        item.Value8 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value8);
+                        item.Value9 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value9);
+                        item.Value10 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value10);
+                        item.Value11 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value11);
+                        item.Value12 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value12);
+
+                    }
+                }
+
+                    var sumCP = new ChiPhi
                 {
                     name = "TỔNG CỘNG",
                     Order = 0,
@@ -3755,64 +3791,21 @@ namespace SMO.Service.MD
             }
         }
         
-        internal async Task<List<ChiPhiReportModel>> GetReportDataChiPhi(int year, string phienBan, string kichBan)
+        internal ReportChiPhiModel GetReportDataChiPhi(int year, string phienBan, string kichBan)
         {
             try
             {
-                List<string> charArea = new List<string> { "CQ", "B", "T", "N", "VT" };
-                var data = new List<ChiPhiReportModel>();
-                var dataHeaderCP = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var lstParentCode = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().Select(x => x.PARENT_CODE).ToList();
-                if (dataHeaderCP.Count() == 0)
-                {
-                    return data;
-                }
-                var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderCP.Contains(x.TEMPLATE_CODE)).ToList();
-                var elements = UnitOfWork.Repository<KhoanMucHangHoaRepo>().GetAll();
-                foreach (var el in elements)
-                {
-                    el.Children = elements.Where(x => x.PARENT_CODE == el.CODE).ToList();
-                }
-                var order = 0;
-                var lstDataCQ = elements.Where(x => x.CODE.StartsWith("CQ") && !string.IsNullOrEmpty(x.PARENT_CODE)).ToList();
-                var lstDataMB = elements.Where(x => x.CODE.StartsWith("B")).ToList();
-                var lstDataMT = elements.Where(x => x.CODE.StartsWith("T")).ToList();
-                var lstDataMN = elements.Where(x => x.CODE.StartsWith("N")).ToList();
-                var lstDataVT = elements.Where(x => x.CODE.StartsWith("VT")).ToList();
-                var dataCQ = new List<ChiPhiReportModel>();
-                var dataMB = new List<ChiPhiReportModel>();
-                var dataMT = new List<ChiPhiReportModel>();
-                var dataMN = new List<ChiPhiReportModel>();
-                var dataVT = new List<ChiPhiReportModel>();
+                #region
+                // Lấy danh sách khoản mục
+                var lstKhoanMucAll = UnitOfWork.Repository<ReportChiPhiCodeRepo>().Queryable().Select(x => x.GROUP_1_ID).Distinct().ToList(); 
+                lstKhoanMucAll = lstKhoanMucAll.Distinct().ToList();
+                #endregion
+                var data = new ReportChiPhiModel();
+                var header = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TIME_YEAR == year).Select(x=>x.TEMPLATE_CODE).ToList();
+                var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && header.Contains(x.TEMPLATE_CODE)).ToList();
+                data = SyncElement(lstKhoanMucAll, dataInHeaderCP);
 
-                var count = lstDataCQ.Count() + lstDataMB.Count() + lstDataMT.Count() + lstDataMN.Count() + lstDataVT.Count();
-                Task taskCQ = Task.Run(async () =>
-                {
-                    dataCQ = await SyncElement(lstDataCQ, dataInHeaderCP, lstParentCode, "CQ", order);
-                });
-                Task taskMB = Task.Run(async () =>
-                {
-                    dataMB = await SyncElement(lstDataMB, dataInHeaderCP, lstParentCode, "MB", order);
-                });
-                Task taskMT = Task.Run(async () =>
-                {
-                    dataMT = await SyncElement(lstDataMT, dataInHeaderCP, lstParentCode, "MT", order);
-                });
-                Task taskMN = Task.Run(async () =>
-                {
-                    dataMN = await SyncElement(lstDataMN, dataInHeaderCP, lstParentCode, "MN", order);
-                });
-                Task taskVT = Task.Run(async () =>
-                {
-                    dataVT = await SyncElement(lstDataVT, dataInHeaderCP, lstParentCode, "VT", order);
-                });
-                await Task.WhenAll(taskCQ, taskMB, taskMT, taskMN, taskVT);
-                data.AddRange(dataCQ);
-                data.AddRange(dataMB);
-                data.AddRange(dataMN);
-                data.AddRange(dataMT);
-                data.AddRange(dataVT);
-                return data;
+                 return data;
             }
             catch(Exception ex)
             {
@@ -3820,116 +3813,387 @@ namespace SMO.Service.MD
             }
         }
 
-        internal async Task<List<ChiPhiReportModel>> SyncElement(IList<T_MD_KHOAN_MUC_HANG_HOA> elements,List<T_BP_KE_HOACH_CHI_PHI_DATA> dataInHeaderCP,List<string> lstParentCode,string area, int order)
+        internal ReportChiPhiModel SyncElement(List<string> lstParent, List<T_BP_KE_HOACH_CHI_PHI_DATA> lstData)
         {
-            var dataAll = new List<ChiPhiReportModel>();
-            var numTake = 0;
-            var numberTask = 4;
-            var orderItem = order;
-            if (elements.Count() > 200)
+            var dataAll = new ReportChiPhiModel();
+            var Sum = new ChiPhiInReport
             {
-                numTake = elements.Count() / numberTask;
+                code = "",
+                name = "Tổng cộng",
+                IsBold = true,
+                Order = 0,
+            };
+            var order = 1;
+
+            foreach (var element in lstParent)
+            {
+                var codeMB = "B" + element;
+                var codeMT = "T" + element;
+                var codeMN = "N" + element;
+                var codeVT = "VT" + element;
+                var codeCQ = "CQ" + element;
+                var elementValue = new ChiPhiInReport
+                {
+                    code = element,
+                    name = UnitOfWork.Repository<ReportChiPhiCodeRepo>().Queryable().Where(x => x.GROUP_1_ID == element)?.FirstOrDefault()?.GROUP_NAME,
+                    valueCNMB = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeMB)).Sum(x => x.AMOUNT)?? 0,
+                    valueCNMT = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeMT)).Sum(x => x.AMOUNT)?? 0,
+                    valueCNMN = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeMN)).Sum(x => x.AMOUNT)?? 0,
+                    valueCNVT = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeVT)).Sum(x => x.AMOUNT)?? 0,
+                    valueCQCT = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeCQ)).Sum(x => x.AMOUNT)?? 0,
+                    IsBold = true,
+                    Order = order
+                };
+                Sum.valueCNMB = Sum.valueCNMB + elementValue.valueCNMB;
+                Sum.valueCNMT = Sum.valueCNMT + elementValue.valueCNMT;
+                Sum.valueCNMN = Sum.valueCNMN + elementValue.valueCNMN;
+                Sum.valueCNVT = Sum.valueCNVT + elementValue.valueCNVT;
+                Sum.valueCQCT = Sum.valueCQCT + elementValue.valueCQCT;
+                
+                dataAll.chiPhiInReports.Add(elementValue);
+                var lstChildInSyncCost = UnitOfWork.Repository<ReportChiPhiCodeRepo>().Queryable().Where(x => x.GROUP_1_ID == element).Select(x => x.GROUP_2_ID).Distinct().ToList();
+                foreach (var item in lstChildInSyncCost)
+                {
+                    if (string.IsNullOrEmpty(item))
+                    {
+                        continue;
+                    }
+                    var checkKm = element + item;
+                    var codeChildMB = codeMB + item;
+                    var codeChildMT = codeMT + item;
+                    var codeChildMN = codeMN + item;
+                    var codeChildVT = codeVT + item;
+                    var codeChildCQ = codeCQ + item;
+                    
+                    var elementItemValue = new ChiPhiInReport
+                    {
+                        code = item,
+                        name = UnitOfWork.Repository<ReportChiPhiCodeRepo>().Queryable().FirstOrDefault(x => x.GROUP_2_ID == item)?.GROUP_NAME,
+                        valueCNMB = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeChildMB)).Sum(x => x.AMOUNT) ?? 0,
+                        valueCNMT = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeChildMT)).Sum(x => x.AMOUNT) ?? 0,
+                        valueCNMN = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeChildMN)).Sum(x => x.AMOUNT) ?? 0,
+                        valueCNVT = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeChildVT)).Sum(x => x.AMOUNT) ?? 0,
+                        valueCQCT = lstData.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(codeChildCQ)).Sum(x => x.AMOUNT) ?? 0,
+                        Order = order
+                    };
+                    dataAll.chiPhiInReports.Add(elementItemValue);
+                    order++;
+                }
+                order++;
             }
-            else
-            {
-                numTake = elements.Count();
-            }
-            var lstTask1 = elements.Skip(0).Take(numTake).ToList();
-            var lstTask2 = elements.Skip(numTake).Take(numTake).ToList();
-            var lstTask3 = elements.Skip(numTake*2).Take(numTake).ToList();
-            var lstTask4 = elements.Skip(numTake*3).ToList();
-            var data1 = new List<ChiPhiReportModel>();
-            var data2 = new List<ChiPhiReportModel>();
-            var data3 = new List<ChiPhiReportModel>();
-            var data4 = new List<ChiPhiReportModel>();
-
-            Task task1 = Task.Run(() =>
-            {
-                foreach(var element in  lstTask1)
-                {
-                    var query = lstParentCode.Contains(element.CODE) ? dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE)).ToList() :
-                                      dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE).ToList();
-                    var item = new ChiPhiReportModel
-                    {
-                        code = element.CODE,
-                        name = element.NAME,
-                        area = area,
-                        Order = orderItem,
-                        IsBold = element.IS_GROUP,
-                        value = query.Sum(x=>x.AMOUNT)??0
-                    };
-                    data1.Add(item);
-                    orderItem++;
-                }
-            });
-
-            Task task2 = Task.Run(() =>
-            {
-                foreach (var element in lstTask2)
-                {
-                    var query = lstParentCode.Contains(element.CODE) ? dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE)).ToList() :
-                                      dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE).ToList();
-                    var item = new ChiPhiReportModel
-                    {
-                        code = element.CODE,
-                        name = element.NAME,
-                        area = area,
-                        Order = orderItem,
-                        IsBold = element.IS_GROUP,
-                        value = query.Sum(x => x.AMOUNT) ?? 0
-                    };
-                    data2.Add(item);
-                    orderItem++;
-                }
-            });
-
-            Task task3 = Task.Run(() =>
-            {
-                foreach (var element in lstTask3)
-                {
-                    var query = lstParentCode.Contains(element.CODE) ? dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE)).ToList() :
-                                      dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE).ToList();
-                    var item = new ChiPhiReportModel
-                    {
-                        code = element.CODE,
-                        name = element.NAME,
-                        area = area,
-                        Order = orderItem,
-                        IsBold = element.IS_GROUP,
-                        value = query.Sum(x => x.AMOUNT) ?? 0
-                    };
-                    data3.Add(item);
-                    orderItem++;
-                }
-            });
-
-            Task task4 = Task.Run(() =>
-            {
-                foreach (var element in lstTask4)
-                {
-                    var query = lstParentCode.Contains(element.CODE) ? dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE)).ToList() :
-                                      dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE).ToList();
-                    var item = new ChiPhiReportModel
-                    {
-                        code = element.CODE,
-                        name = element.NAME,
-                        area = area,
-                        Order = orderItem,
-                        IsBold = element.IS_GROUP,
-                        value = query.Sum(x => x.AMOUNT) ?? 0
-                    };
-                    data4.Add(item);
-                    orderItem++;
-                }
-            });
-            await Task.WhenAll(task1, task2, task3, task4);
-            dataAll.AddRange(data1);
-            dataAll.AddRange(data2);
-            dataAll.AddRange(data3);
-            dataAll.AddRange(data4);
-
+            dataAll.chiPhiInReports.Add(Sum);
             return dataAll;
         }
 
+        internal List<ReportDauTuModel> GetDataReportDauTu(int year, string phienBan, string kichBan, string area)
+        {
+            var data = new List<ReportDauTuModel>();
+            Dictionary<string, string> ChiNhanh = new Dictionary<string, string>()
+                {
+                    {"", "" },
+                    {"MB", "CNMB" },
+                    {"MN", "CNMN" },
+                    {"MT", "CNMT" },
+                    {"VT", "CNVT" },
+                    {"CQ", "CQCT" }
+                };
+            Dictionary<string, string> TenChiNhanh = new Dictionary<string, string>()
+            {
+                {"MB", "Chi nhánh miền bắc" },
+                {"MT", "Chi nhánh miền trung" },
+                {"MN", "Chi nhánh miền nam" },
+                {"VT", "Chi nhánh vận tải" },
+                {"CQ", "Chi nhánh cơ quan công ty" },
+
+            };
+            var sapCodeDT = ChiNhanh[area];
+            var costCenterDT = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCodeDT).CODE;
+
+            var dataHeaderDTXD = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
+                                                             UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
+            var dataHeaderDTTTB = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
+                                                             UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
+            if(dataHeaderDTTTB.Count()+ dataHeaderDTXD.Count() == 0)
+            {
+                return new List<ReportDauTuModel>();
+            }
+            var dataInHeaderDTXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD.Contains(x.TEMPLATE_CODE)).ToList();
+            var dataInHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTTTB.Contains(x.TEMPLATE_CODE)).ToList();
+
+            var lstPjInDTXD = dataInHeaderDTXD.Select(x => x.DauTuXayDungProfitCenter.PROJECT_CODE).Distinct().ToList();
+            var lstPjInDTTTB = dataInHeaderDTTTB.Select(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE).Distinct().ToList();
+            // Tính tổng toàn công ty
+            var sumCt = new ReportDauTuModel
+            {
+                name = "TỔNG CỘNG TOÀN CÔNG TY",
+                Order = 0,
+                valueKHKP = dataInHeaderDTXD.Where(x=>x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x=>x.VALUE)+ dataInHeaderDTTTB.Where(x=>x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x=>x.VALUE)??0,
+                valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+                IsBold = true
+            };
+            var sumDTXD = new ReportDauTuModel
+            {
+                name = UnitOfWork.Repository<LoaiHinhDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == "XDCB").TEXT,
+                Order =  1,
+                valueKHKP = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE) ?? 0,
+                valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+            };
+            var sumDTTTB = new ReportDauTuModel
+            {
+                name = UnitOfWork.Repository<LoaiHinhDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == "TTB").TEXT,
+                Order = 2,
+                valueKHKP = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE) ?? 0,
+                valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+
+            };
+            data.Add(sumCt);
+            data.Add(sumDTXD);
+            data.Add(sumDTTTB);
+            var order = 3;
+            if (string.IsNullOrEmpty(area))
+            {
+                // CNMB
+                var type = "MB";
+                var dataMB = GetDataDauTuInArea(year, phienBan, kichBan,type,ref order);
+                //CNMT
+                type = "MT";
+                var dataMT = GetDataDauTuInArea(year, phienBan, kichBan, type, ref order);
+                //CNMN
+                type = "MN";
+                var dataMN = GetDataDauTuInArea(year, phienBan, kichBan, type, ref order);
+                //CNVT
+                type = "VT";
+                var dataVT = GetDataDauTuInArea(year, phienBan, kichBan, type, ref order);
+                //CNVT
+                type = "CQ";
+                var dataCQ = GetDataDauTuInArea(year, phienBan, kichBan, type, ref order);
+                data.AddRange(dataMB);
+                data.AddRange(dataMT);
+                data.AddRange(dataMN);
+                data.AddRange(dataVT);
+                data.AddRange(dataCQ);
+                return data;
+            }
+            else
+            {
+                var sumCN = new ReportDauTuModel
+                {
+                    name = TenChiNhanh[area],
+                    Order = order,
+                    valueKHKP = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE)+ dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE) ?? 0,
+                    valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+
+                    IsBold = true,
+                };
+                var sumDTXD_CN = new ReportDauTuModel
+                {
+                    name = UnitOfWork.Repository<LoaiHinhDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == "XDCB").TEXT,
+                    Order = order + 1,
+                    valueKHKP = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE) ?? 0,
+                    valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+                    IsBold = true
+                };
+                data.Add(sumCN);
+                data.Add(sumDTXD_CN);
+
+                order = order+1;
+                foreach (var pj in lstPjInDTXD)
+                {
+                    var item = new ReportDauTuModel
+                    {
+                        name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.NAME,
+                        Order = order,
+                        equity_sources = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
+                        valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                        valueKHKP = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                        tdtk = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.TDTK,
+                        description = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.DESCRIPTION
+                    };
+                    data.Add(item);
+                    order++;
+                    var itemGD = new ReportDauTuModel
+                    {
+                        name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT,
+                        Order = order,
+                        equity_sources = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
+                        valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                        valueKHKP = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                        tdtk = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.TDTK,
+                        description = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.DESCRIPTION,
+                        lever = 1
+                    };
+                    data.Add(itemGD);
+                    order++;
+                }
+                var sumDTTTB_CN = new ReportDauTuModel
+                {
+                    name = UnitOfWork.Repository<LoaiHinhDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == "TTB").TEXT,
+                    Order = order,
+                    valueKHKP = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE) ?? 0,
+                    valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+                    IsBold = true,
+                };
+                data.Add(sumDTTTB_CN);
+                order = order++;
+                foreach (var pj in lstPjInDTTTB)
+                {
+                    var item = new ReportDauTuModel
+                    {
+                        name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.NAME,
+                        Order = order,
+                        equity_sources = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
+                        valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                        valueKHKP = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                        tdtk = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.TDTK,
+                        description = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.DESCRIPTION,
+                    };
+                    data.Add(item);
+                    order++;
+                    var itemGD = new ReportDauTuModel
+                    {
+                        name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT,
+                        Order = order,
+                        equity_sources = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
+                        valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                        valueKHKP = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                        tdtk = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.TDTK,
+                        description = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.DESCRIPTION,
+                        lever = 1
+
+                    };
+                    data.Add(itemGD);
+                    order++;
+                }
+                return data;
+            }
+        }
+
+        internal List<ReportDauTuModel> GetDataDauTuInArea(int year, string phienBan, string kichBan, string area,ref int order)
+        {
+            var data = new List<ReportDauTuModel>();
+            Dictionary<string, string> ChiNhanh = new Dictionary<string, string>()
+                {
+                    {"", "" },
+                    {"MB", "CNMB" },
+                    {"MN", "CNMN" },
+                    {"MT", "CNMT" },
+                    {"VT", "CNVT" },
+                    {"CQ", "CQCT" }
+                };
+            Dictionary<string, string> TenChiNhanh = new Dictionary<string, string>()
+            {
+                {"MB", "Chi nhánh miền bắc" },
+                {"MT", "Chi nhánh miền trung" },
+                {"MN", "Chi nhánh miền nam" },
+                {"VT", "Chi nhánh vận tải" },
+                {"CQ", "Chi nhánh cơ quan công ty" },
+
+            };
+            var sapCodeDT = ChiNhanh[area];
+            var costCenterDT = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCodeDT).CODE;
+
+            var dataHeaderDTXD = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList();
+
+            var dataHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList();
+                                                            
+            if (dataHeaderDTTTB.Count() + dataHeaderDTXD.Count() == 0)
+            {
+                return new List<ReportDauTuModel>();
+            }
+            var dataInHeaderDTXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD.Contains(x.TEMPLATE_CODE)).ToList();
+            var dataInHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTTTB.Contains(x.TEMPLATE_CODE)).ToList();
+            var lstPjInDTXD = dataInHeaderDTXD.Select(x => x.DauTuXayDungProfitCenter.PROJECT_CODE).Distinct().ToList();
+            var lstPjInDTTTB = dataInHeaderDTTTB.Select(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE).Distinct().ToList();
+            var sumCN = new ReportDauTuModel
+            {
+                name = TenChiNhanh[area],
+                Order = order,
+                valueKHKP = dataInHeaderDTTTB.Where(x=>x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x=>x.VALUE) + dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE) ?? 0,
+                valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE)+ dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+                IsBold = true,
+            };
+            var sumDTXD = new ReportDauTuModel
+            {
+                name = UnitOfWork.Repository<LoaiHinhDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == "XDCB").TEXT,
+                Order = order + 1,
+                valueKHKP = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE) ?? 0,
+                valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+                IsBold = true
+            };
+            data.Add(sumCN);
+            data.Add(sumDTXD);
+
+            order = order+1;
+            foreach(var pj in lstPjInDTXD)
+            {
+                var item = new ReportDauTuModel
+                {
+                    name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.NAME,
+                    Order = order,
+                    equity_sources = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
+                    valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                    valueKHKP = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                    tdtk = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.TDTK,
+                    description = dataInHeaderDTXD.FirstOrDefault(x=>x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.DESCRIPTION
+                };
+                data.Add(item);
+                order++;
+                var itemGD = new ReportDauTuModel
+                {
+                    name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT,
+                    Order = order,
+                    equity_sources = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
+                    valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                    valueKHKP = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                    tdtk = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.TDTK,
+                    description = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.DESCRIPTION,
+                    lever = 1
+                };
+                data.Add(itemGD);
+
+                order++;
+            }
+            var sumDTTTB = new ReportDauTuModel
+            {
+                name = UnitOfWork.Repository<LoaiHinhDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == "TTB").TEXT,
+                Order = order,
+                valueKHKP = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE) ?? 0,
+                valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
+                IsBold = true,
+            };
+            data.Add(sumDTTTB);
+            order = order++;
+            foreach (var pj in lstPjInDTTTB)
+            {
+                var item = new ReportDauTuModel
+                {
+                    name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.NAME,
+                    Order = order,
+                    equity_sources = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
+                    valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                    valueKHKP = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                    tdtk = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.TDTK,
+                    description = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.DESCRIPTION
+                };
+                data.Add(item);
+                order++;
+                var itemGD = new ReportDauTuModel
+                {
+                    name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT,
+                    Order = order,
+                    equity_sources = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
+                    valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                    valueKHKP = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
+                    tdtk = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.TDTK,
+                    description = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.DESCRIPTION,
+                    lever = 1
+
+                };
+                data.Add(itemGD);
+
+                order++;
+            }
+            return data;
+        }
     }
 }

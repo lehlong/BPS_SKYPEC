@@ -182,7 +182,7 @@
 
 
     @{Html.RenderPartial("_ScriptSearchIndexAction"); }
-    <script type="text/javascript">
+<script type="text/javascript">
 
         function SubmitBudgetIndex() {
             Forms.SubmitForm('@frmIndex');
@@ -197,15 +197,21 @@
         }
 
         $(function () {
-            $("#dllTimeYear").change();
-                $("#dllKichBan").val("TB");
-            $("#dllKichBan").change();
-            $("#dllPhienBan").val("PB1");
-            $("#dllPhienBan").change();
-            Forms.CompleteUI();
-            Forms.SubmitByEnter("@Model.FormId");
-        });
-    </script>
+     $("#dllTimeYear").change();
+         $("#dllKichBan").val("TB");
+     $("#dllKichBan").change();
+     
+     if ('@Model.ObjDetail.PHIEN_BAN' != '') {
+         $("#dllPhienBan").val('@Model.ObjDetail.PHIEN_BAN');
+     } else {
+         $("#dllPhienBan").val("PB1");
+     }
+
+     $("#dllPhienBan").change();
+     Forms.CompleteUI();
+     Forms.SubmitByEnter("@Model.FormId");
+ });
+</script>
 </div>
 
 

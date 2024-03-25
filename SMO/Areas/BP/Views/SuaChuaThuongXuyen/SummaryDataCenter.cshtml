@@ -8,8 +8,10 @@
     var viewId = Guid.NewGuid().ToString();
     var revenuePLHeader = ViewBag.revenuePLHeader as T_BP_SUA_CHUA_THUONG_XUYEN_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
+    var lstData = ViewBag.lstData as List<T_BP_SUA_CHUA_THUONG_XUYEN_DATA>;
+
 }
-@if (Model == null || Model.Count == 1)
+@if (Model == null)
 {
     Html.RenderPartial("_NothingData");
     return;
@@ -19,7 +21,7 @@
     // view template data
     ViewBag.revenuePLHeader = revenuePLHeader;
     ViewBag.dataCenterModel = dataCenterModel;
-
+    ViewBag.lstData = lstData;
     Html.RenderPartial("_PartialViewTemplateDataSuaChuaThuongXuyen", Model);
 }
 else if (dataCenterModel.VERSION == null || dataCenterModel.VERSION.Value < 0)

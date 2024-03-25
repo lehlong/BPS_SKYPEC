@@ -110,16 +110,6 @@ namespace SMO.Models
         public int Level { get; set; }
     }
 
-    public class ChiPhiReportModel
-    {
-        public string code { get; set; }
-        public string name { get; set; }
-        public string area { get; set; }
-        public decimal value { get; set; }
-        public bool IsBold { get; set; } = false;
-        public int Order { get; set; }
-        public int Level { get; set; }
-    }
     public class SanLuong
     {
         public string Code { get; set; }
@@ -144,6 +134,8 @@ namespace SMO.Models
         public decimal Value3 { get; set; }
         public string Value4 { get; set; }
         public string Value5 { get; set; }
+        public decimal ValueDLTH { get; set; }
+
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
         public int Level { get; set; }
@@ -157,8 +149,8 @@ namespace SMO.Models
         public string name { get; set; }
         public decimal valueKP { get; set; }
         public string valueQM { get; set; }
-        public string description{ get; set; }
-
+        public string description { get; set; }
+        public decimal valueDLTH { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
         public int Level { get; set; }
@@ -196,5 +188,46 @@ namespace SMO.Models
         public decimal value { get; set; }
         public decimal accumulation { get; set; }
         public int month { get; set; }
+    }
+
+
+    // Báo cáo TH chi phí
+    public class ReportChiPhiModel
+    {
+        public List<ChiPhiInReport> chiPhiInReports { get; set; } = new List<ChiPhiInReport>();
+    }
+
+    public class ChiPhiInReport
+    {
+        public string code { get; set; }
+        public string name { get; set; }
+
+        public decimal valueCQCT { get; set; }
+        public decimal valueCNMB { get; set; }
+        public decimal valueCNMT { get; set; }
+        public decimal valueCNMN { get; set; }
+        public decimal valueCNVT { get; set; }
+        public decimal valueKH { get; set; }
+        public decimal valueTcty { get; set; }
+        public decimal valueWTH { get; set; }
+
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+    }
+
+    // Bác cái TH Đầu tư
+    public class ReportDauTuModel
+    {
+        public string code { get; set; }
+        public string name { get; set; }
+        public string equity_sources { get; set; }
+        public decimal valueVDT { get; set; }
+        public decimal valueKHKP { get; set; }
+        public string tdtk { get; set; }
+        public int lever { get; set; } = 0;
+        public string description { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
     }
 }

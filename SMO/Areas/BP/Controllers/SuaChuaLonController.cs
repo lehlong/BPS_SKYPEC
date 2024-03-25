@@ -23,6 +23,13 @@ namespace SMO.Areas.BP.Controllers
         BPControllerBase<SuaChuaLonService, T_BP_SUA_CHUA_LON, SuaChuaLonRepo, T_MD_KHOAN_MUC_SUA_CHUA, T_BP_SUA_CHUA_LON_VERSION, T_BP_SUA_CHUA_LON_HISTORY, SuaChuaLonHistoryRepo>,
         IBPController<SuaChuaLonService, T_BP_SUA_CHUA_LON, SuaChuaLonRepo, T_MD_KHOAN_MUC_SUA_CHUA, T_BP_SUA_CHUA_LON_VERSION, T_BP_SUA_CHUA_LON_HISTORY, SuaChuaLonHistoryRepo>
     {
+        [MyValidateAntiForgeryToken]
+        public ActionResult IndexDLTH(int? year)
+        {
+            _service.ObjDetail.TIME_YEAR = year ?? 0;
+            _service.ObjDetail.PHIEN_BAN = "PB5";
+            return PartialView("Index", _service);
+        }
         public override FileContentResult DownloadTemplate(string templateId, int year)
         {
             var template = _service.GetTemplate(templateId);
@@ -115,6 +122,7 @@ namespace SMO.Areas.BP.Controllers
                 ViewBag.lstCenterCode = _service.GetSanBaySuaChua(model);
             }
             ViewBag.costCFHeader = _service.GetHeader(model);
+            ViewBag.lstData = _service.GetDataSCL(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
             model.IS_DRILL_DOWN = isDrillDownApply;
             model.EXCHANGE_RATE = 12;
             ViewBag.dataCenterModel = model;

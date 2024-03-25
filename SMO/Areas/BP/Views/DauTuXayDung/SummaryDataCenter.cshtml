@@ -3,13 +3,15 @@
 @using SMO.Core.Entities.MD;
 @using SMO.Service.Class;
 @using System.Text;
+@using SMO.Core.Entities;
 
 @{
     var viewId = Guid.NewGuid().ToString();
     var revenuePLHeader = ViewBag.revenuePLHeader as T_BP_DAU_TU_XAY_DUNG_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
+    var lstData = ViewBag.lstProject as List<T_BP_DAU_TU_XAY_DUNG_DATA>;
 }
-@if (Model == null || Model.Count == 1)
+@if (Model == null)
 {
     Html.RenderPartial("_NothingData");
     return;
@@ -19,6 +21,7 @@
     // view template data
     ViewBag.revenuePLHeader = revenuePLHeader;
     ViewBag.dataCenterModel = dataCenterModel;
+    ViewBag.lstProject = lstData;
 
     Html.RenderPartial("_PartialViewTemplateDataDauTuXayDung", Model);
 }

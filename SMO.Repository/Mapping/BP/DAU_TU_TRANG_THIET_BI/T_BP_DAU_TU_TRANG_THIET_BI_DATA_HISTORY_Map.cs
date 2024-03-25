@@ -21,7 +21,8 @@ namespace SMO.Repository.Mapping.BP.DAU_TU_TRANG_THIET_BI
             Map(x => x.VERSION);
             Map(x => x.TIME_YEAR);
             Map(x => x.VALUE);
-
+            Map(x => x.EQUITY_SOURCES);
+            Map(x => x.TDTK);
             Map(x => x.STATUS);
             Map(x => x.DESCRIPTION);
             Map(x => x.PROCESS);

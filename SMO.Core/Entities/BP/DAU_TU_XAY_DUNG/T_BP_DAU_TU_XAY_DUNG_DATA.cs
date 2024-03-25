@@ -16,6 +16,8 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
         public virtual string PROCESS { get; set; }
         public virtual string EQUITY_SOURCES { get; set; }
         public virtual string STATUS { get; set; }
+        public virtual string TDTK { get; set; }
+
 
         public virtual T_MD_TEMPLATE Template { get; set; }
         public virtual T_MD_KHOAN_MUC_DAU_TU KhoanMucDauTu { get; set; }
