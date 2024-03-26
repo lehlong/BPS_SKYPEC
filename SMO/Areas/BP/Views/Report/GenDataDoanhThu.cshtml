@@ -1,62 +1,75 @@
 ﻿@model List<SMO.Models.RevenueReportModel>
 @using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
     var year = ViewBag.Year as int?;
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var jsonData = Model.OrderBy(x => x.Order).Select(x => new
+    {
+        Id = x.Order.ToString(),
+        Parent = x.Parent,
+        Name = x.Name,
+        SumYear = x.ValueSumYear.ToStringVN(),
+        Jan = x.Value1.ToStringVN(),
+        Feb = x.Value2.ToStringVN(),
+        Mar = x.Value3.ToStringVN(),
+        Apr = x.Value4.ToStringVN(),
+        May = x.Value5.ToStringVN(),
+        Jun = x.Value6.ToStringVN(),
+        Jul = x.Value7.ToStringVN(),
+        Aug = x.Value8.ToStringVN(),
+        Sep = x.Value9.ToStringVN(),
+        Oct = x.Value10.ToStringVN(),
+        Nov = x.Value11.ToStringVN(),
+        Dec = x.Value12.ToStringVN(),
+        IsBold = x.IsBold
+    });
 }
 <style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
+    .row-bold .dhx_grid-cell,.row-bold .dhx_tree-cell {
+        font-weight: bold
+    }
+    .grid .dhx_grid-cell {
+        word-break: break-word
     }
 </style>
-<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td>Chỉ tiêu</td>
-                <td>Cộng năm</td>
-                <td>Tháng 1</td>
-                <td>Tháng 2</td>
-                <td>Tháng 3</td>
-                <td>Tháng 4</td>
-                <td>Tháng 5</td>
-                <td>Tháng 6</td>
-                <td>Tháng 7</td>
-                <td>Tháng 8</td>
-                <td>Tháng 9</td>
-                <td>Tháng 10</td>
-                <td>Tháng 11</td>
-                <td>Tháng 12</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.Level; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                    <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
-                    <td class="align-right">@item.Value1.ToStringVN()</td>
-                    <td class="align-right">@item.Value2.ToStringVN()</td>
-                    <td class="align-right">@item.Value3.ToStringVN()</td>
-                    <td class="align-right">@item.Value4.ToStringVN()</td>
-                    <td class="align-right">@item.Value5.ToStringVN()</td>
-                    <td class="align-right">@item.Value6.ToStringVN()</td>
-                    <td class="align-right">@item.Value7.ToStringVN()</td>
-                    <td class="align-right">@item.Value8.ToStringVN()</td>
-                    <td class="align-right">@item.Value9.ToStringVN()</td>
-                    <td class="align-right">@item.Value10.ToStringVN()</td>
-                    <td class="align-right">@item.Value11.ToStringVN()</td>
-                    <td class="align-right">@item.Value12.ToStringVN()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+
+<div style="height: calc(100vh - 240px);" id="@gridId"></div>
+
+<script type="text/javascript">
+   const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+    const columns = [
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], width: 300 },
+        { id: "sumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", width: 180 },
+        { id: "jan", header: [{ text: "THÁNG 1", align: "center" }], align: "right", width: 180 },
+        { id: "feb", header: [{ text: "THÁNG 2", align: "center" }], align: "right", width: 180 },
+        { id: "mar", header: [{ text: "THÁNG 3", align: "center" }], align: "right", width: 180 },
+        { id: "apr", header: [{ text: "THÁNG 4", align: "center" }], align: "right", width: 180 },
+        { id: "may", header: [{ text: "THÁNG 5", align: "center" }], align: "right", width: 180 },
+        { id: "jun", header: [{ text: "THÁNG 6", align: "center" }], align: "right", width: 180 },
+        { id: "jul", header: [{ text: "THÁNG 7", align: "center" }], align: "right", width: 180 },
+        { id: "aug", header: [{ text: "THÁNG 8", align: "center" }], align: "right", width: 180 },
+        { id: "sep", header: [{ text: "THÁNG 9", align: "center" }], align: "right", width: 180 },
+        { id: "oct", header: [{ text: "THÁNG 10", align: "center" }], align: "right", width: 180 },
+        { id: "nov", header: [{ text: "THÁNG 11", align: "center" }], align: "right", width: 180 },
+        { id: "dec", header: [{ text: "THÁNG 12", align: "center" }], align: "right", width: 180 },
+    ];
+
+    rawData.forEach((item) => {
+        if (item.parent == null) {
+            delete item.parent
+        }
+    });
+
+    const treeGrid = new dhx.TreeGrid("@gridId", {
+        columns,
+        leftSplit: 1,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true? "row-bold" : "" },
+    });
+    treeGrid.data.parse(rawData);
+</script>
 
