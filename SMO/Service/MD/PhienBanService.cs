@@ -4,6 +4,7 @@ using NHibernate.Criterion;
 using NHibernate.Mapping;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
@@ -3082,14 +3083,31 @@ namespace SMO.Service.MD
                 fs.Close();
                 var data =await GetDataKeHoachTongHop(year, phienBan, kichBan, area);
                 //San Luong
+                var dataSL = data.SanLuong.OrderBy(x => x.Order).ToList();
+                var dataDT = data.DauTu.OrderBy(x => x.Order).ToList();
+                var dataSC = data.SuaChuaLon.OrderBy(x => x.Order).ToList();
+                var dataCP = data.ChiPhi.OrderBy(x => x.Order).ToList();
+
+                var countSL = dataSL.Count();
+                var countDt = dataDT.Count();
+                var countSC = dataSC.Count();
+                var countCP = dataCP.Count();
+
+                var stringHeaderDT = "II.KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ";
+                var stringHeaderSC = "III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH";
+                var stringHeaderCP = "IV. KẾ HOẠCH CHI PHÍ";
+
+                var rowStartSL = 7;
+                var rowStartDT = rowStartSL + countSL;
+                var rowStartSC = rowStartDT + countDt;
+                var rowStartCP = rowStartSC + countSC;
 
                 Task task1 = Task.Run(() =>
                 {
                     lock (lockObject)
                     {
                         ISheet sheetTabSL = templateWorkbook.GetSheetAt(0);
-                        var dataSL = data.SanLuong.OrderBy(x => x.Order).ToList();
-                        var startRow = 7;
+                        var startRow = 4;
                         var NUM_CELL = 8;
                         InsertDataTongHopSL(templateWorkbook, sheetTabSL, dataSL, startRow, NUM_CELL);
                     }
@@ -3100,7 +3118,6 @@ namespace SMO.Service.MD
                     lock (lockObject)
                     {
                         ISheet sheetTabDT = templateWorkbook.GetSheetAt(1);
-                        var dataDT = data.DauTu.OrderBy(x => x.Order).ToList();
                         var startRow = 6;
                         var NUM_CELL = 7;
                         InsertDataTongHopDT(templateWorkbook, sheetTabDT, dataDT, startRow, NUM_CELL);
@@ -3112,7 +3129,6 @@ namespace SMO.Service.MD
                     lock (lockObject)
                     {
                         ISheet sheetTabSC = templateWorkbook.GetSheetAt(2);
-                        var dataSC = data.SuaChuaLon.OrderBy(x => x.Order).ToList();
                         var startRow = 6;
                         var NUM_CELL = 5;
                         InsertDataTongHopSC(templateWorkbook, sheetTabSC, dataSC, startRow, NUM_CELL);
@@ -3124,7 +3140,6 @@ namespace SMO.Service.MD
                     lock (lockObject)
                     {
                         ISheet sheetTabCP = templateWorkbook.GetSheetAt(3);
-                        var dataCP = data.ChiPhi.OrderBy(x => x.Order).ToList();
                         var startRow = 7;
                         var NUM_CELL = 5;
                         InsertDataTongHopCP(templateWorkbook, sheetTabCP, dataCP, startRow, NUM_CELL);
@@ -3164,6 +3179,36 @@ namespace SMO.Service.MD
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             styleBody.WrapText = true;
             styleCellBold.WrapText = true;
+
+            // Insert Header
+            var stringHeaderSL = "I.KẾ HOẠCH SẢN LƯỢNG";
+            for(int i = 0; i < 3; i++)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                if(i == 0)
+                {
+                    rowCur.Cells[0].SetCellValue(stringHeaderSL);
+                }else if( i == 1)
+                {
+                    rowCur.Cells[0].SetCellValue("STT");
+                    rowCur.Cells[1].SetCellValue("SẢN LƯỢNG TRA NẠP THEO SÂN BAY");
+                    rowCur.Cells[3].SetCellValue("HKVN");
+                    rowCur.Cells[6].SetCellValue("HKQT");
+                    rowCur.Cells[7].SetCellValue("CỘNG");
+                }
+                else
+                {
+                    rowCur.Cells[3].SetCellValue("VNA");
+                    rowCur.Cells[4].SetCellValue("HKVN#");
+                    rowCur.Cells[5].SetCellValue("TỔNG");
+                    sheet.AddMergedRegion(new CellRangeAddress(5, 6, 0, 0));
+                    sheet.AddMergedRegion(new CellRangeAddress(5, 6, 1, 1));
+                    sheet.AddMergedRegion(new CellRangeAddress(5, 5, 1, 2));
+                    /*sheet.AddMergedRegion(new CellRangeAddress(5, 5, 3, 5));
+                    sheet.AddMergedRegion(new CellRangeAddress(5, 6, 6, 6));
+                    sheet.AddMergedRegion(new CellRangeAddress(5, 6, 7, 7));*/
+                }
+            }
             for (int i = 0; i < dataDetails.Count(); i++)
             {
                 var dataRow = dataDetails[i];

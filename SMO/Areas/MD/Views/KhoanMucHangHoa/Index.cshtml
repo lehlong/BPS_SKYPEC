@@ -162,7 +162,7 @@
         }
 
         function OnClick(event, treeId, treeNode) {
-            $("#hddParent").val(treeNode.pId);
+            $("#hddParent").val(treeNode.id);//PId
             if (treeNode.isParent === false) {
                 return;
             }
