@@ -561,6 +561,7 @@ namespace SMO.Service.MD
                     Name = "DOANH THU JET HK",
                     IsBold = true,
                     Order = -1,
+                    Parent = null,
                     Level = 0
                 };
                 foreach (var hhk in lstHangHangKhong)
@@ -571,6 +572,7 @@ namespace SMO.Service.MD
                         Name = hhk.GROUP_ITEM,
                         IsBold = true,
                         Order = order,
+                        Parent = -1,
                         Level = 0
                     };
                     //Nội địa
@@ -579,6 +581,7 @@ namespace SMO.Service.MD
                         Name = "Nội địa",
                         IsBold = true,
                         Order = order + 1,
+                        Parent = order,
                         Level = 1
                     };
 
@@ -587,6 +590,7 @@ namespace SMO.Service.MD
                         Name = "Qua xe",
                         IsBold = true,
                         Order = order + 2,
+                        Parent = order + 1,
                         Level = 2
                     };
 
@@ -595,6 +599,7 @@ namespace SMO.Service.MD
                         Name = "Qua FHS",
                         IsBold = true,
                         Order = order + 3 + countGroup,
+                        Parent = order + 1,
                         Level = 2
                     };
                     // Quốc tế
@@ -603,6 +608,7 @@ namespace SMO.Service.MD
                         Name = "Quốc tế",
                         IsBold = true,
                         Order = order + 4 + countGroup + countFHS,
+                        Parent = order,
                         Level = 1
                     };
 
@@ -611,6 +617,7 @@ namespace SMO.Service.MD
                         Name = "Qua xe",
                         IsBold = true,
                         Order = order + 5 + countGroup + countFHS,
+                        Parent = order + 4 + countGroup + countFHS,
                         Level = 2
                     };
 
@@ -619,6 +626,7 @@ namespace SMO.Service.MD
                         Name = "Qua FHS",
                         IsBold = true,
                         Order = order + 6 + countGroup + countFHS + countGroup,
+                        Parent = order + 4 + countGroup + countFHS,
                         Level = 2
                     };
 
@@ -663,6 +671,7 @@ namespace SMO.Service.MD
                                     ValueDTTNK = valueSL * priceTNK,
                                     ValueDTD = valueSL * priceD,
                                     Order = order + 3 + i,
+                                    Parent = order + 2,
                                     Level = 3
                                 };
                                 data.Add(item);
@@ -725,6 +734,7 @@ namespace SMO.Service.MD
                                     ValueD = priceD,
                                     ValueFH = priceFhs,
                                     Order = order + 4 + countGroup + i,
+                                    Parent = order + 3 + countGroup,
                                     Level = 3
                                 };
                                 data.Add(item);
@@ -768,6 +778,7 @@ namespace SMO.Service.MD
                                     ValueDTMOPS = valueSL * priceMops,
                                     ValueDTD = valueSL * priceD,
                                     Order = order + 6 + countGroup + countFHS + i,
+                                    Parent = order + 5 + countGroup + countFHS,
                                     Level = 3
                                 };
                                 data.Add(item);
@@ -832,6 +843,7 @@ namespace SMO.Service.MD
                                     ValueDTD = valueSL * priceD,
                                     ValueDTFH = valueSL * priceFhs,
                                     Order = order + 7 + countGroup + countFHS + countGroup + i,
+                                    Parent = order + 6 + countGroup + countFHS + countGroup,
                                     Level = 3
                                 };
                                 data.Add(item);

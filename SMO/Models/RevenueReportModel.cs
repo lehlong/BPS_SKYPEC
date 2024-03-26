@@ -24,6 +24,7 @@ namespace SMO.Models
         public decimal ValueSL { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
+        public int? Parent { get; set; }
         public int Level { get; set; }
     }
     public class RevenueByFeeReportModel

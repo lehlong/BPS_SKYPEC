@@ -1,78 +1,88 @@
 ﻿@model List<SMO.Models.SupplyReportModel>
 @using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
     var year = ViewBag.Year as int?;
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var jsonData = Model.OrderBy(x => x.Order).Select(x => new
+    {
+        Id = x.Order.ToString(),
+        Parent = x.Parent.ToString(),
+        Name = x.Name,
+        Value1 = x.ValueSL.ToStringVN(),
+        Value2 = x.ValueDG.ToStringVN(),
+        Value3 = x.ValueMOPS.ToStringVN(),
+        Value4 = x.ValueDTTNK.ToStringVN(),
+        Value5 = x.ValueD.ToStringVN(),
+        Value6 = x.ValueFH.ToStringVN(),
+        Value7 = x.ValueThue.ToStringVN(),
+        Value8 = x.ValueDT.ToStringVN(),
+        Value9 = x.ValueDTMOPS.ToStringVN(),
+        Value10 = x.ValueDTTNK.ToStringVN(),
+        Value11 = x.ValueDTD.ToStringVN(),
+        Value12 = x.ValueDTFH.ToStringVN(),
+        IsBold = x.IsBold
+    });
+
 }
 <style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
     }
-    .nav-tabs + .tab-content {
-        padding: 0px;
+
+    .grid .dhx_grid-cell {
+        word-break: break-word
     }
 </style>
 
-<ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
-    <li role="presentation" class="active" style="cursor: pointer;">
-        <a href="#tab1" data-toggle="tab">Tra nạp cung ứng</a>
-    </li>
-</ul>
-<div class="tab-content" style="padding-bottom:0">
-    <div role="tabpanel" class="tab-pane fade in active" id="tab1">
-        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-            <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-                <table class="table table-condensed table-bordered table-striped">
-                    <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-                        <tr class="header-table">
-                            <td rowspan="2">Doanh thu</td>
-                            <td rowspan="2">Sản lượng(tấn) <br /> PA Trung</td>
-                            <td colspan="5">Đơn giá(VND/tấn)</td>
-                            <td rowspan="2">Thuế BVMT<br />(tr VND)</td>
-                            <td rowspan="2">Doanh thu<br />(tr VND)</td>
-                            <td colspan="4">Doanh thu theo yếu tố (tr. VND)</td>
-                        </tr>
-                        <tr class="header-table">
-                            <td>Đơn giá <br />(VND/tấn)</td>
-                            <td>MOPS <br />(VND/tấn)</td>
-                            <td>TNK <br />(VND/tấn)</td>
-                            <td>D <br />(VND/tấn)</td>
-                            <td>FH <br />(VND/tấn)</td>
-                            <td>MOPS <br />(VND)</td>
-                            <td>TNK <br />(VND)</td>
-                            <td>D <br />(VND)</td>
-                            <td>FH <br />(VND)</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.OrderBy(x=> x.Order))
-                        {
-                            var space = new StringBuilder();
-                            for (int i = 0; i < item.Level; i++)
-                            {
-                                space.Append("\t");
-                            }
-                            var bold = item.IsBold == true ? "bold" : "";
-                            <tr style="font-weight:@bold">
-                                <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                                <td class="align-right">@item.ValueSL.ToStringVN()</td>
-                                <td class="align-right">@item.ValueDG.ToStringVN()</td>
-                                <td class="align-right">@item.ValueMOPS.ToStringVN()</td>
-                                <td class="align-right">@item.ValueTNK.ToStringVN()</td>
-                                <td class="align-right">@item.ValueD.ToStringVN()</td>
-                                <td class="align-right">@item.ValueFH.ToStringVN()</td>
-                                <td class="align-right">@item.ValueThue.ToStringVN()</td>
-                                <td class="align-right">@item.ValueDT.ToStringVN()</td>
-                                <td class="align-right">@item.ValueDTMOPS.ToStringVN()</td>
-                                <td class="align-right">@item.ValueDTTNK.ToStringVN()</td>
-                                <td class="align-right">@item.ValueDTD.ToStringVN()</td>
-                                <td class="align-right">@item.ValueDTFH.ToStringVN()</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+<div style="height: calc(100vh - 240px);" id="@gridId"></div>
+
+<script type="text/javascript">
+   const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+    const columns = [
+        { id: "name", header: [{ text: "DOANH THU", align: "center", rowspan: 2 }], width: 300 },
+        { id: "value1", header: [{ text: "SẢN LƯỢNG(TẤN) PA TRUNG", align: "center", rowspan: 2 }], align: "right", width: 220 },
+
+        {
+            id: "value2", header: [
+                { text: "ĐƠN GIÁ (VND/TẤN)", colspan: 5, align: 'center' },
+                { text: 'ĐƠN GIÁ (VND/TẤN)', align: 'center' }
+            ], align: "right", width: 180
+        },
+        { id: "value3", header: ["", { text: "MOPS (VND/TẤN)", align: "center" }], align: "right", width: 180 },
+        { id: "value4", header: ["", { text: "TNK (VND/TẤN)", align: "center" }], align: "right", width: 180 },
+        { id: "value5", header: ["", { text: "D (VND/TẤN)", align: "center" }], align: "right", width: 180 },
+        { id: "value6", header: ["", { text: "FH (VND/TẤN)", align: "center" }], align: "right", width: 180 },
+
+        { id: "value7", header: [{ text: "THUẾ BVMT (TR. VNĐ) ", align: "center", rowspan: 2 }], align: "right", width: 180 },
+        { id: "value8", header: [{ text: "DOANH THU (TR. VNĐ)", align: "center", rowspan: 2 }], align: "right", width: 180 },
+
+        {
+            id: "value9", header: [
+                { text: "DOANH THU THEO YẾU TỐ (TR. VND)", colspan: 4, align: 'center' },
+                { text: 'MOPS (VNĐ)', align: 'center' }
+            ], align: "right", width: 180
+        },
+
+        { id: "value10", header: ["", { text: "TNK (VNĐ)", align: "center" }], align: "right", width: 180 },
+        { id: "value11", header: ["", { text: "D (VNĐ)", align: "center" }], align: "right", width: 180 },
+        { id: "value12", header: ["", { text: "FH (VNĐ)", align: "center" }], align: "right", width: 180 },
+    ];
+
+    rawData.forEach((item) => {
+        if (item.parent == null || item.parent == '') {
+            delete item.parent
+        }
+    });
+
+    const treeGrid = new dhx.TreeGrid("@gridId", {
+        columns,
+        leftSplit: 1,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true? "row-bold" : "" },
+    });
+    treeGrid.data.parse(rawData);
+</script>
