@@ -1,127 +1,129 @@
-﻿
-<style>
-    .info-box-3 {
-        height: 86px;
-    }
-    .menu i.material-icons {
-        color: #207ce5 !important;
-    }
-    .col-skypec {
-        color: #207ce5 !important;
+﻿<style>
+    .col-md-12{
+        margin-bottom: 6px !important
     }
 </style>
-
-<div class="container-fluid child-content menu">
-
-    <div class="card" style="margin-top:0px">
-        <div class="body" style="padding: 0px 22px;">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>BÁO CÁO TỔNG HỢP</a>
-                </li>
-            </ul>
-
-            <div class="p-t-10 p-b-5">
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexSuaChuaThuongXuyen", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons">storage</i>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-4" style="margin-top: 3px; padding: 6px">
+            <div class="card">
+                <div class="body" style="padding: 12px 22px; height: 200px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a style="padding-top: 0px !important;" class="text-uppercase">BÁO CÁO SẢN LƯỢNG</a>
+                        </li>
+                    </ul>
+                    <div class="p-t-10 p-b-5">
+                        <div class="row">
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch sản lượng theo tháng
                             </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">SỬA CHỮA THƯỜNG XUYÊN</div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch sản lượng theo chi nhánh
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexSuaChuaLon", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">store</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;"> SỬA CHỮA LỚN</div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch sản lượng theo sân bay
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexKichBan", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">build</i>
+        <div class="col-md-4" style="margin-top: 3px; padding: 6px">
+            <div class="card">
+                <div class="body" style="padding: 12px 22px; height: 200px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a style="padding-top: 0px !important;" class="text-uppercase">BÁO CÁO DOANH THU</a>
+                        </li>
+                    </ul>
+                    <div class="p-t-10 p-b-5">
+                        <div class="row">
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch doanh thu theo tháng
                             </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;"> THEO KỊCH BẢN </div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch doanh thu theo yếu tố phí
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexPhienBan", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">attractions</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;"> THEO PHIÊN BẢN</div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch doanh thu tra nạp cung ứng
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexSanLuong", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">settings</i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4" style="margin-top: 3px; padding: 6px">
+            <div class="card">
+                <div class="body" style="padding: 12px 22px; height: 200px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a style="padding-top: 0px !important;" class="text-uppercase">BÁO CÁO GIÁ VỐN</a>
+                        </li>
+                    </ul>
+                    <div class="p-t-10 p-b-5">
+                        <div class="row">
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch nhập nhiên liệu
                             </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">SẢN LƯỢNG TRA NẠP</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexDoanhThu", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">settings</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">DOANH THU</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexDoanhThuTheoPhi", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">settings</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">DOANH THU THEO PHÍ</div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch giá vốn
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexTraNapCungUng", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">settings</i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4" style="margin-top: 3px; padding: 6px">
+            <div class="card">
+                <div class="body" style="padding: 12px 22px; height: 290px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a style="padding-top: 0px !important;" class="text-uppercase">BÁO CÁO CÔNG TY, CHI NHÁNH</a>
+                        </li>
+                    </ul>
+                    <div class="p-t-10 p-b-5">
+                        <div class="row">
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Tổng hợp kế hoạch chi nhánh
                             </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">TRA NẠP CUNG ỨNG</div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Tổng hợp kế hoạch chi phí
+                            </div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Tổng hợp kế hoạch đầu tư
+                            </div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Tổng hợp kế hoạch sửa chữa lớn
+                            </div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Tổng hợp kế hoạch sửa chữa thường xuyên
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-b-5 p-t-10" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachTongHop", "BP/Report")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">settings</i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" style="margin-top: 3px; padding: 6px">
+            <div class="card">
+                <div class="body" style="padding: 12px 22px; height: 290px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a style="padding-top: 0px !important;" class="text-uppercase">BÁO CÁO TỔNG CÔNG TY</a>
+                        </li>
+                    </ul>
+
+                    <div class="p-t-10 p-b-5">
+                        <div class="row">
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch sản xuất kinh doanh
                             </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH TỔNG HỢP</div>
+                            <div class="btn btn-default col-md-12" style="text-align: left;">
+                                <i class="material-icons">notes</i> Kế hoạch SXKD theo các kịch bản
                             </div>
                         </div>
                     </div>
