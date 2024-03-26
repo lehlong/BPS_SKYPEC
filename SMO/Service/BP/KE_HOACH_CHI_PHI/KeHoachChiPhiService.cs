@@ -1538,6 +1538,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                        var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
                        var item = new T_MD_KHOAN_MUC_HANG_HOA
                        {
+                           PARENT_CODE = element.PARENT_CODE,
                            CODE = element.CODE,
                            NAME = element.NAME,
                            C_ORDER = order,
@@ -1579,6 +1580,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
                         var item = new T_MD_KHOAN_MUC_HANG_HOA
                         {
+                            PARENT_CODE = element.PARENT_CODE,
                             CODE = element.CODE,
                             NAME = element.NAME,
                             C_ORDER = order,
@@ -1621,6 +1623,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
                         var item = new T_MD_KHOAN_MUC_HANG_HOA
                         {
+                            PARENT_CODE = element.PARENT_CODE,
                             CODE = element.CODE,
                             NAME = element.NAME,
                             C_ORDER = order,
@@ -1663,6 +1666,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var isCommented = lstCommented.Any(x => x.ELEMENT_CODE == element.CODE);
                         var item = new T_MD_KHOAN_MUC_HANG_HOA
                         {
+                            PARENT_CODE = element.PARENT_CODE,
                             CODE = element.CODE,
                             NAME = element.NAME,
                             C_ORDER = order,
