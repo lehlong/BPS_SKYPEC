@@ -77,8 +77,9 @@ namespace SMO.Areas.BP.Controllers
             return PartialView(data);
         }
 
-        public ActionResult IndexSanLuong()
+        public ActionResult IndexSanLuong(int? slug)
         {
+            ViewBag.Slug = slug;
             return PartialView();
         }
         public ActionResult GenDataSanLuong(int year, string phienBan, string kichBan, string hangHangKhong)

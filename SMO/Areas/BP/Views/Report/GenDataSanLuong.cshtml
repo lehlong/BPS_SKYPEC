@@ -1,7 +1,65 @@
 ﻿@model SMO.Models.RevenueByFeeReportModel
 @using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
     var year = ViewBag.Year as int?;
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var gridTab1 = Guid.NewGuid().ToString("N");
+    var gridTab2 = Guid.NewGuid().ToString("N");
+    var gridTab3 = Guid.NewGuid().ToString("N");
+
+    var jsonData = Model.Tab1.OrderBy(x => x.Order).Select(x => new
+    {
+        Id = x.Order.ToString(),
+        Parent = x.Parent,
+        Name = x.Name,
+        ValueSumYear = x.ValueSumYear.ToStringVN(),
+        Value1 = x.Value1.ToStringVN(),
+        Value2 = x.Value2.ToStringVN(),
+        Value3 = x.Value3.ToStringVN(),
+        Value4 = x.Value4.ToStringVN(),
+        Value5 = x.Value5.ToStringVN(),
+        Value6 = x.Value6.ToStringVN(),
+        Value7 = x.Value7.ToStringVN(),
+        Value8 = x.Value8.ToStringVN(),
+        Value9 = x.Value9.ToStringVN(),
+        Value10 = x.Value10.ToStringVN(),
+        Value11 = x.Value11.ToStringVN(),
+        Value12 = x.Value12.ToStringVN(),
+        IsBold = x.IsBold
+    });
+
+    var jsonDataTab2 = Model.Tab2.OrderBy(x => x.Order).Select(x => new
+    {
+        Id = x.Order.ToString(),
+        Parent = x.Parent,
+        Name = x.Name,
+        ValueSumYear = x.ValueSumYear.ToStringVN(),
+        Value1 = x.Value1.ToStringVN(),
+        Value2 = x.Value2.ToStringVN(),
+        Value3 = x.Value3.ToStringVN(),
+        IsBold = x.IsBold
+    });
+
+    var jsonDataTab3 = Model.Tab3.OrderBy(x => x.Order).Select(x => new
+    {
+        Id= x.Order.ToString(),
+        Parent = x.Parent,
+        Name = x.Name,
+        Code = x.Code,
+        Value1 = x.Value1.ToStringVN(),
+        Value2 = x.Value2.ToStringVN(),
+        Value3 = x.Value3.ToStringVN(),
+        Value4 = x.Value4.ToStringVN(),
+        Value5 = x.Value5.ToStringVN(),
+        Value6 = x.Value6.ToStringVN(),
+        Value7 = x.Value7.ToStringVN(),
+        Value8 = x.Value8.ToStringVN(),
+        Value9 = x.Value9.ToStringVN(),
+        Value10 = x.Value10.ToStringVN(),
+        IsBold = x.IsBold
+    });
 }
 <style>
     .header-table {
@@ -9,10 +67,20 @@
         font-weight: bold;
         text-transform: uppercase;
     }
+
     .liNav {
         width: 266px;
     }
+
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
+    }
+
+    .grid .dhx_grid-cell {
+        word-break: break-word
+    }
 </style>
+
 
 <div class="load_data">
     <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
@@ -37,145 +105,114 @@
     </ul>
     <div class="tab-content" style="padding-bottom:0">
         <div role="tabpanel" class="tab-pane fade in active" id="tab1">
-            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-                <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-                    <table class="table table-condensed table-bordered table-striped table-zoom">
-                        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-                            <tr class="header-table">
-                                <td>Chỉ tiêu</td>
-                                <td>Cộng năm</td>
-                                <td>Tháng 1</td>
-                                <td>Tháng 2</td>
-                                <td>Tháng 3</td>
-                                <td>Tháng 4</td>
-                                <td>Tháng 5</td>
-                                <td>Tháng 6</td>
-                                <td>Tháng 7</td>
-                                <td>Tháng 8</td>
-                                <td>Tháng 9</td>
-                                <td>Tháng 10</td>
-                                <td>Tháng 11</td>
-                                <td>Tháng 12</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Tab1.OrderBy(x => x.Order))
-                            {
-                                var space = new StringBuilder();
-                                for (int i = 0; i < item.Level; i++)
-                                {
-                                    space.Append("\t");
-                                }
-                                var bold = item.IsBold == true ? "bold" : "";
-                                <tr style="font-weight:@bold">
-                                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                                    <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
-                                    <td class="align-right">@item.Value1.ToStringVN()</td>
-                                    <td class="align-right">@item.Value2.ToStringVN()</td>
-                                    <td class="align-right">@item.Value3.ToStringVN()</td>
-                                    <td class="align-right">@item.Value4.ToStringVN()</td>
-                                    <td class="align-right">@item.Value5.ToStringVN()</td>
-                                    <td class="align-right">@item.Value6.ToStringVN()</td>
-                                    <td class="align-right">@item.Value7.ToStringVN()</td>
-                                    <td class="align-right">@item.Value8.ToStringVN()</td>
-                                    <td class="align-right">@item.Value9.ToStringVN()</td>
-                                    <td class="align-right">@item.Value10.ToStringVN()</td>
-                                    <td class="align-right">@item.Value11.ToStringVN()</td>
-                                    <td class="align-right">@item.Value12.ToStringVN()</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <div style="height: calc(100vh - 220px);" id="@gridTab1"></div>
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab2">
-            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-                <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);width: 50%">
-                    <table class="table table-condensed table-bordered table-striped table-zoom">
-                        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-                            <tr class="header-table">
-                                <td>Chỉ tiêu</td>
-                                <td>Cộng năm</td>
-                                <td>CNMB</td>
-                                <td>CNMT</td>
-                                <td>CNMN</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Tab2.OrderBy(x => x.Order))
-                            {
-                                var space = new StringBuilder();
-                                for (int i = 0; i < item.Level; i++)
-                                {
-                                    space.Append("\t");
-                                }
-                                var bold = item.IsBold == true ? "bold" : "";
-                                <tr style="font-weight:@bold">
-                                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                                    <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
-                                    <td class="align-right">@item.Value1.ToStringVN()</td>
-                                    <td class="align-right">@item.Value2.ToStringVN()</td>
-                                    <td class="align-right">@item.Value3.ToStringVN()</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <div style="overflow: auto; height: calc(100vh - 220px); width: 50%;" id="@gridTab2"></div>
+           
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab3">
-            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-                <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-                    <table class="table table-condensed table-bordered table-striped table-zoom">
-                        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-                            <tr class="header-table">
-                                <td colspan="2" rowspan="2">BAY NỘI ĐỊA</td>
-                                <td rowspan="2">VNA</td>
-                                <td colspan="7">HKVN#</td>
-                                <td rowspan="2">HKQT</td>
-                                <td rowspan="2">Cộng</td>
-                            </tr>
-                            <tr class="header-table">
-                                <td>BL</td>
-                                <td>0V</td>
-                                <td>VJ</td>
-                                <td>QH</td>
-                                <td>VU</td>
-                                <td>HKTN#</td>
-                                <td>Cộng</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Tab3.OrderBy(x => x.Order))
-                            {
-                                var space = new StringBuilder();
-                                for (int i = 0; i < item.Level; i++)
-                                {
-                                    space.Append("\t");
-                                }
-                                var bold = item.IsBold == true ? "bold" : "";
-                                <tr style="font-weight:@bold">
-                                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                                    <td class="align-center">@item.Code</td>
-                                    <td class="align-right">@item.Value1.ToStringVN()</td>
-                                    <td class="align-right">@item.Value2.ToStringVN()</td>
-                                    <td class="align-right">@item.Value3.ToStringVN()</td>
-                                    <td class="align-right">@item.Value4.ToStringVN()</td>
-                                    <td class="align-right">@item.Value5.ToStringVN()</td>
-                                    <td class="align-right">@item.Value6.ToStringVN()</td>
-                                    <td class="align-right">@item.Value7.ToStringVN()</td>
-                                    <td class="align-right">@item.Value8.ToStringVN()</td>
-                                    <td class="align-right">@item.Value9.ToStringVN()</td>
-                                    <td class="align-right">@item.Value10.ToStringVN()</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <div style="overflow: auto; height: calc(100vh - 220px);" id="@gridTab3"></div>
+            
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(function () {
+        Forms.CompleteUI();
+        ActiveTab();
+    });
+
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+    const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab2, jsonSerializeSettings));
+    const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab3, jsonSerializeSettings));
+    const columns = [
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], width: 300 },
+        { id: "valueSumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", width: 180 },
+        { id: "value1", header: [{ text: "THÁNG 1", align: "center" }], align: "right", width: 180 },
+        { id: "value2", header: [{ text: "THÁNG 2", align: "center" }], align: "right", width: 180 },
+        { id: "value3", header: [{ text: "THÁNG 3", align: "center" }], align: "right", width: 180 },
+        { id: "value4", header: [{ text: "THÁNG 4", align: "center" }], align: "right", width: 180 },
+        { id: "value5", header: [{ text: "THÁNG 5", align: "center" }], align: "right", width: 180 },
+        { id: "value6", header: [{ text: "THÁNG 6", align: "center" }], align: "right", width: 180 },
+        { id: "value7", header: [{ text: "THÁNG 7", align: "center" }], align: "right", width: 180 },
+        { id: "value8", header: [{ text: "THÁNG 8", align: "center" }], align: "right", width: 180 },
+        { id: "value9", header: [{ text: "THÁNG 9", align: "center" }], align: "right", width: 180 },
+        { id: "value10", header: [{ text: "THÁNG 10", align: "center" }], align: "right", width: 180 },
+        { id: "value11", header: [{ text: "THÁNG 11", align: "center" }], align: "right", width: 180 },
+        { id: "value12", header: [{ text: "THÁNG 12", align: "center" }], align: "right", width: 180 },
+    ];
+
+    const columnsTab2 = [
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], width: 300 },
+        { id: "valueSumYear", header: [{ text: "CỘNG NĂM", align: "center" }], align: "right", width: 180 },
+        { id: "value1", header: [{ text: "CNMB", align: "center" }], align: "right", width: 180 },
+        { id: "value2", header: [{ text: "CNMT", align: "center" }], align: "right", width: 180 },
+        { id: "value3", header: [{ text: "CNMN", align: "center" }], align: "right", width: 180 },
+    ];
+
+    const columnsTab3 = [
+        { id: "name", header: [{ text: "BAY NỘI ĐỊA", align: "center", colspan: 2 }, { content: "inputFilter" }], width: 300 },
+        { id: "code", header: [{ text: "", align: "center" }], align: "right", width: 60 },
+        { id: "value1", header: [{ text: "VNA", align: "center", rowspan:2 }], align: "right", width: 180 },
+        {
+            id: "value2", header: [
+            { text: "HKVN", align: "center", colspan: 7 },
+            { text: "BL", align: "center" }], align: "right", width: 180 },
+        { id: "value3", header: [{ text: "", align: "center" }, { text: "OV", align: "center" }], align: "right", width: 180 },
+        { id: "value4", header: [{ text: "", align: "center" }, { text: "VJ", align: "center" }], align: "right", width: 180 },
+        { id: "value5", header: [{ text: "", align: "center" }, { text: "QH", align: "center" }], align: "right", width: 180 },
+        { id: "value6", header: [{ text: "", align: "center" }, { text: "VU", align: "center" }], align: "right", width: 180 },
+        { id: "value7", header: [{ text: "", align: "center" }, { text: "HKTN#", align: "center" }], align: "right", width: 180 },
+        { id: "value8", header: [{ text: "", align: "center" }, { text: "CỘNG", align: "center" }], align: "right", width: 180 },
+        { id: "value9", header: [{ text: "HKQT", align: "center", rowspan: 2 }], align: "right", width: 180 },
+        { id: "value10", header: [{ text: "CỘNG", align: "center", rowspan: 2 }], align: "right", width: 180 },       
+
+    ]
+    rawData.forEach((item) => {
+        if (item.parent == null) {
+            delete item.parent
+        }
+    });
+
+    rawDataTab2.forEach((item) => {
+        if (item.parent == null) {
+            delete item.parent
+        }
+    });
+    rawDataTab3.forEach((item) => {
+        if (item.parent == null) {
+            delete item.parent
+        }
+    });
+
+    const treeGrid = new dhx.TreeGrid("@gridTab1", {
+    columns,
+    leftSplit: 1,
+    resizable: true,
+    keyNavigation: true,
+    rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        data: rawData,
+    });
+
+    const treeGridTab2 = new dhx.TreeGrid("@gridTab2", {
+        columns: columnsTab2,
+        leftSplit: 1,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        data: rawDataTab2,
+    });
+
+    const treeGridTab3 = new dhx.Grid("@gridTab3", {
+    columns: columnsTab3,
+    leftSplit: 1,
+    resizable: true,
+    keyNavigation: true,
+    rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    data: rawDataTab3,
+});
+</script>
+

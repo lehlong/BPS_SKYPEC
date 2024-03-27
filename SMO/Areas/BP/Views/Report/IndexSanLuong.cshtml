@@ -5,6 +5,8 @@
     var lstHangHangKhong = SelectListUtilities.GetSelectHangHangKhong();
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
     var selectedValue = "TB";
+    var numberTab = ViewBag.Slug as int?;
+    var tabActive = "#tab" + numberTab.ToString();
 }
 <div class="container-fluid child-content">
     <div class="card border-grey">
@@ -92,6 +94,16 @@
             htmlTarget:'#divReport',
         };
         Forms.LoadAjax(ajaxParams);
+    }
+    function ActiveTab() {
+        var tabActive = '@tabActive';
+        var $aElement = $("a[href='" + tabActive + "']");
+
+    if ($aElement.length > 0) {
+        $aElement[0].click();
+    } else {
+        console.log("Không tìm thấy tab nào có href là " + tabActive);
+    }
     }
 
     $(function () {

@@ -14,7 +14,7 @@
     <div class="card">
         <div class="body" style="padding-top: 0px;">
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> KHOẢN MỤC SẢN LƯỢNG</a></li>
+                <li role="presentation" class="active"><a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> KHOẢN MỤC VẬN CHUYỂN</a></li>
             </ul>
 
             <div class="tab-content">
@@ -222,7 +222,7 @@
                     if (isUpdateOrder && isUpdateOrder == true) {
                         UpdateTree();
                     }
-                    $.fn.zTree.getZTreeObj("treeElement").expandAll(true);
+                    $.fn.zTree.getZTreeObj("treeElement").expandAll(false);
                 }
             };
             Forms.Ajax(ajaxParams);
