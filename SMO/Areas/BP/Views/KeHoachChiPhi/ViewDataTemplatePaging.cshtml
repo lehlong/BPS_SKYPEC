@@ -1,108 +1,192 @@
 ﻿@model IList<T_MD_KHOAN_MUC_HANG_HOA>
-@using SMO.Core.Entities;
 @using SMO.Core.Entities.MD;
 @using SMO.Service.Class;
 @using System.Text;
-@using Newtonsoft.Json.Serialization;
 @using Newtonsoft.Json;
 @{
-    var viewId = Guid.NewGuid().ToString();
-    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var gridId = Guid.NewGuid().ToString("N");
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
-    var lstDepartment = SelectListUtilities.GetAllCostCenter().ToList();
-    var orgCode = dataCenterModel.ORG_CODE;
-    var tempalteCode = dataCenterModel.TEMPLATE_CODE;
-    var year = dataCenterModel.YEAR;
-    var version = dataCenterModel.VERSION;
 }
 
-@foreach (var item in Model.OrderBy(x => x.CODE))
-{
-    var space = new StringBuilder();
-    for (int i = 0; i < item.LEVEL; i++)
-    {
-        space.Append("\t");
+<style>
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
     }
-    var classParent = item.IS_GROUP ? "strong" : string.Empty;
-    var isEdit = item.IS_GROUP ? "disabled" : "";
-    var isChecked = item.IsChecked ? "checked" : "";
-    var color = item.IsHighLight ? "red" : "";
-    <tr class="@classParent" style="color:@color">
-        <td>
-            <input type="checkbox" @isChecked class="filled-in chkItem" name="chkItem" id="@("chkItem" + item.CODE)" modelId="@item.CODE" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
-            <label for="@("chkItem" + item.CODE)"></label>
-        </td>
-        <td><i class="material-icons icon-function" onclick="getCommentElement('@item.CODE')">comment</i></td>
-        <td><i class="material-icons icon-function" onclick="getAssignDepartmentElement('@item.CODE')">group_add</i></td>
 
-        @if (!string.IsNullOrEmpty(item.CODE) && item.IS_GROUP == false)
+    .grid .dhx_grid-cell {
+        word-break: break-word
+    }
+</style>
+
+<div style="height: calc(100vh - 240px);" id="@gridId"></div>
+
+<script type="text/javascript">
+    const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
+    var idCol0 = rawData[0].lstCenter[0].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[0].SAN_BAY_CODE : rawData[0].lstCenter[0]._implementation.SAN_BAY_CODE;
+
+    console.log(rawData)
+
+    const columns = [
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], width: 500 },
         {
-            <td><i class="material-icons icon-function" onclick="getHistoryEditElement('@item.CODE')">history</i></td>
-        }
-        else
-        {
-            <td></td>
-        }
-
-        <td class="@classParent"><div class="@classParent">@(item.CODE)</div></td>
-        <td class="@classParent"><div class="@classParent">@($"{space.ToString()}{item.NAME}")</div></td>
-
-        @*Số lượng*@
-        @{
-            decimal sumSL = 0;
-        }
-        @for (int i = 0; i < item.valueSb.Count(); i++)
-        {
-            var valueSL = item.valueSb[i][0].ToStringVN();
-            var center = item.lstCenter[i];
-            sumSL = sumSL + valueSL.AsDecimal();
-            <td class="align-right"><input type="text" class="input-edit" onchange="onEditCell('SL', '@center.SAN_BAY_CODE','@center.COST_CENTER_CODE', '@item.CODE', this.value)" value="@(valueSL == "0" ? "" : valueSL)" @isEdit /></td>
-        }
-
-        <td class="align-right">@(sumSL.ToStringVN()=="0"?"": sumSL.ToStringVN())</td>
-
-        @*Đơn giá*@
-        <td class="align-right"><input type="text" class="input-edit" @isEdit onchange="onEditCell('DG', '','', '@item.CODE', this.value)" value="@(item.valueSb[0][1].ToStringVN()== "0"?"":item.valueSb[0][1].ToStringVN())" /></td>
-
-        @{
-            decimal sumTT = 0;
-        }
-        @for (int i = 0; i < item.valueSb.Count(); i++)
-        {
-            sumTT = sumTT + item.valueSb[i][2];
-            <td class="align-right">@(item.valueSb[i][2].ToStringVN() == "0" ? "" : item.valueSb[i][2].ToStringVN())</td>
-        }
-
-        <td class="align-right">@sumTT.ToStringVN()</td>
-
-
-
-    </tr>
-}
-
-<script>
-    @*function LoadPagingTBody(type) {
-        var skip = Number('@skip');
-        var count = Number('@count');
-        skip = type == 'next' ? skip + 100 : skip - 100;
-        debugger
-        if (skip == 0 || skip == Number(count) - 100) {
-            return;
-        }
-        skip = skip < 0 ? 0 : skip > Number(count) ? Number(count) - 100 : skip;
-        $("#load-paging").empty();
-        const model = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
-        var ajaxParams = {
-            url: "@Url.Action("ViewDataTemplatePaging")",
-            data: {
-                model: JSON.stringify(model),
-                skip: skip
+            id: "check", header: [
+                { text: "HÀNH ĐỘNG", align: 'center', colspan: 4, rowspan: 3 },
+                { text: "", align: 'center' },
+            ],
+            adjust: false,
+            width: 60,
+            align: 'center',
+            template: (value, row, col) => {
+                var isChecked = row.isChecked ? "checked" : "";
+                return `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                        <label for="chkItem${row.code}"></label>`
             },
-            htmlTarget: '#load-paging',
-        };
-        Forms.LoadAjax(ajaxParams);
-    }*@
+            htmlEnable: true,
+        },
+        {
+            id: "comment", header: ["", { text: "", align: 'center' }],
+            adjust: false,
+            width: 60,
+            align: 'center',
+            template: (value, row, col) => {
+                return `<i class="material-icons icon-function" onclick="getCommentElement('${row.code}')">comment</i>`
+            },
+            htmlEnable: true,
+        },
+        {
+            id: "assignDepartment", header: ["", { text: "", align: 'center' }],
+            adjust: false,
+            width: 60,
+            align: 'center',
+            template: (value, row, col) => {
+                return `<i class="material-icons icon-function" onclick="getAssignDepartmentElement('${row.code}')">group_add</i>`
+            },
+            htmlEnable: true,
+        },
+        {
+            id: "history", header: ["", { text: "", align: 'center' }],
+            adjust: false,
+            width: 60,
+            align: 'center',
+            template: (value, row, col) => {
+                return `<i class="material-icons icon-function" onclick="getHistoryEditElement('${row.code}')">history</i>`
+            },
+            htmlEnable: true,
+        }
+    ];
+
+    columns.push(
+        {
+            id: `quantity_${idCol0}`, header: [
+                { text: "KẾ HOẠCH CHI TIẾT", colspan: rawData[0].lstCenter.length * 2 + 3, align: 'center' },
+                { text: "SỐ LƯỢNG", colspan: rawData[0].lstCenter.length, align: 'center' },
+                { text: idCol0, align: 'center' }
+            ], align: 'right', width: 150, type: "number", format: "#,#",
+        },
+    );
+    for (var i = 1; i < rawData[0].lstCenter.length; i++) {
+        var idCol = rawData[0].lstCenter[i].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[i].SAN_BAY_CODE : rawData[0].lstCenter[i]._implementation.SAN_BAY_CODE;
+        columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#,#", });
+    };
+
+    columns.push(
+        { id: "sumQuantity", header: ["", { text: "CỘNG", align: "center", rowspan: 2 }], width: 150, type: "number", format: "#,#", },
+        { id: "price", header: ["", { text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], width: 150, type: "number", format: "#,#", },
+    );
+
+    columns.push(
+        {
+            id: `total_${idCol0}`, header: [
+                "",
+                { text: "THÀNH TIỀN", colspan: rawData[0].lstCenter.length, align: 'center' },
+                { text: idCol0, align: 'center' }
+            ], align: 'right', width: 150, type: "number", format: "#,#",
+        },
+    );
+    for (var i = 1; i < rawData[0].lstCenter.length; i++) {
+        var idCol = rawData[0].lstCenter[i].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[i].SAN_BAY_CODE : rawData[0].lstCenter[i]._implementation.SAN_BAY_CODE;
+        columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#,#", });
+    };
+    columns.push(
+        { id: "sumTotal", header: ["", { text: "CỘNG", align: "center", rowspan: 2 }], width: 150, type: "number", format: "#,#", },
+        { id: "notes", header: [{ text: "GHI CHÚ", align: "center", rowspan: 3 }], width: 150 }
+    );
+
+    var jsonData = [];
+
+    rawData.forEach((item) => {
+        var obj = {
+            id: item.CODE,
+            code: item.CODE,
+            parent: item.PARENT_CODE,
+            name: item.NAME,
+            isBold: item.IS_GROUP,
+            notes: item.DESCRIPTION,
+            isChecked: item.IsChecked,
+            price: item.valueSb[0][1],
+        }
+        var sumQuantity = 0;
+        var sumTotal = 0;
+        for (var i = 0; i < item.lstCenter.length; i++) {
+            if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
+                obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
+                obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][2];
+            } else {
+                obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
+                obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][2];
+            }
+            sumQuantity += item.valueSb[i][0];
+            sumTotal += item.valueSb[i][2];
+        }
+        obj[`sumQuantity`] = sumQuantity;
+        obj[`sumTotal`] = sumTotal;
+
+        jsonData.push(obj);
+    });
+
+    jsonData.forEach((item) => {
+        if (item.parent == 'CQCT' || item.parent == 'DVT' || item.parent == 'CPMB' || item.parent == 'CPMT' || item.parent == 'CPMN') delete item.parent
+    });
+
+    const treeGrid = new dhx.TreeGrid("@gridId", {
+        columns,
+        leftSplit: 1,
+        resizable: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        data: jsonData,
+    });
+
+    treeGrid.events.on("cellClick", function (row, column) {
+        if (row.isBold) return;
+        if (column.id.includes("price") || column.id.includes("quantity_")) treeGrid.editCell(row.id, column.id);
+    });
+
+    treeGrid.events.on("afterEditEnd", function (value, row, column) {
+        if (column.id.includes("price")) {
+            onEditCell('DG', '', '', row.code, value)
+        } else {
+            var centerCode = '';
+            rawData.forEach((item) => {
+                for (var i = 0; i < item.lstCenter.length; i++) {
+                    if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
+                        if (item.lstCenter[i].SAN_BAY_CODE == column.id.replace("quantity_","") && item.CODE == row.code) {
+                            centerCode = item.lstCenter[i].COST_CENTER_CODE;
+                        }
+                    }
+                    else {
+                        if (item.lstCenter[i]._implementation.SAN_BAY_CODE == column.id.replace("quantity_","") && item.CODE == row.code) {
+                            centerCode = item.lstCenter[i]._implementation.COST_CENTER_CODE;
+                        }
+                    }
+                }
+            });
+            onEditCell('SL', column.id.replace("quantity_", ""), centerCode, row.code, value)
+        }
+    });
 </script>
+
+
 
 
 

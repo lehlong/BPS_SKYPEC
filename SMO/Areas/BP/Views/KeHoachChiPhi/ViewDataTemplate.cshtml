@@ -63,43 +63,10 @@
                     @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
                     @Html.MyButton("cmdDownload", "Xuất Excel", "ExportExcel();", "Alt+N", "download")
                     @Html.MyButton("cmdDownload", "Kết xuất", "LoadUpdate();", "Alt+N", "search")
-                    @Html.MyButton("cmdPrevious", "", "LoadPagingTBody('previous')", "Alt+N", "chevron_left")
-                    @Html.MyButton("cmdNext", "", "LoadPagingTBody('next')", "Alt+N", "chevron_right")
                     <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank" hidden></a>
                 </div>
                 <hr />
-                <div id="divResult">
-                    <div class="table-responsive" style="overflow: auto; height: calc(100vh - 190px);">
-                        <table class="table table-condensed table-bordered">
-                            <thead style="position: sticky; top: 0; z-index: 2; background: gainsboro;">
-                                <tr>
-                                    <th rowspan="3" colspan="4">HÀNH ĐỘNG</th>
-                                    <th rowspan="3">MÃ</th>
-                                    <th rowspan="3" style="padding: 0 120px">CHỈ TIÊU</th>
-                                    <th colspan="@(Model.Count() * 2 + 3)">KẾ HOẠCH CHI TIẾT</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="@(Model.Count())">SỐ LƯỢNG</th>
-                                    <th rowspan="2">CỘNG</th>
-                                    <th rowspan="2">ĐƠN GIÁ</th>
-                                    <th colspan="@(Model.Count())">THÀNH TIỀN</th>
-                                    <th rowspan="2">CỘNG</th>
-                                </tr>
-                                <tr>
-                                    @foreach (var sb in Model)
-                                    {
-                                        <th>@sb</th>
-                                    }
-                                    @foreach (var sb in Model)
-                                    {
-                                        <th>@sb</th>
-                                    }
-                                </tr>
-                            </thead>
-                            <tbody id="load-paging">
-                            </tbody>
-                        </table>
-                    </div>
+                <div id="load-paging">
                 </div>
             </div>
         </div>
