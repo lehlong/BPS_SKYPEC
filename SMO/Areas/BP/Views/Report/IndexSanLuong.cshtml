@@ -106,6 +106,35 @@
         var hangHangKhong = $("#hang-hang-khong").val()
         window.open(`/BP/Report/ExportExcelDataSanLuong?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
     }
+
+    var fontSize = 13;
+    function ZoomIn() {
+        fontSize--;
+        if (fontSize < 6) {
+            fontSize = 6;
+        }
+        Zoom(fontSize);
+    }
+
+    function ZoomOut() {
+        fontSize++;
+        if (fontSize > 20) {
+            fontSize = 20;
+        }
+        Zoom(fontSize);
+    }
+
+    function Zoom(fontSize) {
+        try {
+            var $table_zoom = $('.table-zoom');
+
+            $('.table-zoom').attr('class', $table_zoom.get(0).className.replace(/\bfont-\S+/g, ''));
+            $(".table-zoom").addClass("font-" + fontSize);
+
+        } catch (ex) {
+            console.log("Can't zoom table!")
+        }
+    }
 </script>
 
 

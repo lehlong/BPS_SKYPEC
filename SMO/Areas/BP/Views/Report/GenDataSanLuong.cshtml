@@ -9,158 +9,172 @@
         font-weight: bold;
         text-transform: uppercase;
     }
+    .liNav {
+        width: 266px;
+    }
 </style>
 
-<ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
-    <li role="presentation" class="active" style="cursor: pointer;">
-        <a href="#tab1" data-toggle="tab">Sản lượng theo tháng</a>
-    </li>
-    <li role="presentation" style="cursor: pointer;">
-        <a data-toggle="tab" href="#tab2">Sản lượng theo chi nhánh</a>
-    </li>
-    <li role="presentation" style="cursor: pointer;">
-        <a data-toggle="tab" href="#tab3">Sản lượng theo sân bay</a>
-    </li>
-</ul>
-<div class="tab-content" style="padding-bottom:0">
-    <div role="tabpanel" class="tab-pane fade in active" id="tab1">
-        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-            <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-                <table class="table table-condensed table-bordered table-striped">
-                    <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-                        <tr class="header-table">
-                            <td>Chỉ tiêu</td>
-                            <td>Cộng năm</td>
-                            <td>Tháng 1</td>
-                            <td>Tháng 2</td>
-                            <td>Tháng 3</td>
-                            <td>Tháng 4</td>
-                            <td>Tháng 5</td>
-                            <td>Tháng 6</td>
-                            <td>Tháng 7</td>
-                            <td>Tháng 8</td>
-                            <td>Tháng 9</td>
-                            <td>Tháng 10</td>
-                            <td>Tháng 11</td>
-                            <td>Tháng 12</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.Tab1.OrderBy(x => x.Order))
-                        {
-                            var space = new StringBuilder();
-                            for (int i = 0; i < item.Level; i++)
-                            {
-                                space.Append("\t");
-                            }
-                            var bold = item.IsBold == true ? "bold" : "";
-                            <tr style="font-weight:@bold">
-                                <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                                <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
-                                <td class="align-right">@item.Value1.ToStringVN()</td>
-                                <td class="align-right">@item.Value2.ToStringVN()</td>
-                                <td class="align-right">@item.Value3.ToStringVN()</td>
-                                <td class="align-right">@item.Value4.ToStringVN()</td>
-                                <td class="align-right">@item.Value5.ToStringVN()</td>
-                                <td class="align-right">@item.Value6.ToStringVN()</td>
-                                <td class="align-right">@item.Value7.ToStringVN()</td>
-                                <td class="align-right">@item.Value8.ToStringVN()</td>
-                                <td class="align-right">@item.Value9.ToStringVN()</td>
-                                <td class="align-right">@item.Value10.ToStringVN()</td>
-                                <td class="align-right">@item.Value11.ToStringVN()</td>
-                                <td class="align-right">@item.Value12.ToStringVN()</td>
+<div class="load_data">
+    <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
+        <li role="presentation" class="active liNav" style="cursor: pointer;">
+            <a href="#tab1" data-toggle="tab">Sản lượng theo tháng</a>
+        </li>
+        <li role="presentation" class="liNav" style="cursor: pointer;">
+            <a data-toggle="tab" href="#tab2">Sản lượng theo chi nhánh</a>
+        </li>
+        <li role="presentation" class="liNav" style="cursor: pointer;">
+            <a data-toggle="tab" href="#tab3">Sản lượng theo sân bay</a>
+        </li>
+        <li style="right: 10px; top: 0; display: flex; align-items: center; justify-content: end; width: 100%;">
+            <span class="waves-effect btn-default btn" style="width: 7%; padding: 10px 6px; margin-right: 2px;">
+                <input type="range" min="8" max="20" value="13" onmousemove="Zoom(this.value)">
+            </span>
+
+            <span class="waves-effect btn-default btn" onclick="$('.load_data').toggleClass('full-screen');$('.table').toggleClass('full-screen-table');$('.table').toggleClass('table-screen');" title="Xem toàn màn hình">
+                <i class="material-icons" style="color: #0d6efd">fullscreen</i>
+            </span>
+        </li>
+    </ul>
+    <div class="tab-content" style="padding-bottom:0">
+        <div role="tabpanel" class="tab-pane fade in active" id="tab1">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+                    <table class="table table-condensed table-bordered table-striped table-zoom">
+                        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+                            <tr class="header-table">
+                                <td>Chỉ tiêu</td>
+                                <td>Cộng năm</td>
+                                <td>Tháng 1</td>
+                                <td>Tháng 2</td>
+                                <td>Tháng 3</td>
+                                <td>Tháng 4</td>
+                                <td>Tháng 5</td>
+                                <td>Tháng 6</td>
+                                <td>Tháng 7</td>
+                                <td>Tháng 8</td>
+                                <td>Tháng 9</td>
+                                <td>Tháng 10</td>
+                                <td>Tháng 11</td>
+                                <td>Tháng 12</td>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Tab1.OrderBy(x => x.Order))
+                            {
+                                var space = new StringBuilder();
+                                for (int i = 0; i < item.Level; i++)
+                                {
+                                    space.Append("\t");
+                                }
+                                var bold = item.IsBold == true ? "bold" : "";
+                                <tr style="font-weight:@bold">
+                                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
+                                    <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
+                                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                                    <td class="align-right">@item.Value4.ToStringVN()</td>
+                                    <td class="align-right">@item.Value5.ToStringVN()</td>
+                                    <td class="align-right">@item.Value6.ToStringVN()</td>
+                                    <td class="align-right">@item.Value7.ToStringVN()</td>
+                                    <td class="align-right">@item.Value8.ToStringVN()</td>
+                                    <td class="align-right">@item.Value9.ToStringVN()</td>
+                                    <td class="align-right">@item.Value10.ToStringVN()</td>
+                                    <td class="align-right">@item.Value11.ToStringVN()</td>
+                                    <td class="align-right">@item.Value12.ToStringVN()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div role="tabpanel" class="tab-pane fade in active" id="tab2">
-        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-            <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);width: 50%">
-                <table class="table table-condensed table-bordered table-striped">
-                    <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-                        <tr class="header-table">
-                            <td>Chỉ tiêu</td>
-                            <td>Cộng năm</td>
-                            <td>CNMB</td>
-                            <td>CNMT</td>
-                            <td>CNMN</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.Tab2.OrderBy(x => x.Order))
-                        {
-                            var space = new StringBuilder();
-                            for (int i = 0; i < item.Level; i++)
-                            {
-                                space.Append("\t");
-                            }
-                            var bold = item.IsBold == true ? "bold" : "";
-                            <tr style="font-weight:@bold">
-                                <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                                <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
-                                <td class="align-right">@item.Value1.ToStringVN()</td>
-                                <td class="align-right">@item.Value2.ToStringVN()</td>
-                                <td class="align-right">@item.Value3.ToStringVN()</td>
+        <div role="tabpanel" class="tab-pane fade in active" id="tab2">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);width: 50%">
+                    <table class="table table-condensed table-bordered table-striped table-zoom">
+                        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+                            <tr class="header-table">
+                                <td>Chỉ tiêu</td>
+                                <td>Cộng năm</td>
+                                <td>CNMB</td>
+                                <td>CNMT</td>
+                                <td>CNMN</td>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Tab2.OrderBy(x => x.Order))
+                            {
+                                var space = new StringBuilder();
+                                for (int i = 0; i < item.Level; i++)
+                                {
+                                    space.Append("\t");
+                                }
+                                var bold = item.IsBold == true ? "bold" : "";
+                                <tr style="font-weight:@bold">
+                                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
+                                    <td class="align-right">@item.ValueSumYear.ToStringVN()</td>
+                                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div role="tabpanel" class="tab-pane fade in active" id="tab3">
-        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-            <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-                <table class="table table-condensed table-bordered table-striped">
-                    <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-                        <tr class="header-table">
-                            <td colspan="2" rowspan="2">BAY NỘI ĐỊA</td>
-                            <td rowspan="2">VNA</td>
-                            <td colspan="7">HKVN#</td>
-                            <td rowspan="2">HKQT</td>
-                            <td rowspan="2">Cộng</td>
-                        </tr>
-                        <tr class="header-table">
-                            <td>BL</td>
-                            <td>0V</td>
-                            <td>VJ</td>
-                            <td>QH</td>
-                            <td>VU</td>
-                            <td>HKTN#</td>
-                            <td>Cộng</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.Tab3.OrderBy(x => x.Order))
-                        {
-                            var space = new StringBuilder();
-                            for (int i = 0; i < item.Level; i++)
-                            {
-                                space.Append("\t");
-                            }
-                            var bold = item.IsBold == true ? "bold" : "";
-                            <tr style="font-weight:@bold">
-                                <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                                <td class="align-center">@item.Code</td>
-                                <td class="align-right">@item.Value1.ToStringVN()</td>
-                                <td class="align-right">@item.Value2.ToStringVN()</td>
-                                <td class="align-right">@item.Value3.ToStringVN()</td>
-                                <td class="align-right">@item.Value4.ToStringVN()</td>
-                                <td class="align-right">@item.Value5.ToStringVN()</td>
-                                <td class="align-right">@item.Value6.ToStringVN()</td>
-                                <td class="align-right">@item.Value7.ToStringVN()</td>
-                                <td class="align-right">@item.Value8.ToStringVN()</td>
-                                <td class="align-right">@item.Value9.ToStringVN()</td>
-                                <td class="align-right">@item.Value10.ToStringVN()</td>
+        <div role="tabpanel" class="tab-pane fade in active" id="tab3">
+            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+                    <table class="table table-condensed table-bordered table-striped table-zoom">
+                        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+                            <tr class="header-table">
+                                <td colspan="2" rowspan="2">BAY NỘI ĐỊA</td>
+                                <td rowspan="2">VNA</td>
+                                <td colspan="7">HKVN#</td>
+                                <td rowspan="2">HKQT</td>
+                                <td rowspan="2">Cộng</td>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                            <tr class="header-table">
+                                <td>BL</td>
+                                <td>0V</td>
+                                <td>VJ</td>
+                                <td>QH</td>
+                                <td>VU</td>
+                                <td>HKTN#</td>
+                                <td>Cộng</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Tab3.OrderBy(x => x.Order))
+                            {
+                                var space = new StringBuilder();
+                                for (int i = 0; i < item.Level; i++)
+                                {
+                                    space.Append("\t");
+                                }
+                                var bold = item.IsBold == true ? "bold" : "";
+                                <tr style="font-weight:@bold">
+                                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
+                                    <td class="align-center">@item.Code</td>
+                                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                                    <td class="align-right">@item.Value4.ToStringVN()</td>
+                                    <td class="align-right">@item.Value5.ToStringVN()</td>
+                                    <td class="align-right">@item.Value6.ToStringVN()</td>
+                                    <td class="align-right">@item.Value7.ToStringVN()</td>
+                                    <td class="align-right">@item.Value8.ToStringVN()</td>
+                                    <td class="align-right">@item.Value9.ToStringVN()</td>
+                                    <td class="align-right">@item.Value10.ToStringVN()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

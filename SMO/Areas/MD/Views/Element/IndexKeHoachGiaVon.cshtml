@@ -51,16 +51,7 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; position: absolute; top: 0; width: 500px;">
-                        <div class="input-group" style="width: 250px; margin-bottom: 0; margin-left: 10px; float: left">
-                            <div class="form-line">
-                                <input class="form-control" id="text-search-table" placeholder="Tìm kiếm" oninput="HandleSearch(this)" />
-                            </div>
-                            <span class="input-group-addon" style="cursor: pointer" title="Làm mới ô tìm kiếm" onclick="$('#text-search-table').val(''); $('#text-search-table').focus(); $('#text-search-table').trigger('keyup');">
-                                <i class="material-icons">refresh</i>
-                            </span>
-                        </div>
-                    </div>
+                    
                 </div>
 
                 <div id="divResult">
@@ -117,6 +108,35 @@
             Forms.CompleteUI();
             Forms.SubmitByEnter("@Model.FormId");
         });
+
+        var fontSize = 13;
+        function ZoomIn() {
+            fontSize--;
+            if (fontSize < 6) {
+                fontSize = 6;
+            }
+            Zoom(fontSize);
+        }
+
+        function ZoomOut() {
+            fontSize++;
+            if (fontSize > 20) {
+                fontSize = 20;
+            }
+            Zoom(fontSize);
+        }
+
+        function Zoom(fontSize) {
+            try {
+                var $table_zoom = $('.table-zoom');
+
+                $('.table-zoom').attr('class', $table_zoom.get(0).className.replace(/\bfont-\S+/g, ''));
+                $(".table-zoom").addClass("font-" + fontSize);
+
+            } catch (ex) {
+                console.log("Can't zoom table!")
+            }
+        }
     </script>
 </div>
 

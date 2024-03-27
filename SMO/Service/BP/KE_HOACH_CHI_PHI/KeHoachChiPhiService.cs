@@ -1542,7 +1542,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                            CODE = element.CODE,
                            NAME = element.NAME,
                            C_ORDER = order,
-                           IS_GROUP = element.IS_GROUP,
+                           IS_GROUP = lstParentCode.Contains(element.CODE),
                            IsChecked = expertise,
                            IsHighLight = isEdited || isCommented ? true : false,
                        };
@@ -1584,7 +1584,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             CODE = element.CODE,
                             NAME = element.NAME,
                             C_ORDER = order,
-                            IS_GROUP = element.IS_GROUP,
+                            IS_GROUP = lstParentCode.Contains(element.CODE),
                             IsChecked = expertise,
                             IsHighLight = isEdited || isCommented ? true : false,
                         };
@@ -1627,7 +1627,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             CODE = element.CODE,
                             NAME = element.NAME,
                             C_ORDER = order,
-                            IS_GROUP = element.IS_GROUP,
+                            IS_GROUP = lstParentCode.Contains(element.CODE),
                             IsChecked = expertise,
                             IsHighLight = isEdited || isCommented ? true : false,
                         };
@@ -1670,7 +1670,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             CODE = element.CODE,
                             NAME = element.NAME,
                             C_ORDER = order,
-                            IS_GROUP = element.IS_GROUP,
+                            IS_GROUP = lstParentCode.Contains(element.CODE),
                             IsChecked = expertise,
                             IsHighLight = isEdited || isCommented ? true : false,
                         };
