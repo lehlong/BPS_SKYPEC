@@ -36,14 +36,12 @@
     }
 </style>
 
-<div id="slider" style="width: 200px"></div>
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 
 <script type="text/javascript">
     const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
 
 
-    const MAIN_FONT_SIZE = 14;
     let columns = [
         { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
         { id: "sumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", minWidth: 180 },
@@ -60,7 +58,6 @@
         { id: "nov", header: [{ text: "THÁNG 11", align: "center" }], align: "right", minWidth: 180 },
         { id: "dec", header: [{ text: "THÁNG 12", align: "center" }], align: "right", minWidth: 180 },
     ];
-    const widthMap = new Map(columns.map(({ minWidth, id }) => ([id, minWidth])));
     rawData.forEach((item) => {
         if (item.parent == null) {
             delete item.parent
@@ -75,30 +72,6 @@
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         selection: true,
         autoHeight: true,
-    });
-
-    const slider = new dhx.Slider("slider", {
-        min: 4,
-        max: 36,
-        step: 1,
-        value: MAIN_FONT_SIZE,
-        tooltip: false
-    });
-
-    slider.events.on("change", value => {
-        const fontSize = parseInt(value);
-        document.documentElement.style.setProperty("--dhx-font-size-normal", fontSize + "px");
-
-        columns = columns.map(column => {
-            return {
-                ...column,
-                minWidth: widthMap.get(column.id) * (fontSize / MAIN_FONT_SIZE) - 2,
-            };
-        });
-        $(".dhx_grid-cell").css("font-size", `${value}px`);
-        $(".dhx_tree-cell").css("font-size", `${value}px`);
-        $(".dhx_grid-header-cell").css("font-size", `${value}px`);
-        treeGrid.setColumns(columns);
     });
 
 

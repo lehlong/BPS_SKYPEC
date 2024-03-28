@@ -1,7 +1,10 @@
 ﻿@model  List<SMO.Models.SuaChuaLonReportModel>
 @using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
     var year = ViewBag.Year as int?;
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
 <style>
     .header-table {

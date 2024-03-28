@@ -1,13 +1,47 @@
 ﻿@model SMO.Models.DataCenterModel
 @using SMO.Models;
 @using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+
+@{
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var jsonDataTab1 = Model.KeHoachGiaThanhData.OrderBy(x => x.AreaCode).ThenBy(x => x.Warehouse).Where(item=> !(item.S0001 == 0 && item.S0002 == 0 && item.U0001 == 0 && item.S0003 == 0 && item.S0004 == 0
+                                    && item.U0002 == 0 && item.S0005 == 0 && item.U0003 == 0 && item.S0006 == 0 && item.S0007 == 0
+                                    && item.U0004 == 0 && item.U0005 == 0 && item.U0006 == 0 && item.U0007 == 0 && item.U0008 == 0
+                                    && item.U0009 == 0 && item.U0010 == 0)).Select(x => new
+    {
+        Id = x.AreaCode,
+        Warehouse = x.Warehouse,
+        Delivery = x.DeliveryConditions,
+        S0001 = x.S0001.ToStringVN(),
+        S0002 = x.S0002.ToStringVN(),
+        U0001 = x.U0001.ToStringVN(),
+        S0003 = x.S0003.ToStringVN(),
+        S0004 = x.S0004.ToStringVN(),
+        U0002 = x.U0002.ToStringVN(),
+        S0005 = x.S0005.ToStringVN(),
+        U0003 = x.U0003.ToStringVN(),
+        S0006 = x.S0006.ToStringVN(),
+        S0007 = x.S0007.ToStringVN(),
+        U0004 = x.U0004.ToStringVN(),
+        U0005 = x.U0005.ToStringVN(),
+        U0006 = x.U0006.ToStringVN(),
+        U0007 = x.U0007.ToStringVN(),
+        U0008 = x.U0008.ToStringVN(),
+        U0009 = x.U0009.ToStringVN(),
+        U0010 = x.U0010.ToStringVN(),
+    });
+}
 
 <style>
-   
+
     table {
         position: relative;
         border-collapse: collapse;
     }
+
     thead {
         position: -webkit-sticky;
         position: sticky;
@@ -15,6 +49,7 @@
         z-index: 2;
         background: #eee;
     }
+
     .frozen {
         position: -webkit-sticky; /* for Safari */
         position: sticky;
@@ -26,7 +61,6 @@
         border: solid 1px #c2c2c2 !important;
         text-align: center;
     }
-    
 </style>
 <div class="export_data">
     <ul class="nav nav-tabs " role="tablist" style="width: 100%; display: flex; position: relative;">
@@ -49,7 +83,8 @@
 
     <div class="tab-content" style="padding-bottom:0">
         <div role="tabpanel" class="tab-pane fade in active" id="tab-1">
-            <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+            <div style="height: calc(100vh - 180px); width: 100%" id="@gridId"></div>
+            @*<div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
                 <div class="table-responsive" style="height:calc(100vh - 180px); width:100%">
                     <table class="table table-condensed table-bordered table-zoom" style="text-align:center">
                         <thead>
@@ -117,7 +152,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>*@
         </div>
         <div role="tabpanel" class="tab-pane fade in" id="tab-2">
             <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
@@ -200,3 +235,8 @@
     </div>
 
 </div>
+
+<script>
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab1, jsonSerializeSettings));
+    debugger
+</script>

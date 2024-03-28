@@ -75,6 +75,7 @@ namespace SMO.Models
     {
         public string Code { get; set; }
         public string Name { get; set; }
+        public string Parent { get; set; }
         public decimal valueGT { get; set; }
         public string valueQM { get; set; }
         public string valueHT { get; set; }

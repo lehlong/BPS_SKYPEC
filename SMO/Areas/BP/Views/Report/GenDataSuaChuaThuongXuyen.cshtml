@@ -31,43 +31,10 @@
     }
 </style>
 
-<div class="table-responsive" style="overflow: auto;width:100%; height: calc(100vh - 220px);" id="@grid">
-    @*<table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td rowspan="2">STT</td>
-                <td rowspan="2">Danh mục</td>
-                <td colspan="3">KH năm 2024</td>
-            </tr>
-            <tr class="header-table">
-                <td>Giá trị</td>
-                <td>Quy mô</td>
-                <td>Ghi chú</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.Level; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="align-center">@item.Order</td>
-                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                    <td class="align-right">@item.valueGT.ToStringVN()</td>
-                    <td class="align-right">@item.valueQM</td>
-                    <td class="align-right">@item.valueHT</td>
-                </tr>
-            }
-        </tbody>
-    </table>*@
+<div class="table-responsive" style="overflow: auto;width:100%; height: calc(100vh - 220px);" id="@grid"> 
 </div>
 <script type="text/javascript">
     var rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
-    debugger
     var columns = [
         { id: "id", header: [{ text: "STT", align: "center" }], align: "center", width: 180 },
         { id: "name", header: [{ text: "DANH MỤC", align: "center" }, { content: "inputFilter" }], width:800},
