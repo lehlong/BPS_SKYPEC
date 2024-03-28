@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R270")]
+    [AuthorizeCustom(Right = "R6.3")]
     public class SharedDataController : Controller
     {
         private readonly SharedDataService _service;

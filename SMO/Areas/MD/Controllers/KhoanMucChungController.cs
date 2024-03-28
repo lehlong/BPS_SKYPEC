@@ -6,6 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.MD.Controllers
 {
+    [AuthorizeCustom(Right = "R8.1")]
     public class KhoanMucChungController : Controller
     {
         private readonly KhoanMucChungService _service;
@@ -15,14 +16,12 @@ namespace SMO.Areas.MD.Controllers
             _service = new KhoanMucChungService();
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [MyValidateAntiForgeryToken]
         public ActionResult Index()
         {
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R302")]
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTree(string KhoanMucChungSelected)
         {
@@ -36,15 +35,7 @@ namespace SMO.Areas.MD.Controllers
             return PartialView();
         }
 
-        //[AuthorizeCustom(Right = "R302")]
-        //[MyValidateAntiForgeryToken]
-        //public JsonResult BuildTreeByTemplate(string templateId, int year)
-        //{
-        //    var lstKhoanMucChung = _service.GetNodeKhoanMucChungByTemplate(templateId, year);
-        //    return Json(lstKhoanMucChung, JsonRequestBehavior.AllowGet);
-        //}
-
-        [AuthorizeCustom(Right = "R204")]
+       
         [MyValidateAntiForgeryToken]
         public ActionResult Create(string parent)
         {
@@ -52,7 +43,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(KhoanMucChungService service)
@@ -75,7 +65,6 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [MyValidateAntiForgeryToken]
         public ActionResult Edit(string id)
         {
@@ -86,7 +75,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update(KhoanMucChungService service)
@@ -109,8 +97,6 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
-
-        [AuthorizeCustom(Right = "R204")]
         [HttpPost]
         [MyValidateAntiForgeryToken]
         public ActionResult Delete(string code)
@@ -134,7 +120,6 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [HttpPost]
         [MyValidateAntiForgeryToken]
         public ActionResult UpdateTree(List<NodeKhoanMucChung> lstNode)

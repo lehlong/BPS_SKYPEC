@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R110")]
+    [AuthorizeCustom(Right = "R9.1")]
     public class SystemConfigController : Controller
     {
         private readonly SystemConfigService _service;

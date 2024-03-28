@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R270")]
+    [AuthorizeCustom(Right = "R6.9")]
     public class SanBayController : Controller
     {
         private readonly SanBayService _service;

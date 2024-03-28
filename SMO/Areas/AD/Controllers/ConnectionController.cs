@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R210")]
+    [AuthorizeCustom(Right = "R9.2")]
 
     public class ConnectionController : Controller
     {

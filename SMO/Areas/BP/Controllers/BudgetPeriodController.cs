@@ -5,7 +5,7 @@ using System.Web.SessionState;
 
 namespace SMO.Areas.BP.Controllers
 {
-    [AuthorizeCustom(Right = "R325")]
+    [AuthorizeCustom(Right = "R7.3")]
     [SessionState(SessionStateBehavior.ReadOnly)]
     public class BudgetPeriodController : Controller
     {

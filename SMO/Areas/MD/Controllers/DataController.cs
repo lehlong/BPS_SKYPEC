@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R270")]
+    [AuthorizeCustom(Right = "R6.2")]
     public class DataController : Controller
     {
         private readonly DataService _service;

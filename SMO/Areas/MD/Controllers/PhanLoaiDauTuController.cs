@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R270")]
+    [AuthorizeCustom(Right = "R7.9")]
     public class PhanLoaiDauTuController : Controller
     {
         private readonly PhanLoaiDauTuService _service;

@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.CF.Controllers
 {
-    [AuthorizeCustom(Right = "R193")]
+    [AuthorizeCustom(Right = "R9.3")]
     public class ConfigTemplateNotifyController : Controller
     {
         private readonly ConfigTemplateNotifyService _service;

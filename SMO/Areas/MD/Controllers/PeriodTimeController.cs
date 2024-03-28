@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R216")]
+    [AuthorizeCustom(Right = "R6.24")]
     public class PeriodTimeController : Controller
     {
         private readonly PeriodTimeService _service;

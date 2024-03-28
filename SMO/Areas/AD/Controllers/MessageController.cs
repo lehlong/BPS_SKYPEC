@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R191")]
+    [AuthorizeCustom(Right = "R9.11")]
     public class MessageController : Controller
     {
         private readonly MessageService _service;

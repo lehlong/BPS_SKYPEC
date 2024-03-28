@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R202")]
+    [AuthorizeCustom(Right = "R6.20")]
 
     public class DictionaryController : Controller
     {

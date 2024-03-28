@@ -6,6 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.MD.Controllers
 {
+    [AuthorizeCustom(Right = "R6.18")]
     public class CostCenterController : Controller
     {
         private readonly CostCenterService _service;
@@ -15,14 +16,12 @@ namespace SMO.Areas.MD.Controllers
             _service = new CostCenterService();
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [MyValidateAntiForgeryToken]
         public ActionResult Index()
         {
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R302")]
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTree(string costCenterSelected)
         {
@@ -36,7 +35,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView();
         }
 
-        [AuthorizeCustom(Right = "R302")]
         [MyValidateAntiForgeryToken]
         public JsonResult BuildTreeByTemplate(string templateId, int year)
         {
@@ -44,7 +42,6 @@ namespace SMO.Areas.MD.Controllers
             return Json(lstCostCenter, JsonRequestBehavior.AllowGet);
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [MyValidateAntiForgeryToken]
         public ActionResult Create(string parent)
         {
@@ -52,7 +49,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(CostCenterService service)
@@ -75,7 +71,6 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [MyValidateAntiForgeryToken]
         public ActionResult Edit(string id)
         {
@@ -86,7 +81,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update(CostCenterService service)
@@ -110,7 +104,6 @@ namespace SMO.Areas.MD.Controllers
         }
 
 
-        [AuthorizeCustom(Right = "R204")]
         [HttpPost]
         [MyValidateAntiForgeryToken]
         public ActionResult Delete(string code)
@@ -134,7 +127,6 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R204")]
         [HttpPost]
         [MyValidateAntiForgeryToken]
         public ActionResult UpdateTree(List<NodeCostCenter> lstNode)

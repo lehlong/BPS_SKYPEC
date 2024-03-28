@@ -5,7 +5,7 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R130")]
+    [AuthorizeCustom(Right = "R9.8")]
     public class RoleController : Controller
     {
         private readonly RoleService _service;

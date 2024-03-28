@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R215")]
+    [AuthorizeCustom(Right = "R6.23")]
     public class PreventiveController : Controller
     {
         private readonly PreventiveService _service;

@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R270")]
+    [AuthorizeCustom(Right = "R6.5")]
     public class DeliveryConditionsController : Controller
     {
         private readonly DeliveryConditionsService _service;

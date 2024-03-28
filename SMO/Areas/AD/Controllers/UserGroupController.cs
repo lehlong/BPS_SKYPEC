@@ -5,7 +5,7 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R150")]
+    [AuthorizeCustom(Right = "R9.5")]
     public class UserGroupController : Controller
     {
         private readonly UserGroupService _service;

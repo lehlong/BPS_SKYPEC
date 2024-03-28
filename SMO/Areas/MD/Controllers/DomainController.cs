@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R201")]
+    [AuthorizeCustom(Right = "R6.19")]
 
     public class DomainController : Controller
     {

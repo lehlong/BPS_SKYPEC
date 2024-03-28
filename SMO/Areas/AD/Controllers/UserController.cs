@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.AD.Controllers
 {
+    [AuthorizeCustom(Right = "R9.4")]
     public class UserController : Controller
     {
         private readonly UserService _service;
@@ -17,14 +18,11 @@ namespace SMO.Areas.AD.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R140")]
         public ActionResult IndexOrganize()
         {
             return PartialView(_service);
         }
 
-
-        [AuthorizeCustom(Right = "R140")]
         public ActionResult BuildTreeUser(string idUserSelected)
         {
             JavaScriptSerializer oSerializer = new JavaScriptSerializer();
@@ -59,7 +57,6 @@ namespace SMO.Areas.AD.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R140")]
         public ActionResult List(UserService service)
         {
             service.Search();
@@ -186,7 +183,6 @@ namespace SMO.Areas.AD.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R140")]
         public ActionResult CreateUserOrganzie(string parent)
         {
             _service.ObjDetail.ORGANIZE_CODE = parent;
@@ -195,7 +191,6 @@ namespace SMO.Areas.AD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R140")]
         public ActionResult CreateUserOrganzie(UserService service)
         {
             var result = new TransferObject
@@ -218,7 +213,6 @@ namespace SMO.Areas.AD.Controllers
 
 
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R140")]
         public ActionResult Edit(string id)
         {
             if (!string.IsNullOrWhiteSpace(id))
@@ -235,7 +229,6 @@ namespace SMO.Areas.AD.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R140")]
         public ActionResult EditRightOfUser(string userName)
         {
             if (!string.IsNullOrWhiteSpace(userName))
@@ -248,7 +241,6 @@ namespace SMO.Areas.AD.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R140")]
         public ActionResult EditOrgOfUser(string userName)
         {
             _service.ObjDetail.USER_NAME = userName;

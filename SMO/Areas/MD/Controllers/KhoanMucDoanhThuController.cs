@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.MD.Controllers
 {
+    [AuthorizeCustom(Right = "R8.4")]
     public class KhoanMucDoanhThuController : Controller
     {
         private readonly KhoanMucDoanhThuService _service;
@@ -15,7 +16,6 @@ namespace SMO.Areas.MD.Controllers
             _service = new KhoanMucDoanhThuService();
         }
         // GET: MD/CostElement
-        [AuthorizeCustom(Right = "R212")]
         [MyValidateAntiForgeryToken]
         public ActionResult Index(int? year)
         {
@@ -26,8 +26,6 @@ namespace SMO.Areas.MD.Controllers
             _service.ObjDetail.TIME_YEAR = year.Value;
             return PartialView(_service);
         }
-
-        [AuthorizeCustom(Right = "R302")]
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTree(string elementSelected, int year)
         {
@@ -41,7 +39,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView();
         }
 
-        [AuthorizeCustom(Right = "R212")]
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTreeKhoanMucChung(int year)
         {
@@ -53,8 +50,6 @@ namespace SMO.Areas.MD.Controllers
             ViewBag.zNodeSap = oSerializer.Serialize(lstNode);
             return PartialView();
         }
-
-        [AuthorizeCustom(Right = "R212")]
         [MyValidateAntiForgeryToken]
         public ActionResult Create(string parent, int year)
         {
@@ -63,7 +58,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R212")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(KhoanMucDoanhThuService service)
@@ -88,7 +82,6 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R212")]
         [MyValidateAntiForgeryToken]
         public ActionResult Edit(string id, int year)
         {
@@ -100,7 +93,6 @@ namespace SMO.Areas.MD.Controllers
         }
 
 
-        [AuthorizeCustom(Right = "R212")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update(KhoanMucDoanhThuService service)
@@ -124,7 +116,6 @@ namespace SMO.Areas.MD.Controllers
         }
 
 
-        [AuthorizeCustom(Right = "R212")]
         [HttpPost]
         [MyValidateAntiForgeryToken]
         public ActionResult Delete(string code, int year)
@@ -154,7 +145,6 @@ namespace SMO.Areas.MD.Controllers
         /// <param name="year"></param>
         /// <param name="yearCopy"></param>
         /// <returns></returns>
-        [AuthorizeCustom(Right = "R212")]
         [HttpPost]
         [MyValidateAntiForgeryToken]
         public ActionResult Copy(int year, int yearCopy)
@@ -178,7 +168,6 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R212")]
         [HttpPost]
         [MyValidateAntiForgeryToken]
         public ActionResult UpdateTree(List<NodeCostCenter> lstNode, List<string> lstRemove, List<string> lstAdd, int year)
@@ -202,7 +191,6 @@ namespace SMO.Areas.MD.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R302")]
         [MyValidateAntiForgeryToken]
         public JsonResult BuildTreeByTemplate(int? year)
         {

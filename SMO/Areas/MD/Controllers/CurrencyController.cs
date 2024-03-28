@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R203")]
+    [AuthorizeCustom(Right = "R6.21")]
     public class CurrencyController : Controller
     {
         private readonly CurrencyService _service;

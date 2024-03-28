@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R190")]
+    [AuthorizeCustom(Right = "R9.10")]
     public class LanguageController : Controller
     {
         private readonly LanguageService _service;

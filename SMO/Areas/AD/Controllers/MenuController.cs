@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R180")]
+    [AuthorizeCustom(Right = "R9.9")]
     public class MenuController : Controller
     {
         private readonly MenuService _service;

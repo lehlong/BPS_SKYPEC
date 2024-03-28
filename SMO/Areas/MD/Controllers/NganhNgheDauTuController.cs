@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R270")]
+    [AuthorizeCustom(Right = "R7.8")]
     public class NganhNgheDauTuController : Controller
     {
         private readonly NganhNgheDauTuService _service;

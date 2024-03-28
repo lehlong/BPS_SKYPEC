@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R270")]
+    [AuthorizeCustom(Right = "R7.6")]
     public class LoaiHinhDauTuController : Controller
     {
         private readonly LoaiHinhDauTuService _service;

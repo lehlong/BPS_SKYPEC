@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R120")]
+    [AuthorizeCustom(Right = "R9.7")]
     public class RightController : Controller
     {
         private readonly RightService _service;
@@ -19,7 +19,7 @@ namespace SMO.Areas.AD.Controllers
         [MyValidateAntiForgeryToken]
         public ActionResult Index()
         {
-            if (ProfileUtilities.User.USER_NAME.ToUpper() != "SUPERADMIN")
+            if (ProfileUtilities.User.USER_NAME.ToUpper() != "ADMIN")
             {
                 return Content("Chức năng hệ thống không được phép truy cập!");
             }
@@ -29,7 +29,7 @@ namespace SMO.Areas.AD.Controllers
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTree(string rightSelected)
         {
-            if (ProfileUtilities.User.USER_NAME.ToUpper() != "SUPERADMIN")
+            if (ProfileUtilities.User.USER_NAME.ToUpper() != "ADMIN")
             {
                 return Content("Chức năng hệ thống không được phép truy cập!");
             }
@@ -46,7 +46,7 @@ namespace SMO.Areas.AD.Controllers
         [MyValidateAntiForgeryToken]
         public ActionResult Create(string parent)
         {
-            if (ProfileUtilities.User.USER_NAME.ToUpper() != "SUPERADMIN")
+            if (ProfileUtilities.User.USER_NAME.ToUpper() != "ADMIN")
             {
                 return Content("Chức năng hệ thống không được phép truy cập!");
             }
@@ -58,7 +58,7 @@ namespace SMO.Areas.AD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(RightService service)
         {
-            if (ProfileUtilities.User.USER_NAME.ToUpper() != "SUPERADMIN")
+            if (ProfileUtilities.User.USER_NAME.ToUpper() != "ADMIN")
             {
                 return Content("Chức năng hệ thống không được phép truy cập!");
             }
@@ -83,7 +83,7 @@ namespace SMO.Areas.AD.Controllers
         [MyValidateAntiForgeryToken]
         public ActionResult Edit(string id)
         {
-            if (ProfileUtilities.User.USER_NAME.ToUpper() != "SUPERADMIN")
+            if (ProfileUtilities.User.USER_NAME.ToUpper() != "ADMIN")
             {
                 return Content("Chức năng hệ thống không được phép truy cập!");
             }
@@ -99,7 +99,7 @@ namespace SMO.Areas.AD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Update(RightService service)
         {
-            if (ProfileUtilities.User.USER_NAME.ToUpper() != "SUPERADMIN")
+            if (ProfileUtilities.User.USER_NAME.ToUpper() != "ADMIN")
             {
                 return Content("Chức năng hệ thống không được phép truy cập!");
             }
@@ -126,7 +126,7 @@ namespace SMO.Areas.AD.Controllers
         [MyValidateAntiForgeryToken]
         public ActionResult Delete(string code)
         {
-            if (ProfileUtilities.User.USER_NAME.ToUpper() != "SUPERADMIN")
+            if (ProfileUtilities.User.USER_NAME.ToUpper() != "ADMIN")
             {
                 return Content("Chức năng hệ thống không được phép truy cập!");
             }
@@ -153,7 +153,7 @@ namespace SMO.Areas.AD.Controllers
         [MyValidateAntiForgeryToken]
         public ActionResult UpdateTree(List<NodeRight> lstNode)
         {
-            if (ProfileUtilities.User.USER_NAME.ToUpper() != "SUPERADMIN")
+            if (ProfileUtilities.User.USER_NAME.ToUpper() != "ADMIN")
             {
                 return Content("Chức năng hệ thống không được phép truy cập!");
             }

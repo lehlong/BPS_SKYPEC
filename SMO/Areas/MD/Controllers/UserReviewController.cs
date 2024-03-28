@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R217")]
+    [AuthorizeCustom(Right = "R9.6")]
     public class UserReviewController : Controller
     {
         private readonly UserReviewService _service;
