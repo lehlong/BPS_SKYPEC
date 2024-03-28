@@ -13,14 +13,12 @@ namespace SMO.Areas.MD.Controllers
             _service = new FAQQuestionService();
         }
 
-        [AuthorizeCustom(Right = "R800")]
         [MyValidateAntiForgeryToken]
         public ActionResult Index()
         {
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R800")]
         [ValidateAntiForgeryToken]
         public ActionResult List(FAQQuestionService service)
         {
@@ -28,7 +26,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(service);
         }
 
-        [AuthorizeCustom(Right = "R801")]
         [MyValidateAntiForgeryToken]
         public ActionResult Edit(string id)
         {
@@ -39,7 +36,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R801")]
         [HttpPost, ValidateInput(false)]
         [ValidateAntiForgeryToken]
         public ActionResult Update(FAQQuestionService service)

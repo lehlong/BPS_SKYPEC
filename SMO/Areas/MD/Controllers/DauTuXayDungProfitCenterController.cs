@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    //[AuthorizeCustom(Right = "R208")]
     public class DauTuXayDungProfitCenterController : Controller
     {
         private readonly DauTuXayDungProfitCenterService _service;
@@ -14,7 +13,6 @@ namespace SMO.Areas.MD.Controllers
             _service = new DauTuXayDungProfitCenterService();
         }
 
-        [AuthorizeCustom(Right = "R302")]
         [MyValidateAntiForgeryToken]
         public JsonResult BuildTreeByTemplate(string templateId, int year)
         {

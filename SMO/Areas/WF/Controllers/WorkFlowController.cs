@@ -7,7 +7,6 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.WF.Controllers
 {
-    [AuthorizeCustom(Right = "R194")]
     public class WorkFlowController : Controller
     {
         private readonly WorkFlowService _service;

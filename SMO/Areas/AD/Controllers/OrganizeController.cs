@@ -6,7 +6,6 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R170")]
     public class OrganizeController : Controller
     {
         private readonly OrganizeService _service;

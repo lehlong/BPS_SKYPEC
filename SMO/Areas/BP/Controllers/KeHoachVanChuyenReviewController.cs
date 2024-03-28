@@ -23,7 +23,6 @@ namespace SMO.Areas.BP.Controllers
         }
         // GET: BP/KeHoachVanChuyenReview
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R314")]
         public ActionResult Index(int year)
         {
             _service.ObjDetail.TIME_YEAR = year;
@@ -68,7 +67,6 @@ namespace SMO.Areas.BP.Controllers
 
         // Tổng kiểm soát
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R310")]
         public ActionResult SummaryIndex(int year)
         {
             _service.ObjDetail.TIME_YEAR = year;

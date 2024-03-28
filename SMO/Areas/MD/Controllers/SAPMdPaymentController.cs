@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R205")]
     public class SAPMdPaymentController : Controller
     {
         private readonly SAPMdPaymentService _service;

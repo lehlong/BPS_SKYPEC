@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R500")]
     public class SAPActualDataController : Controller
     {
         private readonly SAPActualDataService _service;

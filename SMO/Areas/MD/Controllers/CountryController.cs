@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R240")]
     public class CountryController : Controller
     {
         private readonly CountryService _service;

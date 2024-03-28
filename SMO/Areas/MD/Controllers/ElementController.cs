@@ -7,7 +7,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R270")]
     public class ElementController : Controller
     {
         private readonly ElementService _service;

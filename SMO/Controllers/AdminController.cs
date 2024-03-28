@@ -192,7 +192,6 @@ namespace SMO.Controllers
             return result.ToJsonResult();
         }
 
-        //[AuthorizeCustom(Right = "R111")]
         public void UploadImage(HttpPostedFileWrapper upload)
         {
             try

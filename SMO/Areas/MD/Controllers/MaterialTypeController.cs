@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R250")]
+    
     public class MaterialTypeController : Controller
     {
         private readonly MaterialTypeService _service;

@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R292")]
     public class FrequentlyAskedController : Controller
     {
         private readonly FrequentlyAskedService _service;

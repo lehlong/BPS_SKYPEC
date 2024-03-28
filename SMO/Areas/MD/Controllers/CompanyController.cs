@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R209")]
     public class CompanyController : Controller
     {
         private readonly CompanyService _service;

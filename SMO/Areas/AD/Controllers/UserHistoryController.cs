@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.AD.Controllers
 {
-    [AuthorizeCustom(Right = "R140")]
     public class UserHistoryController : Controller
     {
         private readonly UserHistoryService _service;

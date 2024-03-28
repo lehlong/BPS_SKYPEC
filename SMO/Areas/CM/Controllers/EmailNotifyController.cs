@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.CM.Controllers
 {
-    [AuthorizeCustom(Right = "R194")]
     public class EmailNotifyController : Controller
     {
         private readonly EmailNotifyService _service;

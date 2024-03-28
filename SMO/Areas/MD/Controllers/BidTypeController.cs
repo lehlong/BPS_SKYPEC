@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R260")]
     public class BidTypeController : Controller
     {
         private readonly BidTypeService _service;

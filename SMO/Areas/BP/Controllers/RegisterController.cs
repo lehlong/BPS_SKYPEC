@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.BP.Controllers
 {
-    [AuthorizeCustom(Right = "R322")]
     public class RegisterController : Controller
     {
         private readonly RegisterService _service;

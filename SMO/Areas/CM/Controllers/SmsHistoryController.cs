@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.CM.Controllers
 {
-    [AuthorizeCustom(Right = "R193")]
     public class SmsHistoryController : Controller
     {
         private readonly SmsHistoryService _service;

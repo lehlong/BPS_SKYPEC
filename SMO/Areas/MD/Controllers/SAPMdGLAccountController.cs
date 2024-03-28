@@ -4,7 +4,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R206")]
     public class SAPMdGLAccountController : Controller
     {
         private readonly SAPMdGLAccountService _service;

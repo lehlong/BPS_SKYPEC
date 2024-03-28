@@ -6,7 +6,6 @@ using System.Web.Script.Serialization;
 
 namespace SMO.Areas.CF.Controllers
 {
-    //[AuthorizeCustom(Right = "R204")]
     public class ConfigTableauController : Controller
     {
         private readonly ConfigTableauService _service;

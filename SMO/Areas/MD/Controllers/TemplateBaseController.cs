@@ -5,7 +5,6 @@ using System.Web.Services.Description;
 
 namespace SMO.Areas.MD.Controllers
 {
-    //[AuthorizeCustom(Right = "R270")]
     public class TemplateBaseController : Controller
     {
         private readonly TemplateBaseService _service;

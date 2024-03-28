@@ -37,7 +37,6 @@ namespace SMO.Areas.BP.Controllers
             _service = new TService();
         }
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R313")]
         public ActionResult ChuyenHDNS(string code)
         {
             var result = new TransferObject
@@ -58,7 +57,6 @@ namespace SMO.Areas.BP.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R309")]
         [MyValidateAntiForgeryToken]
         public ActionResult ChuyenTKS(string code)
         {
@@ -563,7 +561,6 @@ namespace SMO.Areas.BP.Controllers
             return Json(lstYears, JsonRequestBehavior.AllowGet);
         }
 
-        [AuthorizeCustom(Right = "R303")]
         [MyValidateAntiForgeryToken]
         public ActionResult HuyNop(string code)
         {
@@ -585,7 +582,6 @@ namespace SMO.Areas.BP.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R306")]
         [MyValidateAntiForgeryToken]
         public ActionResult HuyPheDuyet(string code)
         {
@@ -607,7 +603,6 @@ namespace SMO.Areas.BP.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R304")]
         [MyValidateAntiForgeryToken]
         public ActionResult HuyTrinhDuyet(string code)
         {
@@ -630,7 +625,6 @@ namespace SMO.Areas.BP.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R302")]
         public ActionResult ImportExcel(int year)
         {
             _service.ObjDetail.ORG_CODE = ProfileUtilities.User.ORGANIZE_CODE;
@@ -639,7 +633,6 @@ namespace SMO.Areas.BP.Controllers
         }
 
         [HttpPost]
-        [AuthorizeCustom(Right = "R302")]
         public ActionResult ImportExcel(TService service)
         {
             var result = new TransferObject
@@ -689,7 +682,6 @@ namespace SMO.Areas.BP.Controllers
         /// Danh sách dữ liệu tại đơn vị
         /// </summary>
         /// <returns></returns>
-        [AuthorizeCustom(Right = "R301")]
         [MyValidateAntiForgeryToken]
         public ActionResult Index(int? year)
         {
@@ -701,14 +693,12 @@ namespace SMO.Areas.BP.Controllers
         /// Danh sách dữ liệu tại đơn vị cấp dưới
         /// </summary>
         /// <returns></returns>
-        [AuthorizeCustom(Right = "R301")]
         [MyValidateAntiForgeryToken]
         public ActionResult IndexOfChild()
         {
             return PartialView(_service);
         }
 
-        [AuthorizeCustom(Right = "R324")]
         public ActionResult TrinhDuyetTongKiemSoat(string orgCode, int year, int version)
         {
             var result = new TransferObject
@@ -729,7 +719,6 @@ namespace SMO.Areas.BP.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R311")]
         public ActionResult PheDuyetTongKiemSoat(string orgCode, int year, int version)
         {
             var result = new TransferObject
@@ -749,7 +738,6 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
-        [AuthorizeCustom(Right = "R311")]
         public ActionResult TuChoiTongKiemSoat(string orgCode, int year, int version, string comment)
         {
             var result = new TransferObject
@@ -770,7 +758,6 @@ namespace SMO.Areas.BP.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R315")]
         public ActionResult KetThucThamDinh(string orgCode, int year, int version)
         {
             var result = new TransferObject
@@ -791,7 +778,6 @@ namespace SMO.Areas.BP.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R305")]
         [MyValidateAntiForgeryToken]
         public ActionResult PheDuyet(string code)
         {
@@ -814,7 +800,6 @@ namespace SMO.Areas.BP.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R301")]
         public ActionResult SearchIndex(TService service)
         {
             service.Search();
@@ -838,7 +823,6 @@ namespace SMO.Areas.BP.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R301")]
         public ActionResult SearchIndexOfChild(TService service)
         {
             if (ProfileUtilities.User.ORGANIZE_CODE == "1000")
@@ -883,7 +867,6 @@ namespace SMO.Areas.BP.Controllers
         /// <returns></returns>
         [MyValidateAntiForgeryToken]
         [HttpPost]
-        [AuthorizeCustom(Right = "R308")]
         public ActionResult SumUpData(int year, string kichBan, string phienBan)
         {
             var result = new TransferObject
@@ -908,7 +891,6 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R318")]
         public ActionResult TGDHuyPheDuyet(string code)
         {
             var result = new TransferObject
@@ -931,7 +913,6 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R317")]
         public ActionResult TGDPheDuyet(string code)
         {
             var result = new TransferObject
@@ -954,7 +935,6 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R319")]
         public ActionResult TGDTuChoi(string code)
         {
             var result = new TransferObject
@@ -983,7 +963,6 @@ namespace SMO.Areas.BP.Controllers
             return Json(lstDataTree, JsonRequestBehavior.AllowGet);
         }
 
-        [AuthorizeCustom(Right = "R303")]
         [MyValidateAntiForgeryToken]
         public ActionResult TrinhDuyet(string code)
         {
@@ -1006,7 +985,6 @@ namespace SMO.Areas.BP.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        [AuthorizeCustom(Right = "R316")]
         public ActionResult TrinhTGD(string code)
         {
             var result = new TransferObject
@@ -1027,7 +1005,6 @@ namespace SMO.Areas.BP.Controllers
             return result.ToJsonResult();
         }
 
-        [AuthorizeCustom(Right = "R307")]
         [MyValidateAntiForgeryToken]
         public ActionResult TuChoi(string code)
         {
@@ -1059,7 +1036,6 @@ namespace SMO.Areas.BP.Controllers
 
         public abstract ActionResult ViewTemplate(string templateId, int? version, int year, string centerCode = "");
 
-        [AuthorizeCustom(Right = "R320")]
         [MyValidateAntiForgeryToken]
         public ActionResult YeuCauCapDuoiDieuChinh(string childOrgCode, string templateCode, int timeYear, string comment, int? templateVersion, int? parentVersion, bool isSummaryReview = false)
         {

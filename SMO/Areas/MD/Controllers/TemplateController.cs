@@ -7,7 +7,6 @@ using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
 {
-    [AuthorizeCustom(Right = "R400")]
     public class TemplateController : Controller
     {
         private readonly TemplateService _service;

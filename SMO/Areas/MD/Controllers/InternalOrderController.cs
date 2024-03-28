@@ -15,7 +15,6 @@ namespace SMO.Areas.MD.Controllers
             _service = new InternalOrderService();
         }
 
-        [AuthorizeCustom(Right = "R208")]
         [MyValidateAntiForgeryToken]
         public ActionResult Index()
         {
@@ -23,7 +22,6 @@ namespace SMO.Areas.MD.Controllers
         }
 
 
-        [AuthorizeCustom(Right = "R208")]
         [ValidateAntiForgeryToken]
         public ActionResult List(InternalOrderService service)
         {
@@ -31,7 +29,6 @@ namespace SMO.Areas.MD.Controllers
             return PartialView(service);
         }
 
-        [AuthorizeCustom(Right = "R302")]
         [MyValidateAntiForgeryToken]
         public JsonResult BuildTreeByTemplate(string templateId, int year)
         {
@@ -42,7 +39,6 @@ namespace SMO.Areas.MD.Controllers
         }
 
         [HttpPost]
-        [AuthorizeCustom(Right = "R208")]
         [MyValidateAntiForgeryToken]
         public ActionResult Synchronize()
         {
