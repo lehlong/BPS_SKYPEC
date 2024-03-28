@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace SMO.Areas.BP.Controllers
 {
@@ -45,6 +46,13 @@ namespace SMO.Areas.BP.Controllers
             var fileName = template.NAME;
 
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+        }
+
+        public override ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
+        {
+            var data = _service.ExportData(templateCode, year, version, orgCode, kichBan, phienBan);
+            ViewBag.DataYear = _service.ExportDataYear(templateCode, year, version, orgCode, kichBan, phienBan);
+            return PartialView(data);
         }
 
         public override ActionResult ViewTemplate(string templateId, int? version, int year, string centerCode = "")

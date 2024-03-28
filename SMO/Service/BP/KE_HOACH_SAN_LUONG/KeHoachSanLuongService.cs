@@ -112,6 +112,60 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             return ShowReviewBtn(ObjDetail.TIME_YEAR);
         }
 
+        public List<ViewDataQuantityPlan> ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
+        {
+            var result = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode && x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year).OrderBy(x => x.SanLuongProfitCenter.SAN_BAY_CODE).ThenBy(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE).ToList();
+            var data = new List<ViewDataQuantityPlan>();
+
+            foreach (var i in result)
+            {
+                data.Add(new ViewDataQuantityPlan
+                {
+                    Airport = i.SanLuongProfitCenter?.SAN_BAY_CODE + " - " + i.SanLuongProfitCenter?.SanBay?.NAME,
+                    Airlines = i.SanLuongProfitCenter?.HANG_HANG_KHONG_CODE + " - " + i.SanLuongProfitCenter?.HangHangKhong?.NAME,
+                    Element = i.KhoanMucSanLuong?.NAME,
+                    Jan = i.VALUE_JAN,
+                    Feb = i.VALUE_FEB,
+                    Mar = i.VALUE_MAR,
+                    Apr = i.VALUE_APR,
+                    May = i.VALUE_MAY,
+                    Jun = i.VALUE_JUN,
+                    Jul = i.VALUE_JUL,
+                    Aug = i.VALUE_AUG,
+                    Sep = i.VALUE_SEP,
+                    Oct = i.VALUE_OCT,
+                    Nov = i.VALUE_NOV,
+                    Dec = i.VALUE_DEC,
+                    Total = i.VALUE_SUM_YEAR,
+                    Average = i.VALUE_SUM_YEAR / 12,
+                    Des = i.DESCRIPTION
+                });
+            }
+            return data;
+        }
+
+        public List<ViewDataQuantityPlanYear> ExportDataYear(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
+        {
+            var result = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode && x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year).OrderBy(x => x.SanLuongProfitCenter.SAN_BAY_CODE).ThenBy(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE).ToList();
+            var data = new List<ViewDataQuantityPlanYear>();
+            var lstAirports = result.GroupBy(x => x.SanLuongProfitCenter.SAN_BAY_CODE).Select(x => x.First().SanLuongProfitCenter).ToList();
+
+            foreach (var i in lstAirports)
+            {
+                data.Add(new ViewDataQuantityPlanYear
+                {
+                    Airport = i.SAN_BAY_CODE,
+                    AirportName = i.SanBay?.NAME,
+                    Vna = result.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == i.SAN_BAY_CODE && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x =>x.VALUE_SUM_YEAR) ?? 0,
+                    NotVna = result.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == i.SAN_BAY_CODE && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    SumNd = result.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == i.SAN_BAY_CODE  && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    SumQt = result.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == i.SAN_BAY_CODE && x.SanLuongProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    Total = result.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == i.SAN_BAY_CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                });
+            }
+            return data;
+        }
+
         public override bool ShowReviewBtn(int year)
         {
             var lstReviewUsers = UnitOfWork.Repository<UserReviewRepo>()
@@ -5057,5 +5111,40 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 this.ObjList.AddRange(lstTemSumUp);
             }*/
         }
+    }
+
+    public class ViewDataQuantityPlan
+    {
+        public string Airport { get; set; }
+        public string AirportName { get; set; }
+        public string Airlines { get; set; }
+        public string AirlinesName { get; set; }
+        public string Element { get; set; }
+        public decimal? Jan { get; set; }
+        public decimal? Feb { get; set; }
+        public decimal? Mar { get; set; }
+        public decimal? Apr { get; set; }
+        public decimal? May { get; set; }
+        public decimal? Jun { get; set; }
+        public decimal? Jul { get; set; }
+        public decimal? Aug { get; set; }
+        public decimal? Sep { get; set; }
+        public decimal? Oct { get; set; }
+        public decimal? Nov { get; set; }
+        public decimal? Dec { get; set; }
+        public decimal? Total { get; set; }
+        public decimal? Average { get; set; }
+        public string Des { get; set; }
+    }
+
+    public class ViewDataQuantityPlanYear
+    {
+        public string Airport { get; set; }
+        public string AirportName { get; set; }
+        public decimal? Vna { get; set; }
+        public decimal? NotVna { get; set; }
+        public decimal? SumNd { get; set; }
+        public decimal? SumQt { get; set; }
+        public decimal? Total { get; set; }
     }
 }

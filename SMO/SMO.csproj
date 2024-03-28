@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>true</Use64BitIISExpress>
     <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -2072,6 +2072,7 @@
     <Content Include="Areas\BP\Views\Report\GenDataChiPhi.cshtml" />
     <Content Include="Areas\MD\Views\SyncCost\Index.cshtml" />
     <Content Include="Areas\MD\Views\SyncCost\List.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachSanLuong\ExportData.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

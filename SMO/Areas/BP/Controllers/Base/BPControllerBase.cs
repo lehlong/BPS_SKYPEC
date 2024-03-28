@@ -119,7 +119,7 @@ namespace SMO.Areas.BP.Controllers
         //[HttpPost]
         public abstract FileContentResult DownloadTemplate(string templateId, int year);
 
-        public ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
+        public virtual ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
         {
             orgCode = orgCode ?? ProfileUtilities.User.ORGANIZE_CODE;
             var viewDataCenterModel = new ViewDataCenterModel();
