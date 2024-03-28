@@ -6,6 +6,7 @@
 @using Newtonsoft.Json.Serialization;
 @using Newtonsoft.Json;
 @{
+    var gridYear = Guid.NewGuid().ToString("N");
     var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_SAN_LUONG>;
     var costCFHeader = ViewBag.costCFHeader as T_BP_KE_HOACH_SAN_LUONG_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
@@ -285,9 +286,11 @@ else
                 } else {
                     tr[i].style.display = 'none'; // Ẩn hàng nếu không có kết quả khớp
                 }
-
             }
-
         }
+
+
+
+        const rawData = @Html.Raw(JsonConvert.SerializeObject(dataYear));
     </script>
 }

@@ -9,234 +9,250 @@
 </style>
 
 <div class="container-fluid child-content">
-    <div class="card ">
-        <h4 class="align-center m-b-15" style="margin: 0;padding-top: 26px;">LẬP MẪU BIỂU KẾ HOẠCH</h4>
-        <div class="body" style="padding: 0px 22px;">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH SẢN LƯỢNG, DOANH THU, CHI PHÍ</a>
-                </li>
-            </ul>
 
-            <div class="p-t-10 p-b-5">
-                <div class="row">
-                    @if (AuthorizeUtilities.CheckUserRight("R1.1") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.SanLuong, budgetType = BudgetType.SanLuong, elementType = ElementType.SanLuong })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">assignment</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH SẢN LƯỢNG</div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    @if (AuthorizeUtilities.CheckUserRight("R1.2") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.DoanhThu, budgetType = BudgetType.DoanhThu, elementType = ElementType.DoanhThu })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">payment</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH DOANH THU</div>
+    @if (AuthorizeUtilities.CheckUserRight("R1.1") || AuthorizeUtilities.CheckUserRight("R1.2") || AuthorizeUtilities.CheckUserRight("R1.3") || AuthorizeUtilities.CheckUserRight("R1.4") || AuthorizeUtilities.CheckUserRight("R0"))
+    {
+        <div class="card ">
+            <h4 class="align-center m-b-15" style="margin: 0;padding-top: 26px;">LẬP MẪU BIỂU KẾ HOẠCH</h4>
+            <div class="body" style="padding: 0px 22px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH SẢN LƯỢNG, DOANH THU, CHI PHÍ</a>
+                    </li>
+                </ul>
+
+                <div class="p-t-10 p-b-5">
+                    <div class="row">
+                        @if (AuthorizeUtilities.CheckUserRight("R1.1") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.SanLuong, budgetType = BudgetType.SanLuong, elementType = ElementType.SanLuong })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">assignment</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">KẾ HOẠCH SẢN LƯỢNG</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
-                    @if (AuthorizeUtilities.CheckUserRight("R1.3") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.ChiPhi, budgetType = BudgetType.ChiPhi, elementType = ElementType.ChiPhi })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">monetization_on</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH CHI PHÍ</div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    @if (AuthorizeUtilities.CheckUserRight("R1.4") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.VanChuyen, budgetType = BudgetType.VanChuyen, elementType = ElementType.VanChuyen })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">local_shipping</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH VẬN CHUYỂN</div>
+                        }
+                        @if (AuthorizeUtilities.CheckUserRight("R1.2") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.DoanhThu, budgetType = BudgetType.DoanhThu, elementType = ElementType.DoanhThu })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">payment</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">KẾ HOẠCH DOANH THU</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                        @if (AuthorizeUtilities.CheckUserRight("R1.3") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.ChiPhi, budgetType = BudgetType.ChiPhi, elementType = ElementType.ChiPhi })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">monetization_on</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">KẾ HOẠCH CHI PHÍ</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (AuthorizeUtilities.CheckUserRight("R1.4") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.VanChuyen, budgetType = BudgetType.VanChuyen, elementType = ElementType.VanChuyen })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">local_shipping</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">KẾ HOẠCH VẬN CHUYỂN</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 
-    <div class="card  m-t-10" style="margin-top:0px">
-        <div class="body" style="padding: 0px 22px;">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH ĐẦU TƯ</a>
-                </li>
-            </ul>
+    @if (AuthorizeUtilities.CheckUserRight("R1.5") || AuthorizeUtilities.CheckUserRight("R1.6") || AuthorizeUtilities.CheckUserRight("R1.7") || AuthorizeUtilities.CheckUserRight("R0"))
+    {
+        <div class="card  m-t-10" style="margin-top:0px">
+            <div class="body" style="padding: 0px 22px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH ĐẦU TƯ</a>
+                    </li>
+                </ul>
 
-            <div class="p-t-10 p-b-5">
-                <div class="row">
-                    @if (AuthorizeUtilities.CheckUserRight("R1.5") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.DauTuXayDung, budgetType = BudgetType.DauTuXayDung, elementType = ElementType.DauTuXayDung })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">store</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">ĐẦU TƯ CÓ XÂY DỰNG</div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    @if (AuthorizeUtilities.CheckUserRight("R1.6") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.DauTuTrangThietBi, budgetType = BudgetType.DauTuTrangThietBi, elementType = ElementType.DauTuTrangThietBi })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">build</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">ĐẦU TƯ TRANG THIẾT BỊ</div>
+                <div class="p-t-10 p-b-5">
+                    <div class="row">
+                        @if (AuthorizeUtilities.CheckUserRight("R1.5") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.DauTuXayDung, budgetType = BudgetType.DauTuXayDung, elementType = ElementType.DauTuXayDung })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">store</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">ĐẦU TƯ CÓ XÂY DỰNG</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
-                    @if (AuthorizeUtilities.CheckUserRight("R1.7") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.DauTuNgoaiDoanhNghiep, budgetType = BudgetType.DauTuNgoaiDoanhNghiep, elementType = ElementType.DauTuNgoaiDoanhNghiep })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">domain</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">ĐẦU TƯ NGOÀI DOANH NGHIỆP</div>
+                        }
+                        @if (AuthorizeUtilities.CheckUserRight("R1.6") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.DauTuTrangThietBi, budgetType = BudgetType.DauTuTrangThietBi, elementType = ElementType.DauTuTrangThietBi })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">build</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">ĐẦU TƯ TRANG THIẾT BỊ</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                        @if (AuthorizeUtilities.CheckUserRight("R1.7") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.DauTuNgoaiDoanhNghiep, budgetType = BudgetType.DauTuNgoaiDoanhNghiep, elementType = ElementType.DauTuNgoaiDoanhNghiep })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">domain</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">ĐẦU TƯ NGOÀI DOANH NGHIỆP</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 
-    <div class="card  m-t-10" style="margin-top:0px">
-        <div class="body" style="padding: 0px 22px;">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH SỬA CHỮA</a>
-                </li>
-            </ul>
 
-            <div class="p-t-10 p-b-5">
-                <div class="row">
-                    @if (AuthorizeUtilities.CheckUserRight("R1.8") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.SuaChuaLon, budgetType = BudgetType.SuaChuaLon, elementType = ElementType.SuaChuaLon })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">attractions</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH SỬA CHỮA LỚN</div>
+    @if (AuthorizeUtilities.CheckUserRight("R1.8") || AuthorizeUtilities.CheckUserRight("R1.9") || AuthorizeUtilities.CheckUserRight("R0"))
+    {
+        <div class="card  m-t-10" style="margin-top:0px">
+            <div class="body" style="padding: 0px 22px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH SỬA CHỮA</a>
+                    </li>
+                </ul>
+
+                <div class="p-t-10 p-b-5">
+                    <div class="row">
+                        @if (AuthorizeUtilities.CheckUserRight("R1.8") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.SuaChuaLon, budgetType = BudgetType.SuaChuaLon, elementType = ElementType.SuaChuaLon })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">attractions</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">KẾ HOẠCH SỬA CHỮA LỚN</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
-                    @if (AuthorizeUtilities.CheckUserRight("R1.9") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.SuaChuaThuongXuyen, budgetType = BudgetType.SuaChuaThuongXuyen, elementType = ElementType.SuaChuaThuongXuyen })')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">settings</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 16px;">KẾ HOẠCH SỬA CHỮA <br />THƯỜNG XUYÊN</div>
+                        }
+                        @if (AuthorizeUtilities.CheckUserRight("R1.9") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Template", new { objectType = TemplateObjectType.SuaChuaThuongXuyen, budgetType = BudgetType.SuaChuaThuongXuyen, elementType = ElementType.SuaChuaThuongXuyen })')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">settings</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 16px;">KẾ HOẠCH SỬA CHỮA <br />THƯỜNG XUYÊN</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 
-    <div class="card  m-t-10" style="margin-top:0px">
-        <div class="body" style="padding: 0px 22px;">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH GIÁ THÀNH</a>
-                </li>
-            </ul>
 
-            <div class="p-t-10 p-b-5">
-                <div class="row" style="margin-bottom: 24px;">
-                    @if (AuthorizeUtilities.CheckUserRight("R1.10") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Element")')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">help</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">ĐỊNH NGHĨA</div>
+    @if (AuthorizeUtilities.CheckUserRight("R1.10") || AuthorizeUtilities.CheckUserRight("R1.11") || AuthorizeUtilities.CheckUserRight("R1.12") || AuthorizeUtilities.CheckUserRight("R0"))
+    {
+
+        <div class="card  m-t-10" style="margin-top:0px">
+            <div class="body" style="padding: 0px 22px;">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH GIÁ THÀNH</a>
+                    </li>
+                </ul>
+
+                <div class="p-t-10 p-b-5">
+                    <div class="row" style="margin-bottom: 24px;">
+                        @if (AuthorizeUtilities.CheckUserRight("R1.10") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Element")')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">help</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">ĐỊNH NGHĨA</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
 
-                    @if (AuthorizeUtilities.CheckUserRight("R1.11") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaThanh", "MD/Element")')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">functions</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">TÍNH TOÁN GIÁ THÀNH</div>
+                        @if (AuthorizeUtilities.CheckUserRight("R1.11") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaThanh", "MD/Element")')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">functions</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">TÍNH TOÁN GIÁ THÀNH</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
 
-                    @if (AuthorizeUtilities.CheckUserRight("R1.12") || AuthorizeUtilities.CheckUserRight("R0"))
-                    {
-                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                            <div class="info-box-3  hover-zoom-effect"
-                                 onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachTaiChinh", "MD/Element")')">
-                                <div class="icon">
-                                    <i class="material-icons col-skypec">local_atm</i>
-                                </div>
-                                <div class="content">
-                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH TÀI CHÍNH</div>
+                        @if (AuthorizeUtilities.CheckUserRight("R1.12") || AuthorizeUtilities.CheckUserRight("R0"))
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                                <div class="info-box-3  hover-zoom-effect"
+                                     onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachTaiChinh", "MD/Element")')">
+                                    <div class="icon">
+                                        <i class="material-icons col-skypec">local_atm</i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="text" style="margin-top: 25px;">KẾ HOẠCH TÀI CHÍNH</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 </div>
