@@ -13,6 +13,7 @@ using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext
 
 namespace SMO.Areas.BU.Controllers
 {
+    [AuthorizeCustom(Right = "R3")]
     public class ContractController : Controller
     {
         // GET: BU/Contract

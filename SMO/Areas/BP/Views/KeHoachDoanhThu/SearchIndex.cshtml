@@ -11,13 +11,18 @@
     <div style="min-height: 500px;">
         <div class="page-function">
             @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
-            @Html.MyButton("cmdBack", "Lấy dữ liệu SL", $"Forms.LoadAjaxModal('{Url.Action("OpenModalFilterDataTemplate", new { })}');", "Alt+N", "system_update")            
-            @Html.MyButton("cmdBack", "Xem dữ liệu tổng hợp", $"Forms.LoadAjax('{Url.Action("ExportData", new { templateCode = "", year = Model.ObjDetail.TIME_YEAR, version = -1 })}');", "Alt+N", "open_in_browser")
-            @if (!periodTime.IS_CLOSE)
+            @Html.MyButton("cmdBack", "Lấy dữ liệu SL", $"Forms.LoadAjaxModal('{Url.Action("OpenModalFilterDataTemplate", new { })}');", "Alt+N", "system_update")
+
+            @if (AuthorizeUtilities.CheckUserRight("R10.1") || AuthorizeUtilities.CheckUserRight("R0"))
             {
-                @Html.MyButton("cmdAdd", "Nhập kế hoạch", "ImportExcel();", "Alt+N", "add")
+                @Html.MyButton("cmdBack", "Xem dữ liệu tổng hợp", $"Forms.LoadAjax('{Url.Action("ExportData", new { templateCode = "", year = Model.ObjDetail.TIME_YEAR, version = -1 })}');", "Alt+N", "open_in_browser")
             }
-        </div>
+
+                @if (!periodTime.IS_CLOSE)
+                {
+                    @Html.MyButton("cmdAdd", "Nhập kế hoạch", "ImportExcel();", "Alt+N", "add")
+                }
+            </div>
 
         @if (Model.ObjList.Count() == 0)
         {
@@ -134,7 +139,7 @@ else
     <div class="page-function" style="display: flex">
         <div>
             @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
-            @if (headerData != null && SMOUtilities.CheckRight("R301"))
+            @if (headerData != null && (SMOUtilities.CheckRight("R10.1") || AuthorizeUtilities.CheckUserRight("R0")))
             {
                 @Html.MyButton("cmdXemDuLieu", "Xem dữ liệu", $"Forms.LoadAjax('{Url.Action("ExportData", new { year = headerData.TIME_YEAR, version = headerData.VERSION, kichBan = headerData.KICH_BAN, phienBan = headerData.PHIEN_BAN })}');", "", "search")
             }

@@ -26,12 +26,11 @@ else
             {
                 @Html.MyButton("cmdReview", "Lưu dữ liệu", $"Forms.SubmitForm('{formId}')", "Alt+N", "done_all")
             }
-            if (SMOUtilities.CheckRight("R324"))
-            {
+            
                 @Html.MyButton("cmdEndReview", "Lưu và Trình duyệt",
                                        $"EndReview('summary')",
                                        "Alt+N", "stop")
-            }
+           
         }
         else
         {

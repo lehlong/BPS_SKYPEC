@@ -73,7 +73,10 @@
                 <div class="tab-content">
                     <div class="page-function" style="width:100%">
                         <div class="page-function-button m-r-20" style="float:left">
-                            @Html.MyButton("cmdAdd", "Tạo mới", string.Format("Forms.LoadAjax('{0}');", @Url.Action("Create")), "Alt+N", "add")
+                            @if (AuthorizeUtilities.CheckUserRight("R3.1") || AuthorizeUtilities.CheckUserRight("R0"))
+                            {
+                                @Html.MyButton("cmdAdd", "Tạo mới", string.Format("Forms.LoadAjax('{0}');", @Url.Action("Create")), "Alt+N", "add")
+                            }
                             @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
                             <span class="btn btn-default" title="Tìm theo các chỉ tiêu khác" style="display:none;" id="spShowMoreDashboard" onclick="$('#@Model.FormId #spHideMoreDashboard').toggle(); $(this).toggle(); $('#@Model.FormId .page-dashboard-contract').toggle();">
                                 <i class="col-fecon material-icons">dashboard</i> Biểu đồ <i class="material-icons">expand_more</i>
@@ -129,9 +132,9 @@
                         </div>
                         <div class="col-md-2 col-xs-12">
                             <label>Phòng ban</label>
-                                    @Html.MyDropDownListFor(m => m.ObjDetail.DEPARTMENT, SelectListUtilities.GetCostCenter(),
-                                    new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
-                                
+                            @Html.MyDropDownListFor(m => m.ObjDetail.DEPARTMENT, SelectListUtilities.GetCostCenter(),
+                            new { @data_live_search = "true", @class = "selectpicker form-control ", @data_val = false })
+
                         </div>
 
                         <div class="col-md-2 col-xs-12">

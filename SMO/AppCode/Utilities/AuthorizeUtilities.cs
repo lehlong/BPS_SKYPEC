@@ -26,7 +26,7 @@ namespace SMO
             {
                 return true;
             }
-            if (ProfileUtilities.UserRight.Select(x => x.CODE).Contains(right))
+            if (ProfileUtilities.UserRight.Select(x => x.CODE).Contains(right) || right == "R0")
             {
                 return true;
             }

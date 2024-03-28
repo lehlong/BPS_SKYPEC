@@ -18,13 +18,14 @@
     .info-box-3 {
         height: 86px;
     }
+
     .col-skypec {
         color: #207ce5 !important;
     }
 </style>
 
 <div class="container-fluid child-content">
-    
+
     <div class="card ">
         <h4 class="align-center m-b-15" style="margin: 0;padding-top: 26px;">@title</h4>
 
@@ -37,50 +38,65 @@
 
             <div class="p-t-10 p-b-5">
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachSanLuong")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">assignment</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH SẢN LƯỢNG</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachDoanhThu")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">payment</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH DOANH THU</div>
+                    @if (AuthorizeUtilities.CheckUserRight("R2.1") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachSanLuong")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">assignment</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH SẢN LƯỢNG</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachChiPhi")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">monetization_on</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH CHI PHÍ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachVanChuyen")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">local_shipping</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH VẬN CHUYỂN</div>
+                    }
+
+                    @if (AuthorizeUtilities.CheckUserRight("R2.2") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachDoanhThu")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">payment</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH DOANH THU</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
+
+                    @if (AuthorizeUtilities.CheckUserRight("R2.3") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachChiPhi")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">monetization_on</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH CHI PHÍ</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (AuthorizeUtilities.CheckUserRight("R2.4") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachVanChuyen")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">local_shipping</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH VẬN CHUYỂN</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -96,41 +112,51 @@
 
             <div class="p-t-10 p-b-5">
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuXayDung")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">store</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">ĐẦU TƯ CÓ XÂY DỰNG</div>
+                    @if (AuthorizeUtilities.CheckUserRight("R2.5") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuXayDung")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">store</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">ĐẦU TƯ CÓ XÂY DỰNG</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
 
+                    @if (AuthorizeUtilities.CheckUserRight("R2.6") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
 
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuTrangThietBi")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">build</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">ĐẦU TƯ TRANG THIẾT BỊ</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuNgoaiDoanhNghiep")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">domain</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">ĐẦU TƯ NGOÀI DOANH NGHIỆP</div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuTrangThietBi")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">build</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">ĐẦU TƯ TRANG THIẾT BỊ</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
+
+                    @if (AuthorizeUtilities.CheckUserRight("R2.7") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/DauTuNgoaiDoanhNghiep")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">domain</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">ĐẦU TƯ NGOÀI DOANH NGHIỆP</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -146,28 +172,35 @@
 
             <div class="p-t-10 p-b-5">
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/SuaChuaLon")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">attractions</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH SỬA CHỮA LỚN</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/SuaChuaThuongXuyen")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">settings</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 16px;">KẾ HOẠCH SỬA CHỮA <br />THƯỜNG XUYÊN</div>
+                    @if (AuthorizeUtilities.CheckUserRight("R2.8") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/SuaChuaLon")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">attractions</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH SỬA CHỮA LỚN</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
+
+                    @if (AuthorizeUtilities.CheckUserRight("R2.9") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/SuaChuaThuongXuyen")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">settings</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 16px;">KẾ HOẠCH SỬA CHỮA <br />THƯỜNG XUYÊN</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -183,53 +216,64 @@
 
             <div class="p-t-10 p-b-5">
                 <div class="row" style="margin-bottom: 24px;">
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Element")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">help</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">ĐỊNH NGHĨA</div>
+                    @if (AuthorizeUtilities.CheckUserRight("R2.10") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "MD/Element")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">help</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">ĐỊNH NGHĨA</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
 
+                    @if (AuthorizeUtilities.CheckUserRight("R2.11") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaThanh", "MD/Element")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">functions</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">TÍNH TOÁN GIÁ THÀNH</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
 
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaThanh", "MD/Element")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">functions</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">TÍNH TOÁN GIÁ THÀNH</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachTaiChinh", "MD/Element")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">local_atm</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH TÀI CHÍNH</div>
+                    @if (AuthorizeUtilities.CheckUserRight("R2.12") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachTaiChinh", "MD/Element")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">local_atm</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH TÀI CHÍNH</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
-                        <div class="info-box-3  hover-zoom-effect"
-                             onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaVon", "MD/Element")')">
-                            <div class="icon">
-                                <i class="material-icons col-skypec">local_atm</i>
-                            </div>
-                            <div class="content">
-                                <div class="text" style="margin-top: 25px;">KẾ HOẠCH GIÁ VỐN</div>
+                    }
+                    @if (AuthorizeUtilities.CheckUserRight("R2.13") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaVon", "MD/Element")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">local_atm</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH GIÁ VỐN</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>

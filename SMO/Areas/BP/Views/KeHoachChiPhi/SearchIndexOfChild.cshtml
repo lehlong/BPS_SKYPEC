@@ -5,7 +5,7 @@
     var periodTime = Model.UnitOfWork.Repository<SMO.Repository.Implement.MD.PeriodTimeRepo>().Get(Model.ObjDetail.TIME_YEAR);
     var isChange = "False";
 }
-@if (SMOUtilities.CheckRight("R308"))
+@if (SMOUtilities.CheckRight("R10.7") || AuthorizeUtilities.CheckUserRight("R0"))
 {
     <div class="page-function">
         <div style="">

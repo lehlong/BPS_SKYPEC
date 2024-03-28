@@ -11,10 +11,10 @@
 
         <div class="input-group page-function-search" style="margin-bottom: 7px !important">
             <select class="form-control selectpicker show-tick" id="ddlUserOrg" onchange="BuildTreeRight();">
-                <option value="@Model.ObjDetail.Organize?.CODE">@(Model.ObjDetail.Organize?.NAME)</option>
+                <option value="@Model.ObjDetail.Organize.CODE">@(Model.ObjDetail.Organize.NAME)</option>
                 @foreach (var item in Model.ObjDetail.ListUserOrg)
                 {
-                    <option value="@item.ORG_CODE">@(item.Organize?.NAME)</option>
+                    <option value="@item.ORG_CODE">@(item.Organize.NAME)</option>
                 }
             </select>
 

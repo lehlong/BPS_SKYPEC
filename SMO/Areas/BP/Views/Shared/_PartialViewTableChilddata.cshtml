@@ -30,7 +30,7 @@
 </td>
 <td>
     <div class="m-b-5">
-        @if (SMOUtilities.CheckRight("R301"))
+        @if (SMOUtilities.CheckRight("R10.1") || AuthorizeUtilities.CheckUserRight("R0"))
         {
             <button type="button" class="btn btn-default waves-effect col-deep-orange"
                     onclick="@($"Forms.LoadAjax('{Url.Action("ExportData", new { templateCode = Model.TEMPLATE_CODE, year = Model.TIME_YEAR, version = Model.VERSION, orgCode = Model.ORG_CODE })}');")">

@@ -21,9 +21,11 @@
                     <div class="page-function">
                         <div class="page-function-button m-r-20">
                             @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
-                            @Html.MyButton("cmdTongHop", "Tổng hợp dữ liệu", string.Format("Forms.LoadAjax('{0}');", @Url.Action("SumUpDataIndex", "DauTuXayDung")), "", "dvr")
-                            @Html.MyButton("cmdViewHisTongHop", "Xem lịch sử tổng hợp", string.Format("Forms.LoadAjax('{0}');", @Url.Action("HistorySumUp", new { orgCode = ProfileUtilities.User.ORGANIZE_CODE })), "", "history")
-                        </div>
+                            @if (SMOUtilities.CheckRight("R10.7") || AuthorizeUtilities.CheckUserRight("R0"))
+                            {
+                                @Html.MyButton("cmdTongHop", "Tổng hợp dữ liệu", string.Format("Forms.LoadAjax('{0}');", @Url.Action("SumUpDataIndex", "DauTuXayDung")), "", "dvr")
+                            }@Html.MyButton("cmdViewHisTongHop", "Xem lịch sử tổng hợp", string.Format("Forms.LoadAjax('{0}');", @Url.Action("HistorySumUp", new { orgCode = ProfileUtilities.User.ORGANIZE_CODE })), "", "history")
+                            </div>
                     </div>
 
                     <div id="divResult">

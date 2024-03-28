@@ -14,7 +14,7 @@
     model.VERSION = Model.VERSION;
 }
 <div class="m-b-5">
-    @if (SMOUtilities.CheckRight("R301"))
+    @if (SMOUtilities.CheckRight("R10.1") || AuthorizeUtilities.CheckUserRight("R0"))
     {
         <button type="button" class="btn btn-default waves-effect col-deep-orange"
                 onclick="@($"Forms.LoadAjax('{Url.Action("ViewDataTemplate", new { model = JsonConvert.SerializeObject(model) })}');")">
@@ -42,7 +42,7 @@
 
         if (Model.STATUS == Approve_Status.ChuaTrinhDuyet || Model.STATUS == Approve_Status.TuChoi)
         {
-            if (SMOUtilities.CheckRight("R303"))
+            if (SMOUtilities.CheckRight("R10.2") || AuthorizeUtilities.CheckUserRight("R0"))
             {
                 if (!Model.IS_DELETED)
                 {
@@ -73,7 +73,7 @@
 
         if (Model.STATUS == Approve_Status.ChoPheDuyet)
         {
-            if (SMOUtilities.CheckRight("R304"))
+            if (SMOUtilities.CheckRight("R10.3") || AuthorizeUtilities.CheckUserRight("R0"))
             {
                 <div class="m-b-5">
                     <button type="button" class="btn btn-default waves-effect col-deep-orange" onclick="@($"HuyTrinhDuyet('{Model.PKID}');")">
@@ -81,7 +81,7 @@
                     </button>
                 </div>
             }
-            if (SMOUtilities.CheckRight("R305"))
+            if (SMOUtilities.CheckRight("R10.4") || AuthorizeUtilities.CheckUserRight("R0"))
             {
                 <div class="m-b-5">
                     <button type="button" class="btn btn-default waves-effect col-deep-orange" onclick="@($"PheDuyet('{Model.PKID}');")">
@@ -89,7 +89,7 @@
                     </button>
                 </div>
             }
-            if (SMOUtilities.CheckRight("R307"))
+            if (SMOUtilities.CheckRight("R10.6") || AuthorizeUtilities.CheckUserRight("R0"))
             {
                 <div class="m-b-5">
                     <button type="button" class="btn btn-default waves-effect col-deep-orange" onclick="@($"TuChoi('{Model.PKID}');")">
