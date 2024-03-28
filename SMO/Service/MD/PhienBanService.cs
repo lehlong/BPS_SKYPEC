@@ -3648,6 +3648,7 @@ namespace SMO.Service.MD
                         Name = name,
                         valueGT = dataInHeaderSCTX.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.Contains(code)).Sum(x => x.VALUE) ?? 0,
                         Order = order + 1,
+                        Parent = "0",
                     };
                     data.Add(sumItem);
                     order++;
@@ -3692,7 +3693,8 @@ namespace SMO.Service.MD
                         Name = name,
                         valueGT = dataInHeaderSCTX2.Sum(x => x.VALUE) ?? 0,
                         Order = order + 1,
-                        IsBold = true
+                        IsBold = true,
+                        Parent = "0"
                     };
                     data.Add(sumSCTX2);
                     order++;
@@ -3703,6 +3705,7 @@ namespace SMO.Service.MD
                         lstParentCodeArea.Add(prCode);
                     }
                     lstParentCodeArea = lstParentCodeArea.Distinct().ToList();
+                    var parentOrder = order;
                     foreach (var code in lstParentCodeArea)
                     {
                         var nameElement = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.CODE == code).NAME;
@@ -3711,18 +3714,21 @@ namespace SMO.Service.MD
                             Name = nameElement,
                             valueGT = dataInHeaderSCTX2.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.Contains(code)).Sum(x => x.VALUE) ?? 0,
                             Order = order + 1,
+                            Parent = parentOrder.ToString(),
                             IsBold = true
                         };
                         data.Add(sumElement);
                         order++;
                         var dataElement = dataInHeaderSCTX2.Where(x => x.KhoanMucSuaChua.PARENT_CODE == code).ToList();
+                        var parentOderChild = order;
                         foreach (var element in dataElement)
                         {
                             var elementItem = new SuaChuaThuongXuyenReportModel
                             {
                                 Name = element.KhoanMucSuaChua.NAME,
                                 valueGT = dataElement.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == element.KHOAN_MUC_SUA_CHUA_CODE).Sum(x => x.VALUE) ?? 0,
-                                Order = order + 1
+                                Order = order + 1,
+                                Parent = parentOderChild.ToString(),
                             };
                             data.Add(elementItem);
                             order++;
@@ -3761,6 +3767,7 @@ namespace SMO.Service.MD
                     lstParentCodeArea.Add(prCode);
                 }
                 lstParentCodeArea = lstParentCodeArea.Distinct().ToList();
+                var parentOder = order;
                 foreach (var code in lstParentCodeArea)
                 {
                     
@@ -3775,17 +3782,20 @@ namespace SMO.Service.MD
                         Name = nameElement,
                         valueGT = dataInHeaderSCTX2.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.Contains(codeFix)).Sum(x => x.VALUE) ?? 0,
                         Order = order + 1,
+                        Parent = parentOder.ToString(),
                         IsBold = true
                     };
                     data.Add(sumElement);
                     order++;
                     var dataElement = dataInHeaderSCTX2.Where(x => x.KhoanMucSuaChua.PARENT_CODE == code).ToList();
+                    var parentOrderChild = order;
                     foreach (var element in dataElement)
                     {
                         var elementItem = new SuaChuaThuongXuyenReportModel
                         {
                             Name = element.KhoanMucSuaChua.NAME,
                             valueGT = dataElement.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == element.KHOAN_MUC_SUA_CHUA_CODE).Sum(x => x.VALUE) ?? 0,
+                            Parent = parentOrderChild.ToString(),
                             Order = order + 1
                         };
                         data.Add(elementItem);

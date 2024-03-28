@@ -86,6 +86,7 @@ namespace SMO.Models
     public class SuaChuaThuongXuyenReportModel
     {
         public string Code { get; set; }
+        public string Parent { get; set; }
         public string Name { get; set; }
         public decimal valueGT { get; set; }
         public string valueQM { get; set; }

@@ -105,16 +105,16 @@
     </ul>
     <div class="tab-content" style="padding-bottom:0">
         <div role="tabpanel" class="tab-pane fade in active" id="tab1">
-            <div style="height: calc(100vh - 220px);" id="@gridTab1"></div>
+            <div style="height: calc(100vh - 220px);" id="@gridTab1" class="table-zoom"></div>
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab2">
-            <div style="overflow: auto; height: calc(100vh - 220px); width: 50%;" id="@gridTab2"></div>
+            <div style="overflow: auto; height: calc(100vh - 220px); width: 50%;" id="@gridTab2" class="table-zoom"></div>
            
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab3">
-            <div style="overflow: auto; height: calc(100vh - 220px);" id="@gridTab3"></div>
+            <div style="overflow: auto; height: calc(100vh - 220px);" id="@gridTab3" class="table-zoom"></div>
             
         </div>
     </div>
@@ -213,6 +213,35 @@
     keyNavigation: true,
     rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     data: rawDataTab3,
-});
+    });
+
+    var fontSize = 13;
+    function ZoomIn() {
+        fontSize--;
+        if (fontSize < 6) {
+            fontSize = 6;
+        }
+        Zoom(fontSize);
+    }
+
+    function ZoomOut() {
+        fontSize++;
+        if (fontSize > 20) {
+            fontSize = 20;
+        }
+        Zoom(fontSize);
+    }
+
+    function Zoom(fontSize) {
+        try {
+            var $table_zoom = $('.table-zoom');
+
+            $('.table-zoom').attr('class', $table_zoom.get(0).className.replace(/\bfont-\S+/g, ''));
+            $(".table-zoom").addClass("font-" + fontSize);
+
+        } catch (ex) {
+            console.log("Can't zoom table!")
+        }
+    }
 </script>
 
