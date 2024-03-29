@@ -108,6 +108,7 @@
 
     //Init Slider
     const MAIN_FONT_SIZE = 14;
+    var FONT_SIZE_CHANGE = 0;
     const widthMapMonth = new Map(columnsMonth.map(({ minWidth, id }) => ([id, minWidth])));
     const widthMapYear = new Map(columnsYear.map(({ minWidth, id }) => ([id, minWidth])));
     const slider = new dhx.Slider("slider", {
@@ -119,6 +120,7 @@
     });
 
     slider.events.on("change", value => {
+        FONT_SIZE_CHANGE = parseInt(value);
         const fontSize = parseInt(value);
         columnsMonth = columnsMonth.map(column => {
             return {
@@ -137,6 +139,15 @@
         $(".dhx_grid-header-cell").css("font-size", `${value}px`);
         treeGrid.setColumns(columnsMonth);
         treeYear.setColumns(columnsYear);
+    });
+
+    treeGrid.events.on("scroll", function (e) {
+        $(".dhx_grid-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_tree-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+    });
+    treeYear.events.on("scroll", function (e) {
+        $(".dhx_grid-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_tree-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
     });
 
     function DownloadDataQuantityPlan() {
