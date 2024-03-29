@@ -17,6 +17,7 @@ using SMO.Repository.Implement.BP.KE_HOACH_DOANH_THU;
 using SMO.Repository.Implement.BP.KE_HOACH_DOANH_THU.KE_HOACH_DOANH_THU_DATA_BASE;
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.MD;
+using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.Class;
 using SMO.Service.Common;
 using SMO.ServiceInterface.BP.KeHoachDoanhThu;
@@ -2859,6 +2860,124 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             }
         }
 
+        public List<ViewDataQuantityPlan> ExportData(string templateCode, int year, int version, string orgCode, string nhomSanBay, string chiNhanh)
+        {
+            var result = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode && x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.VALUE_SUM_YEAR > 0).OrderBy(x => x.DoanhThuProfitCenter.SAN_BAY_CODE).ThenBy(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE).ToList();
+            if (!string.IsNullOrEmpty(nhomSanBay))
+            {
+                result = result.Where(x => x.DoanhThuProfitCenter.SanBay.NHOM_SAN_BAY_CODE == nhomSanBay).ToList();
+            }
+            if (!string.IsNullOrEmpty(chiNhanh))
+            {
+                result = result.Where(x => x.DoanhThuProfitCenter.SanBay.AREA_CODE == chiNhanh).ToList();
+            }
+
+            var data = new List<ViewDataQuantityPlan>();
+
+            foreach (var i in result)
+            {
+                data.Add(new ViewDataQuantityPlan
+                {
+                    Airport = i.DoanhThuProfitCenter?.SAN_BAY_CODE,
+                    Airlines = i.DoanhThuProfitCenter?.HANG_HANG_KHONG_CODE,
+                    AirlinesGroup = i.DoanhThuProfitCenter?.HangHangKhong?.GROUP_ITEM,
+                    Element = i.KhoanMucDoanhThu?.NAME,
+                    ElementCode = i.KHOAN_MUC_DOANH_THU_CODE,
+                    Jan = i.VALUE_JAN,
+                    Feb = i.VALUE_FEB,
+                    Mar = i.VALUE_MAR,
+                    Apr = i.VALUE_APR,
+                    May = i.VALUE_MAY,
+                    Jun = i.VALUE_JUN,
+                    Jul = i.VALUE_JUL,
+                    Aug = i.VALUE_AUG,
+                    Sep = i.VALUE_SEP,
+                    Oct = i.VALUE_OCT,
+                    Nov = i.VALUE_NOV,
+                    Dec = i.VALUE_DEC,
+                    Total = i.VALUE_SUM_YEAR,
+                    Average = i.VALUE_SUM_YEAR / 12,
+                    Des = i.DESCRIPTION
+                });
+            }
+            return data;
+        }
+
+        public List<ViewDataRevenuePlan> ExportDataTab2(List<ViewDataQuantityPlan> model)
+        {
+            var query = model.Where(x => x.ElementCode == "2001" || x.ElementCode == "2002").ToList();
+            var data = new List<ViewDataRevenuePlan>();
+
+            var lstAirport = query.GroupBy(x => x.Airport).Select(x => x.First().Airport).ToList();
+            foreach (var i in lstAirport)
+            {
+                data.Add(new ViewDataRevenuePlan
+                {
+                    Airport = i,
+                    Vn = query.Where(x => x.Airport == i && x.AirlinesGroup == "VN").Sum(x => x.Total) ?? 0,
+                    Ov = query.Where(x => x.Airport == i && x.AirlinesGroup == "0V").Sum(x => x.Total) ?? 0,
+                    Bl = query.Where(x => x.Airport == i && x.AirlinesGroup == "BL").Sum(x => x.Total) ?? 0,
+                    Vj = query.Where(x => x.Airport == i && x.AirlinesGroup == "VJ").Sum(x => x.Total) ?? 0,
+                    Qh = query.Where(x => x.Airport == i && x.AirlinesGroup == "QH").Sum(x => x.Total) ?? 0,
+                    Vu = query.Where(x => x.Airport == i && x.AirlinesGroup == "VU").Sum(x => x.Total) ?? 0,
+                    Other = query.Where(x => x.Airport == i && x.AirlinesGroup == "HKTN#").Sum(x => x.Total) ?? 0,
+                    Nn = query.Where(x => x.Airport == i && x.AirlinesGroup == "HKQT").Sum(x => x.Total) ?? 0,
+                    Total = query.Where(x => x.Airport == i).Sum(x => x.Total) ?? 0,
+                });
+            }
+            return data;
+        }
+
+        public List<ViewDataRevenuePlan> ExportDataTab3(List<ViewDataQuantityPlan> model)
+        {
+            var query = model.Where(x => x.ElementCode == "2001").ToList();
+            var data = new List<ViewDataRevenuePlan>();
+
+            var lstAirport = query.GroupBy(x => x.Airport).Select(x => x.First().Airport).ToList();
+            foreach (var i in lstAirport)
+            {
+                data.Add(new ViewDataRevenuePlan
+                {
+                    Airport = i,
+                    Vn = query.Where(x => x.Airport == i && x.AirlinesGroup == "VN").Sum(x => x.Total) ?? 0,
+                    Ov = query.Where(x => x.Airport == i && x.AirlinesGroup == "0V").Sum(x => x.Total) ?? 0,
+                    Bl = query.Where(x => x.Airport == i && x.AirlinesGroup == "BL").Sum(x => x.Total) ?? 0,
+                    Vj = query.Where(x => x.Airport == i && x.AirlinesGroup == "VJ").Sum(x => x.Total) ?? 0,
+                    Qh = query.Where(x => x.Airport == i && x.AirlinesGroup == "QH").Sum(x => x.Total) ?? 0,
+                    Vu = query.Where(x => x.Airport == i && x.AirlinesGroup == "VU").Sum(x => x.Total) ?? 0,
+                    Other = query.Where(x => x.Airport == i && x.AirlinesGroup == "HKTN#").Sum(x => x.Total) ?? 0,
+                    Nn = query.Where(x => x.Airport == i && x.AirlinesGroup == "HKQT").Sum(x => x.Total) ?? 0,
+                    Total = query.Where(x => x.Airport == i).Sum(x => x.Total) ?? 0,
+                });
+            }
+            return data;
+        }
+
+        public List<ViewDataRevenuePlan> ExportDataTab4(List<ViewDataQuantityPlan> model)
+        {
+            var query = model.Where(x => x.ElementCode == "2002").ToList();
+            var data = new List<ViewDataRevenuePlan>();
+
+            var lstAirport = query.GroupBy(x => x.Airport).Select(x => x.First().Airport).ToList();
+            foreach (var i in lstAirport)
+            {
+                data.Add(new ViewDataRevenuePlan
+                {
+                    Airport = i,
+                    Vn = query.Where(x => x.Airport == i && x.AirlinesGroup == "VN").Sum(x => x.Total) ?? 0,
+                    Ov = query.Where(x => x.Airport == i && x.AirlinesGroup == "0V").Sum(x => x.Total) ?? 0,
+                    Bl = query.Where(x => x.Airport == i && x.AirlinesGroup == "BL").Sum(x => x.Total) ?? 0,
+                    Vj = query.Where(x => x.Airport == i && x.AirlinesGroup == "VJ").Sum(x => x.Total) ?? 0,
+                    Qh = query.Where(x => x.Airport == i && x.AirlinesGroup == "QH").Sum(x => x.Total) ?? 0,
+                    Vu = query.Where(x => x.Airport == i && x.AirlinesGroup == "VU").Sum(x => x.Total) ?? 0,
+                    Other = query.Where(x => x.Airport == i && x.AirlinesGroup == "HKTN#").Sum(x => x.Total) ?? 0,
+                    Nn = query.Where(x => x.Airport == i && x.AirlinesGroup == "HKQT").Sum(x => x.Total) ?? 0,
+                    Total = query.Where(x => x.Airport == i).Sum(x => x.Total) ?? 0,
+                });
+            }
+            return data;
+        }
+
         /// <summary>
         /// generate excel file and store in path
         /// </summary>
@@ -5146,6 +5265,18 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             }
 
         }
-
+    }
+    public class ViewDataRevenuePlan
+    {
+        public string Airport { get; set; }
+        public decimal? Vn { get; set; }
+        public decimal? Ov { get; set; }
+        public decimal? Bl { get; set; }
+        public decimal? Vj { get; set; }
+        public decimal? Qh { get; set; }
+        public decimal? Vu { get; set; }
+        public decimal? Other { get; set; }
+        public decimal? Nn { get; set; }
+        public decimal? Total { get; set; }
     }
 }

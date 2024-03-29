@@ -45,6 +45,29 @@ namespace SMO.Areas.BP.Controllers
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
 
+        public override ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
+        {
+            var model = new ViewDataCenterModel
+            {
+                ORG_CODE = orgCode,
+                TEMPLATE_CODE = templateCode ?? string.Empty,
+                KICH_BAN = kichBan,
+                PHIEN_BAN = phienBan,
+                YEAR = year,
+                VERSION = version,
+            };
+            return PartialView(model);
+        }
+
+        public ActionResult ExportDataGrid(string templateCode, int year, int version, string orgCode, string chiNhanh, string nhomSanBay)
+        {
+            var data = _service.ExportData(templateCode, year, version, orgCode, nhomSanBay, chiNhanh);
+            ViewBag.DataTab2 = _service.ExportDataTab2(data);
+            ViewBag.DataTab3 = _service.ExportDataTab3(data);
+            ViewBag.DataTab4 = _service.ExportDataTab4(data);
+            return PartialView(data);
+        }
+
         public override ActionResult ViewTemplate(string templateId, int? version, int year, string centerCode = "")
         {
             if (!string.IsNullOrEmpty(templateId))

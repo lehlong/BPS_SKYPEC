@@ -130,8 +130,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             {
                 data.Add(new ViewDataQuantityPlan
                 {
-                    Airport = i.SanLuongProfitCenter?.SAN_BAY_CODE + " - " + i.SanLuongProfitCenter?.SanBay?.NAME,
-                    Airlines = i.SanLuongProfitCenter?.HANG_HANG_KHONG_CODE + " - " + i.SanLuongProfitCenter?.HangHangKhong?.NAME,
+                    Airport = i.SanLuongProfitCenter?.SAN_BAY_CODE,
+                    Airlines = i.SanLuongProfitCenter?.HANG_HANG_KHONG_CODE,
                     Element = i.KhoanMucSanLuong?.NAME,
                     Jan = i.VALUE_JAN,
                     Feb = i.VALUE_FEB,
@@ -5136,7 +5136,9 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         public string AirportName { get; set; }
         public string Airlines { get; set; }
         public string AirlinesName { get; set; }
+        public string AirlinesGroup { get; set; }
         public string Element { get; set; }
+        public string ElementCode { get; set; }
         public decimal? Jan { get; set; }
         public decimal? Feb { get; set; }
         public decimal? Mar { get; set; }

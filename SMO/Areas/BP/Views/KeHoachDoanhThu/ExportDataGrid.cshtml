@@ -1,20 +1,27 @@
 ﻿@model List<ViewDataQuantityPlan>
-@using SMO.Service.BP.KE_HOACH_SAN_LUONG
+@using SMO.Service.BP.KE_HOACH_SAN_LUONG;
+@using SMO.Service.BP.KE_HOACH_DOANH_THU;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
 @{
-    var gridMonth = Guid.NewGuid().ToString("N");
-    var gridYear = Guid.NewGuid().ToString("N");
+    var gridTab1 = Guid.NewGuid().ToString("N");
+    var gridTab2 = Guid.NewGuid().ToString("N");
+    var gridTab3 = Guid.NewGuid().ToString("N");
+    var gridTab4 = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-    var dataYear = ViewBag.DataYear as List<ViewDataQuantityPlanYear>;
+    var dataTab2 = ViewBag.DataTab2 as List<ViewDataRevenuePlan>;
+    var dataTab3 = ViewBag.DataTab3 as List<ViewDataRevenuePlan>;
+    var dataTab4 = ViewBag.DataTab4 as List<ViewDataRevenuePlan>;
 }
 <style>
     .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
         font-weight: bold
     }
+
     .grid .dhx_grid-cell {
         word-break: break-word
     }
+
     .dhx_slider {
         padding: 8px 0;
     }
@@ -22,18 +29,30 @@
 
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
     <li role="presentation" class="active" style="cursor: pointer;">
-        <a href="#tab1" data-toggle="tab">Kế hoạch theo tháng</a>
+        <a href="#tab1" data-toggle="tab">Kế hoạch tổng</a>
     </li>
     <li role="presentation" style="cursor: pointer;">
-        <a data-toggle="tab" href="#tab2">Kế hoạch theo năm</a>
+        <a data-toggle="tab" href="#tab4">Doanh thu tổng</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a data-toggle="tab" href="#tab5">Doanh thu nội địa</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a data-toggle="tab" href="#tab6">Doanh thu quốc tế</a>
     </li>
 </ul>
 <div class="tab-content" style="padding-bottom:0">
     <div role="tabpanel" class="tab-pane fade in active" id="tab1">
-        <div style="height: calc(100vh - 250px);" id="@gridMonth"></div>
+        <div style="height: calc(100vh - 250px);" id="@gridTab1"></div>
     </div>
-    <div role="tabpanel" class="tab-pane fade" id="tab2">
-        <div style="height: calc(100vh - 250px);" id="@gridYear"></div>
+    <div role="tabpanel" class="tab-pane fade" id="tab4">
+        <div style="height: calc(100vh - 250px);" id="@gridTab2"></div>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="tab5">
+        <div style="height: calc(100vh - 250px);" id="@gridTab3"></div>
+    </div>
+    <div role="tabpanel" class="tab-pane fade" id="tab6">
+        <div style="height: calc(100vh - 250px);" id="@gridTab4"></div>
     </div>
 </div>
 
@@ -64,7 +83,7 @@
         { id: "des", header: [{ text: "GHI CHÚ", align: "center" }], align: "right", minWidth: 150 },
     ];
 
-    const treeGrid = new dhx.Grid("@gridMonth", {
+    const treeGrid = new dhx.Grid("@gridTab1", {
         columns: columnsMonth,
         data: rawDataMonth,
         leftSplit: 3,
@@ -74,32 +93,42 @@
         autoHeight: true,
     });
 
-    //Init Data Year...
-    const rawDataYear = @Html.Raw(JsonConvert.SerializeObject(dataYear, jsonSerializeSettings));
-    let columnsYear = [
-        {
-            id: "airport", header: [
-                { text: "SÂN BAY", colspan: 2, align: 'center' },
-                { text: 'MÃ SÂN BAY', align: 'center' },
-                { content: "selectFilter" }
-            ], align: "center", width: 160
-        },
-        { id: "airportName", header: ["", { text: "TÊN SÂN BAY", align: "center" }, { content: "selectFilter" }], minWidth: 260, footer: [{ text: "TỔNG CỘNG" }] },
-        {
-            id: "vna", header: [
-                { text: "HKVN", colspan: 3, align: 'center' },
-                { text: 'VNA', align: 'center' },
-            ], align: "right", width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }]
-        },
-        { id: "notVna", header: ["",{ text: "HKVN#", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "sumNd", header: ["",{ text: "CỘNG HKVN", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "sumQt", header: [{ text: "HKQT", align: "center", rowspan: 2 }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "total", header: [{ text: "TỔNG CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+    //Init Data Tab2...
+    const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(dataTab2, jsonSerializeSettings));
+    const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(dataTab3, jsonSerializeSettings));
+    const rawDataTab4 = @Html.Raw(JsonConvert.SerializeObject(dataTab4, jsonSerializeSettings));
+    let columns = [
+        { id: "airport", header: [{ text: "SÂN BAY", align: "center" }, { content: "selectFilter" }], minWidth: 130, footer: [{ text: "TỔNG CỘNG" }] },
+        { id: "vn", header: [{ text: "VN", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "ov", header: [{ text: "0V", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "bl", header: [{ text: "BL", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "vj", header: [{ text: "VJ", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "qh", header: [{ text: "QH", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "vu", header: [{ text: "VU", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "other", header: [{ text: "HKTN#", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "nn", header: [{ text: "HKQT", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "total", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
     ];
 
-    const treeYear = new dhx.Grid("@gridYear", {
-        columns: columnsYear,
-        data: rawDataYear,
+    const gridTab2 = new dhx.Grid("@gridTab2", {
+        columns: columns,
+        data: rawDataTab2,
+        resizable: true,
+        keyNavigation: true,
+        selection: true,
+        autoHeight: true,
+    });
+    const gridTab3 = new dhx.Grid("@gridTab3", {
+        columns: columns,
+        data: rawDataTab3,
+        resizable: true,
+        keyNavigation: true,
+        selection: true,
+        autoHeight: true,
+    });
+    const gridTab4 = new dhx.Grid("@gridTab4", {
+        columns: columns,
+        data: rawDataTab4,
         resizable: true,
         keyNavigation: true,
         selection: true,
@@ -110,7 +139,6 @@
     const MAIN_FONT_SIZE = 14;
     var FONT_SIZE_CHANGE = 14;
     const widthMapMonth = new Map(columnsMonth.map(({ minWidth, id }) => ([id, minWidth])));
-    const widthMapYear = new Map(columnsYear.map(({ minWidth, id }) => ([id, minWidth])));
     const slider = new dhx.Slider("slider", {
         min: 4,
         max: 26,
@@ -128,33 +156,23 @@
                 minWidth: widthMapMonth.get(column.id) * (fontSize / MAIN_FONT_SIZE),
             };
         });
-        columnsYear = columnsYear.map(column => {
-            return {
-                ...column,
-                minWidth: widthMapYear.get(column.id) * (fontSize / MAIN_FONT_SIZE ),
-            };
-        });
         $(".dhx_grid-cell").css("font-size", `${value}px`);
         $(".dhx_tree-cell").css("font-size", `${value}px`);
         $(".dhx_grid-header-cell").css("font-size", `${value}px`);
         treeGrid.setColumns(columnsMonth);
-        treeYear.setColumns(columnsYear);
     });
 
     treeGrid.events.on("scroll", function (e) {
         $(".dhx_grid-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
         $(".dhx_tree-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
     });
-    treeYear.events.on("scroll", function (e) {
-        $(".dhx_grid-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
-        $(".dhx_tree-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
-    });
 
     function DownloadDataQuantityPlan() {
-        console.log(treeGrid.data.serialize(), treeYear.data.serialize());
+        
     }
 
 </script>
+
 
 
 

@@ -1,0 +1,78 @@
+﻿@model SMO.Service.Class.ViewDataCenterModel
+@{
+    var viewId = Guid.NewGuid().ToString();
+    var lstNhomSanBay = SelectListUtilities.GetAllNhomSanBay();
+    var lstChiNhanh = SelectListUtilities.GetAllArea();
+}
+<div id='@viewId' class="container-fluid child-content">
+    <div class="card border-grey">
+        <div class="body" style="padding-top: 0px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> DỮ LIỆU KẾ HOẠCH SẢN LƯỢNG</a>
+                </li>
+            </ul>
+
+            <div class="tab-content" style="padding: 12px 0 0 0;">
+                <div class="page-function">
+                    <div class="page-function-button m-r-20" style="float:left">
+                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdBack", "Kết xuất", "ExportDataGrid()", "Alt+N", "search")
+                        @Html.MyButton("cmdBack", "Download", "DownloadDataQuantityPlan()", "Alt+N", "file_download")
+                    </div>
+                    <div class="input-group page-function-search row" style="margin-bottom: 0px !important; max-width:920px">
+                        <div class="col-md-3" style="margin-bottom: 12px">
+                            <select class="form-control selectpicker show-tick" id="airportGroup">
+                                @foreach (var i in lstNhomSanBay)
+                                {
+                                    <option value="@i.Value">@i.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3" style="margin-bottom: 12px">
+                            <select class="form-control selectpicker show-tick" id="provinceCode">
+                                @foreach (var i in lstChiNhanh)
+                                {
+                                    <option value="@i.Value">@i.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3" style="margin-bottom: 12px">
+                            <div id="slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="data-grid-revenue-plan"></div>
+        </div>
+    </div>
+    <script>
+        function ExportDataGrid() {
+            $("#data-grid-revenue-plan").empty();
+            $("#slider").empty();
+            var ajaxParams = {
+                url: "@Url.Action("ExportDataGrid")",
+                data: {
+                    templateCode: '@Model.TEMPLATE_CODE',
+                    year: '@Model.YEAR',
+                    version: '@Model.VERSION',
+                    orgCode: '@Model.ORG_CODE',
+                    nhomSanBay: $('#airportGroup option:selected').val(),
+                    chiNhanh: $('#provinceCode option:selected').val(),
+                },
+                htmlTarget: '#data-grid-revenue-plan',
+            };
+            Forms.LoadAjax(ajaxParams);
+        }
+        $(function () {
+            Forms.CompleteUI();
+            ExportDataGrid();
+        });
+
+    </script>
+</div>
+
+
+
+
+
