@@ -50,8 +50,22 @@ namespace SMO.Areas.BP.Controllers
 
         public override ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
         {
-            var data = _service.ExportData(templateCode, year, version, orgCode, kichBan, phienBan);
-            ViewBag.DataYear = _service.ExportDataYear(templateCode, year, version, orgCode, kichBan, phienBan);
+            var model = new ViewDataCenterModel
+            {
+                ORG_CODE = orgCode,
+                TEMPLATE_CODE = templateCode ?? string.Empty,
+                KICH_BAN = kichBan,
+                PHIEN_BAN = phienBan,
+                YEAR = year,
+                VERSION = version,
+            };
+            return PartialView(model);
+        }
+
+        public ActionResult ExportDataGrid(string templateCode, int year, int version, string orgCode, string chiNhanh, string nhomSanBay)
+        {
+            var data = _service.ExportData(templateCode, year, version, orgCode, nhomSanBay, chiNhanh);
+            ViewBag.DataYear = _service.ExportDataYear(templateCode, year, version, orgCode, nhomSanBay, chiNhanh);
             return PartialView(data);
         }
 

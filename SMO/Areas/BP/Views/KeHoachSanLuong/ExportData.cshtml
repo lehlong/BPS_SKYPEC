@@ -1,23 +1,9 @@
-﻿@model List<ViewDataQuantityPlan>
-@using SMO.Service.BP.KE_HOACH_SAN_LUONG
-@using Newtonsoft.Json;
-@using Newtonsoft.Json.Serialization;
+﻿@model SMO.Service.Class.ViewDataCenterModel
 @{
     var viewId = Guid.NewGuid().ToString();
-    var gridMonth = Guid.NewGuid().ToString("N");
-    var gridYear = Guid.NewGuid().ToString("N");
-    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-    var dataYear = ViewBag.DataYear as List<ViewDataQuantityPlanYear>;
+    var lstNhomSanBay = SelectListUtilities.GetAllNhomSanBay();
+    var lstChiNhanh = SelectListUtilities.GetAllArea();
 }
-<style>
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-</style>
 <div id='@viewId' class="container-fluid child-content">
     <div class="card border-grey">
         <div class="body" style="padding-top: 0px;">
@@ -26,100 +12,65 @@
                     <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> DỮ LIỆU KẾ HOẠCH SẢN LƯỢNG</a>
                 </li>
             </ul>
-            <div class="tab-content">
-                <div class="page-function-button m-r-20">
-                    @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
-                    @Html.MyButton("cmdBack", "Download", $"", "Alt+N", "file_download")
+
+            <div class="tab-content" style="padding: 12px 0 0 0;">
+                <div class="page-function">
+                    <div class="page-function-button m-r-20" style="float:left">
+                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdBack", "Kết xuất", "ExportDataGrid()", "Alt+N", "search")
+                        @Html.MyButton("cmdBack", "Download", $"", "Alt+N", "file_download")
+                    </div>
+                    <div class="input-group page-function-search row" style="margin-bottom: 0px !important; max-width:920px">
+                        <div class="col-md-3" style="margin-bottom: 12px">
+                            <select class="form-control selectpicker show-tick" id="airportGroup">
+                                @foreach (var i in lstNhomSanBay)
+                                {
+                                    <option value="@i.Value">@i.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3" style="margin-bottom: 12px">
+                            <select class="form-control selectpicker show-tick" id="provinceCode">
+                                @foreach (var i in lstChiNhanh)
+                                {
+                                    <option value="@i.Value">@i.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3" style="margin-bottom: 12px">
+                            <div id="slider"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <hr style="margin: 0 0 6px 0;" />
-            <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
-                <li role="presentation" class="active" style="cursor: pointer;">
-                    <a href="#tab1" data-toggle="tab">Kế hoạch theo tháng</a>
-                </li>
-                <li role="presentation" style="cursor: pointer;">
-                    <a data-toggle="tab" href="#tab2">Kế hoạch theo năm</a>
-                </li>
-            </ul>
-            <div class="tab-content" style="padding-bottom:0">
-                <div role="tabpanel" class="tab-pane fade in active" id="tab1">
-                    <div style="height: calc(100vh - 250px);" id="@gridMonth"></div>
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="tab2">
-                    <div style="height: calc(100vh - 250px);" id="@gridYear"></div>
-                </div>
-            </div>
+            <div id="data-grid-quantity-plan"></div>
         </div>
     </div>
+    <script>
+        function ExportDataGrid() {
+            $("#data-grid-quantity-plan").empty();
+            var ajaxParams = {
+                url: "@Url.Action("ExportDataGrid")",
+                data: {
+                    templateCode: '@Model.TEMPLATE_CODE',
+                    year: '@Model.YEAR',
+                    version: '@Model.VERSION',
+                    orgCode: '@Model.ORG_CODE',
+                    nhomSanBay: $('#airportGroup option:selected').val(),
+                    chiNhanh: $('#provinceCode option:selected').val(),
+                },
+                htmlTarget: '#data-grid-quantity-plan',
+            };
+            Forms.LoadAjax(ajaxParams);
+        }
+        $(function () {
+            Forms.CompleteUI();
+            ExportDataGrid();
+        });
+
+    </script>
 </div>
 
-<script type="text/javascript">
-    const rawDataMonth = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
-    let columnsMonth = [
-        { id: "airport", header: [{ text: "SÂN BAY", align: "center" }, { content: "inputFilter" }], minWidth: 260 },
-        { id: "airlines", header: [{ text: "HÃNG HÀNG KHÔNG", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
-        { id: "element", header: [{ text: "KHOẢN MỤC", align: "center" }, { content: "selectFilter" }], minWidth: 185, footer: [{ text: "TỔNG CỘNG" }] },
-
-        { id: "jan", header: [{ text: "THÁNG 1", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "feb", header: [{ text: "THÁNG 2", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "mar", header: [{ text: "THÁNG 3", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "apr", header: [{ text: "THÁNG 4", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "may", header: [{ text: "THÁNG 5", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "jun", header: [{ text: "THÁNG 6", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "jul", header: [{ text: "THÁNG 7", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "aug", header: [{ text: "THÁNG 8", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "sep", header: [{ text: "THÁNG 9", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "oct", header: [{ text: "THÁNG 10", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "nov", header: [{ text: "THÁNG 11", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "dec", header: [{ text: "THÁNG 12", align: "center" }], align: "right", minWidth: 135, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "total", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "average", header: [{ text: "TRUNG BÌNH", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "des", header: [{ text: "GHI CHÚ", align: "center" }], align: "right", minWidth: 150 },
-    ];
-
-    const treeGrid = new dhx.Grid("@gridMonth", {
-        columns: columnsMonth,
-        data: rawDataMonth,
-        leftSplit: 3,
-        resizable: true,
-        keyNavigation: true,
-        selection: true,
-        autoHeight: true,
-    });
-</script>
-
-<script type="text/javascript">
-    const rawDataYear = @Html.Raw(JsonConvert.SerializeObject(dataYear, jsonSerializeSettings));
-    let columnsYear = [
-        {
-            id: "airport", header: [
-                { text: "SÂN BAY", colspan: 2, align: 'center' },
-                { text: 'MÃ SÂN BAY', align: 'center' },
-                { content: "inputFilter" }
-            ], align: "center", width: 160
-        },
-        { id: "airportName", header: ["", { text: "TÊN SÂN BAY", align: "center" }, { content: "inputFilter" }], minWidth: 260, footer: [{ text: "TỔNG CỘNG" }] },
-        {
-            id: "vna", header: [
-                { text: "HKVN", colspan: 3, align: 'center' },
-                { text: 'VNA', align: 'center' },
-            ], align: "right", width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }]
-        },
-        { id: "notVna", header: ["",{ text: "HKVN#", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "sumNd", header: ["",{ text: "CỘNG HKVN", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "sumQt", header: [{ text: "HKQT", align: "center", rowspan: 2 }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "total", header: [{ text: "TỔNG CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },       
-    ];
-
-    const treeYear = new dhx.Grid("@gridYear", {
-        columns: columnsYear,
-        data: rawDataYear,
-        resizable: true,
-        keyNavigation: true,
-        selection: true,
-        autoHeight: true,
-    });
-</script>
 
 
 

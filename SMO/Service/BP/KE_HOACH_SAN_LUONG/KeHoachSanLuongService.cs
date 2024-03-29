@@ -112,9 +112,18 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             return ShowReviewBtn(ObjDetail.TIME_YEAR);
         }
 
-        public List<ViewDataQuantityPlan> ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
+        public List<ViewDataQuantityPlan> ExportData(string templateCode, int year, int version, string orgCode, string nhomSanBay, string chiNhanh)
         {
             var result = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode && x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year).OrderBy(x => x.SanLuongProfitCenter.SAN_BAY_CODE).ThenBy(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE).ToList();
+            if (!string.IsNullOrEmpty(nhomSanBay))
+            {
+                result = result.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == nhomSanBay).ToList();
+            }
+            if (!string.IsNullOrEmpty(chiNhanh))
+            {
+                result = result.Where(x => x.SanLuongProfitCenter.SanBay.AREA_CODE == chiNhanh).ToList();
+            }
+
             var data = new List<ViewDataQuantityPlan>();
 
             foreach (var i in result)
@@ -144,10 +153,18 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             return data;
         }
 
-        public List<ViewDataQuantityPlanYear> ExportDataYear(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
+        public List<ViewDataQuantityPlanYear> ExportDataYear(string templateCode, int year, int version, string orgCode, string nhomSanBay, string chiNhanh)
         {
             var result = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode && x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year).OrderBy(x => x.SanLuongProfitCenter.SAN_BAY_CODE).ThenBy(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE).ToList();
             var data = new List<ViewDataQuantityPlanYear>();
+            if (!string.IsNullOrEmpty(nhomSanBay))
+            {
+                result = result.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == nhomSanBay).ToList();
+            }
+            if (!string.IsNullOrEmpty(chiNhanh))
+            {
+                result = result.Where(x => x.SanLuongProfitCenter.SanBay.AREA_CODE == chiNhanh).ToList();
+            }
             var lstAirports = result.GroupBy(x => x.SanLuongProfitCenter.SAN_BAY_CODE).Select(x => x.First().SanLuongProfitCenter).ToList();
 
             foreach (var i in lstAirports)

@@ -2073,6 +2073,7 @@
     <Content Include="Areas\MD\Views\SyncCost\Index.cshtml" />
     <Content Include="Areas\MD\Views\SyncCost\List.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachSanLuong\ExportData.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachSanLuong\ExportDataGrid.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
