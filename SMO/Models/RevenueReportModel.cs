@@ -35,6 +35,49 @@ namespace SMO.Models
         public IList<RevenueReportModel> Tab4 { get; set; } = new List<RevenueReportModel> { };
         public IList<RevenueReportModel> Tab5 { get; set; } = new List<RevenueReportModel> { };
 
+        public IList<RevenueReportModelSL_Tra_Nap> TabSL_TN { get; set; } = new List<RevenueReportModelSL_Tra_Nap>();
+    }
+
+    public class RevenueReportModelSL_Tra_Nap
+    {
+        public string Stt { get; set; }
+        public string Parent { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public decimal Value1ND { get; set; }
+        public decimal Value2ND { get; set; }
+        public decimal Value3ND { get; set; }
+        public decimal Value4ND { get; set; }
+        public decimal Value5ND { get; set; }
+        public decimal Value6ND { get; set; }
+        public decimal Value7ND { get; set; }
+        public decimal Value8ND { get; set; }
+        public decimal Value9ND { get; set; }
+        public decimal Value10ND { get; set; }
+        public decimal Value11ND { get; set; }
+        public decimal Value12ND { get; set; }
+        public decimal ValueSumYearND { get; set; }
+        public decimal ValueSumYearAllND { get; set; }
+
+        public decimal Value1QT { get; set; }
+        public decimal Value2QT { get; set; }
+        public decimal Value3QT { get; set; }
+        public decimal Value4QT { get; set; }
+        public decimal Value5QT { get; set; }
+        public decimal Value6QT { get; set; }
+        public decimal Value7QT { get; set; }
+        public decimal Value8QT { get; set; }
+        public decimal Value9QT { get; set; }
+        public decimal Value10QT { get; set; }
+        public decimal Value11QT { get; set; }
+        public decimal Value12QT { get; set; }
+        public decimal ValueSumYearQT { get; set; }
+        public decimal ValueSumYearAllQT { get; set; }
+        public decimal ValueSumYearAll_ND_QT { get; set; }
+
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
     }
     public class RevenueReportModel
     {

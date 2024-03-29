@@ -49,6 +49,7 @@
     <script>
         function ExportDataGrid() {
             $("#data-grid-quantity-plan").empty();
+            $("#slider").empty();
             var ajaxParams = {
                 url: "@Url.Action("ExportDataGrid")",
                 data: {

@@ -8,6 +8,7 @@
     var gridTab1 = Guid.NewGuid().ToString("N");
     var gridTab2 = Guid.NewGuid().ToString("N");
     var gridTab3 = Guid.NewGuid().ToString("N");
+    var gridTab4 = Guid.NewGuid().ToString("N");
 
     var jsonData = Model.Tab1.OrderBy(x => x.Order).Select(x => new
     {
@@ -60,6 +61,42 @@
         Value10 = x.Value10.ToStringVN(),
         IsBold = x.IsBold
     });
+
+    var jsonDataTab4 = Model.TabSL_TN.OrderBy(x => x.Order).Select(x => new
+    {
+        Id = x.Order.ToString(),
+        Parent = x.Parent,
+        Name = x.Name,
+        Code = x.Code,
+        Value1ND = x.Value1ND.ToStringVN(),
+        Value2ND = x.Value2ND.ToStringVN(),
+        Value3ND = x.Value3ND.ToStringVN(),
+        Value4ND = x.Value4ND.ToStringVN(),
+        Value5ND = x.Value5ND.ToStringVN(),
+        Value6ND = x.Value6ND.ToStringVN(),
+        Value7ND = x.Value7ND.ToStringVN(),
+        Value8ND = x.Value8ND.ToStringVN(),
+        Value9ND = x.Value9ND.ToStringVN(),
+        Value10ND = x.Value10ND.ToStringVN(),
+        Value11ND = x.Value11ND.ToStringVN(),
+        Value12ND = x.Value12ND.ToStringVN(),
+        ValueSumYearND = x.ValueSumYearND.ToStringVN(),
+        Value1QT = x.Value1QT.ToStringVN(),
+        Value2QT = x.Value2QT.ToStringVN(),
+        Value3QT = x.Value3QT.ToStringVN(),
+        Value4QT = x.Value4QT.ToStringVN(),
+        Value5QT = x.Value5QT.ToStringVN(),
+        Value6QT = x.Value6QT.ToStringVN(),
+        Value7QT = x.Value7QT.ToStringVN(),
+        Value8QT = x.Value8QT.ToStringVN(),
+        Value9QT = x.Value9QT.ToStringVN(),
+        Value10QT = x.Value10QT.ToStringVN(),
+        Value11QT = x.Value11QT.ToStringVN(),
+        Value12QT = x.Value12QT.ToStringVN(),
+        ValueSumYearQT = x.ValueSumYearQT.ToStringVN(),
+        ValueSumYearAll = x.ValueSumYearAll_ND_QT.ToStringVN(),
+        IsBold = x.IsBold
+    });
 }
 <style>
     .header-table {
@@ -69,7 +106,9 @@
     }
 
     .liNav {
-        width: 266px;
+        width: 150px;
+        position: absolute;
+        right:0;
     }
 
     .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
@@ -81,29 +120,34 @@
     }
 
     .dhx_slider{
-        display: none;
+        padding: 0;
     }
+
+    
 </style>
 
 
 <div class="load_data">
-    <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
-        <li role="presentation" class="active liNav" style="cursor: pointer;">
-            <a href="#tab1" data-toggle="tab">Sản lượng theo tháng</a>
-        </li>
-        <li role="presentation" class="liNav" style="cursor: pointer;">
-            <a data-toggle="tab" href="#tab2">Sản lượng theo chi nhánh</a>
-        </li>
-        <li role="presentation" class="liNav" style="cursor: pointer;">
-            <a data-toggle="tab" href="#tab3">Sản lượng theo sân bay</a>
-        </li>
-        <li style="right: 10px; top: 0; display: flex; align-items: center; justify-content: end; width: 100%;">
-            <span class="waves-effect btn-default btn" style="width: 7%; padding: 10px 6px; margin-right: 2px;">
-                <input type="range" min="8" max="20" value="13" onmousemove="Zoom(this.value)">
-            </span>
+    <div role="presentation" class="liNav" style="cursor: pointer">
+        <div style="display:flex; align-items:center;">
+            <div id="slider" style="width:100%;"></div>
             <span class="waves-effect btn-default btn" onclick="$('.load_data').toggleClass('full-screen');$('.table').toggleClass('full-screen-table');$('.table').toggleClass('table-screen');" title="Xem toàn màn hình">
                 <i class="material-icons" style="color: #0d6efd">fullscreen</i>
             </span>
+        </div>
+    </div>
+    <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
+        <li role="presentation" class="active" style="cursor: pointer;">
+            <a href="#tab1" data-toggle="tab">Sản lượng theo tháng</a>
+        </li>
+        <li role="presentation" class="" style="cursor: pointer;">
+            <a data-toggle="tab" href="#tab2">Sản lượng theo chi nhánh</a>
+        </li>
+        <li role="presentation" class="" style="cursor: pointer;">
+            <a data-toggle="tab" href="#tab3">Sản lượng theo sân bay</a>
+        </li>
+        <li role="presentation" class="" style="cursor: pointer;">
+            <a data-toggle="tab" href="#tab4">Sản lượng cung ứng tra nạp</a>
         </li>
     </ul>
     <div class="tab-content" style="padding-bottom:0">
@@ -113,12 +157,16 @@
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab2">
             <div style="overflow: auto; height: calc(100vh - 220px); width: 50%;" id="@gridTab2" class="table-zoom"></div>
-           
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab3">
             <div style="overflow: auto; height: calc(100vh - 220px);" id="@gridTab3" class="table-zoom"></div>
-            
+
+        </div>
+
+        <div role="tabpanel" class="tab-pane fade in active" id="tab4">
+            <div style="overflow: auto; height: calc(100vh - 220px);" id="@gridTab4" class="table-zoom"></div>
+
         </div>
     </div>
 </div>
@@ -131,6 +179,7 @@
     const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
     const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab2, jsonSerializeSettings));
     const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab3, jsonSerializeSettings));
+    const rawDataTab4 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab4, jsonSerializeSettings));
     let columns = [
         { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
         { id: "valueSumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", minWidth: 180 },
@@ -171,10 +220,44 @@
         { id: "value7", header: [{ text: "", align: "center" }, { text: "HKTN#", align: "center" }], align: "right", minWidth: 180 },
         { id: "value8", header: [{ text: "", align: "center" }, { text: "CỘNG", align: "center" }], align: "right", minWidth: 180 },
         { id: "value9", header: [{ text: "HKQT", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "value10", header: [{ text: "CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },       
+        { id: "value10", header: [{ text: "CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
 
     ]
+
+    let columnsTab4 = [
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center", colspan: 2 }, { content: "inputFilter" }], minWidth: 300 },
+        { id: "code", header: [{ text: "", align: "center" }, { content: "inputFilter" }], minWidth: 60 },
+        { id: "value1ND", header: [{ text: "BAY NỘI ĐỊA", align: "center", colspan:12 },{ text: "Tháng 1", align: "center" }], minWidth: 180 },
+        { id: "value2ND", header: [{ text: "", align: "center" },{ text: "Tháng 2", align: "center" }], minWidth: 180 },
+        { id: "value3ND", header: [{ text: "", align: "center" },{ text: "Tháng 3", align: "center" }], minWidth: 180 },
+        { id: "value4ND", header: [{ text: "", align: "center" },{ text: "Tháng 4", align: "center" }], minWidth: 180 },
+        { id: "value5ND", header: [{ text: "", align: "center" },{ text: "Tháng 5", align: "center" }], minWidth: 180 },
+        { id: "value6ND", header: [{ text: "", align: "center" },{ text: "Tháng 6", align: "center" }], minWidth: 180 },
+        { id: "value7ND", header: [{ text: "", align: "center" },{ text: "Tháng 7", align: "center" }], minWidth: 180 },
+        { id: "value8ND", header: [{ text: "", align: "center" },{ text: "Tháng 8", align: "center" }], minWidth: 180 },
+        { id: "value9ND", header: [{ text: "", align: "center" },{ text: "Tháng 9", align: "center" }], minWidth: 180 },
+        { id: "value10ND", header: [{ text: "", align: "center" },{ text: "Tháng 10", align: "center" }], minWidth: 180 },
+        { id: "value11ND", header: [{ text: "", align: "center" },{ text: "Tháng 11", align: "center" }], minWidth: 180 },
+        { id: "value12ND", header: [{ text: "", align: "center" },{ text: "Tháng 12", align: "center" }], minWidth: 180 },
+        { id: "value1QT", header: [{ text: "BAY QUỐC TẾ", align: "center", colspan:12 },{ text: "Tháng 1", align: "center" }], minWidth: 180 },
+        { id: "value2QT", header: [{ text: "", align: "center" },{ text: "Tháng 2", align: "center" }], minWidth: 180 },
+        { id: "value3QT", header: [{ text: "", align: "center" },{ text: "Tháng 3", align: "center" }], minWidth: 180 },
+        { id: "value4QT", header: [{ text: "", align: "center" },{ text: "Tháng 4", align: "center" }], minWidth: 180 },
+        { id: "value5QT", header: [{ text: "", align: "center" },{ text: "Tháng 5", align: "center" }], minWidth: 180 },
+        { id: "value6QT", header: [{ text: "", align: "center" },{ text: "Tháng 6", align: "center" }], minWidth: 180 },
+        { id: "value7QT", header: [{ text: "", align: "center" },{ text: "Tháng 7", align: "center" }], minWidth: 180 },
+        { id: "value8QT", header: [{ text: "", align: "center" },{ text: "Tháng 8", align: "center" }], minWidth: 180 },
+        { id: "value9QT", header: [{ text: "", align: "center" },{ text: "Tháng 9", align: "center" }], minWidth: 180 },
+        { id: "value10QT", header: [{ text: "", align: "center" }, { text: "Tháng 10", align: "center" }], minWidth: 180 },
+        { id: "value11QT", header: [{ text: "", align: "center" },{ text: "Tháng 11", align: "center" }], minWidth: 180 },
+        { id: "value12QT", header: [{ text: "", align: "center" },{ text: "Tháng 12", align: "center" }], minWidth: 180 },
+        { id: "valueSumYearND", header: [{ text: "Cộng NĐ", align: "center" , rowspan:2}], minWidth: 180 },
+        { id: "valueSumYearQT", header: [{ text: "Cộng QT", align: "center", rowspan:2 }], minWidth: 180 },
+        { id: "valueSumYearAll", header: [{ text: "CỘNG", align: "center", rowspan:2 }], minWidth: 180 },
+
+    ];
     const widthMap = new Map(columns.map(({ minWidth, id }) => ([id, minWidth])));
+    const widthMapTab4 = new Map(columnsTab4.map(({ minWidth, id }) => ([id, minWidth])));
     rawData.forEach((item) => {
         if (item.parent == null) {
             delete item.parent
@@ -187,6 +270,12 @@
         }
     });
     rawDataTab3.forEach((item) => {
+        if (item.parent == null) {
+            delete item.parent
+        }
+    });
+
+    rawDataTab4.forEach((item) => {
         if (item.parent == null) {
             delete item.parent
         }
@@ -218,8 +307,17 @@
     rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     data: rawDataTab3,
     });
-    const MAIN_FONT_SIZE = 14;
 
+    const treeGridTab4 = new dhx.TreeGrid("@gridTab4", {
+    columns: columnsTab4,
+    leftSplit: 1,
+    resizable: true,
+    keyNavigation: true,
+    rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    data: rawDataTab4,
+    });
+    const MAIN_FONT_SIZE = 14;
+    var FONT_SIZE_CHANGE = 14;
     const slider = new dhx.Slider("slider", {
         min: 4,
         max: 36,
@@ -228,39 +326,9 @@
         tooltip: false
     });
 
-    function Zoom(value) {
-        const fontSize = parseInt(value);
-        document.documentElement.style.setProperty("--dhx-font-size-normal", fontSize + "px");
-
-        columns = columns.map(column => {
-            return {
-                ...column,
-                minWidth: widthMap.get(column.id) * (fontSize / MAIN_FONT_SIZE) - 2,
-            };
-        });
-
-        columnsTab2 = columnsTab2.map(column => {
-            return {
-                ...column,
-                minWidth: widthMap.get(column.id) * (fontSize / MAIN_FONT_SIZE) - 2,
-            };
-        });
-
-        columnsTab3 = columnsTab3.map(column => {
-            return {
-                ...column,
-                minWidth: widthMap.get(column.id) * (fontSize / MAIN_FONT_SIZE) - 2,
-            };
-        });
-        $(".dhx_grid-cell").css("font-size", `${value}px`);
-        $(".dhx_tree-cell").css("font-size", `${value}px`);
-        $(".dhx_grid-header-cell").css("font-size", `${value}px`);
-        treeGrid.setColumns(columns);
-        treeGridTab2.setColumns(columnsTab2);
-        treeGridTab3.setColumns(columnsTab3);
-    }
 
     slider.events.on("change", value => {
+        FONT_SIZE_CHANGE = parseInt(value);
         const fontSize = parseInt(value);
         document.documentElement.style.setProperty("--dhx-font-size-normal", fontSize + "px");
 
@@ -284,12 +352,46 @@
                 minWidth: widthMap.get(column.id) * (fontSize / MAIN_FONT_SIZE) - 2,
             };
         });
+
+        columnsTab4 = columnsTab4.map(column => {
+            return {
+                ...column,
+                minWidth: widthMapTab4.get(column.id) * (fontSize / MAIN_FONT_SIZE) - 2,
+            };
+        });
+
+
         $(".dhx_grid-cell").css("font-size", `${value}px`);
         $(".dhx_tree-cell").css("font-size", `${value}px`);
         $(".dhx_grid-header-cell").css("font-size", `${value}px`);
         treeGrid.setColumns(columns);
         treeGridTab2.setColumns(columnsTab2);
         treeGridTab3.setColumns(columnsTab3);
+        treeGridTab4.setColumns(columnsTab4);
+    });
+
+    treeGrid.events.on("scroll", function (e) {
+        $(".dhx_grid-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_tree-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_grid-header-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+    });
+
+    treeGridTab2.events.on("scroll", function (e) {
+        $(".dhx_grid-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_tree-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_grid-header-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+    });
+
+    treeGridTab3.events.on("scroll", function (e) {
+        $(".dhx_grid-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_tree-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_grid-header-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+    });
+
+    treeGridTab4.events.on("scroll", function (e) {
+        $(".dhx_grid-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_tree-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
+        $(".dhx_grid-header-cell").css("font-size", `${FONT_SIZE_CHANGE}px`);
     });
 </script>
 

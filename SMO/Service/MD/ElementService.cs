@@ -304,6 +304,7 @@ namespace SMO.Service.MD
 
                 var puchaseData = UnitOfWork.Repository<PurchaseDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
 
+                var order = 0;
                 //Pre kho 1
                 foreach (var item in puchaseData)
                 {
@@ -312,7 +313,9 @@ namespace SMO.Service.MD
                     dataCalculate.Warehouse = item.WAREHOUSE_CODE;
                     dataCalculate.DeliveryConditionsCode = item.DELIVERY_CONDITIONS_CODE;
                     dataCalculate.DeliveryConditions = item.DELIVERY_CONDITIONS_CODE;
+                    dataCalculate.Order = order;
                     data.KeHoachGiaThanhData.Add(dataCalculate);
+                    order++; 
                 }
 
                 //Pre TB Kho
@@ -545,6 +548,7 @@ namespace SMO.Service.MD
                             Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             IsBold = true,
                             Order = order,
+                            Parent = "-1",
                             Level = 0
                         });
                         data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
@@ -555,6 +559,7 @@ namespace SMO.Service.MD
                             Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             IsBold = true,
                             Order = order + 1,
+                            Parent = order.ToString(),
                             Level = 1
                         });
 
@@ -574,6 +579,8 @@ namespace SMO.Service.MD
                             Value9 = value9,
                             Value11 = value11,
                             Order = order + 2,
+                            IsBold = true,
+                            Parent = (order + 1).ToString(),
                             Level = 2
                         });
 
@@ -585,6 +592,7 @@ namespace SMO.Service.MD
                             Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010" && (x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP")).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             IsBold = true,
                             Order = order + 3,
+                            Parent = (order+1).ToString(),
                             Level = 2
                         });
 
@@ -605,6 +613,7 @@ namespace SMO.Service.MD
                             Value10 = FHS_NBA ?? 0,
                             Value11 = value11,
                             Order = order + 4,
+                            Parent = (order+3).ToString(),
                             Level = 3
                         });
                         data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
@@ -624,6 +633,7 @@ namespace SMO.Service.MD
                             Value10 = FHS_TNS ?? 0,
                             Value11 = value11,
                             Order = order + 5,
+                            Parent = (order + 3).ToString(),
                             Level = 3
                         });
 
@@ -636,6 +646,7 @@ namespace SMO.Service.MD
                             Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             IsBold = true,
                             Order = order + 6,
+                            Parent = order.ToString(),
                             Level = 1
                         });
 
@@ -654,6 +665,7 @@ namespace SMO.Service.MD
                             Value8 = value8,
                             Value9 = value9,
                             Value11 = value11,
+                            Parent = (order + 6).ToString(),
                             Order = order + 7,
                             Level = 2
                         });
@@ -666,6 +678,7 @@ namespace SMO.Service.MD
                             Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && (x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP")).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             IsBold = true,
                             Order = order + 8,
+                            Parent = (order + 6).ToString(),
                             Level = 2
                         });
 
@@ -686,6 +699,7 @@ namespace SMO.Service.MD
                             Value10 = FHS_NBA ?? 0,
                             Value11 = value11,
                             Order = order + 9,
+                            Parent = (order + 8).ToString(),
                             Level = 3
                         });
                         data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
@@ -704,6 +718,7 @@ namespace SMO.Service.MD
                             Value9 = value9,
                             Value10 = FHS_TNS ?? 0,
                             Value11 = value11,
+                            Parent = (order + 8).ToString(),
                             Order = order + 10,
                             Level = 3
                         });

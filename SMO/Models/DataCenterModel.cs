@@ -26,6 +26,7 @@ namespace SMO.Models
         public string AreaCode { get; set; }
         public string DeliveryConditions { get; set; }
         public string DeliveryConditionsCode { get; set; }
+        public int Order { get; set; }
         public decimal S0001 { get; set;}
         public decimal S0002 { get; set; }
         public decimal S0003 { get; set; }
@@ -50,6 +51,8 @@ namespace SMO.Models
     {
         public string Code { get; set; }
         public string ParentCode { get; set; }
+        public string Parent { get; set; }
+
         public string Name { get; set; }
         public int Order { get; set; }
         public int Level { get; set; }
