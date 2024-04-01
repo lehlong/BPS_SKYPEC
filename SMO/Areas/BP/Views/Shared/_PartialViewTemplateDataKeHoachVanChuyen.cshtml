@@ -61,87 +61,98 @@ else
     var isHiden = isShow ? "" : "hiden_column";
     Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
     <div class="export-left-tab">
-        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-            <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
-                <tbody>
-                    <tr class="sticky-row strong" data-xls-row="header">
-                        <td class="align-center" rowspan="3" style="text-align:center">Mã</td>
-                        <td class="align-center" rowspan="3" style="text-align:center">Tuyến đường</td>
-                        <td class="align-center" rowspan="3" style="text-align:center">Sản lượng tra nạp (năm)</td>
-                        <td class="align-center" rowspan="3" style="text-align:center">Cự ly vận chuyển có hàng (Km)</td>
-                        <td class="align-center" rowspan="3" style="text-align:center">Số chuyến vận chuyển (ch/xe/ngày)</td>
-                        <td class="align-center" colspan="@colRow1" style="text-align:center">Kế hoạch sản lượng vận chuyển năm</td>
-                        <td class="align-center" colspan="2" style="text-align:center">Kế hoạch sản lượng luân chuyển năm</td>
-                    </tr>
-                    <tr class="sticky-row strong" data-xls-row="header">
-                        <td class="align-center" rowspan="2" style="text-align:center">Tấn</td>
-                        <td class="align-center" rowspan="2" style="text-align:center">M3</td>
-                        <td class="align-center" colspan="@colRow2" style="text-align:center">Trong đó</td>
-                        <td class="align-center" rowspan="2" style="text-align:center">Tấn.km</td>
-                        <td class="align-center" rowspan="2" style="text-align:center">M3.km</td>
-                    </tr>
-                    <tr class="sticky-row strong" data-xls-row="header">
-                        <td class="align-center" style="text-align:center">Tự vận trung bình</td>
-                        <td class="align-center" style="text-align:center">Tự vận cao</td>
-                        <td class="align-center" style="text-align:center">Tự vận thấp</td>
-                        <td class="align-center @isHiden" style="text-align:center">Thuê ngoài</td>
-                    </tr>
-                    @foreach (var detail in Model.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
-                    {
-                        var item = Model.Where(x => x.CENTER_CODE == detail).ToList();
-                        <tr>
-                            <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.CODE)</td>
-                            <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.NAME)</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6001").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6002").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6003").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6005").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6006").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6007").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6008").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6009").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right @isHiden">@(item.Where(x => x.CODE == "6010").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6012").Sum(x => x.Values[0]).ToStringVN())</td>
-                            <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6013").Sum(x => x.Values[0]).ToStringVN())</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active" style="cursor: pointer; left: 0;">
+                <a href="#month" title="Kế hoạch theo tháng" data-toggle="tab">Kế hoạch theo khu vực</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" style="padding-bottom:0">
+            <div role="tabpanel" class="tab-pane fade in active tab_data" id="month">
+                <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
+                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
+                        <tbody>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="align-center" rowspan="3" style="text-align:center">Mã</td>
+                                <td class="align-center" rowspan="3" style="text-align:center">Tuyến đường</td>
+                                <td class="align-center" rowspan="3" style="text-align:center">Sản lượng tra nạp (năm)</td>
+                                <td class="align-center" rowspan="3" style="text-align:center">Cự ly vận chuyển có hàng (Km)</td>
+                                <td class="align-center" rowspan="3" style="text-align:center">Số chuyến vận chuyển (ch/xe/ngày)</td>
+                                <td class="align-center" colspan="@colRow1" style="text-align:center">Kế hoạch sản lượng vận chuyển năm</td>
+                                <td class="align-center" colspan="2" style="text-align:center">Kế hoạch sản lượng luân chuyển năm</td>
+                            </tr>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="align-center" rowspan="2" style="text-align:center">Tấn</td>
+                                <td class="align-center" rowspan="2" style="text-align:center">M3</td>
+                                <td class="align-center" colspan="@colRow2" style="text-align:center">Trong đó</td>
+                                <td class="align-center" rowspan="2" style="text-align:center">Tấn.km</td>
+                                <td class="align-center" rowspan="2" style="text-align:center">M3.km</td>
+                            </tr>
+                            <tr class="sticky-row strong" data-xls-row="header">
+                                <td class="align-center" style="text-align:center">Tự vận trung bình</td>
+                                <td class="align-center" style="text-align:center">Tự vận cao</td>
+                                <td class="align-center" style="text-align:center">Tự vận thấp</td>
+                                <td class="align-center @isHiden" style="text-align:center">Thuê ngoài</td>
+                            </tr>
+                            @foreach (var detail in Model.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
+                            {
+                                var item = Model.Where(x => x.CENTER_CODE == detail).ToList();
+                                <tr>
+                                    <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.CODE)</td>
+                                    <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.NAME)</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6001").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6002").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6003").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6005").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6006").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6007").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6008").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6009").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right @isHiden">@(item.Where(x => x.CODE == "6010").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6012").Sum(x => x.Values[0]).ToStringVN())</td>
+                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6013").Sum(x => x.Values[0]).ToStringVN())</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
+            
+        </div>
 
-    <script>
-        $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
-        function mask(e) {
-            $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
-        }
-        function HandleSearch(inputElement) {
-            var value = inputElement.value.toLowerCase();
-            var table = document.getElementById("table_month");
-            var tr = table.getElementsByTagName('tr');
-            var searchColumns = [0, 1]; // Chỉ định các cột bạn muốn tìm kiếm, ở đây là cột 0 và cột 1
+        <script>
+            $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
+            function mask(e) {
+                $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+            }
+            function HandleSearch(inputElement) {
+                var value = inputElement.value.toLowerCase();
+                var table = document.getElementById("table_month");
+                var tr = table.getElementsByTagName('tr');
+                var searchColumns = [0, 1]; // Chỉ định các cột bạn muốn tìm kiếm, ở đây là cột 0 và cột 1
 
-            for (let i = 3; i < tr.length; i++) {
-                var matchFound = false;
+                for (let i = 3; i < tr.length; i++) {
+                    var matchFound = false;
 
-                for (let j = 0; j < searchColumns.length; j++) {
-                    var indexCell = searchColumns[j];
-                    var td = tr[i].getElementsByTagName('td')[indexCell];
-                    if (td) {
-                        var txtValue = td.textContent || td.innerText;
-                        if (txtValue.toLowerCase().indexOf(value) > -1) {
-                            matchFound = true;
-                            break; // Nếu đã tìm thấy kết quả, thoát khỏi vòng lặp
+                    for (let j = 0; j < searchColumns.length; j++) {
+                        var indexCell = searchColumns[j];
+                        var td = tr[i].getElementsByTagName('td')[indexCell];
+                        if (td) {
+                            var txtValue = td.textContent || td.innerText;
+                            if (txtValue.toLowerCase().indexOf(value) > -1) {
+                                matchFound = true;
+                                break; // Nếu đã tìm thấy kết quả, thoát khỏi vòng lặp
+                            }
                         }
                     }
-                }
 
-                if (matchFound) {
-                    tr[i].style.display = ''; // Hiển thị hàng nếu có kết quả khớp
-                } else {
-                    tr[i].style.display = 'none'; // Ẩn hàng nếu không có kết quả khớp
+                    if (matchFound) {
+                        tr[i].style.display = ''; // Hiển thị hàng nếu có kết quả khớp
+                    } else {
+                        tr[i].style.display = 'none'; // Ẩn hàng nếu không có kết quả khớp
+                    }
                 }
             }
+        </script>
         }
-    </script>
-}

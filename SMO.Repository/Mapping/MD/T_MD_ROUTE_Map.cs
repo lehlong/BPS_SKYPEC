@@ -18,6 +18,7 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.HE_SO_HAO_HUT).Nullable();
             Map(x => x.PARENT_LEVEL_ID).Nullable();
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
+            Map(x => x.AREA_CODE).Nullable();
         }
     }
 }

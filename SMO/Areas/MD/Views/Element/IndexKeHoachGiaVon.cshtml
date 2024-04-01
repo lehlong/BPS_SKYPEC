@@ -5,6 +5,8 @@
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var yearDefault = Convert.ToString(lstTimeYear.SelectedValue);
     var formIdExportExcel = Guid.NewGuid();
+    var numberTab = ViewBag.Slug as int?;
+    var tabActive = "#tab-" + numberTab.ToString();
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
 
@@ -19,7 +21,7 @@
             <div class="tab-content">
                 <div class="page-function">
                     <div class="page-function-button m-r-20" style="float:left">
-                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", @Model.ViewId), "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdBack", "Quay lại", "Goback()", "Alt+N", "arrow_back")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "DownloadData();", "Alt+N", "file_download")
                     </div>
 
@@ -71,6 +73,10 @@
             Forms.SubmitForm('@Model.FormId');
         }
 
+        function Goback() {
+            window.location.reload();
+        }
+
         function DownloadData() {
             var year = $('#TIME_YEAR').val();
             var area = $("#@Model.ViewId #AREA_ID").val();
@@ -78,6 +84,17 @@
             $('#@formIdExportExcel #area').val(area);
              $('#@formIdExportExcel').submit();
         }
+
+        function ActiveTab() {
+            var tabActive = '@tabActive';
+            var $aElement = $("a[href='" + tabActive + "']");
+
+            if ($aElement.length > 0) {
+                $aElement[0].click();
+            } else {
+            console.log("Không tìm thấy tab nào có href là " + tabActive);
+}
+}
 
         function GetDataKeHoachGiaVon(value) {
             $("#@Model.ViewId #divResult").empty();

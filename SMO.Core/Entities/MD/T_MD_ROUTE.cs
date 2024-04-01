@@ -15,6 +15,7 @@ namespace SMO.Core.Entities.MD
         public virtual string CODE { get; set; }
         [Required(ErrorMessage = "Trường này bắt buộc nhập", AllowEmptyStrings = false)]
         public virtual string NAME { get; set; }
+        public virtual string AREA_CODE { get; set; }
         public virtual string FIRST_POINT { get; set; }
         public virtual string FINAL_POINT { get; set; }
         public virtual decimal KM_CO_HANG { get; set; }

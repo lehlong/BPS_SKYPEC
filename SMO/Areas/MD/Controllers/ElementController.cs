@@ -36,8 +36,9 @@ namespace SMO.Areas.MD.Controllers
         }
 
         [MyValidateAntiForgeryToken]
-        public ActionResult IndexKeHoachGiaVon()
+        public ActionResult IndexKeHoachGiaVon(int? slug)
         {
+            ViewBag.Slug = slug;
             return PartialView(_service);
         }
         public ActionResult GetDataKeHoachTaiChinh(int year)

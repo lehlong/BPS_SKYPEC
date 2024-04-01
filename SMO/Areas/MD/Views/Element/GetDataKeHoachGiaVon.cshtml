@@ -45,21 +45,21 @@
         Value3 = x.Value3 == 0 ? "" : x.Value3.ToStringVN(),
         Value4 = x.Value4 == 0 ? "" : x.Value4.ToStringVN(),
         Value5 = x.Value5 == 0 ? "" : x.Value5.ToStringVN(),
-        Value6 = x.Value6 == 0 ? "" : x.Value6.ToStringVN(),
+        Value6 = x.Value6 == 0 ? "" : Math.Round(x.Value6).ToStringVN(),
         Value7 = x.Value7 == 0 ? "" : x.Value7.ToStringVN(),
         Value8 = x.Value8 == 0 ? "" : x.Value8.ToStringVN(),
         Value9 = x.Value9 == 0 ? "" : x.Value9.ToStringVN(),
         Value10 = x.Value10 == 0 ? "" : x.Value10.ToStringVN(),
         Value11 = x.Value11 == 0 ? "" : x.Value11.ToStringVN(),
-        Value12 = x.Value12 == 0 ? "" : x.Value12.ToStringVN(),
-        Value13 = x.Value13 == 0 ? "" : x.Value13.ToStringVN(),
-        Value14 = x.Value14 == 0 ? "" : x.Value14.ToStringVN(),
-        Value15 = x.Value15 == 0 ? "" : x.Value15.ToStringVN(),
-        Value16 = x.Value16 == 0 ? "" : x.Value16.ToStringVN(),
-        Value17 = x.Value17 == 0 ? "" : x.Value17.ToStringVN(),
-        Value18 = x.Value18 == 0 ? "" : x.Value18.ToStringVN(),
-        Value19 = x.Value19 == 0 ? "" : x.Value19.ToStringVN(),
-        Value20 = x.Value20 == 0 ? "" : x.Value20.ToStringVN(),
+        Value12 = x.Value12 == 0 ? "" : Math.Round(x.Value12).ToStringVN(),
+        Value13 = x.Value13 == 0 ? "" : Math.Round(x.Value13).ToStringVN(),
+        Value14 = x.Value14 == 0 ? "" : Math.Round(x.Value14).ToStringVN(),
+        Value15 = x.Value15 == 0 ? "" : Math.Round(x.Value15).ToStringVN(),
+        Value16 = x.Value16 == 0 ? "" : Math.Round(x.Value16).ToStringVN(),
+        Value17 = x.Value17 == 0 ? "" : Math.Round(x.Value17).ToStringVN(),
+        Value18 = x.Value18 == 0 ? "" : Math.Round(x.Value18).ToStringVN(),
+        Value19 = x.Value19 == 0 ? "" : Math.Round(x.Value19).ToStringVN(),
+        Value20 = x.Value20 == 0 ? "" : Math.Round(x.Value20).ToStringVN(),
     });
 }
 
@@ -89,23 +89,32 @@
         border: solid 1px #c2c2c2 !important;
         text-align: center;
     }
+
+    .liNav {
+        width: 150px;
+        position: absolute;
+        right: 0;
+    }
+
+    .dhx_slider{
+        padding:0;
+    }
 </style>
 <div class="export_data">
+    <div role="presentation" class="liNav" style="cursor: pointer">
+        <div style="display:flex; align-items:center;">
+            <div id="slider" style="width:100%;"></div>
+            <span class="waves-effect btn-default btn" onclick="$('.load_data').toggleClass('full-screen');$('.table').toggleClass('full-screen-table');$('.table').toggleClass('table-screen');" title="Xem toàn màn hình">
+                <i class="material-icons" style="color: #0d6efd">fullscreen</i>
+            </span>
+        </div>
+    </div>
     <ul class="nav nav-tabs " role="tablist" style="width: 100%; display: flex; position: relative;">
         <li role="presentation" class="active" style="width:166px; cursor: pointer;">
             <a href="#tab-1" title="Kế hoạch theo tháng" data-toggle="tab">KH Nhập nhiên liệu</a>
         </li>
         <li role="presentation" style="cursor: pointer; width:166px;">
             <a href="#tab-2" title="Kế hoạch theo tháng" data-toggle="tab">KH giá vốn</a>
-        </li>
-        <li style="right: 10px; top: 0; display: flex; align-items: center; justify-content: end; width: 100%;">
-            <span class="waves-effect btn-default btn" style="width: 7%; padding: 10px 6px; margin-right: 2px;">
-                <input type="range" min="8" max="20" value="13" onmousemove="Zoom(this.value)">
-            </span>
-
-            <span class="waves-effect btn-default btn" onclick="$('.export_data').toggleClass('full-screen');$('.table').toggleClass('full-screen-table');$('.table').toggleClass('table-screen');" title="Xem toàn màn hình">
-                <i class="material-icons" style="color: #0d6efd">fullscreen</i>
-            </span>
         </li>
     </ul>
 
@@ -115,7 +124,7 @@
         </div>
         <div role="tabpanel" class="tab-pane fade in" id="tab-2">
             <div style="height: calc(100vh - 180px); width: 100%" id="@gridId2"></div>
-           
+
         </div>
 
     </div>
@@ -123,6 +132,10 @@
 </div>
 
 <script>
+    $(function () {
+        Forms.CompleteUI();
+        ActiveTab();
+    });
     const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab1, jsonSerializeSettings));
     const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab2, jsonSerializeSettings));
     let columns = [
@@ -155,23 +168,25 @@
         { id: "value3", header: [{ text: "", align: "center" }, { text: "PRE+BH ($/TẤN)", align: "center", rowspan: 2 }], minWidth: 180 },
         { id: "value4", header: [{ text: "", align: "center" }, { text: "CIF ($/TẤN)", align: "center", rowspan: 2 }], minWidth: 180 },
         { id: "value5", header: [{ text: "", align: "center" }, { text: "THUẾ ($/TẤN)", align: "center", rowspan: 2 }], minWidth: 180 },
-        { id: "value6", header: [{ text: "", align: "center" }, { text: "CP MUA HÀNG (Đ/TẤN)", align: "center", rowspan: 2 }], minWidth: 180, type: "number", format: "#,#", },
+        { id: "value6", header: [{ text: "", align: "center" }, { text: "CP MUA HÀNG (Đ/TẤN)", align: "center", rowspan: 2 }], minWidth: 180 },
         { id: "value7", header: [{ text: "", align: "center" }, { text: "HAO HỤT ($/TẤN)", align: "center", colspan:3 }, { text: "CỘNG HH", align: "center" }], minWidth: 80 },
         { id: "value8", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "CƯ", align: "center" }], minWidth: 80 },
         { id: "value9", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "TN", align: "center" }], minWidth: 80 },
         { id: "value10", header: [{ text: "", align: "center" }, { text: "PHÍ FHS", align: "center", rowspan: 2 }], minWidth: 180 },
         { id: "value11", header: [{ text: "TỶ GIÁ", align: "center", rowspan: 3}], minWidth: 180 },
-        { id: "value12", header: [{ text: "GIÁ VỐN", align: "center", colspan: 2 }, { text: "CỘNG Đ.GIÁ (Đ/TẤN)", align: "center", rowspan: 2 }], minWidth: 180, type: "number", format: "#,#", },
-        { id: "value13", header: [{ text: "", align: "center" }, { text: "TỔNG GIÁ VỐN (TRVNĐ)", align: "center", rowspan: 2 }], minWidth: 180, type: "number", format: "#,#", },
-        { id: "value14", header: [{ text: "THÀNH TIỀN (VNĐ)", align: "center", colspan: 7 }, { text: "MOPS", align: "center", rowspan: 2 }], minWidth: 180, type: "number", format: "#,#", },
-        { id: "value15", header: [{ text: "", align: "center" }, { text: "PREMIUM & BH", align: "center", rowspan: 2 }], minWidth: 180, type: "number", format: "#,#", },
-        { id: "value16", header: [{ text: "", align: "center" }, { text: "THUẾ NK", align: "center", rowspan: 2 }], minWidth: 180, type: "number", format: "#,#", },
-        { id: "value17", header: [{ text: "", align: "center" }, { text: "DV MUA NGOÀI", align: "center", rowspan: 2 }], minWidth: 180, type: "number", format: "#,#", },
-        { id: "value18", header: [{ text: "", align: "center" }, { text: "HAO HỤT", align: "center", colspan: 2 }, { text: "HH CƯ", align: "center" }], minWidth: 180, type: "number", format: "#,#", },
-        { id: "value19", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "HH TN", align: "center" }], minWidth: 180, type: "number", format: "#,#", },
-        { id: "value20", header: [{ text: "", align: "center" }, { text: "FHS", align: "center", rowspan: 2 }], minWidth: 180, type: "number", format: "#,#", },
+        { id: "value12", header: [{ text: "GIÁ VỐN", align: "center", colspan: 2 }, { text: "CỘNG Đ.GIÁ (Đ/TẤN)", align: "center", rowspan: 2 }], minWidth: 180 },
+        { id: "value13", header: [{ text: "", align: "center" }, { text: "TỔNG GIÁ VỐN (TRVNĐ)", align: "center", rowspan: 2 }], minWidth: 180 },
+        { id: "value14", header: [{ text: "THÀNH TIỀN (VNĐ)", align: "center", colspan: 7 }, { text: "MOPS", align: "center", rowspan: 2 }], minWidth: 180 },
+        { id: "value15", header: [{ text: "", align: "center" }, { text: "PREMIUM & BH", align: "center", rowspan: 2 }], minWidth: 180 },
+        { id: "value16", header: [{ text: "", align: "center" }, { text: "THUẾ NK", align: "center", rowspan: 2 }], minWidth: 180 },
+        { id: "value17", header: [{ text: "", align: "center" }, { text: "DV MUA NGOÀI", align: "center", rowspan: 2 }], minWidth: 180 },
+        { id: "value18", header: [{ text: "", align: "center" }, { text: "HAO HỤT", align: "center", colspan: 2 }, { text: "HH CƯ", align: "center" }], minWidth: 180 },
+        { id: "value19", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "HH TN", align: "center" }], minWidth: 180 },
+        { id: "value20", header: [{ text: "", align: "center" }, { text: "FHS", align: "center", rowspan: 2 }], minWidth: 180 },
 
     ]
+    const widthMap = new Map(columns.map(({ minWidth, id }) => ([id, minWidth])));
+    const widthMapTab2 = new Map(columnsTab2.map(({ minWidth, id }) => ([id, minWidth])));
 
     rawDataTab2.forEach((item) => {
         if (item.parent == null) {
@@ -195,5 +210,45 @@
     keyNavigation: true,
     rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     data: rawDataTab2,
-});
+    });
+
+    const MAIN_FONT_SIZE = 14;
+    var FONT_SIZE_CHANGE = 14;
+    const slider = new dhx.Slider("slider", {
+        min: 4,
+        max: 36,
+        step: 1,
+        value: MAIN_FONT_SIZE,
+        tooltip: false
+    });
+
+
+    slider.events.on("change", value => {
+        FONT_SIZE_CHANGE = parseInt(value);
+        const fontSize = parseInt(value);
+        document.documentElement.style.setProperty("--dhx-font-size-normal", fontSize + "px");
+
+        columns = columns.map(column => {
+            return {
+                ...column,
+                minWidth: widthMap.get(column.id) * (fontSize / MAIN_FONT_SIZE) - 2,
+            };
+        });
+
+        columnsTab2 = columnsTab2.map(column => {
+            return {
+                ...column,
+                minWidth: widthMapTab2.get(column.id) * (fontSize / MAIN_FONT_SIZE) - 2,
+            };
+        });
+
+        
+
+
+        $(".dhx_grid-cell").css("font-size", `${value}px`);
+        $(".dhx_tree-cell").css("font-size", `${value}px`);
+        $(".dhx_grid-header-cell").css("font-size", `${value}px`);
+        treeGridTab1.setColumns(columns);
+        treeGridTab2.setColumns(columnsTab2);
+    });
 </script>

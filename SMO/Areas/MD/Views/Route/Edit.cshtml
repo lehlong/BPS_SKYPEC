@@ -88,6 +88,14 @@
                                 </div>
                             </div>
 
+                            <label>Khu vực</label>
+                            <div class="form-group">
+                                <div class="form-line">
+                                    @Html.MyDropDownListFor(m => m.ObjDetail.AREA_CODE, SelectListUtilities.GetAllArea(), new { @class = "selectpicker show-tick", @data_val = false })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ObjDetail.AREA_CODE)
+                            </div>
+
                         </div>
                     </div>
                 </div>
