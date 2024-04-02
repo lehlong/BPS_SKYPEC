@@ -104,14 +104,27 @@ namespace SMO
         {
             IUnitOfWork UnitOfWork = new NHUnitOfWork();
             var lstData = new List<Data>();
-            if (isAddBlank)
+
+            var lstOrgUser = ProfileUtilities.UserOrg.Select(x => x.ORG_CODE).ToList();
+            if (lstOrgUser.Contains("100001") || ProfileUtilities.User.ORGANIZE_CODE.Contains("100001"))
             {
-                lstData.Add(new Data() { Value = "", Text = " - " });
+                lstData.Add(new Data { Value = "CQ", Text = "CQ - Cơ quan công ty" });
             }
-            var lstDomain = UnitOfWork.Repository<AreaRepo>().GetAll();
-            foreach (var obj in lstDomain)
+            if (lstOrgUser.Contains("100002") || ProfileUtilities.User.ORGANIZE_CODE.Contains("100002"))
             {
-                lstData.Add(new Data { Value = obj.CODE, Text = obj.CODE + " - " + obj.TEXT });
+                lstData.Add(new Data { Value = "MB", Text = "MB - CN Miền Bắc" });
+            }
+            if (lstOrgUser.Contains("100003") || ProfileUtilities.User.ORGANIZE_CODE.Contains("100003"))
+            {
+                lstData.Add(new Data { Value = "MT", Text = "MT - CN Miền Trung" });
+            }
+            if (lstOrgUser.Contains("100004") || ProfileUtilities.User.ORGANIZE_CODE.Contains("100004"))
+            {
+                lstData.Add(new Data { Value = "MN", Text = "MN - CN Miền Nam" });
+            }
+            if (lstOrgUser.Contains("100005") || ProfileUtilities.User.ORGANIZE_CODE.Contains("100005"))
+            {
+                lstData.Add(new Data { Value = "VT", Text = "VT - CN Vận Tải" });
             }
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
