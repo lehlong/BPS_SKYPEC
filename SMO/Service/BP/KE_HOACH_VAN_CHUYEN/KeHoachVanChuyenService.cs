@@ -25,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-
 using static SMO.SelectListUtilities;
 
 namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
@@ -1505,6 +1504,93 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
             }
         }
 
+        public IList<T_MD_KHOAN_MUC_VAN_CHUYEN> OrderData(IList<T_MD_KHOAN_MUC_VAN_CHUYEN> dataCost)
+        {
+            try
+            {
+                var data = new List<T_MD_KHOAN_MUC_VAN_CHUYEN>();
+                var sumData = new T_MD_KHOAN_MUC_VAN_CHUYEN()
+                {
+                    CODE = "Tổng cộng",
+                    ValuesSL = dataCost.Where(x => x.CODE == "6001").Sum(x => x.Values[0]),
+                    ValuesCL = dataCost.Where(x => x.CODE == "6002").Sum(x => x.Values[0]),
+                    ValuesSC = dataCost.Where(x => x.CODE == "6003").Sum(x => x.Values[0]),
+                    ValuesT = dataCost.Where(x => x.CODE == "6005").Sum(x => x.Values[0]),
+                    ValuesM3 = dataCost.Where(x => x.CODE == "6006").Sum(x => x.Values[0]),
+                    ValuesTVTB = dataCost.Where(x => x.CODE == "6007").Sum(x => x.Values[0]),
+                    ValuesTVC = dataCost.Where(x => x.CODE == "6008").Sum(x => x.Values[0]),
+                    ValuesTVT = dataCost.Where(x => x.CODE == "6009").Sum(x => x.Values[0]),
+                    ValuesTN = dataCost.Where(x => x.CODE == "6010").Sum(x => x.Values[0]),
+                    ValuesLCT = dataCost.Where(x => x.CODE == "6012").Sum(x => x.Values[0]),
+                    ValuesLCM3 = dataCost.Where(x => x.CODE == "6013").Sum(x => x.Values[0]),
+                    C_ORDER = -1,
+                    Isbold = true,
+                };
+                data.Add(sumData);
+                var order = 0;
+                var lstArea = UnitOfWork.Repository<AreaRepo>().GetAll();
+                foreach(var areaCode in lstArea)
+                {
+                    var itemParent = new T_MD_KHOAN_MUC_VAN_CHUYEN()
+                    {
+                        CODE = areaCode.TEXT,
+                        ValuesSL = dataCost.Where(x => x.CODE == "6001" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesCL = dataCost.Where(x => x.CODE == "6002" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesSC = dataCost.Where(x => x.CODE == "6003" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesT = dataCost.Where(x => x.CODE == "6005" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesM3 = dataCost.Where(x => x.CODE == "6006" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesTVTB = dataCost.Where(x => x.CODE == "6007" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesTVC = dataCost.Where(x => x.CODE == "6008" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesTVT = dataCost.Where(x => x.CODE == "6009" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesTN = dataCost.Where(x => x.CODE == "6010" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesLCT = dataCost.Where(x => x.CODE == "6012" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        ValuesLCM3 = dataCost.Where(x => x.CODE == "6013" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                        C_ORDER = order,
+                        ParentOrder = "-1",
+                        Isbold = true
+                    };
+                    data.Add(itemParent);
+                    var parentOrder = order;
+                    order++;
+                    foreach (var detail in dataCost.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
+                    {
+                        var item = dataCost.Where(x => x.CENTER_CODE == detail && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).ToList();
+                        if(item.Count() != 0)
+                        {
+                            var itemData = new T_MD_KHOAN_MUC_VAN_CHUYEN()
+                            {
+                                CODE = item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.CODE,
+                                NAME = item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.NAME,
+                                ValuesSL = item.Where(x => x.CODE == "6001").Sum(x => x.Values[0]),
+                                ValuesCL = item.Where(x => x.CODE == "6002").Sum(x => x.Values[0]),
+                                ValuesSC = item.Where(x => x.CODE == "6003").Sum(x => x.Values[0]),
+                                ValuesT = item.Where(x => x.CODE == "6005").Sum(x => x.Values[0]),
+                                ValuesM3 = item.Where(x => x.CODE == "6006").Sum(x => x.Values[0]),
+                                ValuesTVTB = item.Where(x => x.CODE == "6007").Sum(x => x.Values[0]),
+                                ValuesTVC = item.Where(x => x.CODE == "6008").Sum(x => x.Values[0]),
+                                ValuesTVT = item.Where(x => x.CODE == "6009").Sum(x => x.Values[0]),
+                                ValuesTN = item.Where(x => x.CODE == "6010").Sum(x => x.Values[0]),
+                                ValuesLCT = item.Where(x => x.CODE == "6012").Sum(x => x.Values[0]),
+                                ValuesLCM3 = item.Where(x => x.CODE == "6013").Sum(x => x.Values[0]),
+                                C_ORDER = order,
+                                ParentOrder = parentOrder.ToString(),
+                            };
+                            data.Add(itemData);
+                            order++;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        
+                    }
+                }
+                    return data;
+            }
+            catch (Exception ex){
+                throw ex;
+            }
+        }
         public IList<T_MD_KHOAN_MUC_VAN_CHUYEN> SummaryVanChuyen(out IList<T_BP_KE_HOACH_VAN_CHUYEN_DATA> plDataOtherKhoanMucVanChuyens, string orgCode, int year, int? version)
         {
             plDataOtherKhoanMucVanChuyens = UnitOfWork.Repository<KeHoachVanChuyenDataRepo>()

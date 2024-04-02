@@ -3,14 +3,37 @@
 @using SMO.Core.Entities.MD;
 @using System.Text;
 @using SMO.Service.Class;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 
 @{
     var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_VAN_CHUYEN>;
     var costCFHeader = ViewBag.costCFHeader as T_BP_KE_HOACH_VAN_CHUYEN_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
-
+    var dataOrder = ViewBag.dataOrder as List<T_MD_KHOAN_MUC_VAN_CHUYEN>;
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var lstSanBay = SelectListUtilities.GetListSanBay();
     var org = ProfileUtilities.User.ORGANIZE_CODE;
+    var grid = Guid.NewGuid().ToString("N");
+    var jsonData = dataOrder.OrderBy(x => x.C_ORDER).Select(x => new
+    {
+        Id = x.C_ORDER.ToString(),
+        Parent = x.ParentOrder,
+        Code = x.CODE,
+        Name = x.NAME,
+        ValuesSL = x.ValuesSL.ToStringVN(),
+        ValuesCL = x.ValuesCL.ToStringVN(),
+        ValuesSC = x.ValuesSC.ToStringVN(),
+        ValuesT = x.ValuesT.ToStringVN(),
+        ValuesM3 = x.ValuesM3.ToStringVN(),
+        ValuesTVTB = x.ValuesTVTB.ToStringVN(),
+        ValuesTVC = x.ValuesTVC.ToStringVN(),
+        ValuesTVT = x.ValuesTVT.ToStringVN(),
+        ValuesTN = x.ValuesTN.ToStringVN(),
+        ValuesLCT = x.ValuesLCT.ToStringVN(),
+        ValuesLCM3 = x.ValuesLCM3.ToStringVN(),
+        IsBold = x.Isbold,
+    });
 
 }
 
@@ -35,16 +58,22 @@
         width: 100%;
         text-align: right;
     }
+
     .table-screen {
         height: calc(100vh - 162px);
-        margin-bottom:0
+        margin-bottom: 0
     }
+
     .full-screen-table {
         height: calc(100vh -100px) !important;
     }
 
-    .hiden_column{
+    .hiden_column {
         display: none;
+    }
+
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
     }
 </style>
 
@@ -69,90 +98,80 @@ else
 
         <div class="tab-content" style="padding-bottom:0">
             <div role="tabpanel" class="tab-pane fade in active tab_data" id="month">
-                <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-                    <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
-                        <tbody>
-                            <tr class="sticky-row strong" data-xls-row="header">
-                                <td class="align-center" rowspan="3" style="text-align:center">Mã</td>
-                                <td class="align-center" rowspan="3" style="text-align:center">Tuyến đường</td>
-                                <td class="align-center" rowspan="3" style="text-align:center">Sản lượng tra nạp (năm)</td>
-                                <td class="align-center" rowspan="3" style="text-align:center">Cự ly vận chuyển có hàng (Km)</td>
-                                <td class="align-center" rowspan="3" style="text-align:center">Số chuyến vận chuyển (ch/xe/ngày)</td>
-                                <td class="align-center" colspan="@colRow1" style="text-align:center">Kế hoạch sản lượng vận chuyển năm</td>
-                                <td class="align-center" colspan="2" style="text-align:center">Kế hoạch sản lượng luân chuyển năm</td>
-                            </tr>
-                            <tr class="sticky-row strong" data-xls-row="header">
-                                <td class="align-center" rowspan="2" style="text-align:center">Tấn</td>
-                                <td class="align-center" rowspan="2" style="text-align:center">M3</td>
-                                <td class="align-center" colspan="@colRow2" style="text-align:center">Trong đó</td>
-                                <td class="align-center" rowspan="2" style="text-align:center">Tấn.km</td>
-                                <td class="align-center" rowspan="2" style="text-align:center">M3.km</td>
-                            </tr>
-                            <tr class="sticky-row strong" data-xls-row="header">
-                                <td class="align-center" style="text-align:center">Tự vận trung bình</td>
-                                <td class="align-center" style="text-align:center">Tự vận cao</td>
-                                <td class="align-center" style="text-align:center">Tự vận thấp</td>
-                                <td class="align-center @isHiden" style="text-align:center">Thuê ngoài</td>
-                            </tr>
-                            @foreach (var detail in Model.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
-                            {
-                                var item = Model.Where(x => x.CENTER_CODE == detail).ToList();
-                                <tr>
-                                    <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.CODE)</td>
-                                    <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.NAME)</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6001").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6002").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6003").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6005").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6006").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6007").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6008").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6009").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right @isHiden">@(item.Where(x => x.CODE == "6010").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6012").Sum(x => x.Values[0]).ToStringVN())</td>
-                                    <td class="pre-whitespace align-right">@(item.Where(x => x.CODE == "6013").Sum(x => x.Values[0]).ToStringVN())</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                <div style="height: calc(100vh - 250px);" id="@grid"></div>
             </div>
         </div>
-            
-        </div>
 
-        <script>
-            $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
-            function mask(e) {
-                $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+    </div>
+
+    <script>
+        const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+        let columns = [
+            { id: "code", header: [{ text: "Mã", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
+            { id: "name", header: [{ text: "Tuyến đường", align: "center", rowspan: 2 }, { text: "", align: "center" },{ content: "inputFilter" }], minWidth: 180 },
+            { id: "valuesSL", header: [{ text: "Sản lượng tra nạp (năm)", align: "center", rowspan: 3 },],align: "right", minWidth: 180 },
+            { id: "valuesCL", header: [{ text: "Cự ly vận chuyển có hàng (Km)", align: "center", rowspan: 3 },], align: "right", minWidth: 180 },
+            { id: "valuesSC", header: [{ text: "Số chuyến vận chuyển (ch/xe/ngày)", align: "center", rowspan: 3 },], align: "right", minWidth: 200 },
+            { id: "valuesT", header: [{ text: "Kế hoạch sản lượng vận chuyển năm", align: "center", colspan: 6 }, { text: "Tấn", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+            { id: "valuesM3", header: [{ text: "", align: "center" }, { text: "M3", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+            { id: "valuesTVTB", header: [{ text: "", align: "center" }, { text: "Trong đó", align: "center", colspan: 4 }, { text: "Tự vận trung bình", align: "center" }], align: "right", minWidth: 180 },
+            { id: "valuesTVC", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Tự vận cao", align: "center" }], align: "right", minWidth: 180 },
+            { id: "valuesTVT", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Tự vận thấp", align: "center" }], align: "right", minWidth: 180 },
+            { id: "valuesTN", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Thuê ngoài", align: "center" }], align: "right", minWidth: 180 },
+            { id: "valuesLCT", header: [{ text: "Kế hoạch sản lượng luân chuyển năm", align: "center", colspan: 2 }, { text: "Tấn.km", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+            { id: "valuesLCM3", header: [{ text: "", align: "center" }, { text: "M3.km", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        ];
+
+        rawData.forEach((item) => {
+            if (item.parent == null) {
+                delete item.parent
             }
-            function HandleSearch(inputElement) {
-                var value = inputElement.value.toLowerCase();
-                var table = document.getElementById("table_month");
-                var tr = table.getElementsByTagName('tr');
-                var searchColumns = [0, 1]; // Chỉ định các cột bạn muốn tìm kiếm, ở đây là cột 0 và cột 1
+        });
 
-                for (let i = 3; i < tr.length; i++) {
-                    var matchFound = false;
+         const treeGrid = new dhx.TreeGrid("@grid", {
+         columns,
+         leftSplit: 1,
+         resizable: true,
+         keyNavigation: true,
+         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+         selection: true,
+         autoHeight: true,
+         data: rawData,
+         });
 
-                    for (let j = 0; j < searchColumns.length; j++) {
-                        var indexCell = searchColumns[j];
-                        var td = tr[i].getElementsByTagName('td')[indexCell];
-                        if (td) {
-                            var txtValue = td.textContent || td.innerText;
-                            if (txtValue.toLowerCase().indexOf(value) > -1) {
-                                matchFound = true;
-                                break; // Nếu đã tìm thấy kết quả, thoát khỏi vòng lặp
-                            }
+        treeGrid.closeAll();
+
+        $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
+        function mask(e) {
+            $(e).inputmask({ 'alias': 'decimal', 'groupSeparator': ',', 'digits': 3, 'autoGroup': true, 'autoUnmask': true });
+        }
+        function HandleSearch(inputElement) {
+            var value = inputElement.value.toLowerCase();
+            var table = document.getElementById("table_month");
+            var tr = table.getElementsByTagName('tr');
+            var searchColumns = [0, 1]; // Chỉ định các cột bạn muốn tìm kiếm, ở đây là cột 0 và cột 1
+
+            for (let i = 3; i < tr.length; i++) {
+                var matchFound = false;
+
+                for (let j = 0; j < searchColumns.length; j++) {
+                    var indexCell = searchColumns[j];
+                    var td = tr[i].getElementsByTagName('td')[indexCell];
+                    if (td) {
+                        var txtValue = td.textContent || td.innerText;
+                        if (txtValue.toLowerCase().indexOf(value) > -1) {
+                            matchFound = true;
+                            break; // Nếu đã tìm thấy kết quả, thoát khỏi vòng lặp
                         }
                     }
+                }
 
-                    if (matchFound) {
-                        tr[i].style.display = ''; // Hiển thị hàng nếu có kết quả khớp
-                    } else {
-                        tr[i].style.display = 'none'; // Ẩn hàng nếu không có kết quả khớp
-                    }
+                if (matchFound) {
+                    tr[i].style.display = ''; // Hiển thị hàng nếu có kết quả khớp
+                } else {
+                    tr[i].style.display = 'none'; // Ẩn hàng nếu không có kết quả khớp
                 }
             }
-        </script>
         }
+    </script>
+}

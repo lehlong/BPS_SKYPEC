@@ -13,6 +13,23 @@ namespace SMO.Core.Entities.MD
             Values = new decimal[11];
         }
 
+        public virtual decimal ValuesSL { get; set; }
+        public virtual decimal ValuesCL { get; set; }
+        public virtual decimal ValuesSC { get; set; }
+        public virtual decimal ValuesT { get; set; }
+        public virtual decimal ValuesM3 { get; set; }
+        public virtual decimal ValuesTVTB { get; set; }
+        public virtual decimal ValuesTVC { get; set; }
+        public virtual decimal ValuesTVT { get; set; }
+        public virtual decimal ValuesTN { get; set; }
+        public virtual decimal ValuesLCT { get; set; }
+        public virtual decimal ValuesLCM3 { get; set; }
+        public virtual string ParentOrder { get; set; }
+        public virtual bool Isbold { get; set; }
+
+
+
+
         public virtual object Clone()
         {
             return MemberwiseClone();

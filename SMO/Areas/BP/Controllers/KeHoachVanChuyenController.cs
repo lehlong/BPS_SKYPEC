@@ -97,6 +97,8 @@ namespace SMO.Areas.BP.Controllers
             {
                 ViewBag.detailCostElements = detailCostElements;
             }
+            var dataOrder = _service.OrderData(dataCost);
+            ViewBag.dataOrder = dataOrder;
             ViewBag.costCFHeader = _service.GetHeader(model);
             model.IS_DRILL_DOWN = isDrillDownApply;
             model.EXCHANGE_RATE = 12;

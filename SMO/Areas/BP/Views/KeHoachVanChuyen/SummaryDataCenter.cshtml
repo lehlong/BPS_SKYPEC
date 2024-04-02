@@ -8,6 +8,7 @@
     var viewId = Guid.NewGuid().ToString();
     var revenuePLHeader = ViewBag.revenuePLHeader as T_BP_KE_HOACH_VAN_CHUYEN_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
+    var dataOrder = ViewBag.dataOrder as List<T_MD_KHOAN_MUC_VAN_CHUYEN>;
 }
 @if (Model == null || Model.Count == 1)
 {
@@ -19,6 +20,7 @@
     // view template data
     ViewBag.revenuePLHeader = revenuePLHeader;
     ViewBag.dataCenterModel = dataCenterModel;
+    ViewBag.orderData = dataOrder;
 
     Html.RenderPartial("_PartialViewTemplateDataKeHoachVanChuyen", Model);
 }
