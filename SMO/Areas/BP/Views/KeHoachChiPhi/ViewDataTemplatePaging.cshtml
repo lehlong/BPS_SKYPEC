@@ -79,12 +79,12 @@
                 { text: "KẾ HOẠCH CHI TIẾT", colspan: rawData[0].lstCenter.length * 2 + 3, align: 'center' },
                 { text: "SỐ LƯỢNG", colspan: rawData[0].lstCenter.length, align: 'center' },
                 { text: idCol0, align: 'center' }
-            ], align: 'right', width: 150, type: "number", format: "#,#",
+            ], align: 'right', width: 80, type: "number", format: "#,#",
         },
     );
     for (var i = 1; i < rawData[0].lstCenter.length; i++) {
         var idCol = rawData[0].lstCenter[i].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[i].SAN_BAY_CODE : rawData[0].lstCenter[i]._implementation.SAN_BAY_CODE;
-        columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#,#", });
+        columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 80, type: "number", format: "#,#", });
     };
 
     columns.push(
@@ -153,6 +153,8 @@
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         data: jsonData,
     });
+
+    treeGrid.collapseAll();
 
     treeGrid.events.on("cellClick", function (row, column) {
         if (row.isBold) return;

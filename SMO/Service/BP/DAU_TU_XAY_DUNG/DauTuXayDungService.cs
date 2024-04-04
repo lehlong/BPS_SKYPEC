@@ -4246,6 +4246,55 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             return lstProject;
         }
 
+        public void GenerateData(ref MemoryStream outFileStream, string path, ViewDataCenterModel model, List<T_BP_DAU_TU_XAY_DUNG_DATA> lstData, List<T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER> lstProject)
+        {
+            //Mở file Template
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook templateWorkbook;
+            templateWorkbook = new XSSFWorkbook(fs);
+            templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
+            fs.Close();
+            ISheet sheet = templateWorkbook.GetSheetAt(0);
+
+            //Số hàng và số cột hiện tại
+            int startRow = 7;
+            int NUM_CELL = 11;
+
+            //Style cần dùng
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.WrapText = true;
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
+            styleCellNumber.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleCellNumber.WrapText = true;
+
+            foreach (var detail in lstProject.Where(x => x.CODE != null).Select(x => x.CODE).Distinct())
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                var item = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == detail).ToList();
+                rowCur.Cells[0].SetCellValue(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE);
+                rowCur.Cells[1].SetCellValue(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.NAME);
+                rowCur.Cells[2].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE)?.ToStringVN());
+                rowCur.Cells[3].SetCellValue(item.FirstOrDefault()?.EQUITY_SOURCES);
+                rowCur.Cells[4].SetCellValue(item.FirstOrDefault()?.PROCESS);
+                rowCur.Cells[5].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4010").Sum(x => x.VALUE)?.ToStringVN());
+                rowCur.Cells[6].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE)?.ToStringVN());
+                rowCur.Cells[7].SetCellValue(item.FirstOrDefault(x => x.KHOAN_MUC_DAU_TU_CODE == "4012")?.TDTK);
+                rowCur.Cells[8].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4020").Sum(x => x.VALUE)?.ToStringVN());
+                rowCur.Cells[9].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4021").Sum(x => x.VALUE)?.ToStringVN());
+                rowCur.Cells[10].SetCellValue(item.FirstOrDefault()?.DESCRIPTION);
+                for (int i = 0; i < NUM_CELL; i++)
+                {
+                    rowCur.Cells[i].CellStyle = styleCellNumber;
+                }
+            }
+            
+            templateWorkbook.Write(outFileStream);
+        }
         
     }
 }

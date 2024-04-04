@@ -774,7 +774,10 @@ namespace SMO.Service.MD
                             // Giá thuế nhập khẩu
                             var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == tnkCode).VALUE;
                             // Giá mops
-                            var priceMops = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "18").VALUE;
+                            var pricePlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
+                            var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
+                            var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
+                            var priceMops = pricePlat * priceTG * priceHSQD;
                             for (var i = 0; i < sanBayGroup.Count(); i++)
                             {
                                 var sanBayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().FirstOrDefault(x => x.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE).CODE;
@@ -830,7 +833,10 @@ namespace SMO.Service.MD
                             // Giá thuế nhập khẩu
                             var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == tnkCode).VALUE;
                             // Giá mops
-                            var priceMops = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "18").VALUE;
+                            var pricePlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
+                            var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
+                            var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
+                            var priceMops = pricePlat * priceTG * priceHSQD;
                             for (var i = 0; i < sanBayFHS.Count(); i++)
                             {
                                 var sanBayCode = sanBayFHS[i].CODE;
@@ -883,7 +889,10 @@ namespace SMO.Service.MD
                         {
                             //Lấy giá
                             // Giá mops
-                            var priceMops = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "18").VALUE;
+                            var pricePlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
+                            var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
+                            var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
+                            var priceMops = pricePlat * priceTG * priceHSQD;
                             for (var i = 0; i < sanBayGroup.Count(); i++)
                             {
                                 var sanBayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().FirstOrDefault(x => x.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE).CODE;
@@ -932,9 +941,12 @@ namespace SMO.Service.MD
                         lock (lockObject)
                         {
                             //Lấy giá
-                           
+
                             // Giá mops
-                            var priceMops = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "18").VALUE;
+                            var pricePlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
+                            var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
+                            var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
+                            var priceMops = pricePlat * priceTG * priceHSQD;
                             for (var i = 0; i < sanBayFHS.Count(); i++)
                             {
                                 var sanBayCode = sanBayFHS[i].CODE;

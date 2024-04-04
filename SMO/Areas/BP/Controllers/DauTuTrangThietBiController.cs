@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Core.Entities.MD;
@@ -202,6 +203,20 @@ namespace SMO.Areas.BP.Controllers
                 SMOUtilities.GetMessage("1005", _service, result);
             }
             return result.ToJsonResult();
+        }
+
+        public FileContentResult DownloadData(string modelJson)
+        {
+            var model = JsonConvert.DeserializeObject<ViewDataCenterModel>(modelJson);
+            var template = _service.GetTemplate(model.TEMPLATE_CODE);
+            var lstData = _service.GetProject(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
+            var lstProject = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).ToList();
+            MemoryStream outFileStream = new MemoryStream();
+            var fileName = "Dữ liệu kế hoạch đầu tư xây dựng";
+            var templateExcel = "Template_DauTuTrangThietBi.xlsx";
+            string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
+            _service.GenerateData(ref outFileStream, path, model, lstData, lstProject);
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
     }
 }

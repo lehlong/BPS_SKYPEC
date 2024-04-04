@@ -123,6 +123,10 @@
         padding: 0;
     }
 
+    .dhx_header-wrapper {
+        z-index: 1;
+    }
+
     
 </style>
 
@@ -226,33 +230,33 @@
 
     let columnsTab4 = [
         { id: "name", header: [{ text: "CHỈ TIÊU", align: "center"}, { content: "inputFilter" }], minWidth: 300 },
-        { id: "value1ND", header: [{ text: "BAY NỘI ĐỊA", align: "center", colspan:12 },{ text: "Tháng 1", align: "center" }], minWidth: 180 },
-        { id: "value2ND", header: [{ text: "", align: "center" },{ text: "Tháng 2", align: "center" }], minWidth: 180 },
-        { id: "value3ND", header: [{ text: "", align: "center" },{ text: "Tháng 3", align: "center" }], minWidth: 180 },
-        { id: "value4ND", header: [{ text: "", align: "center" },{ text: "Tháng 4", align: "center" }], minWidth: 180 },
-        { id: "value5ND", header: [{ text: "", align: "center" },{ text: "Tháng 5", align: "center" }], minWidth: 180 },
-        { id: "value6ND", header: [{ text: "", align: "center" },{ text: "Tháng 6", align: "center" }], minWidth: 180 },
-        { id: "value7ND", header: [{ text: "", align: "center" },{ text: "Tháng 7", align: "center" }], minWidth: 180 },
-        { id: "value8ND", header: [{ text: "", align: "center" },{ text: "Tháng 8", align: "center" }], minWidth: 180 },
-        { id: "value9ND", header: [{ text: "", align: "center" },{ text: "Tháng 9", align: "center" }], minWidth: 180 },
-        { id: "value10ND", header: [{ text: "", align: "center" },{ text: "Tháng 10", align: "center" }], minWidth: 180 },
-        { id: "value11ND", header: [{ text: "", align: "center" },{ text: "Tháng 11", align: "center" }], minWidth: 180 },
-        { id: "value12ND", header: [{ text: "", align: "center" },{ text: "Tháng 12", align: "center" }], minWidth: 180 },
-        { id: "value1QT", header: [{ text: "BAY QUỐC TẾ", align: "center", colspan:12 },{ text: "Tháng 1", align: "center" }], minWidth: 180 },
-        { id: "value2QT", header: [{ text: "", align: "center" },{ text: "Tháng 2", align: "center" }], minWidth: 180 },
-        { id: "value3QT", header: [{ text: "", align: "center" },{ text: "Tháng 3", align: "center" }], minWidth: 180 },
-        { id: "value4QT", header: [{ text: "", align: "center" },{ text: "Tháng 4", align: "center" }], minWidth: 180 },
-        { id: "value5QT", header: [{ text: "", align: "center" },{ text: "Tháng 5", align: "center" }], minWidth: 180 },
-        { id: "value6QT", header: [{ text: "", align: "center" },{ text: "Tháng 6", align: "center" }], minWidth: 180 },
-        { id: "value7QT", header: [{ text: "", align: "center" },{ text: "Tháng 7", align: "center" }], minWidth: 180 },
-        { id: "value8QT", header: [{ text: "", align: "center" },{ text: "Tháng 8", align: "center" }], minWidth: 180 },
-        { id: "value9QT", header: [{ text: "", align: "center" },{ text: "Tháng 9", align: "center" }], minWidth: 180 },
-        { id: "value10QT", header: [{ text: "", align: "center" }, { text: "Tháng 10", align: "center" }], minWidth: 180 },
-        { id: "value11QT", header: [{ text: "", align: "center" },{ text: "Tháng 11", align: "center" }], minWidth: 180 },
-        { id: "value12QT", header: [{ text: "", align: "center" },{ text: "Tháng 12", align: "center" }], minWidth: 180 },
-        { id: "valueSumYearND", header: [{ text: "CỘNG NĐ", align: "center" , rowspan:2}], minWidth: 180 },
-        { id: "valueSumYearQT", header: [{ text: "CỘNG QT", align: "center", rowspan:2 }], minWidth: 180 },
-        { id: "valueSumYearAll", header: [{ text: "CỘNG", align: "center", rowspan:2 }], minWidth: 180 },
+        { id: "value1ND", header: [{ text: "BAY NỘI ĐỊA", align: "center", colspan: 12 }, { text: "Tháng 1", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value2ND", header: [{ text: "", align: "center" }, { text: "Tháng 2", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value3ND", header: [{ text: "", align: "center" }, { text: "Tháng 3", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value4ND", header: [{ text: "", align: "center" }, { text: "Tháng 4", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value5ND", header: [{ text: "", align: "center" }, { text: "Tháng 5", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value6ND", header: [{ text: "", align: "center" }, { text: "Tháng 6", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value7ND", header: [{ text: "", align: "center" }, { text: "Tháng 7", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value8ND", header: [{ text: "", align: "center" }, { text: "Tháng 8", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value9ND", header: [{ text: "", align: "center" }, { text: "Tháng 9", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value10ND", header: [{ text: "", align: "center" }, { text: "Tháng 10", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value11ND", header: [{ text: "", align: "center" }, { text: "Tháng 11", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value12ND", header: [{ text: "", align: "center" }, { text: "Tháng 12", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value1QT", header: [{ text: "BAY QUỐC TẾ", align: "center", colspan: 12 }, { text: "Tháng 1", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value2QT", header: [{ text: "", align: "center" }, { text: "Tháng 2", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value3QT", header: [{ text: "", align: "center" }, { text: "Tháng 3", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value4QT", header: [{ text: "", align: "center" }, { text: "Tháng 4", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value5QT", header: [{ text: "", align: "center" }, { text: "Tháng 5", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value6QT", header: [{ text: "", align: "center" }, { text: "Tháng 6", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value7QT", header: [{ text: "", align: "center" }, { text: "Tháng 7", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value8QT", header: [{ text: "", align: "center" }, { text: "Tháng 8", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value9QT", header: [{ text: "", align: "center" }, { text: "Tháng 9", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value10QT", header: [{ text: "", align: "center" }, { text: "Tháng 10", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value11QT", header: [{ text: "", align: "center" }, { text: "Tháng 11", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value12QT", header: [{ text: "", align: "center" }, { text: "Tháng 12", align: "center" }], align: "right", minWidth: 180 },
+        { id: "valueSumYearND", header: [{ text: "CỘNG NĐ", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "valueSumYearQT", header: [{ text: "CỘNG QT", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "valueSumYearAll", header: [{ text: "CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
 
     ];
     const widthMap = new Map(columns.map(({ minWidth, id }) => ([id, minWidth])));

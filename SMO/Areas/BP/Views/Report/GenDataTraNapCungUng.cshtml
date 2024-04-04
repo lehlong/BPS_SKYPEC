@@ -11,18 +11,18 @@
         Id = x.Order.ToString(),
         Parent = x.Parent.ToString(),
         Name = x.Name,
-        Value1 = x.ValueSL.ToStringVN(),
-        Value2 = x.ValueDG.ToStringVN(),
-        Value3 = x.ValueMOPS.ToStringVN(),
-        Value4 = x.ValueDTTNK.ToStringVN(),
-        Value5 = x.ValueD.ToStringVN(),
-        Value6 = x.ValueFH.ToStringVN(),
-        Value7 = x.ValueThue.ToStringVN(),
-        Value8 = x.ValueDT.ToStringVN(),
-        Value9 = x.ValueDTMOPS.ToStringVN(),
-        Value10 = x.ValueDTTNK.ToStringVN(),
-        Value11 = x.ValueDTD.ToStringVN(),
-        Value12 = x.ValueDTFH.ToStringVN(),
+        Value1 = Math.Round(x.ValueSL).ToStringVN(),
+        Value2 = Math.Round(x.ValueDG).ToStringVN(),
+        Value3 = Math.Round(x.ValueMOPS).ToStringVN(),
+        Value4 = Math.Round(x.ValueDTTNK).ToStringVN(),
+        Value5 = Math.Round(x.ValueD).ToStringVN(),
+        Value6 = Math.Round(x.ValueFH).ToStringVN(),
+        Value7 = Math.Round(x.ValueThue).ToStringVN(),
+        Value8 = Math.Round(x.ValueDT).ToStringVN(),
+        Value9 = Math.Round(x.ValueDTMOPS).ToStringVN(),
+        Value10 = Math.Round(x.ValueDTTNK).ToStringVN(),
+        Value11 = Math.Round(x.ValueDTD).ToStringVN(),
+        Value12 = Math.Round(x.ValueDTFH).ToStringVN(),
         IsBold = x.IsBold
     });
 
@@ -34,6 +34,10 @@
 
     .grid .dhx_grid-cell {
         word-break: break-word
+    }
+
+    .dhx_header-wrapper {
+        z-index: 1;
     }
 </style>
 
