@@ -12,6 +12,7 @@
     var dataTab2 = ViewBag.DataTab2 as List<ViewDataRevenuePlan>;
     var dataTab3 = ViewBag.DataTab3 as List<ViewDataRevenuePlan>;
     var dataTab4 = ViewBag.DataTab4 as List<ViewDataRevenuePlan>;
+    var formIdExportExcel = Guid.NewGuid();
 }
 <style>
     .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
@@ -56,7 +57,14 @@
     </div>
 </div>
 
-
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
+        @Html.Hidden("TreedataTab1")
+        @Html.Hidden("TreedataTab2")
+        @Html.Hidden("TreedataTab3")
+        @Html.Hidden("TreedataTab4")
+    </form>
+</div>
 <script type="text/javascript">
 
     //Init Data Month...
@@ -168,8 +176,16 @@
     });
 
     function DownloadDataQuantityPlan() {
-        
-    }
+    var TreedataTab1 = JSON.stringify(treeGrid.data.serialize());
+    var TreedataTab2 = JSON.stringify(gridTab2.data.serialize());
+    var TreedataTab3 = JSON.stringify(gridTab3.data.serialize());
+    var TreedataTab4 = JSON.stringify(gridTab4.data.serialize());
+    $('#@formIdExportExcel #TreedataTab1').val(TreedataTab1);
+    $('#@formIdExportExcel #TreedataTab2').val(TreedataTab2);
+    $('#@formIdExportExcel #TreedataTab3').val(TreedataTab3);
+    $('#@formIdExportExcel #TreedataTab4').val(TreedataTab4);
+    $('#@formIdExportExcel').submit();
+}
 
 </script>
 

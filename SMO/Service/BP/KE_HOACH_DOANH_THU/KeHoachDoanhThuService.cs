@@ -1,5 +1,6 @@
 ﻿using Hangfire.Annotations;
 using Microsoft.Ajax.Utilities;
+using NHibernate.Criterion;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -4576,6 +4577,225 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
         }
 
         #endregion
+
+        public void ExportExcelGridData(ref MemoryStream outFileStream, IList<ViewDataQuantityPlan> lstDataTab1, IList<ViewDataRevenuePlan> lstDataTab2, IList<ViewDataRevenuePlan> lstDataTab3, IList<ViewDataRevenuePlan> lstDataTab4, string path)
+        {
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook templateWorkbook;
+            templateWorkbook = new XSSFWorkbook(fs);
+            templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachSanLuong));
+            fs.Close();
+            ISheet sheetTab1 = templateWorkbook.GetSheetAt(0);
+            var startRow = 8;
+            var NUM_CELL = 18;
+            InsertDataTab1(templateWorkbook, sheetTab1, lstDataTab1, startRow, NUM_CELL);
+            ISheet sheetTab2 = templateWorkbook.GetSheetAt(1);
+            var NUM_CELLTab = 10;
+            InsertDataTab2(templateWorkbook, sheetTab2, lstDataTab2, startRow, NUM_CELLTab);
+            ISheet sheetTab3 = templateWorkbook.GetSheetAt(2);
+
+            InsertDataTab2(templateWorkbook, sheetTab3, lstDataTab3, startRow, NUM_CELLTab);
+            ISheet sheetTab4 = templateWorkbook.GetSheetAt(3);
+
+            InsertDataTab2(templateWorkbook, sheetTab4, lstDataTab4, startRow, NUM_CELLTab);
+
+            templateWorkbook.Write(outFileStream);
+        }
+
+        public void InsertDataTab1(IWorkbook templateWorkbook, ISheet sheet, IList<ViewDataQuantityPlan> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            var item = new ViewDataQuantityPlan
+            {
+                Element = "Tổng cộng",
+                Jan = dataDetails.Sum(x => x.Jan),
+                Feb = dataDetails.Sum(x => x.Feb),
+                Mar = dataDetails.Sum(x => x.Mar),
+                Apr = dataDetails.Sum(x => x.Apr),
+                May = dataDetails.Sum(x => x.May),
+                Jun = dataDetails.Sum(x => x.Jun),
+                Jul = dataDetails.Sum(x => x.Jul),
+                Aug = dataDetails.Sum(x => x.Aug),
+                Sep = dataDetails.Sum(x => x.Sep),
+                Oct = dataDetails.Sum(x => x.Oct),
+                Nov = dataDetails.Sum(x => x.Nov),
+                Dec = dataDetails.Sum(x => x.Dec),
+                Total = dataDetails.Sum(x => x.Total),
+                Average = dataDetails.Sum(x => x.Average),
+            };
+            IRow rowCurSum = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+            rowCurSum.Cells[2].SetCellValue(item.Element);
+            rowCurSum.Cells[3].SetCellValue((double)item.Jan);
+            rowCurSum.Cells[4].SetCellValue((double)item.Feb);
+            rowCurSum.Cells[5].SetCellValue((double)item.Mar);
+            rowCurSum.Cells[6].SetCellValue((double)item.Apr);
+            rowCurSum.Cells[7].SetCellValue((double)item.May);
+            rowCurSum.Cells[8].SetCellValue((double)item.Jun);
+            rowCurSum.Cells[9].SetCellValue((double)item.Jul);
+            rowCurSum.Cells[10].SetCellValue((double)item.Aug);
+            rowCurSum.Cells[11].SetCellValue((double)item.Sep);
+            rowCurSum.Cells[12].SetCellValue((double)item.Oct);
+            rowCurSum.Cells[13].SetCellValue((double)item.Nov);
+            rowCurSum.Cells[14].SetCellValue((double)item.Dec);
+            rowCurSum.Cells[15].SetCellValue((double)item.Total);
+            rowCurSum.Cells[16].SetCellValue(Math.Round((double)item.Average));
+            rowCurSum.Cells[17].SetCellValue(item.Des);
+            for (int i = 0; i < 18; i++)
+            {
+                if (i == 2 || i == 0 || i == 1)
+                {
+                    rowCurSum.Cells[i].CellStyle = styleCellBold;
+                    rowCurSum.Cells[i].CellStyle.SetFont(fontBold);
+                }
+                else
+                {
+                    rowCurSum.Cells[i].CellStyle = styleBodySum;
+                    rowCurSum.Cells[i].CellStyle.SetFont(fontBold);
+                }
+
+            }
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                var dataRow = dataDetails[i];
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataRow.Airport);
+                rowCur.Cells[1].SetCellValue(dataRow.Airlines);
+                rowCur.Cells[2].SetCellValue(dataRow.Element);
+                rowCur.Cells[3].SetCellValue((double)dataRow.Jan);
+                rowCur.Cells[4].SetCellValue((double)dataRow.Feb);
+                rowCur.Cells[5].SetCellValue((double)dataRow.Mar);
+                rowCur.Cells[6].SetCellValue((double)dataRow.Apr);
+                rowCur.Cells[7].SetCellValue((double)dataRow.May);
+                rowCur.Cells[8].SetCellValue((double)dataRow.Jun);
+                rowCur.Cells[9].SetCellValue((double)dataRow.Jul);
+                rowCur.Cells[10].SetCellValue((double)dataRow.Aug);
+                rowCur.Cells[11].SetCellValue((double)dataRow.Sep);
+                rowCur.Cells[12].SetCellValue((double)dataRow.Oct);
+                rowCur.Cells[13].SetCellValue((double)dataRow.Nov);
+                rowCur.Cells[14].SetCellValue((double)dataRow.Dec);
+                rowCur.Cells[15].SetCellValue((double)dataRow.Total);
+                rowCur.Cells[16].SetCellValue(Math.Round((double)dataRow.Average));
+                rowCur.Cells[17].SetCellValue(dataRow.Des);
+
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (j == 0 || j == 1 || j == 2)
+                    {
+                        rowCur.Cells[j].CellStyle = styleName;
+                    }
+                    else
+                    {
+                        rowCur.Cells[j].CellStyle = styleBody;
+                    }
+                }
+            }
+        }
+
+        public void InsertDataTab2(IWorkbook templateWorkbook, ISheet sheet, IList<ViewDataRevenuePlan> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            var item = new ViewDataRevenuePlan
+            {
+                Airport = "Tổng cộng",
+                Vn = dataDetails.Sum(x=> x.Vn),
+                Ov = dataDetails.Sum(x=> x.Ov),
+                Bl = dataDetails.Sum(x=> x.Bl),
+                Vj = dataDetails.Sum(x=> x.Vj),
+                Qh = dataDetails.Sum(x=> x.Qh),
+                Vu = dataDetails.Sum(x=> x.Vu),
+                Other = dataDetails.Sum(x=> x.Other),
+                Nn = dataDetails.Sum(x=> x.Nn),
+                Total = dataDetails.Sum(x=> x.Total),
+
+
+            };
+            IRow rowCurSum = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+            rowCurSum.Cells[0].SetCellValue(item.Airport);
+            rowCurSum.Cells[1].SetCellValue((double)item.Vn);
+            rowCurSum.Cells[2].SetCellValue((double)item.Ov);
+            rowCurSum.Cells[3].SetCellValue((double)item.Bl);
+            rowCurSum.Cells[4].SetCellValue((double)item.Vj);
+            rowCurSum.Cells[5].SetCellValue((double)item.Qh);
+            rowCurSum.Cells[6].SetCellValue((double)item.Vu);
+            rowCurSum.Cells[7].SetCellValue((double)item.Other);
+            rowCurSum.Cells[7].SetCellValue((double)item.Nn);
+            rowCurSum.Cells[9].SetCellValue((double)item.Total);
+
+
+            for (int i = 0; i < 10; i++)
+            {
+                if (i == 0)
+                {
+                    rowCurSum.Cells[i].CellStyle = styleCellBold;
+                    rowCurSum.Cells[i].CellStyle.SetFont(fontBold);
+                }
+                else
+                {
+                    rowCurSum.Cells[i].CellStyle = styleBodySum;
+                    rowCurSum.Cells[i].CellStyle.SetFont(fontBold);
+                }
+
+            }
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                var dataRow = dataDetails[i];
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataRow.Airport);
+                rowCur.Cells[1].SetCellValue((double)dataRow.Vn);
+                rowCur.Cells[2].SetCellValue((double)dataRow.Ov);
+                rowCur.Cells[3].SetCellValue((double)dataRow.Bl);
+                rowCur.Cells[4].SetCellValue((double)dataRow.Vj);
+                rowCur.Cells[5].SetCellValue((double)dataRow.Qh);
+                rowCur.Cells[6].SetCellValue((double)dataRow.Vu);
+                rowCur.Cells[7].SetCellValue((double)dataRow.Other);
+                rowCur.Cells[7].SetCellValue((double)dataRow.Nn);
+                rowCur.Cells[9].SetCellValue((double)dataRow.Total);
+
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (j == 0)
+                    {
+                        rowCur.Cells[j].CellStyle = styleName;
+                    }
+                    else
+                    {
+                        rowCur.Cells[j].CellStyle = styleBody;
+                    }
+                }
+            }
+        }
 
         #region Export excel from data center view
         public override void GenerateExportExcel(ref MemoryStream outFileStream, dynamic table, string path, int year, string centerCode, int? version, string templateId, string unit, decimal exchangeRate)

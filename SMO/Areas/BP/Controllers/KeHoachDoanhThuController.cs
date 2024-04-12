@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_DOANH_THU;
 using SMO.Core.Entities.MD;
@@ -6,6 +7,7 @@ using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.KE_HOACH_DOANH_THU;
 using SMO.Service.BP;
 using SMO.Service.BP.KE_HOACH_DOANH_THU;
+using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.Class;
 
 using System;
@@ -255,6 +257,21 @@ namespace SMO.Areas.BP.Controllers
             var lstVersions = _service.GetVersionsNumberDT(orgCode, templateId, year, kichBan, phienBan, sanbay,hanghangkhong, area, nhomsanbay);
 
             return Json(lstVersions, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public FileContentResult ExportExcelGridData(string TreedataTab1, string TreedataTab2, string TreedataTab3 , string TreedataTab4)
+        {
+            var dataTab1 = JsonConvert.DeserializeObject<List<ViewDataQuantityPlan>>(TreedataTab1);
+            var dataTab2 = JsonConvert.DeserializeObject<List<ViewDataRevenuePlan>>(TreedataTab2);
+            var dataTab3 = JsonConvert.DeserializeObject<List<ViewDataRevenuePlan>>(TreedataTab3);
+            var dataTab4 = JsonConvert.DeserializeObject<List<ViewDataRevenuePlan>>(TreedataTab4);
+
+            MemoryStream outFileStream = new MemoryStream();
+            var path = Server.MapPath("~/TemplateExcel/" + "Template_Export_Doanh_Thu.xlsx");
+            _service.ExportExcelGridData(ref outFileStream, dataTab1, dataTab2, dataTab3, dataTab4, path);
+            var fileName = "Dữ_liệu_kế_hoạch_doanh_thu";
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
     }
 }
