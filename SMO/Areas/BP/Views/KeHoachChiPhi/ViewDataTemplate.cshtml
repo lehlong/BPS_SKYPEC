@@ -63,6 +63,8 @@
                     @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
                     @Html.MyButton("cmdDownload", "Xuất Excel", "ExportExcel();", "Alt+N", "download")
                     @Html.MyButton("cmdDownload", "Kết xuất", "LoadUpdate();", "Alt+N", "search")
+                    @Html.MyButton("cmdDownload", "Ẩn chi tiết", "HideDetailColumns();", "Alt+N", "visibility_off")
+                    @Html.MyButton("cmdDownload", "Hiện chi tiết", "ShowAllColumns();", "Alt+N", "visibility")
                     <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank" hidden></a>
                 </div>
                 <hr />
@@ -98,7 +100,9 @@
     }
 
     $(function () {
-        LoadPaging()
+        setTimeout(function () {
+            LoadPaging();
+        }, 500)
     });
 
     function onEditCell(type, sanBay, costCenter, elementCode, value) {
