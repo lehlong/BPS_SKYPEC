@@ -26,7 +26,7 @@ namespace SMO.Repository.Mapping.BP.DAU_TU_TRANG_THIET_BI
             Map(x => x.PROCESS);
             Map(x => x.EQUITY_SOURCES);
             Map(x => x.STATUS);
-
+            Map(x => x.QKH);
             References(x => x.KhoanMucDauTu).Columns("KHOAN_MUC_DAU_TU_CODE", "TIME_YEAR")
                 .Not.Insert().Not.Update();
             References(x => x.DauTuTrangThietBiProfitCenter, "DAU_TU_PROFIT_CENTER_CODE")

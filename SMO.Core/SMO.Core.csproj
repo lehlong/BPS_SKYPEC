@@ -365,6 +365,7 @@
     <Compile Include="Entities\MD\T_MD_VAN_CHUYEN_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_VEHICLE.cs" />
     <Compile Include="Entities\MD\T_MD_VENDOR.cs" />
+    <Compile Include="Entities\MD\T_MD_VOUCHER.cs" />
     <Compile Include="Entities\MD\T_MD_WAREHOUSE.cs" />
     <Compile Include="Entities\MD\T_SAP_ACTUAL_DATA.cs" />
     <Compile Include="Entities\MD\T_SAP_MD_COST_CF_ELEMENT.cs" />

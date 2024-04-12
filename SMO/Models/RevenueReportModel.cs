@@ -277,4 +277,34 @@ namespace SMO.Models
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
     }
+
+    public class ReportCompaseDTModel
+    {
+        public List<ReportCompaseDT> Tab1 { get; set; } = new List<ReportCompaseDT>();
+        public List<RevenueReportModel> Tab2 { get; set; } = new List<RevenueReportModel>();
+        public List<ReportCompaseDT> Tab3 { get; set; } = new List<ReportCompaseDT>();
+    }
+
+    public class ReportCompaseDT
+    {
+        public string Stt { get; set; }
+        public string Parent { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public decimal Value1 { get; set; }
+        public decimal Value2 { get; set; }
+        public decimal Value3 { get; set; }
+        public decimal Value4 { get; set; }
+        public decimal Value5 { get; set; }
+        public decimal Value6 { get; set; }
+        public decimal Value7 { get; set; }
+        public decimal Value8 { get; set; }
+        public decimal Value9 { get; set; }
+        public decimal Value10 { get; set; }
+        public decimal Value11 { get; set; }
+        public decimal Value12 { get; set; }
+        public decimal ValueSumYear { get; set; }
+        public bool Isbold { get; set; }
+        public int Order { get; set; }
+    }
 }

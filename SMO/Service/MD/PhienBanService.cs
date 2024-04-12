@@ -8,6 +8,8 @@ using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
+using SMO.Core.Entities.BP.KE_HOACH_DOANH_THU;
+using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
 using SMO.Core.Entities.MD;
 using SMO.Models;
 using SMO.Repository.Implement.BP.DAU_TU_NGOAI_DOANH_NGHIEP;
@@ -19,11 +21,13 @@ using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.BP.SUA_CHUA_LON;
 using SMO.Repository.Implement.BP.SUA_CHUA_THUONG_XUYEN;
 using SMO.Repository.Implement.MD;
-
+using SMO.Service.BP.KE_HOACH_DOANH_THU;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -106,6 +110,7 @@ namespace SMO.Service.MD
                 {
                     data.Add(new RevenueReportModel
                     {
+                        Code = hhk.GROUP_ITEM,
                         Name = hhk.GROUP_ITEM,
                         Value1 = dataDetails.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JAN) ?? 0,
                         Value2 = dataDetails.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_FEB) ?? 0,
@@ -296,7 +301,7 @@ namespace SMO.Service.MD
                         IsBold = true,
                         Order = order,
                         Parent = "-1",
-                        Level = 0
+                        Level = 1
                     });
                     data.Tab1.Add(new RevenueReportModel
                     {
@@ -317,7 +322,7 @@ namespace SMO.Service.MD
                         IsBold = true,
                         Order = order + 1,
                         Parent = order.ToString(),
-                        Level = 1
+                        Level = 2
                     });
 
                     for (var i = 0; i < sanBayGroup.Count(); i++)
@@ -340,7 +345,7 @@ namespace SMO.Service.MD
                             ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Order = order + 2 + i,
                             Parent = (order+1).ToString(),
-                            Level = 2
+                            Level = 3
                         });
                     }
 
@@ -364,7 +369,7 @@ namespace SMO.Service.MD
                         IsBold = true,
                         Order = order + 2 + countGroup,
                         Parent = order.ToString(),
-                        Level = 1
+                        Level = 2
                     });
 
                     for (var i = 0; i < sanBayGroup.Count(); i++)
@@ -387,7 +392,7 @@ namespace SMO.Service.MD
                             ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Order = order + 8 + i,
                             Parent = (order + 2 + countGroup).ToString(),
-                            Level = 2
+                            Level = 3
                         });
                     }
                     order += 3 + countGroup * 2;
@@ -421,7 +426,7 @@ namespace SMO.Service.MD
                         IsBold = true,
                         Order = orderTab2,
                         Parent = "-1",
-                        Level = 0
+                        Level = 1
                     });
                     data.Tab2.Add(new RevenueReportModel
                     {
@@ -433,7 +438,7 @@ namespace SMO.Service.MD
                         IsBold = true,
                         Order = orderTab2 + 1,
                         Parent = orderTab2.ToString(),
-                        Level = 1
+                        Level = 2
                     });
 
                     for (var i = 0; i < sanBayGroup.Count(); i++)
@@ -447,7 +452,7 @@ namespace SMO.Service.MD
                             ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Order = orderTab2 + 2 + i,
                             Parent = (orderTab2 + 1).ToString(),
-                            Level = 2
+                            Level = 3
                         });
                     }
 
@@ -462,7 +467,7 @@ namespace SMO.Service.MD
                         IsBold = true,
                         Order = orderTab2 + 2 + countGroup,
                         Parent = orderTab2.ToString(),
-                        Level = 1
+                        Level = 2
                     });
 
                     for (var i = 0; i < sanBayGroup.Count(); i++)
@@ -476,7 +481,7 @@ namespace SMO.Service.MD
                             ValueSumYear = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Order = orderTab2 + 8 + i,
                             Parent = (orderTab2 + 2 + countGroup).ToString(),
-                            Level = 2
+                            Level = 3
                         });
                     }
                     orderTab2 += 3 + countGroup * 2;
@@ -601,7 +606,7 @@ namespace SMO.Service.MD
                         IsBold = true,
                         Parent = "-1",
                         Order = order_TN,
-                        Level = 0
+                        Level = 1
                     };
                     data.TabSL_TN.Add(item);
 
@@ -642,7 +647,7 @@ namespace SMO.Service.MD
                             ValueSumYearAll_ND_QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM== hhk.GROUP_ITEM && x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE).Sum(x => x.VALUE_SUM_YEAR) + dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Order = order_TN +1,
                             Parent = parentOrder.ToString(),
-                            Level = 0
+                            Level = 2
                         };
                         data.TabSL_TN.Add(itemChild);
                         order_TN++;
@@ -1590,7 +1595,69 @@ namespace SMO.Service.MD
 
 
                 var shareData = UnitOfWork.Repository<SharedDataRepo>().Queryable().First(x => x.CODE == "18").VALUE;
-               
+
+                var sumTab1 = new RevenueReportModel
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = dataDetailsTab1.Sum(x => x.VALUE_JAN) ?? 0,
+                    Value2 = dataDetailsTab1.Sum(x => x.VALUE_FEB) ?? 0,
+                    Value3 = dataDetailsTab1.Sum(x => x.VALUE_MAR) ?? 0,
+                    Value4 = dataDetailsTab1.Sum(x => x.VALUE_APR) ?? 0,
+                    Value5 = dataDetailsTab1.Sum(x => x.VALUE_MAY) ?? 0,
+                    Value6 = dataDetailsTab1.Sum(x => x.VALUE_JUN) ?? 0,
+                    Value7 = dataDetailsTab1.Sum(x => x.VALUE_JUL) ?? 0,
+                    Value8 = dataDetailsTab1.Sum(x => x.VALUE_AUG) ?? 0,
+                    Value9 = dataDetailsTab1.Sum(x => x.VALUE_SEP) ?? 0,
+                    Value10 = dataDetailsTab1.Sum(x => x.VALUE_OCT) ?? 0,
+                    Value11 = dataDetailsTab1.Sum(x => x.VALUE_NOV) ?? 0,
+                    Value12 = dataDetailsTab1.Sum(x => x.VALUE_SEP) ?? 0,
+                    ValueSumYear = dataDetailsTab1.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    Order = -1,
+                    IsBold = true,
+                };
+                data.Tab1.Add(sumTab1);
+                var sumTab2 = new RevenueReportModel
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = dataDetailsTab2.Sum(x => x.VALUE_JAN) ?? 0,
+                    Value2 = dataDetailsTab2.Sum(x => x.VALUE_FEB) ?? 0,
+                    Value3 = dataDetailsTab2.Sum(x => x.VALUE_MAR) ?? 0,
+                    Value4 = dataDetailsTab2.Sum(x => x.VALUE_APR) ?? 0,
+                    Value5 = dataDetailsTab2.Sum(x => x.VALUE_MAY) ?? 0,
+                    Value6 = dataDetailsTab2.Sum(x => x.VALUE_JUN) ?? 0,
+                    Value7 = dataDetailsTab2.Sum(x => x.VALUE_JUL) ?? 0,
+                    Value8 = dataDetailsTab2.Sum(x => x.VALUE_AUG) ?? 0,
+                    Value9 = dataDetailsTab2.Sum(x => x.VALUE_SEP) ?? 0,
+                    Value10 = dataDetailsTab2.Sum(x => x.VALUE_OCT) ?? 0,
+                    Value11 = dataDetailsTab2.Sum(x => x.VALUE_NOV) ?? 0,
+                    Value12 = dataDetailsTab2.Sum(x => x.VALUE_SEP) ?? 0,
+                    ValueSumYear = dataDetailsTab2.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    Order = -1,
+                    IsBold = true,
+                };
+
+                data.Tab2.Add(sumTab2);
+                var sumTab3 = new RevenueReportModel
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = dataDetailsTab3.Sum(x => x.VALUE_JAN) *shareData?? 0,
+                    Value2 = dataDetailsTab3.Sum(x => x.VALUE_FEB) *shareData?? 0,
+                    Value3 = dataDetailsTab3.Sum(x => x.VALUE_MAR) *shareData?? 0,
+                    Value4 = dataDetailsTab3.Sum(x => x.VALUE_APR) *shareData?? 0,
+                    Value5 = dataDetailsTab3.Sum(x => x.VALUE_MAY) *shareData?? 0,
+                    Value6 = dataDetailsTab3.Sum(x => x.VALUE_JUN) *shareData?? 0,
+                    Value7 = dataDetailsTab3.Sum(x => x.VALUE_JUL) *shareData?? 0,
+                    Value8 = dataDetailsTab3.Sum(x => x.VALUE_AUG) *shareData?? 0,
+                    Value9 = dataDetailsTab3.Sum(x => x.VALUE_SEP) * shareData ?? 0,
+                    Value10 = dataDetailsTab3.Sum(x => x.VALUE_OCT) *shareData?? 0,
+                    Value11 = dataDetailsTab3.Sum(x => x.VALUE_NOV) *shareData?? 0,
+                    Value12 = dataDetailsTab3.Sum(x => x.VALUE_SEP) *shareData?? 0,
+                    ValueSumYear = dataDetailsTab3.Sum(x => x.VALUE_SUM_YEAR) *shareData?? 0,
+                    Order = -1,
+                    IsBold = true,
+                };
+                data.Tab3.Add(sumTab3);
+                
                 var order = 0;
                 foreach (var hhk in lstHangHangKhong)
                 {
@@ -1699,6 +1766,46 @@ namespace SMO.Service.MD
 
                     order++;
                 }
+
+                data.Tab4.Add(new RevenueReportModel
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = data.Tab4.Sum(x => x.Value1),
+                    Value2 = data.Tab4.Sum(x=>x.Value2),
+                    Value3 = data.Tab4.Sum(x => x.Value3),
+                    Value4 = data.Tab4.Sum(x => x.Value4),
+                    Value5 = data.Tab4.Sum(x => x.Value5),
+                    Value6 = data.Tab4.Sum(x => x.Value6),
+                    Value7 = data.Tab4.Sum(x => x.Value7),
+                    Value8 = data.Tab4.Sum(x => x.Value8),
+                    Value9 = data.Tab4.Sum(x => x.Value9),
+                    Value10 = data.Tab4.Sum(x => x.Value10),
+                    Value11 = data.Tab4.Sum(x => x.Value11),
+                    Value12 = data.Tab4.Sum(x => x.Value12),
+                    ValueSumYear = data.Tab4.Sum(x => x.ValueSumYear),
+                    Order = -1,
+                    IsBold = true,
+                });
+
+                data.Tab5.Add(new RevenueReportModel
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = data.Tab5.Sum(x=>x.Value1),
+                    Value2 = data.Tab5.Sum(x => x.Value2),
+                    Value3 = data.Tab5.Sum(x => x.Value3),
+                    Value4 = data.Tab5.Sum(x => x.Value4),
+                    Value5 = data.Tab5.Sum(x => x.Value5),
+                    Value6 = data.Tab5.Sum(x => x.Value6),
+                    Value7 = data.Tab5.Sum(x => x.Value7),
+                    Value8 = data.Tab5.Sum(x => x.Value8),
+                    Value9 = data.Tab5.Sum(x => x.Value9),
+                    Value10 = data.Tab5.Sum(x => x.Value10),
+                    Value11 = data.Tab5.Sum(x => x.Value11),
+                    Value12 = data.Tab5.Sum(x => x.Value12),
+                    ValueSumYear = data.Tab5.Sum(x => x.ValueSumYear),
+                    Order = -1,
+                    IsBold = true
+                });
                 return data;
             }
             catch (Exception ex)
@@ -2657,14 +2764,21 @@ namespace SMO.Service.MD
             styleName.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
-            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(7).Cells[2].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             for (int i = 0; i < dataDetails.Count(); i++)
             {
+                var space = new StringBuilder();
+                for(int j = 0; j< dataDetails[i].Level; j++)
+                {
+                    space.Append("    ");
+                }
                 var dataRow = dataDetails[i];
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
+                rowCur.Cells[0].SetCellValue(space.ToString() + dataDetails[i].Name.ToString());
                 rowCur.Cells[1].SetCellValue(dataDetails[i]?.ValueSumYear == null ? 0 : (double)dataDetails[i]?.ValueSumYear);
                 rowCur.Cells[2].SetCellValue(dataDetails[i]?.Value1 == null ? 0 : (double)dataDetails[i]?.Value1);
                 rowCur.Cells[3].SetCellValue(dataDetails[i]?.Value2 == null ? 0 : (double)dataDetails[i]?.Value2);
@@ -2683,8 +2797,16 @@ namespace SMO.Service.MD
                 {
                     if (dataDetails[i].IsBold)
                     {
-                        rowCur.Cells[j].CellStyle = styleCellBold;
-                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBodySum;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
                     }
                     else
                     {
@@ -2707,14 +2829,21 @@ namespace SMO.Service.MD
             styleName.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
-            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(7).Cells[2].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             for (int i = 0; i < dataDetails.Count(); i++)
             {
                 var dataRow = dataDetails[i];
+                var space = new StringBuilder();
+                for (int j = 0; j < dataDetails[i].Level; j++)
+                {
+                    space.Append("    ");
+                }
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
+                rowCur.Cells[0].SetCellValue(space.ToString() + dataDetails[i].Name.ToString());
                 rowCur.Cells[1].SetCellValue(dataDetails[i]?.ValueSumYear == null ? 0 : (double)dataDetails[i]?.ValueSumYear);
                 rowCur.Cells[2].SetCellValue(dataDetails[i]?.Value1 == null ? 0 : (double)dataDetails[i]?.Value1);
                 rowCur.Cells[3].SetCellValue(dataDetails[i]?.Value2 == null ? 0 : (double)dataDetails[i]?.Value2);
@@ -2723,8 +2852,16 @@ namespace SMO.Service.MD
                 {
                     if (dataDetails[i].IsBold)
                     {
-                        rowCur.Cells[j].CellStyle = styleCellBold;
-                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBodySum;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
                     }
                     else
                     {
@@ -2737,22 +2874,29 @@ namespace SMO.Service.MD
         internal void InsertDataSanLuongTab3(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails, int startRow, int NUM_CELL)
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
-            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
             var fontBold = templateWorkbook.CreateFont();
             fontBold.Boldweight = (short)FontBoldWeight.Bold;
             fontBold.FontHeightInPoints = 11;
             fontBold.FontName = "Times New Roman";
 
             ICellStyle styleName = templateWorkbook.CreateCellStyle();
-            styleName.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleName.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
-            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(8).Cells[2].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             for (int i = 0; i < dataDetails.Count(); i++)
             {
                 var dataRow = dataDetails[i];
+                var space = new StringBuilder();
+                for (int j = 0; j < dataDetails[i].Level; j++)
+                {
+                    space.Append("    ");
+                }
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                 rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
                 rowCur.Cells[1].SetCellValue(dataDetails[i]?.Code == null ? "" : dataDetails[i]?.Code);
@@ -2770,8 +2914,16 @@ namespace SMO.Service.MD
                 {
                     if (dataDetails[i].IsBold)
                     {
-                        rowCur.Cells[j].CellStyle = styleCellBold;
-                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        if (j == 0 || j == 1)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBodySum;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
                     }
                     else
                     {
@@ -2803,8 +2955,13 @@ namespace SMO.Service.MD
             for (int i = 0; i < dataDetails.Count(); i++)
             {
                 var dataRow = dataDetails[i];
+                var space = new StringBuilder();
+                for (int j = 0; j < dataDetails[i].Level; j++)
+                {
+                    space.Append("    ");
+                }
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
+                rowCur.Cells[0].SetCellValue(space.ToString() + dataDetails[i].Name.ToString());
                 rowCur.Cells[1].SetCellValue(dataDetails[i]?.Value1ND== null ? 0 : (double)dataDetails[i]?.Value1ND);
                 rowCur.Cells[2].SetCellValue(dataDetails[i]?.Value2ND== null ? 0 : (double)dataDetails[i]?.Value2ND);
                 rowCur.Cells[3].SetCellValue(dataDetails[i]?.Value3ND== null ? 0 : (double)dataDetails[i]?.Value3ND);
@@ -2869,13 +3026,18 @@ namespace SMO.Service.MD
                 //var styleCellNumberDecimal = GetCellStyleNumberDecimal(templateWorkbook);
 
                 ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
-                styleCellBold.WrapText = true;
+                styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
                 var fontBold = templateWorkbook.CreateFont();
                 fontBold.Boldweight = (short)FontBoldWeight.Bold;
                 fontBold.FontHeightInPoints = 11;
                 fontBold.FontName = "Times New Roman";
 
-                var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+                ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+                styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+                styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+                ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+                styleBodySum.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+                styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
 
                 var data = GetDataDoanhThu(year, phienBan, kichBan, hangHangKhong);
 
@@ -2906,18 +3068,25 @@ namespace SMO.Service.MD
                     rowCur.Cells[11].SetCellValue(data[i]?.Value10 == null ? 0 : (double)data[i]?.Value10);
                     rowCur.Cells[12].SetCellValue(data[i]?.Value11 == null ? 0 : (double)data[i]?.Value11);
                     rowCur.Cells[13].SetCellValue(data[i]?.Value12 == null ? 0 : (double)data[i]?.Value12);
-
-                    if (data[i].IsBold)
+                    for (var j = 0; j <= 13; j++)
                     {
-                        for (var j = 0; j <= 13; j++)
+                        if (data[i].IsBold)
                         {
-                            rowCur.Cells[j].CellStyle = styleCellBold;
-                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                            if (j == 0)
+                            {
+                                rowCur.Cells[j].CellStyle = styleCellBold;
+                                rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                            }
+                            else
+                            {
+                                rowCur.Cells[j].CellStyle = styleBodySum;
+                                rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                            }
                         }
-                    }
-                    for (var j = 1; j <= 13; j++)
-                    {
-                        rowCur.Cells[j].CellStyle = styleCellNumber;
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBody;
+                        }
                     }
                 }
                 templateWorkbook.Write(outFileStream);
@@ -2974,19 +3143,20 @@ namespace SMO.Service.MD
         internal void InsertDataToTableDTCP(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails, int startRow)
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
             styleCellBold.WrapText = true;
             var fontBold = templateWorkbook.CreateFont();
             fontBold.Boldweight = (short)FontBoldWeight.Bold;
             fontBold.FontHeightInPoints = 11;
             fontBold.FontName = "Times New Roman";
 
-            ICellStyle styleName = templateWorkbook.CreateCellStyle();
-            styleName.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
-
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
-            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             for (int i = 0; i < dataDetails.Count(); i++)
             {
                 var dataRow = dataDetails[i];
@@ -3006,18 +3176,25 @@ namespace SMO.Service.MD
                 rowCur.Cells[12].SetCellValue(dataDetails[i]?.Value11 == null ? 0 : (double)dataDetails[i]?.Value11);
                 rowCur.Cells[13].SetCellValue(dataDetails[i]?.Value12 == null ? 0 : (double)dataDetails[i]?.Value12);
 
-                if (dataDetails[i].IsBold)
+                for (var j = 0; j <= 13; j++)
                 {
-                    for (var j = 0; j <= 13; j++)
+                    if (dataDetails[i].IsBold)
                     {
-                        rowCur.Cells[j].CellStyle = styleCellBold;
-                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBodySum;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
                     }
-                }
-                rowCur.Cells[0].CellStyle = styleName;
-                for (var j = 1; j <= 13; j++)
-                {
-                    rowCur.Cells[j].CellStyle = styleBody;
+                    else
+                    {
+                        rowCur.Cells[j].CellStyle = styleBody;
+                    }
                 }
             }
         }
@@ -3034,9 +3211,10 @@ namespace SMO.Service.MD
                 //Sản Lượng theo tháng
                 ISheet sheetTab1 = templateWorkbook.GetSheetAt(0);
                 var data = await GetDataTraNapCungUng(year, phienBan, kichBan, hangHangKhong);
+                var dataOrder = data.OrderBy(x => x.Order).ToList();
                 var startRow = 7;
                 var NUM_CELL = 13;
-                InsertDataTraNapCungUng(templateWorkbook, sheetTab1, data, startRow, NUM_CELL);
+                InsertDataTraNapCungUng(templateWorkbook, sheetTab1, dataOrder, startRow, NUM_CELL);
                 templateWorkbook.Write(outFileStream);
                 return outFileStream;
             }
@@ -3062,12 +3240,14 @@ namespace SMO.Service.MD
             styleName.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[2].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
-            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             for (int i = 0; i < dataDetails.Count(); i++)
             {
-                var dataRow = dataDetails[i];
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                 rowCur.Cells[0].SetCellValue(dataDetails[i].Name.ToString());
                 rowCur.Cells[1].SetCellValue(dataDetails[i]?.ValueSL== null ? 0 : (double)dataDetails[i]?.ValueSL);
@@ -3087,12 +3267,27 @@ namespace SMO.Service.MD
                 {
                     if (dataDetails[i].IsBold)
                     {
-                        rowCur.Cells[j].CellStyle = styleCellBold;
-                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBodySum;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
                     }
                     else
                     {
-                        rowCur.Cells[j].CellStyle = styleBody;
+                        if(j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBody;
+                        }
                     }
                 }
             }
@@ -3119,6 +3314,7 @@ namespace SMO.Service.MD
                 var countSC = dataSC.Count();
                 var countCP = dataCP.Count();
 
+                var stringHeaderSL = "I.KẾ HOẠCH SẢN LƯỢNG";
                 var stringHeaderDT = "II.KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ";
                 var stringHeaderSC = "III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH";
                 var stringHeaderCP = "IV. KẾ HOẠCH CHI PHÍ";
@@ -3127,26 +3323,22 @@ namespace SMO.Service.MD
                 var rowStartDT = rowStartSL + countSL;
                 var rowStartSC = rowStartDT + countDt;
                 var rowStartCP = rowStartSC + countSC;
-
+                ISheet sheetTabSL = templateWorkbook.GetSheetAt(0);
                 Task task1 = Task.Run(() =>
                 {
                     lock (lockObject)
                     {
-                        ISheet sheetTabSL = templateWorkbook.GetSheetAt(0);
-                        var startRow = 4;
                         var NUM_CELL = 8;
-                        InsertDataTongHopSL(templateWorkbook, sheetTabSL, dataSL, startRow, NUM_CELL);
+                        InsertDataTongHopSL(templateWorkbook, sheetTabSL, dataSL, rowStartSL, NUM_CELL);
                     }
                 });
-                //Dau Tu
+                /*//Dau Tu
                 Task task2 = Task.Run(() =>
                 {
                     lock (lockObject)
                     {
-                        ISheet sheetTabDT = templateWorkbook.GetSheetAt(1);
-                        var startRow = 6;
                         var NUM_CELL = 7;
-                        InsertDataTongHopDT(templateWorkbook, sheetTabDT, dataDT, startRow, NUM_CELL);
+                        InsertDataTongHopDT(templateWorkbook, sheetTabSL, dataDT, rowStartDT, NUM_CELL);
                     }
                 });
                 //Sua Chua
@@ -3154,10 +3346,8 @@ namespace SMO.Service.MD
                 {
                     lock (lockObject)
                     {
-                        ISheet sheetTabSC = templateWorkbook.GetSheetAt(2);
-                        var startRow = 6;
                         var NUM_CELL = 5;
-                        InsertDataTongHopSC(templateWorkbook, sheetTabSC, dataSC, startRow, NUM_CELL);
+                        InsertDataTongHopSC(templateWorkbook, sheetTabSL, dataSC, rowStartSC, NUM_CELL);
                     }
                 });
                 //Chi phi
@@ -3165,14 +3355,12 @@ namespace SMO.Service.MD
                 {
                     lock (lockObject)
                     {
-                        ISheet sheetTabCP = templateWorkbook.GetSheetAt(3);
-                        var startRow = 7;
                         var NUM_CELL = 5;
-                        InsertDataTongHopCP(templateWorkbook, sheetTabCP, dataCP, startRow, NUM_CELL);
+                        InsertDataTongHopCP(templateWorkbook, sheetTabSL, dataCP, rowStartCP, NUM_CELL);
                     }
-                });
+                });*/
 
-                await Task.WhenAll(task1, task2, task3, task4);
+                await Task.WhenAll(task1);
                 templateWorkbook.Write(outFileStream);
                 return outFileStream;
 
@@ -3191,26 +3379,31 @@ namespace SMO.Service.MD
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
             styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
-            styleCellBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            styleCellBold.WrapText = true;
             var fontBold = templateWorkbook.CreateFont();
             fontBold.Boldweight = (short)FontBoldWeight.Bold;
             fontBold.FontHeightInPoints = 11;
             fontBold.FontName = "Times New Roman";
 
-            ICellStyle styleName = templateWorkbook.CreateCellStyle();
-            styleName.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
             styleBody.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             styleBody.WrapText = true;
-            styleCellBold.WrapText = true;
 
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            styleBodySum.WrapText = true;
+
+            ICellStyle styleHeader = templateWorkbook.CreateCellStyle();
+            styleHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
             // Insert Header
             var stringHeaderSL = "I.KẾ HOẠCH SẢN LƯỢNG";
+            var startHeader = 4;
             for(int i = 0; i < 3; i++)
             {
-                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startHeader++, NUM_CELL);
                 if(i == 0)
                 {
                     rowCur.Cells[0].SetCellValue(stringHeaderSL);
@@ -3228,11 +3421,11 @@ namespace SMO.Service.MD
                     rowCur.Cells[4].SetCellValue("HKVN#");
                     rowCur.Cells[5].SetCellValue("TỔNG");
                     sheet.AddMergedRegion(new CellRangeAddress(5, 6, 0, 0));
-                    sheet.AddMergedRegion(new CellRangeAddress(5, 6, 1, 1));
-                    sheet.AddMergedRegion(new CellRangeAddress(5, 5, 1, 2));
-                    /*sheet.AddMergedRegion(new CellRangeAddress(5, 5, 3, 5));
+                    sheet.AddMergedRegion(new CellRangeAddress(5, 6, 1, 2));
+                    sheet.AddMergedRegion(new CellRangeAddress(5, 5, 3, 5));
                     sheet.AddMergedRegion(new CellRangeAddress(5, 6, 6, 6));
-                    sheet.AddMergedRegion(new CellRangeAddress(5, 6, 7, 7));*/
+                    sheet.AddMergedRegion(new CellRangeAddress(5, 6, 7, 7));
+                    sheet.AddMergedRegion(new CellRangeAddress(4, 4, 0, 7));
                 }
             }
             for (int i = 0; i < dataDetails.Count(); i++)
@@ -4285,6 +4478,551 @@ namespace SMO.Service.MD
                 order++;
             }
             return data;
+        }
+        internal ReportCompaseDTModel GetDataReportCompaseDT(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            try
+            {
+                var data = new ReportCompaseDTModel();
+                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).ToList();
+                var sanBayGroup = UnitOfWork.Repository<NhomSanBayRepo>().GetAll().ToList();
+                lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
+
+                var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                if (dataHeaderDoanhThu.Count() == 0)
+                {
+                    return new ReportCompaseDTModel();
+                }
+
+                var dataInHeader = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var dataDetails = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002").ToList();
+
+                var dataTab1 = GetDataDoanhThu(year, phienBan, kichBan, hangHangKhong);
+
+                data.Tab2.Add(new RevenueReportModel
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = dataDetails.Sum(x => x.VALUE_JAN) ?? 0,
+                    Value2 = dataDetails.Sum(x => x.VALUE_FEB) ?? 0,
+                    Value3 = dataDetails.Sum(x => x.VALUE_MAR) ?? 0,
+                    Value4 = dataDetails.Sum(x => x.VALUE_APR) ?? 0,
+                    Value5 = dataDetails.Sum(x => x.VALUE_MAY) ?? 0,
+                    Value6 = dataDetails.Sum(x => x.VALUE_JUN) ?? 0,
+                    Value7 = dataDetails.Sum(x => x.VALUE_JUL) ?? 0,
+                    Value8 = dataDetails.Sum(x => x.VALUE_AUG) ?? 0,
+                    Value9 = dataDetails.Sum(x => x.VALUE_SEP) ?? 0,
+                    Value10 = dataDetails.Sum(x => x.VALUE_OCT) ?? 0,
+                    Value11 = dataDetails.Sum(x => x.VALUE_NOV) ?? 0,
+                    Value12 = dataDetails.Sum(x => x.VALUE_SEP) ?? 0,
+                    ValueSumYear = dataDetails.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    IsBold = true,
+                    Order = -1,
+                    Level = 0
+                });
+
+                foreach (var hhk in lstHangHangKhong)
+                {
+                    var dataItem = dataTab1.FirstOrDefault(x => x.Code == hhk.GROUP_ITEM);
+                    dataItem.IsBold = false;
+                    data.Tab2.Add(dataItem);
+                }
+
+                // Tính vs3.0
+                var dataSLHeader = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                if (dataSLHeader.Count() == 0)
+                {
+                    return new ReportCompaseDTModel();
+                }
+
+                var dataInSLHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataSLHeader.Contains(x.TEMPLATE_CODE)).ToList();
+                var dataDetailsSL = dataInSLHeader.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020").ToList();
+                var dataND = dataInSLHeader.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").ToList();
+                var dataQT = dataInSLHeader.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020").ToList();
+                var unit_price = UnitOfWork.Repository<UnitPriceRepo>().GetAll();
+                var lstDataDT = new List<T_BP_KE_HOACH_DOANH_THU_DATA>();
+                var lstDataTest = new List<T_BP_KE_HOACH_SAN_LUONG_DATA>();
+                var lstDataTestDT = new List<T_BP_KE_HOACH_DOANH_THU_DATA>();
+                // Tính doanh thu khách hàng VN
+                foreach (var dataSL in dataND)
+                {
+                    var group = dataSL.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM;
+                    var HHKCode = dataSL.SanLuongProfitCenter.HANG_HANG_KHONG_CODE;
+                    if (group == "HKTN#")
+                    {
+                        HHKCode = "VU1";
+                    }
+                    var priceND = unit_price.FirstOrDefault(x => x.WAREHOUSE_ID == dataSL.SanLuongProfitCenter.SanBay.OTHER_PM_CODE && x.SHORT_OBJECT_ID ==HHKCode && dataSL.TIME_YEAR == x.YEAR);
+                    var unit = priceND != null ? priceND.UNIT_ID : "Kg";
+                    var price = priceND!= null ? priceND.SERVICE_PRICE : 0;
+                    price = unit == "Kg" ? price : price * 336;
+                    
+                    var centercode = UnitOfWork.Repository<SanLuongProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == dataSL.SanLuongProfitCenter.SAN_BAY_CODE && x.HANG_HANG_KHONG_CODE == dataSL.SanLuongProfitCenter.HANG_HANG_KHONG_CODE)?.ToString();
+                    if(dataSL.SanLuongProfitCenter == null)
+                    {
+                        continue;
+                    }
+                    var profitCenterCode = new T_MD_DOANH_THU_PROFIT_CENTER
+                    {
+                        CODE = Guid.NewGuid().ToString(),
+                        HANG_HANG_KHONG_CODE = dataSL.SanLuongProfitCenter.HANG_HANG_KHONG_CODE,
+                        SAN_BAY_CODE = dataSL.SanLuongProfitCenter.SAN_BAY_CODE,
+                        HangHangKhong = dataSL.SanLuongProfitCenter.HangHangKhong,
+                        SanBay = dataSL.SanLuongProfitCenter.SanBay
+                    };
+                    if(dataSL.SanLuongProfitCenter. HANG_HANG_KHONG_CODE == null)
+                    {
+                        var a = dataSL.SanLuongProfitCenter;
+                    };
+                    var item = new T_BP_KE_HOACH_DOANH_THU_DATA
+                    {
+                        PKID = Guid.NewGuid().ToString(),
+                        ORG_CODE = dataSL.ORG_CODE,
+                        TEMPLATE_CODE = dataSL.TEMPLATE_CODE,
+                        DOANH_THU_PROFIT_CENTER_CODE = profitCenterCode.CODE,
+                        KHOAN_MUC_DOANH_THU_CODE = dataSL.KHOAN_MUC_SAN_LUONG_CODE,
+                        DoanhThuProfitCenter = profitCenterCode,
+                        TIME_YEAR = dataSL.TIME_YEAR,
+                        VERSION = dataSL.VERSION,
+                        VALUE_JAN = dataSL.VALUE_JAN * price,
+                        VALUE_FEB = dataSL.VALUE_FEB * price,
+                        VALUE_MAR = dataSL.VALUE_MAR * price,
+                        VALUE_APR = dataSL.VALUE_APR * price,
+                        VALUE_MAY = dataSL.VALUE_MAY * price,
+                        VALUE_JUN = dataSL.VALUE_JUN * price,
+                        VALUE_JUL = dataSL.VALUE_JUL * price,
+                        VALUE_AUG = dataSL.VALUE_AUG * price,
+                        VALUE_SEP = dataSL.VALUE_SEP * price,
+                        VALUE_OCT = dataSL.VALUE_OCT * price,
+                        VALUE_NOV = dataSL.VALUE_NOV * price,
+                        VALUE_DEC = dataSL.VALUE_DEC * price,
+                        VALUE_SUM_YEAR = dataSL.VALUE_SUM_YEAR * price
+                    };
+                    lstDataDT.Add(item);
+                }
+                // Tính doanh thu khách quốc tế
+                var TyGia = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
+                foreach (var dataSL in dataQT)
+                {
+
+                    if (dataSL.SanLuongProfitCenter == null)
+                    {
+                        continue;
+                    }
+                    var group = dataSL.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM;
+                    var HHKCode = dataSL.SanLuongProfitCenter.HANG_HANG_KHONG_CODE;
+                    if (group == "HKTN#")
+                    {
+                        HHKCode = "VU1";
+                    }
+                    var priceQT = unit_price.FirstOrDefault(x => x.WAREHOUSE_ID == dataSL.SanLuongProfitCenter.SanBay.OTHER_PM_CODE && x.SHORT_OBJECT_ID ==HHKCode && dataSL.TIME_YEAR == x.YEAR);
+                    var unit = priceQT != null ? priceQT.UNIT_ID : "Kg";
+                    var price = priceQT != null ? priceQT.SERVICE_PRICE : 0;
+                    price = unit == "Kg" ? price : price * 336;
+                    var centercode = UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == dataSL.SanLuongProfitCenter.SAN_BAY_CODE && x.HANG_HANG_KHONG_CODE == dataSL.SanLuongProfitCenter.HANG_HANG_KHONG_CODE);
+                    var profitCenterCode = new T_MD_DOANH_THU_PROFIT_CENTER
+                    {
+                        CODE = Guid.NewGuid().ToString(),
+                        HANG_HANG_KHONG_CODE = dataSL.SanLuongProfitCenter.HANG_HANG_KHONG_CODE,
+                        SAN_BAY_CODE = dataSL.SanLuongProfitCenter.SAN_BAY_CODE,
+                        HangHangKhong = dataSL.SanLuongProfitCenter.HangHangKhong,
+                        SanBay = dataSL.SanLuongProfitCenter.SanBay
+                    };
+                    var priceDTQT = price * TyGia;
+                    if (priceQT!= null)
+                    {
+                        priceDTQT = priceQT.CURRENCY_ID == "USD" ? (price * TyGia) : price;
+                    }
+                    var item = new T_BP_KE_HOACH_DOANH_THU_DATA
+                    {
+                        PKID = Guid.NewGuid().ToString(),
+                        ORG_CODE = dataSL.ORG_CODE,
+                        TEMPLATE_CODE = dataSL.TEMPLATE_CODE,
+                        DOANH_THU_PROFIT_CENTER_CODE = profitCenterCode?.CODE,
+                        DoanhThuProfitCenter = profitCenterCode,
+                        KHOAN_MUC_DOANH_THU_CODE = dataSL.KHOAN_MUC_SAN_LUONG_CODE,
+                        TIME_YEAR = dataSL.TIME_YEAR,
+                        VERSION = dataSL.VERSION,
+                        VALUE_JAN = dataSL.VALUE_JAN * priceDTQT,
+                        VALUE_FEB = dataSL.VALUE_FEB * priceDTQT,
+                        VALUE_MAR = dataSL.VALUE_MAR * priceDTQT,
+                        VALUE_APR = dataSL.VALUE_APR * priceDTQT,
+                        VALUE_MAY = dataSL.VALUE_MAY * priceDTQT,
+                        VALUE_JUN = dataSL.VALUE_JUN * priceDTQT,
+                        VALUE_JUL = dataSL.VALUE_JUL * priceDTQT,
+                        VALUE_AUG = dataSL.VALUE_AUG * priceDTQT,
+                        VALUE_SEP = dataSL.VALUE_SEP * priceDTQT,
+                        VALUE_OCT = dataSL.VALUE_OCT * priceDTQT,
+                        VALUE_NOV = dataSL.VALUE_NOV * priceDTQT,
+                        VALUE_DEC = dataSL.VALUE_DEC * priceDTQT,
+                        VALUE_SUM_YEAR = dataSL.VALUE_SUM_YEAR * priceDTQT
+                    };
+                    lstDataDT.Add(item);
+                    if (dataSL.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == "QH")
+                    {
+                        lstDataTest.Add(dataSL);
+                        lstDataTestDT.Add(item);
+                    }
+                }
+                var order = 0;
+                var itemSum = new ReportCompaseDT
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = lstDataDT.Sum(x => x.VALUE_JAN) ?? 0,
+                    Value2 = lstDataDT.Sum(x => x.VALUE_FEB) ?? 0,
+                    Value3 = lstDataDT.Sum(x => x.VALUE_MAR) ?? 0,
+                    Value4 = lstDataDT.Sum(x => x.VALUE_APR) ?? 0,
+                    Value5 = lstDataDT.Sum(x => x.VALUE_MAY) ?? 0,
+                    Value6 = lstDataDT.Sum(x => x.VALUE_JUN) ?? 0,
+                    Value7 = lstDataDT.Sum(x => x.VALUE_JUL) ?? 0,
+                    Value8 = lstDataDT.Sum(x => x.VALUE_AUG) ?? 0,
+                    Value9 = lstDataDT.Sum(x => x.VALUE_SEP) ?? 0,
+                    Value10 = lstDataDT.Sum(x => x.VALUE_OCT) ?? 0,
+                    Value11 = lstDataDT.Sum(x => x.VALUE_NOV) ?? 0,
+                    Value12 = lstDataDT.Sum(x => x.VALUE_DEC) ?? 0,
+                    ValueSumYear = lstDataDT.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    Isbold = true,
+                    Order = -1,
+                };
+                data.Tab1.Add(itemSum);
+                decimal sumTest = 0;
+                foreach (var hhk in lstHangHangKhong)
+                {
+                    var item = new ReportCompaseDT
+                    {
+                        Code = hhk.GROUP_ITEM,
+                        Name = hhk.GROUP_ITEM,
+                        Value1 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JAN) ?? 0,
+                        Value2 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_FEB) ?? 0,
+                        Value3 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAR ) ?? 0,
+                        Value4 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_APR ) ?? 0,
+                        Value5 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAY ) ?? 0,
+                        Value6 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUN ) ?? 0,
+                        Value7 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUL ) ?? 0,
+                        Value8 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_AUG ) ?? 0,
+                        Value9 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) ?? 0,
+                        Value10 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_OCT ) ?? 0,
+                        Value11 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_NOV ) ?? 0,
+                        Value12 = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_DEC ) ?? 0,
+                        ValueSumYear = lstDataDT.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SUM_YEAR ) ?? 0,
+                        Isbold = false,
+                        Order = order,
+                    };
+                    order++;
+                    data.Tab1.Add(item);
+                    if(hhk.GROUP_ITEM == "QH")
+                    {
+                        sumTest = item.Value2;
+                    }
+                }
+                var orderTab3 = 0;
+                for(int i = 0; i < data.Tab1.Count(); i++)
+                {
+                        var item = new ReportCompaseDT
+                        {
+                            Code = data.Tab1[i].Name,
+                            Name = data.Tab1[i].Name,
+                            Value1 = (data.Tab1[i].Value1 / data.Tab2[i].Value1) * 100,
+                            Value2 = (data.Tab1[i].Value2 / data.Tab2[i].Value2 ) * 100,
+                            Value3 = (data.Tab1[i].Value3 / data.Tab2[i].Value3 ) * 100,
+                            Value4 = (data.Tab1[i].Value4 / data.Tab2[i].Value4 ) * 100,
+                            Value5 = (data.Tab1[i].Value5 / data.Tab2[i].Value5 ) * 100,
+                            Value6 = (data.Tab1[i].Value6 / data.Tab2[i].Value6 ) * 100,
+                            Value7 = (data.Tab1[i].Value7 / data.Tab2[i].Value7 ) * 100,
+                            Value8 = (data.Tab1[i].Value8 / data.Tab2[i].Value8 ) * 100,
+                            Value9 = (data.Tab1[i].Value9 / data.Tab2[i].Value9) * 100,
+                            Value10 = (data.Tab1[i].Value10 / data.Tab2[i].Value10 ) * 100,
+                            Value11 = (data.Tab1[i].Value11 / data.Tab2[i].Value11 ) * 100,
+                            Value12 = (data.Tab1[i].Value12 / data.Tab2[i].Value12 ) * 100,
+                            ValueSumYear = (data.Tab1[i].ValueSumYear / data.Tab2[i].ValueSumYear ) * 100,
+                            Isbold = false,
+                            Order = orderTab3
+                        };
+                    if(i == 0)
+                    {
+                        item.Isbold = true;
+                    }
+                    orderTab3++;
+                    data.Tab3.Add(item);
+
+                }
+                return data;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        internal void ExportExcelCompaseDT(ref MemoryStream outFileStream, string path, int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            try
+            {
+                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+                IWorkbook templateWorkbook;
+                templateWorkbook = new XSSFWorkbook(fs);
+                fs.Close();
+                ISheet sheet = templateWorkbook.GetSheetAt(0);
+                var data = GetDataReportCompaseDT(year, phienBan, kichBan, hangHangKhong);
+
+                if (data.Tab1.Count <= 1 || data.Tab2.Count <=1)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Không có dữ liệu!";
+                    return;
+                }
+                // export V3.0
+                var startRowV3 = 6;
+                var NUM_CELL = 14;
+                InsertDataCompaseDT(templateWorkbook, sheet, data.Tab1, startRowV3, NUM_CELL);
+                // export KH
+                var startRowKH = startRowV3 + data.Tab1.Count();
+                InsertDataHeader(templateWorkbook, sheet, "KH", startRowKH, NUM_CELL);
+                var startRowKHData = startRowV3 + data.Tab1.Count() + 1;
+                InsertDataCompaseDTTab2(templateWorkbook, sheet, data.Tab2, startRowKHData, NUM_CELL);
+                var startRowTab3 = startRowKH + data.Tab2.Count();
+                InsertDataHeader(templateWorkbook, sheet, "TH/KH(%)", startRowTab3, NUM_CELL);
+                var startRowTab3Data = startRowKH + data.Tab2.Count() + 1;
+                InsertDataCompaseDTTab3(templateWorkbook, sheet, data.Tab3, startRowTab3Data, NUM_CELL);
+                // export tab3
+                templateWorkbook.Write(outFileStream);
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        internal void InsertDataHeader(IWorkbook templateWorkbook, ISheet sheet,string table, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+            
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(table.ToString());
+                rowCur.Cells[1].SetCellValue("THÁNG 1");
+                rowCur.Cells[2].SetCellValue("THÁNG 2");
+                rowCur.Cells[3].SetCellValue("THÁNG 3");
+                rowCur.Cells[4].SetCellValue("THÁNG 4");
+                rowCur.Cells[5].SetCellValue("THÁNG 5");
+                rowCur.Cells[6].SetCellValue("THÁNG 6");
+                rowCur.Cells[7].SetCellValue("THÁNG 7");
+                rowCur.Cells[8].SetCellValue("THÁNG 8");
+                rowCur.Cells[9].SetCellValue("THÁNG 9");
+                rowCur.Cells[10].SetCellValue("THÁNG 10");
+                rowCur.Cells[11].SetCellValue("THÁNG 11");
+                rowCur.Cells[12].SetCellValue("THÁNG 12");
+                rowCur.Cells[13].SetCellValue("TỔNG NĂM");
+
+                for(int i = 0; i < NUM_CELL; i++)
+            {
+                rowCur.Cells[i].CellStyle = styleCellBold;
+            }
+
+
+        }
+
+        internal void InsertDataCompaseDT(IWorkbook templateWorkbook, ISheet sheet, IList<ReportCompaseDT> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(6).Cells[1].CellStyle);
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataDetails[i].Name);
+                rowCur.Cells[1].SetCellValue(Math.Round((double)dataDetails[i].Value1));
+                rowCur.Cells[2].SetCellValue(Math.Round((double)dataDetails[i].Value2));
+                rowCur.Cells[3].SetCellValue(Math.Round((double)dataDetails[i].Value3));
+                rowCur.Cells[4].SetCellValue(Math.Round((double)dataDetails[i].Value4));
+                rowCur.Cells[5].SetCellValue(Math.Round((double)dataDetails[i].Value5));
+                rowCur.Cells[6].SetCellValue(Math.Round((double)dataDetails[i].Value6));
+                rowCur.Cells[7].SetCellValue(Math.Round((double)dataDetails[i].Value7));
+                rowCur.Cells[8].SetCellValue(Math.Round((double)dataDetails[i].Value8));
+                rowCur.Cells[9].SetCellValue(Math.Round((double)dataDetails[i].Value9));
+                rowCur.Cells[10].SetCellValue(Math.Round((double)dataDetails[i].Value10));
+                rowCur.Cells[11].SetCellValue(Math.Round((double)dataDetails[i].Value11));
+                rowCur.Cells[12].SetCellValue(Math.Round((double)dataDetails[i].Value12));
+                rowCur.Cells[13].SetCellValue(Math.Round((double)dataDetails[i].ValueSumYear));
+
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (dataDetails[i].Isbold)
+                    {
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBodySum;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBody;
+                        }
+                    }
+                }
+            }
+        }
+        internal void InsertDataCompaseDTTab2(IWorkbook templateWorkbook, ISheet sheet, IList<RevenueReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataDetails[i].Name);
+                rowCur.Cells[1].SetCellValue(Math.Round((double)dataDetails[i].Value1));
+                rowCur.Cells[2].SetCellValue(Math.Round((double)dataDetails[i].Value2));
+                rowCur.Cells[3].SetCellValue(Math.Round((double)dataDetails[i].Value3));
+                rowCur.Cells[4].SetCellValue(Math.Round((double)dataDetails[i].Value4));
+                rowCur.Cells[5].SetCellValue(Math.Round((double)dataDetails[i].Value5));
+                rowCur.Cells[6].SetCellValue(Math.Round((double)dataDetails[i].Value6));
+                rowCur.Cells[7].SetCellValue(Math.Round((double)dataDetails[i].Value7));
+                rowCur.Cells[8].SetCellValue(Math.Round((double)dataDetails[i].Value8));
+                rowCur.Cells[9].SetCellValue(Math.Round((double)dataDetails[i].Value9));
+                rowCur.Cells[10].SetCellValue(Math.Round((double)dataDetails[i].Value10));
+                rowCur.Cells[11].SetCellValue(Math.Round((double)dataDetails[i].Value11));
+                rowCur.Cells[12].SetCellValue(Math.Round((double)dataDetails[i].Value12));
+                rowCur.Cells[13].SetCellValue(Math.Round((double)dataDetails[i].ValueSumYear));
+
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (dataDetails[i].IsBold)
+                    {
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBodySum;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleName;
+                            rowCur.Cells[j].CellStyle.Alignment = HorizontalAlignment.Left;
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBody;
+                        }
+                    }
+                }
+            }
+        }
+
+        internal void InsertDataCompaseDTTab3(IWorkbook templateWorkbook, ISheet sheet, IList<ReportCompaseDT> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataDetails[i].Name);
+                rowCur.Cells[1].SetCellValue(Math.Round((double)dataDetails[i].Value1));
+                rowCur.Cells[2].SetCellValue(Math.Round((double)dataDetails[i].Value2));
+                rowCur.Cells[3].SetCellValue(Math.Round((double)dataDetails[i].Value3));
+                rowCur.Cells[4].SetCellValue(Math.Round((double)dataDetails[i].Value4));
+                rowCur.Cells[5].SetCellValue(Math.Round((double)dataDetails[i].Value5));
+                rowCur.Cells[6].SetCellValue(Math.Round((double)dataDetails[i].Value6));
+                rowCur.Cells[7].SetCellValue(Math.Round((double)dataDetails[i].Value7));
+                rowCur.Cells[8].SetCellValue(Math.Round((double)dataDetails[i].Value8));
+                rowCur.Cells[9].SetCellValue(Math.Round((double)dataDetails[i].Value9));
+                rowCur.Cells[10].SetCellValue(Math.Round((double)dataDetails[i].Value10));
+                rowCur.Cells[11].SetCellValue(Math.Round((double)dataDetails[i].Value11));
+                rowCur.Cells[12].SetCellValue(Math.Round((double)dataDetails[i].Value12));
+                rowCur.Cells[13].SetCellValue(Math.Round((double)dataDetails[i].ValueSumYear));
+
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (dataDetails[i].Isbold)
+                    {
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleCellBold;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBodySum;
+                            rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (j == 0)
+                        {
+                            rowCur.Cells[j].CellStyle = styleName;
+                            rowCur.Cells[j].CellStyle.Alignment = HorizontalAlignment.Left;
+                        }
+                        else
+                        {
+                            rowCur.Cells[j].CellStyle = styleBody;
+                        }
+                    }
+                }
+            }
         }
     }
 }

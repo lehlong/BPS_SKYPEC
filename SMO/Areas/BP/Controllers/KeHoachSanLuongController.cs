@@ -271,5 +271,17 @@ namespace SMO.Areas.BP.Controllers
 
             return Json(lstVersions, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public FileContentResult ExportExcelGridData(string TreedataMonth, string TreedataYear)
+        {
+            var dataMonth = JsonConvert.DeserializeObject<List<ViewDataQuantityPlan>>(TreedataMonth);
+            var dataYear = JsonConvert.DeserializeObject<List<ViewDataQuantityPlanYear>>(TreedataYear);
+            MemoryStream outFileStream = new MemoryStream();
+            var path = Server.MapPath("~/TemplateExcel/" + "Template_Export_SanLuong.xlsx");
+            _service.ExportExcelGridData(ref outFileStream, dataMonth, dataYear, path);
+            var fileName = "Dữ_liệu_kế_hoạch_sản_lượng";
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+        }
     }
 }

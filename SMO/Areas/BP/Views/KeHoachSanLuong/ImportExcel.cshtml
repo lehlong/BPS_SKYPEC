@@ -53,6 +53,19 @@
                                     })
                             </div>
 
+                            <label>Chọn Voucher Type</label>
+                            <div class="form-group">
+                                @Html.MyDropDownListFor(x => x.ObjDetail.VOUCHER_TYPE_ID,
+                                SelectListUtilities.GetAllVoucher(),
+                                    new
+                                    {
+                                        @class = "selectpicker show-tick",
+                                        @data_live_search = "true",
+                                        @data_container = "body",
+                                        @onchange = "onChangeTemplate(this.value)"
+                                    })
+                            </div>
+
                             <label>Chọn file</label>
                             <div class="form-group">
                                 <div class="form-line">

@@ -85,6 +85,7 @@
     }
     function ViewData() {
         $("#divReport").empty();
+        
         var ajaxParams = {
             url: "@Url.Action("GenDataDoanhThuTheoPhi")",
             data: {
@@ -96,11 +97,12 @@
             htmlTarget:'#divReport',
         };
         Forms.LoadAjax(ajaxParams);
+        
     }
 
     $(function () {
         Forms.CompleteUI();
-        ViewData();
+        setTimeout(function () { ViewData() }, 100)
     });
 
     function ExportData() {

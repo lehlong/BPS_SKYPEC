@@ -39,11 +39,11 @@
                 <tr style="font-weight:@bold">
                     <td class="align-center">@item.Order</td>
                     <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
-                    <td class="align-right">@item.equity_sources</td>
+                    <td class="align-left">@item.equity_sources</td>
                     <td class="align-right">@item.valueVDT.ToStringVN()</td>
                     <td class="align-right">@item.valueKHKP.ToStringVN()</td>
-                    <td class="align-right">@item.tdtk</td>
-                    <td class="align-right">@item.description</td>
+                    <td class="align-left">@item.tdtk</td>
+                    <td class="align-left">@item.description</td>
                 </tr>
             }
         </tbody>

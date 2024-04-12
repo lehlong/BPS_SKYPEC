@@ -2028,7 +2028,6 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                         var value4010 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? 0 : tableData.Rows[i][5]);
                         var value4011 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
                         var value4020 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
-                        var value4021 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
                         foreach (var ele in lstElement.Where(x => x.CENTER_CODE == centerCode))
                         {
                             costData = new T_BP_DAU_TU_XAY_DUNG_DATA()
@@ -2041,11 +2040,12 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 STATUS = Approve_Status.ChuaTrinhDuyet,
                                 VERSION = versionNext,
                                 KHOAN_MUC_DAU_TU_CODE = ele.ELEMENT_CODE,
-                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4020" ? value4020 : ele.ELEMENT_CODE == "4021" ? value4021 : 0,
+                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4020" ? value4020 : 0,
                                 DESCRIPTION = tableData.Rows[i][10].ToString(),
                                 PROCESS = tableData.Rows[i][4].ToString(),
                                 TDTK = tableData.Rows[i][7].ToString(),
                                 EQUITY_SOURCES = tableData.Rows[i][3].ToString(),
+                                QKH = tableData.Rows[i][9].ToString(),
                                 CREATE_BY = currentUser
                             };
                             UnitOfWork.Repository<DauTuXayDungDataRepo>().Create(costData);
@@ -3450,7 +3450,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                     i.DESCRIPTION = treeData.DESCRIPTION;
                                     i.PROCESS = treeData.PROCESS;
                                     i.TDTK = treeData.TDTK;
-
+                                    i.QKH = treeData.QKH;
                                 }
                             }
                             yield return i;
@@ -4285,7 +4285,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 rowCur.Cells[6].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE)?.ToStringVN());
                 rowCur.Cells[7].SetCellValue(item.FirstOrDefault(x => x.KHOAN_MUC_DAU_TU_CODE == "4012")?.TDTK);
                 rowCur.Cells[8].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4020").Sum(x => x.VALUE)?.ToStringVN());
-                rowCur.Cells[9].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4021").Sum(x => x.VALUE)?.ToStringVN());
+                rowCur.Cells[9].SetCellValue(item.FirstOrDefault()?.QKH);
                 rowCur.Cells[10].SetCellValue(item.FirstOrDefault()?.DESCRIPTION);
                 for (int i = 0; i < NUM_CELL; i++)
                 {

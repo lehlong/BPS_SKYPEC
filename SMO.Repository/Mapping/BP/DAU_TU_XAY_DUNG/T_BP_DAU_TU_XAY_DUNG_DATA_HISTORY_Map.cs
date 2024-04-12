@@ -21,7 +21,7 @@ namespace SMO.Repository.Mapping.BP.DAU_TU_XAY_DUNG
             Map(x => x.VERSION);
             Map(x => x.TIME_YEAR);
             Map(x => x.VALUE);
-
+            Map(x => x.QKH);
             Map(x => x.STATUS);
             Map(x => x.DESCRIPTION);
             Map(x => x.PROCESS);

@@ -345,6 +345,7 @@
     <Compile Include="Implement\MD\VanChuyenProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\VehicleRepo.cs" />
     <Compile Include="Implement\MD\VendorRepo.cs" />
+    <Compile Include="Implement\MD\VoucherRepo.cs" />
     <Compile Include="Implement\MD\WarehouseRepo.cs" />
     <Compile Include="Implement\WF\ActivityComRepo.cs" />
     <Compile Include="Implement\WF\ActivityRepo.cs" />
@@ -610,6 +611,7 @@
     <Compile Include="Interface\MD\IVanChuyenProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IVehicleRepo.cs" />
     <Compile Include="Interface\MD\IVendorRepo.cs" />
+    <Compile Include="Interface\MD\IVoucherRepo.cs" />
     <Compile Include="Interface\MD\IWarehouseRepo.cs" />
     <Compile Include="Interface\WF\IActivityComRepo.cs" />
     <Compile Include="Interface\WF\IActivityRepo.cs" />
@@ -874,6 +876,7 @@
     <Compile Include="Mapping\MD\T_MD_VAN_CHUYEN_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_VEHICLE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_VENDOR_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_VOUCHER_MAP.cs" />
     <Compile Include="Mapping\MD\T_MD_WAREHOUSE_Map.cs" />
     <Compile Include="Mapping\MD\T_SAP_ACTUAL_DATA_Map.cs" />
     <Compile Include="Mapping\MD\T_SAP_MD_COST_CF_ELEMENT_Map.cs" />

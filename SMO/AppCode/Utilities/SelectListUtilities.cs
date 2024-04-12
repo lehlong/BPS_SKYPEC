@@ -1317,5 +1317,17 @@ namespace SMO
             }
             return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
         }
+
+        public static SelectList GetAllVoucher(bool isAddBlank = true, string selected = "")
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            var lstDomain = UnitOfWork.Repository<VoucherRepo>().GetAll();
+            foreach (var obj in lstDomain)
+            {
+                lstData.Add(new Data { Value = obj.VOUCHER_TYPE_ID, Text = obj.VOUCHER_TYPE_ID});
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { Value = selected });
+        }
     }
 }

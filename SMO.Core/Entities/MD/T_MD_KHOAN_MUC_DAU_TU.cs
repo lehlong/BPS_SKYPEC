@@ -68,6 +68,8 @@ namespace SMO.Core.Entities.MD
         }
         public virtual string EQUITY_SOURCES { get; set; }
         public virtual string TDTK { get; set; }
+        public virtual string QKH { get; set; }
+
 
         public virtual object Clone()
         {

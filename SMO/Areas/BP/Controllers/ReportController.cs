@@ -123,7 +123,7 @@ namespace SMO.Areas.BP.Controllers
             {
                 return Content(_servicePhienBan.ErrorMessage);
             }
-            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_SAN_LUONG.xlsx");
         }
 
         public ActionResult ExportExcelDataDoanhThu(int year, string phienBan, string kichBan, string hangHangKhong)
@@ -135,7 +135,7 @@ namespace SMO.Areas.BP.Controllers
             {
                 return Content(_servicePhienBan.ErrorMessage);
             }
-            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_PHIEN_BAN.xlsx");
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_DOANH_THU_THEO_THANG.xlsx");
         }
 
         public ActionResult IndexDoanhThuTheoPhi()
@@ -182,7 +182,7 @@ namespace SMO.Areas.BP.Controllers
             {
                 return Content(_servicePhienBan.ErrorMessage);
             }
-            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_DOANH_THU_THEO_CHI_PHI.xlsx");
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_DOANH_THU_TRA_NAP_CUNG_UNG.xlsx");
         }
 
         public ActionResult IndexSuaChuaLon()
@@ -251,7 +251,31 @@ namespace SMO.Areas.BP.Controllers
             return PartialView(data);
         }
 
-        
+        public ActionResult IndexReportCompaseDT()
+        {
+            return PartialView();
+        }
+
+        public ActionResult GetDataReportCompaseDT(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            var data = _servicePhienBan.GetDataReportCompaseDT(year, phienBan, kichBan, hangHangKhong);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
+        public ActionResult ExportExcelReportCompaseDT(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_SO_SANH_DT.xlsx");
+            MemoryStream outFileStream = new MemoryStream();
+            _servicePhienBan.ExportExcelCompaseDT(ref outFileStream, path, year, phienBan, kichBan,hangHangKhong );
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_SO_SANH_DOANH_THU.xlsx");
+        }
+
 
     }
 }

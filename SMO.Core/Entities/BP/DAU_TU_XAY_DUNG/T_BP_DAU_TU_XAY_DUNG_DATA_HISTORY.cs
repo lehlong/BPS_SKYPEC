@@ -16,6 +16,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
         public virtual string PROCESS { get; set; }
         public virtual string STATUS { get; set; }
         public virtual string TDTK { get; set; }
+        public virtual string QKH { get; set; }
         public virtual string EQUITY_SOURCES { get; set; }
 
 
@@ -38,6 +39,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
                 TIME_YEAR = history.TIME_YEAR,
                 VALUE = history.VALUE,
                 EQUITY_SOURCES = history.EQUITY_SOURCES,
+                QKH = history.QKH,
                 TDTK = history.TDTK,
                 DESCRIPTION = history.DESCRIPTION,
                 PROCESS = history.PROCESS,
@@ -69,6 +71,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
                 TIME_YEAR = data.TIME_YEAR,
                 VALUE = data.VALUE,
                 EQUITY_SOURCES = data.EQUITY_SOURCES,
+                QKH = data.QKH,
                 TDTK = data.TDTK,
                 DESCRIPTION = data.DESCRIPTION,
                 PROCESS = data.PROCESS,

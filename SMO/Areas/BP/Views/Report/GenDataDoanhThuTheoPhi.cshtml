@@ -11,25 +11,6 @@
     var gridTab4 = Guid.NewGuid().ToString("N");
     var gridTab5 = Guid.NewGuid().ToString("N");
 
-    Model.Tab1.Add(new RevenueReportModel
-    {
-        Name = "TỔNG CỘNG",
-        IsBold = true,
-        Order = -1,
-        ValueSumYear = Model.Tab1.Sum(x => x.ValueSumYear),
-        Value1 = Model.Tab1.Sum(x => x.Value1),
-        Value2 = Model.Tab1.Sum(x => x.Value2),
-        Value3 = Model.Tab1.Sum(x => x.Value3),
-        Value4 = Model.Tab1.Sum(x => x.Value4),
-        Value5 = Model.Tab1.Sum(x => x.Value5),
-        Value6 = Model.Tab1.Sum(x => x.Value6),
-        Value7 = Model.Tab1.Sum(x => x.Value7),
-        Value8 = Model.Tab1.Sum(x => x.Value8),
-        Value9 = Model.Tab1.Sum(x => x.Value9),
-        Value10 = Model.Tab1.Sum(x => x.Value10),
-        Value11 = Model.Tab1.Sum(x => x.Value11),
-        Value12 = Model.Tab1.Sum(x => x.Value12),
-    });
 
     var jsonDataTab1 = Model.Tab1.OrderBy(x => x.Order).Select(x => new
     {
@@ -50,25 +31,6 @@
         Dec = x.Value12.ToStringVN(),
     });
 
-    Model.Tab2.Add(new RevenueReportModel
-    {
-        Name = "TỔNG CỘNG",
-        IsBold = true,
-        Order = -1,
-        ValueSumYear = Model.Tab2.Sum(x => x.ValueSumYear),
-        Value1 = Model.Tab2.Sum(x => x.Value1),
-        Value2 = Model.Tab2.Sum(x => x.Value2),
-        Value3 = Model.Tab2.Sum(x => x.Value3),
-        Value4 = Model.Tab2.Sum(x => x.Value4),
-        Value5 = Model.Tab2.Sum(x => x.Value5),
-        Value6 = Model.Tab2.Sum(x => x.Value6),
-        Value7 = Model.Tab2.Sum(x => x.Value7),
-        Value8 = Model.Tab2.Sum(x => x.Value8),
-        Value9 = Model.Tab2.Sum(x => x.Value9),
-        Value10 = Model.Tab2.Sum(x => x.Value10),
-        Value11 = Model.Tab2.Sum(x => x.Value11),
-        Value12 = Model.Tab2.Sum(x => x.Value12),
-    });
 
     var jsonDataTab2 = Model.Tab2.OrderBy(x => x.Order).Select(x => new
     {
@@ -89,25 +51,6 @@
         Dec = x.Value12.ToStringVN(),
     });
 
-    Model.Tab3.Add(new RevenueReportModel
-    {
-        Name = "TỔNG CỘNG",
-        IsBold = true,
-        Order = -1,
-        ValueSumYear = Model.Tab3.Sum(x => x.ValueSumYear),
-        Value1 = Model.Tab3.Sum(x => x.Value1),
-        Value2 = Model.Tab3.Sum(x => x.Value2),
-        Value3 = Model.Tab3.Sum(x => x.Value3),
-        Value4 = Model.Tab3.Sum(x => x.Value4),
-        Value5 = Model.Tab3.Sum(x => x.Value5),
-        Value6 = Model.Tab3.Sum(x => x.Value6),
-        Value7 = Model.Tab3.Sum(x => x.Value7),
-        Value8 = Model.Tab3.Sum(x => x.Value8),
-        Value9 = Model.Tab3.Sum(x => x.Value9),
-        Value10 = Model.Tab3.Sum(x => x.Value10),
-        Value11 = Model.Tab3.Sum(x => x.Value11),
-        Value12 = Model.Tab3.Sum(x => x.Value12),
-    });
 
     var jsonDataTab3 = Model.Tab3.OrderBy(x => x.Order).Select(x => new
     {
@@ -128,26 +71,6 @@
         Dec = x.Value12.ToStringVN(),
     });
 
-    Model.Tab4.Add(new RevenueReportModel
-    {
-        Name = "TỔNG CỘNG",
-        IsBold = true,
-        Order = -1,
-        ValueSumYear = Model.Tab4.Sum(x => x.ValueSumYear),
-        Value1 = Model.Tab4.Sum(x => x.Value1),
-        Value2 = Model.Tab4.Sum(x => x.Value2),
-        Value3 = Model.Tab4.Sum(x => x.Value3),
-        Value4 = Model.Tab4.Sum(x => x.Value4),
-        Value5 = Model.Tab4.Sum(x => x.Value5),
-        Value6 = Model.Tab4.Sum(x => x.Value6),
-        Value7 = Model.Tab4.Sum(x => x.Value7),
-        Value8 = Model.Tab4.Sum(x => x.Value8),
-        Value9 = Model.Tab4.Sum(x => x.Value9),
-        Value10 = Model.Tab4.Sum(x => x.Value10),
-        Value11 = Model.Tab4.Sum(x => x.Value11),
-        Value12 = Model.Tab4.Sum(x => x.Value12),
-    });
-
     var jsonDataTab4 = Model.Tab4.OrderBy(x => x.Order).Select(x => new
     {
         Name = x.Name,
@@ -165,26 +88,6 @@
         Oct = x.Value10.ToStringVN(),
         Nov = x.Value11.ToStringVN(),
         Dec = x.Value12.ToStringVN(),
-    });
-
-    Model.Tab5.Add(new RevenueReportModel
-    {
-        Name = "TỔNG CỘNG",
-        IsBold = true,
-        Order = -1,
-        ValueSumYear = Model.Tab5.Sum(x => x.ValueSumYear),
-        Value1 = Model.Tab5.Sum(x => x.Value1),
-        Value2 = Model.Tab5.Sum(x => x.Value2),
-        Value3 = Model.Tab5.Sum(x => x.Value3),
-        Value4 = Model.Tab5.Sum(x => x.Value4),
-        Value5 = Model.Tab5.Sum(x => x.Value5),
-        Value6 = Model.Tab5.Sum(x => x.Value6),
-        Value7 = Model.Tab5.Sum(x => x.Value7),
-        Value8 = Model.Tab5.Sum(x => x.Value8),
-        Value9 = Model.Tab5.Sum(x => x.Value9),
-        Value10 = Model.Tab5.Sum(x => x.Value10),
-        Value11 = Model.Tab5.Sum(x => x.Value11),
-        Value12 = Model.Tab5.Sum(x => x.Value12),
     });
 
     var jsonDataTab5 = Model.Tab5.OrderBy(x => x.Order).Select(x => new

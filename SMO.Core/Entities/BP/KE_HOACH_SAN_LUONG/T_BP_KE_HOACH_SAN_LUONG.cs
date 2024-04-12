@@ -1,5 +1,5 @@
 ﻿using SMO.Core.Entities.BP;
-
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG
@@ -10,6 +10,7 @@ namespace SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG
         public virtual string KICH_BAN { get; set; }
         public virtual string PHIEN_BAN { get; set; }
         public virtual string TYPE_UPLOAD { get; set; }
+        public virtual string VOUCHER_TYPE_ID { get; set; }
         private T_MD_KICH_BAN _KichBan;
         public virtual T_MD_KICH_BAN KichBan
         {

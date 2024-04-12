@@ -78,6 +78,12 @@
                                         <i class="material-icons">notes</i> Kế hoạch doanh thu tra nạp cung ứng
                                     </div>
                                 }
+                                @if (AuthorizeUtilities.CheckUserRight("R5.6") || AuthorizeUtilities.CheckUserRight("R0"))
+                                {
+                                    <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexReportCompaseDT", "BP/Report")')">
+                                        <i class="material-icons">notes</i> Kế hoạch so sánh doanh thu
+                                    </div>
+                                }
                             </div>
                         </div>
 

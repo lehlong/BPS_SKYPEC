@@ -7,6 +7,7 @@
     var gridYear = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var dataYear = ViewBag.DataYear as List<ViewDataQuantityPlanYear>;
+    var formIdExportExcel = Guid.NewGuid();
 }
 <style>
     .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
@@ -36,7 +37,12 @@
         <div style="height: calc(100vh - 250px);" id="@gridYear"></div>
     </div>
 </div>
-
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
+        @Html.Hidden("TreedataMonth")
+        @Html.Hidden("TreedataYear")
+    </form>
+</div>
 
 <script type="text/javascript">
 
@@ -151,7 +157,11 @@
     });
 
     function DownloadDataQuantityPlan() {
-        console.log(treeGrid.data.serialize(), treeYear.data.serialize());
+        var TreedataMonth = JSON.stringify(treeGrid.data.serialize());
+        var TreedataYear = JSON.stringify(treeYear.data.serialize());
+        $('#@formIdExportExcel #TreedataMonth').val(TreedataMonth);
+        $('#@formIdExportExcel #TreedataYear').val(TreedataYear);
+        $('#@formIdExportExcel').submit();
     }
 
 </script>

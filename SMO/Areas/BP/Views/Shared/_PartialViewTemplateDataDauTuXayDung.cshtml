@@ -36,7 +36,7 @@
     td .input-edit {
         border: none;
         background: border-box;
-        text-align: right;
+        text-align: left;
     }
     .table-screen {
         height: calc(100vh - 162px);
@@ -122,7 +122,7 @@ else
                                     <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4020', this.value)" value="@(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE== "4020").Sum(x => x.VALUE)?.ToStringVN())" />
                                 </td>
                                 <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4021', this.value)" value="@(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE== "4021").Sum(x => x.VALUE)?.ToStringVN())" />
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4021', this.value)" value="@(item.FirstOrDefault()?.QKH)" />
                                 </td>
                                 <td class="align-right">
                                     <input class="input-edit" disabled @isEdit type="text" onchange="onEditCell('', '@codePj','', 'GC', this.value)" value="@(item.FirstOrDefault()?.DESCRIPTION)" />
@@ -173,8 +173,8 @@ else
                                 <td class="align-right">
                                     <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4020', this.value)" value="@(item.Where(x => x.CODE == "4020").Sum(x => x.Values[0]).ToStringVN())" />
                                 </td>
-                                <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4021', this.value)" value="@(item.Where(x => x.CODE == "4021").Sum(x => x.Values[0]).ToStringVN())" />
+                                <td class="align-left">
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4021', this.value)" value="@(item.FirstOrDefault()?.QKH)" />
                                 </td>
                                 <td class="align-right">
                                     <input class="input-edit" disabled @isEdit type="text" onchange="onEditCell('', '@codePj','', 'GC', this.value)" value="@(item.FirstOrDefault()?.DESCRIPTION)" />
