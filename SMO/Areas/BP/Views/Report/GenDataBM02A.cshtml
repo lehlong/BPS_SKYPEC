@@ -1,0 +1,59 @@
+﻿
+@using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+}
+<style>
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
+    }
+
+    .grid .dhx_grid-cell {
+        word-break: break-word
+    }
+
+    .dhx_header-wrapper {
+        z-index: 1;
+    }
+</style>
+
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+
+<script type="text/javascript">
+    var rawData = [];
+    let columns = [
+        { id: "stt", header: [{ text: "STT", align: "center" }], minWidth: 100 },
+        { id: "name", header: [{ text: "DANH MỤC ĐẦU TƯ", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
+
+        { id: "col1", header: [{ text: "THÔNG TIN VỀ DANH MỤC ĐẦU TƯ", align: "center", colspan: 3 }, { text: "TỔNG MỨC ĐẦU TƯ", align: "center" }], align: "right", minWidth: 180 },
+        { id: "col2", header: ["", { text: "TRONG ĐÓ: NGUỒN VCSH", align: "center" }], align: "right", minWidth: 180 },
+        { id: "col3", header: ["", { text: "TIẾN ĐỘ THỰC HIỆN", align: "center" }], align: "right", minWidth: 180 },
+
+        { id: "col4", header: [{ text: "GIÁ TRỊ KHỐI LƯỢNG CÔNG VIỆC HOÀN THÀNH", align: "center", colspan: 3 }, { text: "LK ĐẾN ĐẦU KỲ LẬP KH", align: "center" }], align: "right", minWidth: 180 },
+        { id: "col5", header: ["", { text: "KH NĂM", align: "center" }], align: "right", minWidth: 180 },
+        { id: "col6", header: ["", { text: "TIẾN ĐỘ TRIỂN KHAI TH NĂM KH", align: "center" }], align: "right", minWidth: 180 },
+
+        { id: "col7", header: [{ text: "GIÁ TRỊ GIẢI NGÂN", align: "center", colspan: 2 }, { text: "LK ĐẾN ĐẦU KỲ LẬP KH", align: "center" }], align: "right", minWidth: 180 },
+        { id: "col8", header: ["", { text: "KH NĂM", align: "center" }], align: "right", minWidth: 180 },
+
+        { id: "col6", header: [{ text: "GHI CHÚ", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+
+    ];
+
+    const treeGrid = new dhx.Grid("@gridId", {
+        columns,
+        data: rawData,
+        leftSplit: 2,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        selection: true,
+        autoHeight: true,
+    });
+
+
+</script>
+

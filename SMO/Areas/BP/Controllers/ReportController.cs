@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using SMO.Service.BP;
 using SMO.Service.MD;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,10 @@ namespace SMO.Areas.BP.Controllers
     {
         private readonly PhienBanService _servicePhienBan;
         private readonly KichBanService _serviceKichBan;
+        private readonly ReportService _service;
         public ReportController()
         {
+            _service = new ReportService();
             _servicePhienBan = new PhienBanService();
             _serviceKichBan = new KichBanService();
         }
@@ -327,5 +330,106 @@ namespace SMO.Areas.BP.Controllers
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BAO_CAO_TINH_HINH_THUC_HIEN_DAU_TU.xlsx");
         }
 
+
+
+        #region BM01D - Báo cáo ước tính hình thực hiện đầu tư vào các dự án hình thành TSCĐ năm trước kế hoạch
+        public ActionResult IndexBM01D()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM01D(int year, string orgCode)
+        {
+            var data = _service.GenDataBM01D(year, orgCode);
+            return PartialView(data);
+        }
+        #endregion
+
+        #region BM01E - Báo cáo ước tính hình đầu tư vốn ra ngoài doanh nghiệp ra trước kế hoạch
+        public ActionResult IndexBM01E()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM01E(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM02A - Biểu mẫu Kế hoạch đầu tư XDCB và TTB năm kế hoạch 
+        public ActionResult IndexBM02A()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM02A(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM02B - Biểu mẫu Kế hoạch đầu tư ra ngòai doanh nghiệp năm kế hoạch 
+        public ActionResult IndexBM02B()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM02B(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM02C - Kế hoạch hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp (KB Cao/Trung bình/Thấp)
+        public ActionResult IndexBM02C()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM02C(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM02C1 - Biểu mẫu hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp các kịch bản
+        public ActionResult IndexBM02C1()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM02C1(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM02D - Chi tiết các khoản mục sản lượng, doanh thu, chi phí UTH (KB Cao/Trung bình/Thấp)
+        public ActionResult IndexBM02D()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM02D(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM02D1 - Biểu mẫu chi tiết các khoản mục sản lượng, doanh thu, chi phí UTH năm trước theo các kịch bản 
+        public ActionResult IndexBM02D1()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM02D1(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM02D2 - Tổng hợp những biến động ảnh hưởng đến SXKD của các DN qua các năm 
+        public ActionResult IndexBM02D2()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM02D2(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
     }
 }

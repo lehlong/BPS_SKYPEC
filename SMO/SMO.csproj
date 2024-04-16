@@ -731,6 +731,7 @@
     <Compile Include="Service\BP\KE_HOACH_VAN_CHUYEN\KeHoachVanChuyenReviewService.cs" />
     <Compile Include="Service\BP\KE_HOACH_VAN_CHUYEN\KeHoachVanChuyenService.cs" />
     <Compile Include="Service\BP\RegisterService.cs" />
+    <Compile Include="Service\BP\ReportService.cs" />
     <Compile Include="Service\BP\SUA_CHUA_LON\SuaChuaLonReviewCommentService.cs" />
     <Compile Include="Service\BP\SUA_CHUA_LON\SuaChuaLonReviewHistoryService.cs" />
     <Compile Include="Service\BP\SUA_CHUA_LON\SuaChuaLonReviewResultService.cs" />
@@ -2082,6 +2083,24 @@
     <Content Include="Areas\BP\Views\Report\GetDataReportImplementDTXD.cshtml" />
     <Content Include="Areas\BP\Views\Report\IndexReportImplementDTTTB.cshtml" />
     <Content Include="Areas\BP\Views\Report\GetDataReportImplementDTTTB.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM01D.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM01D.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM01E.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM01E.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM02A.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM02A.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM02B.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM02B.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM02C.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM02C.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM02C1.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM02C1.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM02D.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM02D.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM02D1.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM02D1.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM02D2.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM02D2.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
