@@ -360,9 +360,10 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult GenDataBM02A(int year, string phienBan, string kichBan, string hangHangKhong)
+        public ActionResult GenDataBM02A(int year)
         {
-            return PartialView();
+            var data = _service.GenDataBM02A(year);
+            return PartialView(data);
         }
         #endregion
 

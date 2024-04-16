@@ -25,8 +25,7 @@
 <script type="text/javascript">
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.BM01D, jsonSerializeSettings));
     let columns = [
-        { id: "stt", header: [{ text: "STT", align: "center" }], minWidth: 100 },
-        { id: "name", header: [{ text: "DANH MỤC ĐẦU TƯ", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
+        { id: "name", header: [{ text: "DANH MỤC ĐẦU TƯ", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
 
         { id: "col1", header: [{ text: "TỔNG MỨC ĐT DỰ ÁN", align: "center", colspan: 2 }, { text: "TỔNG MỨC", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
         { id: "col2", header: ["", { text: "TRONG ĐÓ: TỪ NGUỒN VCSH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
@@ -45,18 +44,20 @@
 
         { id: "col13", header: [{ text: "GIÁ TRỊ TS ĐÃ HÌNH THÀNH ĐƯA VÀO SỬ DỤNG", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
     ];
+    rawData.forEach((item) => {
+        if (item.id == "A" || item.id == "B") delete item.parent;
+        item.col7 = Number(item.col5) == 0 || Number(item.col3) == 0 ? 0 : Number(item.col5) / Number(item.col3) * 100
+    });
 
-    const treeGrid = new dhx.Grid("@gridId", {
+    const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
-        leftSplit: 2,
+        leftSplit: 1,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         selection: true,
         autoHeight: true,
     });
-
-
 </script>
 
