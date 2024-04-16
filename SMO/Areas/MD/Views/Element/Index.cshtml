@@ -53,7 +53,7 @@
 
         function CalculateValue() {
             var ajaxParams = {
-                url: '@Url.Action("CalculateValue")',
+                url: '@Url.Action("CalculateValue, SharedData")',
                 type: "POST",
                 dataType: 'json',
                 success: function (response) {

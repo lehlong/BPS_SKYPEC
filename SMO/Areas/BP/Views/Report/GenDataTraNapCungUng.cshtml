@@ -14,10 +14,10 @@
         Value1 = Math.Round(x.ValueSL).ToStringVN(),
         Value2 = Math.Round(x.ValueDG).ToStringVN(),
         Value3 = Math.Round(x.ValueMOPS).ToStringVN(),
-        Value4 = Math.Round(x.ValueTNK).ToStringVN(),
+        Value4 = x.ValueTNK.ToString("0.0000"),
         Value5 = Math.Round(x.ValueD).ToStringVN(),
         Value6 = Math.Round(x.ValueFH).ToStringVN(),
-        Value7 = Math.Round(x.ValueThue).ToStringVN(),
+        Value7 = x.ValueThue.ToString(),
         Value8 = Math.Round(x.ValueDT).ToStringVN(),
         Value9 = Math.Round(x.ValueDTMOPS).ToStringVN(),
         Value10 = Math.Round(x.ValueDTTNK).ToStringVN(),
@@ -44,7 +44,8 @@
 <div style="height: calc(100vh - 240px);" id="@gridId"></div>
 
 <script type="text/javascript">
-   const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+   debugger
     const columns = [
         { id: "name", header: [{ text: "DOANH THU", align: "center", rowspan: 2 }], width: 300 },
         { id: "value1", header: [{ text: "SẢN LƯỢNG(TẤN) PA TRUNG", align: "center", rowspan: 2 }], align: "right", width: 220 },

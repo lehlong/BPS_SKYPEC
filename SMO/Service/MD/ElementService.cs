@@ -501,6 +501,7 @@ namespace SMO.Service.MD
                     dataCalculate.Warehouse = item.WAREHOUSE_CODE;
                     dataCalculate.DeliveryConditionsCode = item.DELIVERY_CONDITIONS_CODE;
                     dataCalculate.DeliveryConditions = item.DELIVERY_CONDITIONS_CODE;
+                    dataCalculate.S0008 = item.S0008 / 100;
                     dataCalculate.AreaCode = item.AREA_ID;
                     data.KeHoachGiaThanhData.Add(dataCalculate);
                 }

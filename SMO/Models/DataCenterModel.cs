@@ -34,6 +34,8 @@ namespace SMO.Models
         public decimal S0005 { get; set; }
         public decimal S0006 { get; set; }
         public decimal S0007 { get; set; }
+        public decimal S0008 { get; set; }
+
         public decimal U0001 { get; set; }
         public decimal U0002 { get; set; }
         public decimal U0003 { get; set; }

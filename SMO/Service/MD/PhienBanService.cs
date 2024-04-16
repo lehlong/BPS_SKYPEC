@@ -782,7 +782,9 @@ namespace SMO.Service.MD
                             var pricePlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
                             var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
                             var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
+                            var ThueXBQ = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "23").VALUE;
                             var priceMops = pricePlat * priceTG * priceHSQD;
+
                             for (var i = 0; i < sanBayGroup.Count(); i++)
                             {
                                 var sanBayCode = UnitOfWork.Repository<SanBayRepo>().Queryable().FirstOrDefault(x => x.NHOM_SAN_BAY_CODE == sanBayGroup[i].CODE).CODE;

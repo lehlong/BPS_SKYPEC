@@ -19,8 +19,11 @@
 
                 <div class="tab-content">
                     <div class="page-function">
-                        <div class="page-function-button m-r-20" style="float:left">
+                        <div class="page-function-button" style="float:left">
                             @Html.MyButton("cmdAdd", "Thêm mới", string.Format("Forms.LoadAjax('{0}');", @Url.Action("Create")), "Alt+N", "add")
+                        </div>
+                        <div class="page-function-button m-r-20" style="float:left">
+                            @Html.MyButton("cmdSave", "Tính TNK", "Caculate();", "Alt+N", "functions")
                         </div>
                         <div class="input-group page-function-search">
                             <div class="form-line">
@@ -44,7 +47,7 @@
         </div>
     }
 
-    <script type="text/javascript">
+<script type="text/javascript">
         function SubmitIndex() {
             Forms.SubmitForm('@Model.FormId');
         }
@@ -54,7 +57,26 @@
             Forms.CompleteUI();
             Forms.SubmitByEnter("@Model.FormId");
         });
-    </script>
+
+        function reload() {
+        Forms.LoadAjax("MD/SharedData/Index");
+        Forms.Close('@Model.ViewId');
+
+    }
+
+        function Caculate() {
+            $.ajax({
+            type: "POST",
+            url: "@Url.Action("Caculate")",
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+                reload();
+            },
+            error: Forms.AjaxErrorHandler
+});
+        }
+</script>
 </div>
 
 
