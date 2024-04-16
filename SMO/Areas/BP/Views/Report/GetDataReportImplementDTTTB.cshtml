@@ -1,0 +1,62 @@
+﻿@model  List<SMO.Models.ReportDauTuModel>
+@using System.Text;
+@{
+    var year = ViewBag.Year as int?;
+}
+<style>
+    .header-table {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td rowspan="3">STT</td>
+                <td rowspan="3">Danh mục đầu tư không có XDCB</td>
+                <td rowspan="2" colspan="3">Kế hoạch đầu tư năm ...........</td>
+                <td colspan="5">Giá trị thực hiện khối lượng công việc</td>
+                <td colspan="2">Giá trị giải ngân</td>
+                <td rowspan="3">Ghi chú</td>
+            </tr>
+            <tr class="header-table">
+                <td colspan="3">Ước thực hiện tháng báo cáo</td>
+                <td rowspan="2">Lũy kế đến hết tháng báo cáo</td>
+                <td rowspan="2">%TH/KH</td>
+                <td rowspan="2">Ước giải ngân tháng báo cáo</td>
+                <td rowspan="2">Lũy kế đến hết tháng báo cáo</td>
+            </tr>
+            <tr class="header-table">
+                <td>Số lượng</td>
+                <td>Đơn giá</td>
+                <td>Thành tiền</td>
+                <td>Số lượng</td>
+                <td>Đơn giá</td>
+                <td>Thành tiền</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.lever; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
+                    <td class="align-left">@item.equity_sources</td>
+                    <td class="align-right">@item.valueVDT.ToStringVN()</td>
+                    <td class="align-right">@item.valueKHKP.ToStringVN()</td>
+                    <td class="align-left">@item.tdtk</td>
+                    <td class="align-left">@item.description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,5 +1,7 @@
 ﻿using NHibernate.Linq;
 using NPOI.HSSF.Record.Chart;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using SMO.Core.Entities;
 using SMO.Repository.Implement.MD;
 
@@ -8,6 +10,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using static iTextSharp.text.pdf.AcroFields;
 
@@ -92,6 +95,70 @@ namespace SMO.Service.MD
                 return null;
             }
 
+        }
+
+        public void ExportExcelGridData(ref MemoryStream outFileStream, IList<T_MD_SYNC_COST> lstData, string path)
+        {
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook templateWorkbook;
+            templateWorkbook = new XSSFWorkbook(fs);
+            templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachSanLuong));
+            fs.Close();
+            ISheet sheet = templateWorkbook.GetSheetAt(0);
+            var startRow = 8;
+            var NUM_CELL = 12;
+            InsertData(templateWorkbook, sheet, lstData, startRow, NUM_CELL);
+            templateWorkbook.Write(outFileStream);
+        }
+
+        public void InsertData(IWorkbook templateWorkbook, ISheet sheet, IList<T_MD_SYNC_COST> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleName = templateWorkbook.CreateCellStyle();
+            styleName.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodySum = templateWorkbook.CreateCellStyle();
+            styleBodySum.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
+            styleBodySum.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            for (int i = 0; i < dataDetails.Count(); i++)
+            {
+                var dataRow = dataDetails[i];
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(dataRow.CHI_NHANH);
+                rowCur.Cells[1].SetCellValue(dataRow.GROUP_3_ID);
+                rowCur.Cells[2].SetCellValue(dataRow.GROUP_NAME_3);
+                rowCur.Cells[3].SetCellValue(dataRow.GROUP_2_ID);
+                rowCur.Cells[4].SetCellValue(dataRow.GROUP_NAME_2);
+                rowCur.Cells[5].SetCellValue(dataRow.GROUP_NAME_E2);
+                rowCur.Cells[6].SetCellValue(dataRow.GROUP_1_ID);
+                rowCur.Cells[7].SetCellValue(dataRow.GROUP_NAME_1);
+                rowCur.Cells[8].SetCellValue((double)dataRow.VALUE);
+                rowCur.Cells[9].SetCellValue((double)dataRow.ACCUMULATION);
+                rowCur.Cells[10].SetCellValue(dataRow.MONTH);
+                rowCur.Cells[11].SetCellValue(dataRow.YEAR);
+
+                for (int j = 0; j < NUM_CELL; j++)
+                {
+                    if (j == 0 || j == 1 || j == 2)
+                    {
+                        rowCur.Cells[j].CellStyle = styleName;
+                    }
+                    else
+                    {
+                        rowCur.Cells[j].CellStyle = styleBody;
+                    }
+                }
+            }
         }
     }
 }

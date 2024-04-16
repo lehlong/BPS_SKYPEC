@@ -1,5 +1,10 @@
-﻿using SMO.Service.MD;
+﻿using Newtonsoft.Json;
+using SMO.Core.Entities;
+using SMO.Service.BP.KE_HOACH_SAN_LUONG;
+using SMO.Service.MD;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
@@ -112,6 +117,18 @@ namespace SMO.Areas.MD.Controllers
                 SMOUtilities.GetMessage("1005", _service, result);
             }
             return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        public FileContentResult ExportExcelGridData(string Treedata)
+        {
+            var data = JsonConvert.DeserializeObject<List<T_MD_SYNC_COST>>(Treedata);
+           
+            MemoryStream outFileStream = new MemoryStream();
+            var path = Server.MapPath("~/TemplateExcel/" + "Template_dữ_liệu_thực_hiện_chi_phí.xlsx");
+            _service.ExportExcelGridData(ref outFileStream, data, path);
+            var fileName = "Dữ_liệu_thực_hiện_chi_phí";
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
 
     }

@@ -20,6 +20,7 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.S0005);
             Map(x => x.S0006);
             Map(x => x.S0007);
+            Map(x => x.S0008);
             Map(x => x.ID_KHNH);
             Map(x => x.NAME);
             Map(x => x.YEAR);

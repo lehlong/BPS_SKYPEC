@@ -276,6 +276,56 @@ namespace SMO.Areas.BP.Controllers
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_SO_SANH_DOANH_THU.xlsx");
         }
 
+        // Báo cáo tình hình thực hiện đầu tư có xây dựng
+        public ActionResult IndexReportImplementDTXD()
+        {
+            return PartialView();
+        }
+
+        public ActionResult GetDataReportImplementDTXD(int year, string phienBan, string kichBan, string area)
+        {
+            var data = _servicePhienBan.GetDataReportDauTu(year, phienBan, kichBan, area);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
+        public ActionResult ExportExcelReportImplementDTXD(int year, string phienBan, string kichBan, string area)
+        {
+            var path = Server.MapPath("~/TemplateExcel/Báo_Cáo_Tình_Hình_Thực_Hiện_Kế_Hoạch_Đầu_Tư.xlsx");
+            MemoryStream outFileStream = new MemoryStream();
+            _servicePhienBan.ExportExcelCompaseDT(ref outFileStream, path, year, phienBan, kichBan, area);
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BAO_CAO_TINH_HINH_THUC_HIEN_DAU_TU.xlsx");
+        }
+
+        public ActionResult IndexReportImplementDTTTB()
+        {
+            return PartialView();
+        }
+
+        public ActionResult GetDataReportImplementDTTTB(int year, string phienBan, string kichBan, string area)
+        {
+            var data = _servicePhienBan.GetDataReportDauTu(year, phienBan, kichBan, area);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+
+        public ActionResult ExportExcelReportImplementDTTTB(int year, string phienBan, string kichBan, string area)
+        {
+            var path = Server.MapPath("~/TemplateExcel/Báo_Cáo_Tình_Hình_Thực_Hiện_Kế_Hoạch_Đầu_Tư.xlsx");
+            MemoryStream outFileStream = new MemoryStream();
+            _servicePhienBan.ExportExcelCompaseDT(ref outFileStream, path, year, phienBan, kichBan, area);
+            if (!_servicePhienBan.State)
+            {
+                return Content(_servicePhienBan.ErrorMessage);
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BAO_CAO_TINH_HINH_THUC_HIEN_DAU_TU.xlsx");
+        }
 
     }
 }

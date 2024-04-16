@@ -1,0 +1,74 @@
+﻿@model  List<SMO.Models.ReportDauTuModel>
+@using System.Text;
+@{
+    var year = ViewBag.Year as int?;
+}
+<style>
+    .header-table {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td rowspan="2">STT</td>
+                <td rowspan="2">Danh mục dự án đầu tư xây dựng cơ bản</td>
+                <td rowspan="2">Tổng vốn đầu tư giai đoạn</td>
+                <td rowspan="2">Kế hoạch kinh phí đầu tư năm ......</td>
+                <td colspan="3">Giá trị khối lượng công việc thực hiện</td>
+                <td colspan="2">Giá trị giải ngân</td>
+                <td rowspan="2">Ghi chú</td>
+            </tr>
+            <tr class="header-table">
+                <td>Ước thực hiện tháng báo cáo</td>
+                <td>Lũy kế đến hết tháng báo cáo</td>
+                <td>%TH/KH</td>
+                <td>Ước giải ngân tháng báo cáo</td>
+                <td>Lũy kế đến hết tháng báo cáo</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.lever; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
+                    <td class="align-left">@item.equity_sources</td>
+                    <td class="align-right">@item.valueVDT.ToStringVN()</td>
+                    <td class="align-right">@item.valueKHKP.ToStringVN()</td>
+                    <td class="align-left">@item.tdtk</td>
+                    <td class="align-left">@item.description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const columns = [
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], width: 180 },
+        { id: "sumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", width: 180 },
+        { id: "jan", header: [{ text: "THÁNG 1", align: "center" }], align: "right", width: 180 },
+        { id: "feb", header: [{ text: "THÁNG 2", align: "center" }], align: "right", width: 180 },
+        { id: "mar", header: [{ text: "THÁNG 3", align: "center" }], align: "right", width: 180 },
+        { id: "apr", header: [{ text: "THÁNG 4", align: "center" }], align: "right", width: 180 },
+        { id: "may", header: [{ text: "THÁNG 5", align: "center" }], align: "right", width: 180 },
+        { id: "jun", header: [{ text: "THÁNG 6", align: "center" }], align: "right", width: 180 },
+        { id: "jul", header: [{ text: "THÁNG 7", align: "center" }], align: "right", width: 180 },
+        { id: "aug", header: [{ text: "THÁNG 8", align: "center" }], align: "right", width: 180 },
+        { id: "sep", header: [{ text: "THÁNG 9", align: "center" }], align: "right", width: 180 },
+        { id: "oct", header: [{ text: "THÁNG 10", align: "center" }], align: "right", width: 180 },
+        { id: "nov", header: [{ text: "THÁNG 11", align: "center" }], align: "right", width: 180 },
+        { id: "dec", header: [{ text: "THÁNG 12", align: "center" }], align: "right", width: 180 },
+    ];
+</script>

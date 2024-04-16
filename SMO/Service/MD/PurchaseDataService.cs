@@ -83,6 +83,7 @@ namespace SMO.Service.MD
                                         S0005 = rw["thung_Tan"].ToString() == null || rw["thung_Tan"].ToString() == "" ? 0 : Convert.ToDecimal(rw["thung_Tan"]),
                                         S0006 = rw["Bao_hiem"].ToString() == null || rw["Bao_hiem"].ToString() == "" ? 0 : Convert.ToDecimal(rw["Bao_hiem"]),
                                         S0007 = rw["ImportVATRate"].ToString() == null || rw["ImportVATRate"].ToString() == "" ? 0 : Convert.ToDecimal(rw["ImportVATRate"]),
+                                        S0008 = rw["ThueXuat_NK"].ToString() == null || rw["ThueXuat_NK"].ToString() == "" ? 0 : Convert.ToDecimal(rw["ThueXuat_NK"]),
                                         SIZE_ID = Convert.ToString(rw["SizeID"]),
                                         AREA_ID = Convert.ToString(rw["AreaID"]),
                                         CREATE_BY = ProfileUtilities.User.USER_NAME,

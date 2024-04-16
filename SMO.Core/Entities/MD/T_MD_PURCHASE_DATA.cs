@@ -16,6 +16,8 @@ namespace SMO.Core.Entities
         public virtual decimal S0005 { get; set; }
         public virtual decimal S0006 { get;set; }
         public virtual decimal S0007 { get; set; }
+        public virtual decimal S0008 { get; set; }
+
         public virtual int ID_KHNH { get; set; }
         public virtual string NAME { get; set; }
         public virtual int YEAR { get; set; }

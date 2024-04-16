@@ -1297,6 +1297,11 @@ namespace SMO.Service.MD
                         month = item.Key.MONTH
                     };
                     lstSyncCode.Add(syncCode);
+
+                    if(item.Key.GROUP_1_ID == "6272")
+                    {
+
+                    }
                 }
                 var sapCode = ChiNhanh[area];
                 var costCenter = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCode).CODE;
@@ -1500,6 +1505,14 @@ namespace SMO.Service.MD
                 {
                     foreach (var syncItem in lstSyncCode)
                     {
+                        if(syncItem.code == "B6272B002")
+                        {
+
+                        }
+                        if(item.code == "B6272B002")
+                        {
+
+                        }
                         if (item.code == syncItem.code)
                         {
                             item.Value1 = syncItem.month == 1 ? syncItem.value : 0;

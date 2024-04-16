@@ -1,45 +1,64 @@
 ﻿@model SMO.Service.MD.SyncCostService
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var jsonData = Model.ObjList.OrderBy(x => x.CHI_NHANH).ThenBy(x => x.GROUP_2_ID).Select(x => new
+    {
+        chi_nhanh = x.CHI_NHANH,
+        group_3_id = x.GROUP_3_ID,
+        group_name_3 = x.GROUP_NAME_3,
+        group_2_id = x.GROUP_2_ID,
+        group_name_2 = x.GROUP_NAME_2,
+        group_name_e2 = x.GROUP_NAME_E2,
+        group_1_id = x.GROUP_1_ID,
+        group_name_1 = x.GROUP_NAME_1,
+        value = x.VALUE,
+        accumulator = x.ACCUMULATION,
+        month = x.MONTH,
+        year = x.YEAR,
+    });
+    var gridTab = Guid.NewGuid().ToString("N");
+    var formIdExportExcel = Guid.NewGuid();
+}
+<div style="height: calc(100vh - 250px);" id="@gridTab"></div>
 
-<div class="table-responsive">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>CHI_NHANH</th>
-                <th>GROUP_3_ID</th>
-                <th>GROUP_NAME_3</th>
-                <th>GROUP_2_ID</th>
-                <th>GROUP_NAME_2</th>
-                <th>GROUP_NAME_E2</th>
-                <th>GROUP_1_ID</th>
-                <th>GROUP_NAME_1</th>
-                <th>VALUE</th>
-                <th>ACCUMULATION</th>
-                <th>MONTH</th>
-                <th>YEAR</th>
-
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.ObjList.OrderBy(x => x.CHI_NHANH).ThenBy(x => x.GROUP_2_ID))
-            {
-
-                <tr>
-                    <td>@item.CHI_NHANH</td>
-                    <td>@item.GROUP_3_ID</td>
-                    <td>@item.GROUP_NAME_3</td>
-                    <td>@item.GROUP_2_ID</td>
-                    <td>@item.GROUP_NAME_2</td>
-                    <td>@item.GROUP_NAME_E2</td>
-                    <td>@item.GROUP_1_ID</td>
-                    <td>@item.GROUP_NAME_1</td>
-                    <td>@item.VALUE.ToStringVN()</td>
-                    <td>@item.ACCUMULATION.ToStringVN()</td>
-                    <td>@item.MONTH</td>
-                    <td>@item.YEAR</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
+        @Html.Hidden("Treedata")
+        <button type="submit" id="export_btn" hidden></button>
+    </form>
 </div>
 @{ Html.RenderPartial("Paging", Model); }
+
+<script>
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+    const columns = [
+        { id: "chi_nhanh", header: [{ text: "CHI_NHANH", align: "center" }, { content: "selectFilter" }], width: 120 },
+        { id: "group_3_id", header: [{ text: "GROUP_3_ID", align: "center" }, { content: "selectFilter" }], width: 120 },
+        { id: "group_name_3", header: [{ text: "GROUP_NAME_3", align: "center" }], width: 280 },
+        { id: "group_2_id", header: [{ text: "GROUP_2_ID", align: "center" }, { content: "selectFilter" }], width: 120 },
+        { id: "group_name_2", header: [{ text: "GROUP_NAME_2", align: "center" }], width: 280 },
+        { id: "group_name_e2", header: [{ text: "GROUP_NAME_E2", align: "center" }], width: 180 },
+        { id: "group_1_id", header: [{ text: "GROUP_1_ID", align: "center" }, { content: "selectFilter" } ], width: 120 },
+        { id: "group_name_1", header: [{ text: "GROUP_NAME_1", align: "center" }], width: 280 },
+        { id: "value", header: [{ text: "VALUE", align: "center" }], align: "right", format: "#,#", width: 120 },
+        { id: "accumulator", header: [{ text: "ACCUMULATION", align: "center" }], format: "#,#", align: "right", width: 120 },
+        { id: "month", header: [{ text: "MONTH", align: "center" }, { content: "selectFilter" }], align: "right", width: 120 },
+        { id: "year", header: [{ text: "YEAR", align: "center" }], align: "right", width: 120 },
+    ];
+
+    const treeGrid = new dhx.Grid("@gridTab", {
+    columns,
+    leftSplit: 1,
+    resizable: true,
+    keyNavigation: true,
+    rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        data: rawData
+    });
+    function ExportExcel() {
+        var Treedata = JSON.stringify(treeGrid.data.serialize());
+        $('#@formIdExportExcel #Treedata').val(Treedata);
+        $('#export_btn').click();
+    }
+</script>
