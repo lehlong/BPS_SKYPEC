@@ -383,9 +383,10 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult GenDataBM02C(int year, string phienBan, string kichBan, string hangHangKhong)
+        public ActionResult GenDataBM02C(int year)
         {
-            return PartialView();
+            var data = _service.GenDataBM02C(year);
+            return PartialView(data);
         }
         #endregion
 

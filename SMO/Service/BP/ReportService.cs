@@ -4,6 +4,7 @@ using SMO.Repository.Common;
 using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
 using SMO.Repository.Implement.MD;
+using SMO.Service.MD;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -324,7 +325,6 @@ namespace SMO.Service.BP
                 return new ReportDataCenter();
             }
         }
-
         public ReportDataCenter GenDataBM02A(int year)
         {
             try
@@ -651,7 +651,16 @@ namespace SMO.Service.BP
                     });
                 }
                 #endregion
-                data.BM02A = RecursiveData(data.BM02A);
+                foreach (var i in data.BM02A.OrderByDescending(x => x.Id))
+                {
+                    var child = data.BM02A.Where(x => x.Parent == i.Id).ToList();
+                    i.Col1 = child.Count() == 0 ? i.Col1 : child.Sum(x => x.Col1);
+                    i.Col2 = child.Count() == 0 ? i.Col2 : child.Sum(x => x.Col2);
+                    i.Col4 = child.Count() == 0 ? i.Col4 : child.Sum(x => x.Col4);
+                    i.Col5 = child.Count() == 0 ? i.Col5 : child.Sum(x => x.Col5);
+                    i.Col7 = child.Count() == 0 ? i.Col7 : child.Sum(x => x.Col7);
+                    i.Col8 = child.Count() == 0 ? i.Col8 : child.Sum(x => x.Col8);
+                }
                 return data;
             }
             catch (Exception ex)
@@ -660,20 +669,60 @@ namespace SMO.Service.BP
                 return new ReportDataCenter();
             }
         }
-
-        public List<ReportModel> RecursiveData(List<ReportModel> data)
+       
+        public ReportDataCenter GenDataBM02C(int year)
         {
-            foreach (var i in data.OrderByDescending(x => x.Id))
+            try
             {
-                var child = data.Where(x => x.Parent == i.Id).ToList();
-                i.Col1 = child.Count() == 0 ? i.Col1 : child.Sum(x => x.Col1);
-                i.Col2 = child.Count() == 0 ? i.Col2 : child.Sum(x => x.Col2);
-                i.Col4 = child.Count() == 0 ? i.Col4 : child.Sum(x => x.Col4);
-                i.Col5 = child.Count() == 0 ? i.Col5 : child.Sum(x => x.Col5);
-                i.Col7 = child.Count() == 0 ? i.Col7 : child.Sum(x => x.Col7);
-                i.Col8 = child.Count() == 0 ? i.Col8 : child.Sum(x => x.Col8);
+                var service = new ElementService();
+                var serviceKb = new KichBanService();
+                var data = new ReportDataCenter();
+
+                var dataKHTCPrevious = service.GetDataKeHoachTaiChinh(year - 1);
+                var dataKHTC = service.GetDataKeHoachTaiChinh(year);
+                var dataSXKD = serviceKb.GetData(year, "TB");
+
+                var I = new ReportModel
+                {
+                    Id = "I",
+                    Stt = "I",
+                    Name = "I. Hoạt động SXKD",
+                    IsBold = true,
+                    Col7 = dataSXKD.Where(x => x.Name == "Doanh thu từ hoạt động SXKD").Sum(x => x.Value5),
+                    Col8 = dataSXKD.Where(x => x.Name == "Chi phí sản xuất kinh doanh").Sum(x => x.Value5),
+                };
+                I.Col9 = I.Col7 - I.Col8;
+                data.BM02C.Add(I);
+
+                var II = new ReportModel
+                {
+                    Id = "II",
+                    Stt = "II",
+                    Name = "II. Hoạt động tài chính",
+                    IsBold = true,
+                    Col1 = dataKHTCPrevious.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0137").Sum(x => x.Value),
+                    Col2 = dataKHTCPrevious.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0138").Sum(x => x.Value),
+                    Col7 = dataKHTC.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0137").Sum(x => x.Value),
+                    Col8 = dataKHTC.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0138").Sum(x => x.Value),
+                };
+                II.Col3 = II.Col1 - II.Col2;
+                II.Col9 = II.Col7 - II.Col8;
+                data.BM02C.Add(II);
+
+                data.BM02C.Add(new ReportModel
+                {
+                    Id = "III",
+                    Stt = "III",
+                    Name = "III. Hoạt động khác",
+                    IsBold = true
+                });
+                return data;
             }
-            return data;
+            catch(Exception ex)
+            {
+                UnitOfWork.Rollback();
+                return new ReportDataCenter();
+            }
         }
     }
 
@@ -681,6 +730,7 @@ namespace SMO.Service.BP
     {
         public List<ReportModel> BM01D { get; set; } = new List<ReportModel>();
         public List<ReportModel> BM02A { get; set; } = new List<ReportModel>();
+        public List<ReportModel> BM02C { get; set; } = new List<ReportModel>();
     }
 
     public class ReportModel
