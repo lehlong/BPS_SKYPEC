@@ -408,7 +408,8 @@ namespace SMO.Areas.BP.Controllers
         }
         public ActionResult GenDataBM02D(int year, string phienBan, string kichBan, string hangHangKhong)
         {
-            return PartialView();
+            var data = _service.GenDataBM02D(year, kichBan);
+            return PartialView(data);
         }
         #endregion
 
@@ -419,7 +420,8 @@ namespace SMO.Areas.BP.Controllers
         }
         public ActionResult GenDataBM02D1(int year, string phienBan, string kichBan, string hangHangKhong)
         {
-            return PartialView();
+            var data = _service.GenDataBM02D1(year, phienBan);
+            return PartialView(data);
         }
         #endregion
 

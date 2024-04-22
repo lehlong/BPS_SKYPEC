@@ -47,7 +47,7 @@ namespace SMO.Service.BP
                     Stt = "I",
                     Name = "I. Đầu tư trang thiết bị",
                     Parent = "A",
-                    IsBold= true,
+                    IsBold = true,
                 });
                 data.BM01D.Add(new ReportModel
                 {
@@ -56,7 +56,7 @@ namespace SMO.Service.BP
                     Name = "1. Các dự án chuẩn bị đầu tư",
                     Parent = "A.I",
                 });
-                foreach(var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "CBDT"))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -373,7 +373,7 @@ namespace SMO.Service.BP
                         Tdth = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE).FirstOrDefault()?.PROCESS ?? "",
                         Col4 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4010")?.Sum(x => x.VALUE) ?? 0,
                         Col5 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4011")?.Sum(x => x.VALUE) ?? 0,
-                        Tdtk = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE ).FirstOrDefault()?.TDTK ?? "",
+                        Tdtk = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE).FirstOrDefault()?.TDTK ?? "",
                         Col7 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4020")?.Sum(x => x.VALUE) ?? 0,
                         Col8 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4021")?.Sum(x => x.VALUE) ?? 0,
                         Des = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE).FirstOrDefault()?.DESCRIPTION ?? "",
@@ -669,7 +669,6 @@ namespace SMO.Service.BP
                 return new ReportDataCenter();
             }
         }
-       
         public ReportDataCenter GenDataBM02C(int year)
         {
             try
@@ -718,12 +717,396 @@ namespace SMO.Service.BP
                 });
                 return data;
             }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                return new ReportDataCenter();
+            }
+        }
+        public ReportDataCenter GenDataBM02D (int year, string kichBan)
+        {
+            try
+            {
+                var service = new KichBanService();
+                var dataSXKDCurrent = service.GetData(year, kichBan);
+                var data = new ReportDataCenter();
+                foreach(var item in ElementDataReport)
+                {
+                    data.BM02D.Add(new ReportModel
+                    {
+                        Id = item.Id,
+                        Parent = item.Parent,
+                        Name = item.Name,
+                        Unit = item.Unit,
+                        IsBold = item.IsBold,
+                        Col2 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value2),
+                        Col4 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value5),
+                    });
+                }
+                return data;
+            }
             catch(Exception ex)
             {
                 UnitOfWork.Rollback();
                 return new ReportDataCenter();
             }
         }
+
+        public ReportDataCenter GenDataBM02D1(int year, string phienBan)
+        {
+            try
+            {
+                var service = new PhienBanService();
+                var dataSXKDCurrent = service.GetData(year, phienBan);
+                var data = new ReportDataCenter();
+                foreach (var item in ElementDataReport)
+                {
+                    data.BM02D1.Add(new ReportModel
+                    {
+                        Id = item.Id,
+                        Parent = item.Parent,
+                        Name = item.Name,
+                        Unit = item.Unit,
+                        IsBold = item.IsBold,
+                        Col1 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value1),
+                        Col2 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value2),
+                        Col3 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value3),
+                    });
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                return new ReportDataCenter();
+            }
+        }
+        public static List<ReportModel> ElementDataReport = new List<ReportModel>(){
+            new ReportModel()
+            {
+                Id = "I",
+                Name = "I. Sản lượng",
+                IsBold = true,
+            },
+            new ReportModel()
+            {
+                Id = "I.1",
+                Parent = "I",
+                Name = "1. Cung ứng cho VNA Group",
+            },
+            new ReportModel()
+            {
+                Id = "I.1.1",
+                Parent = "I.1",
+                Name = "- Cung ứng cho VNA",
+            },
+            new ReportModel()
+            {
+                Id = "I.1.2",
+                Parent = "I.1",
+                Name = "- Cung ứng cho các DN khác trong VNA Group",
+            },
+            new ReportModel()
+            {
+                Id = "I.2",
+                Parent = "I",
+                Name = "2. Cung ứng cho đối tác khác (*)",
+            },
+            new ReportModel()
+            {
+                Id = "II",
+                Name = "II. Doanh thu từ hoạt động SXKD",
+                IsBold = true,
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.1",
+                Parent = "II",
+                Name = "1. Doanh thu cung ứng cho VNA Group",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "II.1.1",
+                Parent = "II.1",
+                Name = "- Doanh thu VNA",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "II.1.1.1",
+                Parent = "II.1.1",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.1.2",
+                Parent = "II.1",
+                Name = "- Doanh thu các DN khác trong VNA group",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.1.2.1",
+                Parent = "II.1.2",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.2",
+                Parent = "II",
+                Name = "2. Doanh thu cung ứng cho đối tác khác (*)",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.2.1",
+                Parent = "II.2",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III",
+                Name = "III. Các khoản chi phí",
+                Unit = "Tr.đ/USD",
+                IsBold = true
+            },
+            new ReportModel()
+            {
+                Id = "III.1",
+                Parent = "III",
+                Name = "1. Chi phí dịch vụ mua ngoài",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "III.1.1",
+                Parent = "III.1",
+                Name = "1.1. Thuê phương tiện vận tải, trang thiết bị",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.1.2",
+                Parent = "III.1",
+                Name = "1.2. Chi phí thuê văn phòng, mặt bằng",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.1.3",
+                Parent = "III.1",
+                Name = "1.3. Chi phí thông tin liên lạc",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.1.4",
+                Parent = "III.1",
+                Name = "1.4. Chi phí quảng cáo, tiếp thị",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.1.5",
+                Parent = "III.1",
+                Name = "1.5. Điện nước",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.1.6",
+                Parent = "III.1",
+                Name = "1.6. Chi phí mua bảo hiểm bắt buộc (BH tài sản, tai nạn lao động, cháy nổ…)",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.1.7",
+                Parent = "III.1",
+                Name = "1.7. Chi phí dịch vụ tư vấn, kiểm toán",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.1.8",
+                Parent = "III.1",
+                Name = "1.8. Hoa hồng, môi giới, đại lý",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.1.9",
+                Parent = "III.1",
+                Name = "1.9. Chi phí dịch vụ mua ngoài khác",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2",
+                Parent = "III",
+                Name = "2. Chi khác bằng tiền",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "III.2.1",
+                Parent = "III.2",
+                Name = "2.1. Chi đồng phục",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.2",
+                Parent = "III.2",
+                Name = "2.2. Chi bồi dưỡng độc hại",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.3",
+                Parent = "III.2",
+                Name = "2.3. Bảo hộ lao động",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.4",
+                Parent = "III.2",
+                Name = "2.4. Văn phòng phẩm, in ấn",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.5",
+                Parent = "III.2",
+                Name = "2.5. Tiếp khách, hội nghị, xúc tiến thương mại",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.6",
+                Parent = "III.2",
+                Name = "2.6. Công tác phí",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.6.1",
+                Parent = "III.2.6",
+                Name = "- Trong nước",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.6.2",
+                Parent = "III.2.6",
+                Name = "- Ngoài nước",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.2.7",
+                Parent = "III.2",
+                Name = "2.7. Chi phí y tế",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.8",
+                Parent = "III.2",
+                Name = "2.8. Chi đào tạo",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.8.1",
+                Parent = "III.2.8",
+                Name = "- Trong nước",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.8.2",
+                Parent = "III.2.8",
+                Name = "- Ngoài nước",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.9",
+                Parent = "III.2",
+                Name = "2.9. Chi phòng cháy chữa cháy, phòng chống bão lụt, trực tự vệ",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.10",
+                Parent = "III.2",
+                Name = "2.10. Chi vệ sinh văn phòng, diệt côn trùng, cây cảnh",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.11",
+                Parent = "III.2",
+                Name = "2.11. Chi phí môi trường",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.12",
+                Parent = "III.2",
+                Name = "2.12. Chi có tính chất phúc lợi: hiếu hỉ, nghỉ mát, thăm hỏi…",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.13",
+                Parent = "III.2",
+                Name = "2.13. Chi bảo hiểm hưu trí tự nguyện",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.14",
+                Parent = "III.2",
+                Name = "2.14. Thủ tục phí ngân hàng",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.15",
+                Parent = "III.2",
+                Name = "2.15. Các khoản chi khác",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.15.1",
+                Parent = "III.2.15",
+                Name = "- Mua tài liệu",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.15.2",
+                Parent = "III.2.15",
+                Name = "- Kiểm định xe ô tô / thiết bị",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III.2.15.3",
+                Parent = "III.2.15",
+                Name = "- Chi khác ....",
+                Unit = "Tr.đ/USD"
+            },
+        };
     }
 
     public class ReportDataCenter
@@ -731,10 +1114,14 @@ namespace SMO.Service.BP
         public List<ReportModel> BM01D { get; set; } = new List<ReportModel>();
         public List<ReportModel> BM02A { get; set; } = new List<ReportModel>();
         public List<ReportModel> BM02C { get; set; } = new List<ReportModel>();
+        public List<ReportModel> BM02D { get; set; } = new List<ReportModel>();
+        public List<ReportModel> BM02D1 { get; set; } = new List<ReportModel>();
     }
 
     public class ReportModel
     {
+        public string ElementCode { get; set; }
+        public string Unit { get; set; }
         public string Stt { get; set; }
         public string Id { get; set; }
         public string Parent { get; set; }

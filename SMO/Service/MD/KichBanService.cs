@@ -90,6 +90,7 @@ namespace SMO.Service.MD
                              select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id = "I",
                 Stt = "II",
                 Name = "Sản lượng",
                 Order = 3,
@@ -123,6 +124,7 @@ namespace SMO.Service.MD
                              select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id = "I.1",
                 Stt = "1",
                 Name = "Cung ứng cho VNA Group",
                 Order = 4,
@@ -155,6 +157,7 @@ namespace SMO.Service.MD
                              select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id= "I.1.1",
                 Name = "Cung ứng cho VNA",
                 Order = 5,
                 Value1 = value_5_1 ?? 0,
@@ -185,6 +188,7 @@ namespace SMO.Service.MD
                              select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id= "I.1.2",
                 Name = "Cung ứng cho các hãng hàng không khác trong VNA Group",
                 Order = 6,
                 Value1 = value_6_1 ?? 0,
@@ -213,6 +217,7 @@ namespace SMO.Service.MD
                              select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id = "I.2",
                 Stt = "2",
                 Name = "Cung ứng cho đối tác khác (*)",
                 UnitName = "Tr.đ",
@@ -245,6 +250,7 @@ namespace SMO.Service.MD
                              select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id = "II",
                 Stt = "1",
                 Name = "Doanh thu từ hoạt động SXKD",
                 UnitName = "Tr.đ",
@@ -260,6 +266,7 @@ namespace SMO.Service.MD
             });
             data.Add(new SynthesisReportModel
             {
+                Id = "II.1",
                 Name = " - Doanh thu cung ứng cho VNA ",
                 UnitName = "Tr.đ",
                 Order = 10,
@@ -282,6 +289,7 @@ namespace SMO.Service.MD
                               select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id = "II.1.1",
                 Name = "+ Doanh thu VNA",
                 UnitName = "Tr.đ",
                 Order = 11,
@@ -296,6 +304,7 @@ namespace SMO.Service.MD
             });
             data.Add(new SynthesisReportModel
             {
+                Id = "II.1.1.1",
                 Name = "Trong đó: CK/Giảm giá",
                 Order = 12,
             });
@@ -317,6 +326,7 @@ namespace SMO.Service.MD
                               select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id = "II.1.2",
                 Name = "+ Doanh thu hãng HK trong VNA group",
                 UnitName = "Tr.đ",
                 Order = 13,
@@ -331,6 +341,7 @@ namespace SMO.Service.MD
             });
             data.Add(new SynthesisReportModel
             {
+                Id = "II.1.2.1",
                 Name = "Trong đó: CK/Giảm giá",
                 Order = 14,
             });
@@ -352,6 +363,7 @@ namespace SMO.Service.MD
                               select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
+                Id = "II.2",
                 Name = " - Doanh thu cung ứng cho đối tác khác (*)",
                 UnitName = "Tr.đ",
                 Order = 15,
@@ -366,6 +378,7 @@ namespace SMO.Service.MD
             });
             data.Add(new SynthesisReportModel
             {
+                Id = "II.2.1",
                 Name = "Trong đó: CK/Giảm giá",
                 Order = 16,
             });

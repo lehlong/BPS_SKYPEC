@@ -1,4 +1,4 @@
-﻿
+﻿@model SMO.Service.BP.ReportDataCenter
 @using System.Text;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
@@ -23,18 +23,20 @@
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 
 <script type="text/javascript">
-    var rawData = [];
+    var rawData = @Html.Raw(JsonConvert.SerializeObject(Model.BM02D1, jsonSerializeSettings));
+rawData.forEach((item) => {
+    if (item.isBold) delete item.parent;
+});
     let columns = [
-        { id: "stt", header: [{ text: "STT", align: "center" }], minWidth: 100 },
-        { id: "name", header: [{ text: "NỘI DUNG", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
+        { id: "name", header: [{ text: "NỘI DUNG", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
 
-        { id: "unit", header: [{ text: "ĐVT", align: "center" }], align: "right", minWidth: 180 },
-        { id: "col1", header: [{ text: "KH (KỊCH BẢN CAO)", align: "center" }], align: "right", minWidth: 300 },
-        { id: "col2", header: [{ text: "KH (KỊCH BẢN TRUNG BÌNH)", align: "center" }], align: "right", minWidth: 300 },
-        { id: "col3", header: [{ text: "KH (KỊCH BẢN THẤP)", align: "center" }], align: "right", minWidth: 300 },
+        { id: "unit", header: [{ text: "ĐVT", align: "center" }], align: "center", minWidth: 180 },
+        { id: "col1", header: [{ text: "KH (KỊCH BẢN CAO)", align: "center" }], align: "right", minWidth: 300, type: "number", format: "#,#" },
+        { id: "col2", header: [{ text: "KH (KỊCH BẢN TRUNG BÌNH)", align: "center" }], align: "right", minWidth: 300, type: "number", format: "#,#" },
+        { id: "col3", header: [{ text: "KH (KỊCH BẢN THẤP)", align: "center" }], align: "right", minWidth: 300, type: "number", format: "#,#" },
     ];
 
-    const treeGrid = new dhx.Grid("@gridId", {
+    const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
         leftSplit: 2,
