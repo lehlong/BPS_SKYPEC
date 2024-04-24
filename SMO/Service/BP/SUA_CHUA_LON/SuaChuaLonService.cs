@@ -2216,7 +2216,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                             VERSION = versionNext,
                             KHOAN_MUC_SUA_CHUA_CODE = tableData.Rows[i][4].ToString().Trim(),
                             QUY_MO = tableData.Rows[i][6].ToString().Trim(),
-                            VALUE = string.IsNullOrEmpty(Convert.ToString(tableData.Rows[i][7]))? 0 : Convert.ToDecimal(tableData.Rows[i][7]),
+                            VALUE = (tableData.Rows[i][7] != DBNull.Value) ? Convert.ToDecimal(tableData.Rows[i][7]) : 0,
 
                         DESCRIPTION = tableData.Rows[i][20].ToString(),
                             CREATE_BY = currentUser
