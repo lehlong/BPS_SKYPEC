@@ -1,6 +1,7 @@
 ﻿using NHibernate.Criterion;
 using NPOI.SS.Formula.Functions;
 using SMO.Repository.Common;
+using SMO.Repository.Implement.BP.DAU_TU_NGOAI_DOANH_NGHIEP;
 using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
 using SMO.Repository.Implement.MD;
@@ -669,7 +670,332 @@ namespace SMO.Service.BP
                 return new ReportDataCenter();
             }
         }
-        public ReportDataCenter GenDataBM02C(int year)
+
+        public ReportDataCenter GenDataBM02B(int year)
+        {
+            try
+            {
+                var data = new ReportDataCenter();
+                var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR > 0 && x.LOAI_HINH == "NDN").ToList();
+                var template = UnitOfWork.Repository<DauTuNgoaiDoanhNghiepRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCurrent = UnitOfWork.Repository<DauTuNgoaiDoanhNghiepDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.DauTuNgoaiDoanhNghiepProfitCenter != null && template.Contains(x.TEMPLATE_CODE)).ToList();
+
+                #region 
+                data.BM02A.Add(new ReportModel
+                {
+                    Id = "A",
+                    Stt = "A",
+                    Name = "A. Đầu tư vào ngành nghề kinh doanh chính",
+                    IsBold = true,
+                });
+                data.BM02A.Add(new ReportModel
+                {
+                    Id = "A.I",
+                    Stt = "I",
+                    Name = "I. Đầu tư vào công ty con",
+                    Parent = "A",
+                });
+
+                foreach(var prj in lstProject.Where(x => x.NGANH_NGHE == "KDC" && x.PHAN_LOAI == "CTC"))
+                {
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE,
+                        Stt = prj.CODE,
+                        Name = prj.NAME,
+                        Parent = "A.I"
+                    });
+
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5101",
+                        Stt = prj.CODE + "5101",
+                        Name = "- Giá trị đầu tư thực tế",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5102",
+                        Stt = prj.CODE + "5102",
+                        Name = "- Giá trị đầu tư theo mệnh giá",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                }
+
+                data.BM02A.Add(new ReportModel
+                {
+                    Id = "A.II",
+                    Stt = "II",
+                    Name = "II. Đầu tư vào công ty liên kết",
+                    Parent = "A",
+                });
+
+                foreach (var prj in lstProject.Where(x => x.NGANH_NGHE == "KDC" && x.PHAN_LOAI == "CTLK"))
+                {
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE,
+                        Stt = prj.CODE,
+                        Name = prj.NAME,
+                        Parent = "A.II"
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5101",
+                        Stt = prj.CODE + "5101",
+                        Name = "- Giá trị đầu tư thực tế",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5102",
+                        Stt = prj.CODE + "5102",
+                        Name = "- Giá trị đầu tư theo mệnh giá",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                }
+
+                data.BM02A.Add(new ReportModel
+                {
+                    Id = "A.III",
+                    Stt = "III",
+                    Name = "III. Đầu tư tài chính khác",
+                    Parent = "A",
+                });
+
+                foreach (var prj in lstProject.Where(x => x.NGANH_NGHE == "KDC" && x.PHAN_LOAI == "TC"))
+                {
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE,
+                        Stt = prj.CODE,
+                        Name = prj.NAME,
+                        Parent = "A.III"
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5101",
+                        Stt = prj.CODE + "5101",
+                        Name = "- Giá trị đầu tư thực tế",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5102",
+                        Stt = prj.CODE + "5102",
+                        Name = "- Giá trị đầu tư theo mệnh giá",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                }
+
+                data.BM02A.Add(new ReportModel
+                {
+                    Id = "B",
+                    Stt = "B",
+                    Name = "B. Đầu tư vào ngành nghề khác",
+                    IsBold = true,
+                });
+                data.BM02A.Add(new ReportModel
+                {
+                    Id = "B.I",
+                    Stt = "I",
+                    Name = "I. Đầu tư vào công ty con",
+                    Parent = "B",
+                });
+
+                foreach (var prj in lstProject.Where(x => x.NGANH_NGHE == "OTHER" && x.PHAN_LOAI == "CTC"))
+                {
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE,
+                        Stt = prj.CODE,
+                        Name = prj.NAME,
+                        Parent = "B.I"
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5101",
+                        Stt = prj.CODE + "5101",
+                        Name = "- Giá trị đầu tư thực tế",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5102",
+                        Stt = prj.CODE + "5102",
+                        Name = "- Giá trị đầu tư theo mệnh giá",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                }
+
+                data.BM02A.Add(new ReportModel
+                {
+                    Id = "B.II",
+                    Stt = "II",
+                    Name = "II. Đầu tư vào công ty liên kết",
+                    Parent = "B",
+                });
+
+                foreach (var prj in lstProject.Where(x => x.NGANH_NGHE == "OTHER" && x.PHAN_LOAI == "CTLK"))
+                {
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE,
+                        Stt = prj.CODE,
+                        Name = prj.NAME,
+                        Parent = "B.II"
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5101",
+                        Stt = prj.CODE + "5101",
+                        Name = "- Giá trị đầu tư thực tế",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5102",
+                        Stt = prj.CODE + "5102",
+                        Name = "- Giá trị đầu tư theo mệnh giá",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                }
+
+                data.BM02A.Add(new ReportModel
+                {
+                    Id = "B.III",
+                    Stt = "III",
+                    Name = "III. Đầu tư tài chính khác",
+                    Parent = "B",
+                });
+
+                foreach (var prj in lstProject.Where(x => x.NGANH_NGHE == "OTHER" && x.PHAN_LOAI == "TC"))
+                {
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE,
+                        Stt = prj.CODE,
+                        Name = prj.NAME,
+                        Parent = "B.III"
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5101",
+                        Stt = prj.CODE + "5101",
+                        Name = "- Giá trị đầu tư thực tế",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                    data.BM02A.Add(new ReportModel
+                    {
+                        Id = prj.CODE + "5102",
+                        Stt = prj.CODE + "5102",
+                        Name = "- Giá trị đầu tư theo mệnh giá",
+                        Parent = prj.CODE,
+                        Col1 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_1),
+                        Col2 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_2),
+                        Col3 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_3),
+                        Col4 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_4),
+                        Col5 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_5),
+                        Col6 = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5102" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).Sum(x => x.VALUE_6),
+                        Des = dataCurrent.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "5101" && x.DauTuNgoaiDoanhNghiepProfitCenter.PROJECT_CODE == prj.CODE).FirstOrDefault()?.DESCRIPTION,
+                    });
+                }
+
+                #endregion
+                foreach (var i in data.BM02A.OrderByDescending(x => x.Id))
+                {
+                    var child = data.BM02A.Where(x => x.Parent == i.Id).ToList();
+                    i.Col1 = child.Count() == 0 ? i.Col1 : child.Sum(x => x.Col1);
+                    i.Col2 = child.Count() == 0 ? i.Col2 : child.Sum(x => x.Col2);
+                    i.Col3 = child.Count() == 0 ? i.Col3 : child.Sum(x => x.Col3);
+                    i.Col5 = child.Count() == 0 ? i.Col5 : child.Sum(x => x.Col5);
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                return new ReportDataCenter();
+            }
+        }
+        public ReportDataCenter GenDataBM02C(int year, string kichBan)
         {
             try
             {
@@ -679,32 +1005,36 @@ namespace SMO.Service.BP
 
                 var dataKHTCPrevious = service.GetDataKeHoachTaiChinh(year - 1);
                 var dataKHTC = service.GetDataKeHoachTaiChinh(year);
-                var dataSXKD = serviceKb.GetData(year, "TB");
+                var dataSXKD = serviceKb.GetData(year, kichBan);
 
                 var I = new ReportModel
                 {
                     Id = "I",
                     Stt = "I",
                     Name = "I. Hoạt động SXKD",
-                    IsBold = true,
+                    Parent = "SUM",
+                    Col4 = dataSXKD.Where(x => x.Name == "Doanh thu từ hoạt động SXKD").Sum(x => x.Value4),
+                    Col5 = dataSXKD.Where(x => x.Name == "Chi phí sản xuất kinh doanh").Sum(x => x.Value4),
                     Col7 = dataSXKD.Where(x => x.Name == "Doanh thu từ hoạt động SXKD").Sum(x => x.Value5),
                     Col8 = dataSXKD.Where(x => x.Name == "Chi phí sản xuất kinh doanh").Sum(x => x.Value5),
                 };
                 I.Col9 = I.Col7 - I.Col8;
+                I.Col6 = I.Col4 - I.Col5;
                 data.BM02C.Add(I);
 
                 var II = new ReportModel
                 {
                     Id = "II",
                     Stt = "II",
+                    Parent = "SUM",
                     Name = "II. Hoạt động tài chính",
-                    IsBold = true,
                     Col1 = dataKHTCPrevious.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0137").Sum(x => x.Value),
                     Col2 = dataKHTCPrevious.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0138").Sum(x => x.Value),
                     Col7 = dataKHTC.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0137").Sum(x => x.Value),
                     Col8 = dataKHTC.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0138").Sum(x => x.Value),
                 };
                 II.Col3 = II.Col1 - II.Col2;
+                II.Col6 = II.Col4 - II.Col5;
                 II.Col9 = II.Col7 - II.Col8;
                 data.BM02C.Add(II);
 
@@ -712,8 +1042,101 @@ namespace SMO.Service.BP
                 {
                     Id = "III",
                     Stt = "III",
+                    Parent = "SUM",
                     Name = "III. Hoạt động khác",
-                    IsBold = true
+                });
+
+                data.BM02C.Add(new ReportModel
+                {
+                    Id = "SUM",
+                    Stt = "SUM",
+                    Name = "TỔNG CỘNG",
+                    IsBold = true,
+                    Col1 = I.Col1 + II.Col1,
+                    Col2 = I.Col2 + II.Col2,
+                    Col3 = I.Col3 + II.Col3,
+                    Col4 = I.Col4 + II.Col4,
+                    Col5 = I.Col5 + II.Col5,
+                    Col6 = I.Col6 + II.Col6,
+                    Col7 = I.Col7 + II.Col7,
+                    Col8 = I.Col8 + II.Col8,
+                    Col9 = I.Col9 + II.Col9,
+                });
+                return data;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                return new ReportDataCenter();
+            }
+        }
+
+        public ReportDataCenter GenDataBM02C1(int year, string phienBan)
+        {
+            try
+            {
+                var service = new ElementService();
+                var servicePb = new PhienBanService();
+                var data = new ReportDataCenter();
+
+                var dataKHTC = service.GetDataKeHoachTaiChinh(year);
+                var dataSXKD = servicePb.GetData(year, phienBan);
+
+                var I = new ReportModel
+                {
+                    Id = "I",
+                    Stt = "I",
+                    Name = "I. Hoạt động SXKD",
+                    Parent = "SUM",
+                    Col1 = dataSXKD.Where(x => x.Name == "Doanh thu từ hoạt động SXKD").Sum(x => x.Value1),
+                    Col2 = dataSXKD.Where(x => x.Name == "Chi phí sản xuất kinh doanh").Sum(x => x.Value1),
+                    Col4 = dataSXKD.Where(x => x.Name == "Doanh thu từ hoạt động SXKD").Sum(x => x.Value2),
+                    Col5 = dataSXKD.Where(x => x.Name == "Chi phí sản xuất kinh doanh").Sum(x => x.Value2),
+                    Col7 = dataSXKD.Where(x => x.Name == "Doanh thu từ hoạt động SXKD").Sum(x => x.Value3),
+                    Col8 = dataSXKD.Where(x => x.Name == "Chi phí sản xuất kinh doanh").Sum(x => x.Value4),
+                };
+                I.Col9 = I.Col7 - I.Col8;
+                I.Col6 = I.Col4 - I.Col5;
+                I.Col3 = I.Col1 - I.Col2;
+                data.BM02C.Add(I);
+
+                var II = new ReportModel
+                {
+                    Id = "II",
+                    Stt = "II",
+                    Parent = "SUM",
+                    Name = "II. Hoạt động tài chính",
+                    Col4 = dataKHTC.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0137").Sum(x => x.Value),
+                    Col5 = dataKHTC.KeHoachTaiChinhData.Where(x => x.ElementCode == "U0138").Sum(x => x.Value),
+                };
+                II.Col3 = II.Col1 - II.Col2;
+                II.Col6 = II.Col4 - II.Col5;
+                II.Col9 = II.Col7 - II.Col8;
+                data.BM02C.Add(II);
+
+                data.BM02C.Add(new ReportModel
+                {
+                    Id = "III",
+                    Stt = "III",
+                    Parent = "SUM",
+                    Name = "III. Hoạt động khác",
+                });
+
+                data.BM02C.Add(new ReportModel
+                {
+                    Id = "SUM",
+                    Stt = "SUM",
+                    Name = "TỔNG CỘNG",
+                    IsBold = true,
+                    Col1 = I.Col1 + II.Col1,
+                    Col2 = I.Col2 + II.Col2,
+                    Col3 = I.Col3 + II.Col3,
+                    Col4 = I.Col4 + II.Col4,
+                    Col5 = I.Col5 + II.Col5,
+                    Col6 = I.Col6 + II.Col6,
+                    Col7 = I.Col7 + II.Col7,
+                    Col8 = I.Col8 + II.Col8,
+                    Col9 = I.Col9 + II.Col9,
                 });
                 return data;
             }

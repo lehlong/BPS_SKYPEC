@@ -14,7 +14,7 @@
             <div class="tab-content">
                 <div class="page-function" style="width:100%">
                     <div class="page-function-button m-r-20" style="float:left">
-                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close({0})", viewId), "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}')", viewId), "Alt+N", "arrow_back")
                         @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
                     </div>

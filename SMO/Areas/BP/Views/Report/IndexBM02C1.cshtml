@@ -2,6 +2,7 @@
     var viewId = Guid.NewGuid().ToString();
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
+    var lstPhienBan = SelectListUtilities.GetAllPhienBan();
 }
 <div id="@viewId" class="container-fluid child-content">
     <div class="card border-grey">
@@ -32,6 +33,14 @@
                                     {
                                         <option value="@temp.Value">@temp.Text</option>
                                     }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control selectpicker show-tick" id="phien-ban">
+                                @foreach (var item in lstPhienBan)
+                                {
+                                    <option value="@item.Value">@(item.Text)</option>
                                 }
                             </select>
                         </div>
