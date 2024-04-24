@@ -2216,9 +2216,9 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                             VERSION = versionNext,
                             KHOAN_MUC_SUA_CHUA_CODE = tableData.Rows[i][4].ToString().Trim(),
                             QUY_MO = tableData.Rows[i][6].ToString().Trim(),
-                            VALUE = tableData.Rows[i][7] as decimal? == null ? 0 : tableData.Rows[i][7] as decimal?,
+                            VALUE = string.IsNullOrEmpty(Convert.ToString(tableData.Rows[i][7]))? 0 : Convert.ToDecimal(tableData.Rows[i][7]),
 
-                            DESCRIPTION = tableData.Rows[i][20].ToString(),
+                        DESCRIPTION = tableData.Rows[i][20].ToString(),
                             CREATE_BY = currentUser
                         };
                     }
@@ -4285,7 +4285,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
         }
 
-        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode,string valueInput)
+        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode,string valueInput, int? month)
         {
             try
             {
@@ -4301,9 +4301,51 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 var oldValue = rowsChange.FirstOrDefault().VALUE;
                 foreach(var item in rowsChange)
                 {
-                    item.VALUE = Convert.ToDecimal(value);
+                    /*item.VALUE = Convert.ToDecimal(value);*/
+                    switch (month)
+                    {
+                        case 1: item.MONTH1 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 2:
+                            item.MONTH2 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 3:
+                            item.MONTH3 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 4:
+                            item.MONTH4 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 5:
+                            item.MONTH5 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 6:
+                            item.MONTH6 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 7:
+                            item.MONTH7 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 8:
+                            item.MONTH8 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 9:
+                            item.MONTH9 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 10:
+                            item.MONTH10 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 11:
+                            item.MONTH11 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 12:
+                            item.MONTH12 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        default: item.VALUE = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                    }
+                    item.SumMonth = item.MONTH1 + item.MONTH2 + item.MONTH3 + item.MONTH4 + item.MONTH5 + item.MONTH6 + item.MONTH7 + item.MONTH8 + item.MONTH9 + item.MONTH10 + item.MONTH11 + item.MONTH12;
                     UnitOfWork.Repository<SuaChuaLonDataRepo>().Update(item);
                 }
+
 
                 /*UnitOfWork.Repository<SuaChuaLonEditHistoryRepo>().Create(new T_BP_SUA_CHUA_LON_EDIT_HISTORY
                 {
@@ -4642,11 +4684,42 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             }
         }
 
-        public List<T_BP_SUA_CHUA_LON_DATA> GetDataSCL(string TemplateCode, int? version, int year)
+        public List<T_BP_SUA_CHUA_LON_DATA> GetDataSCL(ViewDataCenterModel model)
         {
-            var lstdata = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == TemplateCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
+            var lstdata = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
             return lstdata;
         }
+
+        public void GetDataKhoanMucSCL(ViewDataCenterModel model)
+        {
+            var lstdata = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
+            var lstKhoanMuc = new List<T_MD_KHOAN_MUC_SUA_CHUA>();
+            foreach(var item in lstdata)
+            {
+                var value = item.GetType().GetProperty($"MONTH{model.MONTH}").GetValue(item);
+                item.KhoanMucSuaChua.Values[0] = value != null ? Convert.ToDecimal(value) : 0;
+                lstKhoanMuc.Add(item.KhoanMucSuaChua);
+            }
+        }
+
+        public List<T_MD_KHOAN_MUC_SUA_CHUA> CalculationSum(IList<T_MD_KHOAN_MUC_SUA_CHUA> lstData, ViewDataCenterModel model)
+        {
+
+            var dataHeader = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.PHIEN_BAN != "PB1" && x.PHIEN_BAN != "PB5").Select(x=>x.TEMPLATE_CODE).ToList();
+            var dataInHeader = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => dataHeader.Contains(x.TEMPLATE_CODE)).ToList();
+
+            var lstSum =  new List<T_MD_KHOAN_MUC_SUA_CHUA>();
+            foreach (var item in lstData.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
+            {
+                var itemSum = new T_MD_KHOAN_MUC_SUA_CHUA
+                {
+                    CODE = item.CODE,
+                };
+                itemSum.Values[0] =lstData.Where(x=>x.CODE == item.CODE).Sum(x=>x.Values[0]) + (decimal)dataInHeader.Where(x=>x.KHOAN_MUC_SUA_CHUA_CODE == item.CODE).Sum(x=>x.VALUE);
+                lstSum.Add(itemSum);
+            }
+            return lstSum;
+        } 
 
     }
 }

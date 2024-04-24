@@ -777,13 +777,14 @@ namespace SMO.Service.MD
                             //Lấy giá
                             var tnkCode = "TNK" + "-" + hhk.GROUP_ITEM;
                             // Giá thuế nhập khẩu
-                            var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == tnkCode).VALUE;
+                            var thueTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == tnkCode).VALUE;
                             // Giá mops
                             var pricePlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
                             var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
                             var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
                             var ThueXBQ = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "23").VALUE;
                             var priceMops = pricePlat * priceTG * priceHSQD;
+                            var priceTNK = thueTNK * pricePlat * priceHSQD * priceTG;
 
                             for (var i = 0; i < sanBayGroup.Count(); i++)
                             {
@@ -838,12 +839,13 @@ namespace SMO.Service.MD
                             //Lấy giá
                             var tnkCode = "TNK" + "-" + hhk.GROUP_ITEM;
                             // Giá thuế nhập khẩu
-                            var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == tnkCode).VALUE;
+                            var thueTNK = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == tnkCode).VALUE;
                             // Giá mops
                             var pricePlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
                             var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
                             var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
                             var priceMops = pricePlat * priceTG * priceHSQD;
+                            var priceTNK = thueTNK * pricePlat * priceHSQD * priceTG;
                             for (var i = 0; i < sanBayFHS.Count(); i++)
                             {
                                 var sanBayCode = sanBayFHS[i].CODE;
@@ -1299,11 +1301,6 @@ namespace SMO.Service.MD
                         month = item.Key.MONTH
                     };
                     lstSyncCode.Add(syncCode);
-
-                    if(item.Key.GROUP_1_ID == "6272")
-                    {
-
-                    }
                 }
                 var sapCode = ChiNhanh[area];
                 var costCenter = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCode).CODE;
@@ -1505,31 +1502,13 @@ namespace SMO.Service.MD
                 // Tính giá trị của các tháng
                 foreach (var item in data.ChiPhi)
                 {
-                    foreach (var syncItem in lstSyncCode)
+                    for(int i = 1; i <= 12; i++)
                     {
-                        if(syncItem.code == "B6272B002")
+                        var syncItem = lstSyncCode.FirstOrDefault(x => x.code == item.code && x.month == i);
+                        if(syncItem!= null)
                         {
-
+                            item.GetType().GetProperty($"Value{i}").SetValue(item, syncItem.value);
                         }
-                        if(item.code == "B6272B002")
-                        {
-
-                        }
-                        if (item.code == syncItem.code)
-                        {
-                            item.Value1 = syncItem.month == 1 ? syncItem.value : 0;
-                            item.Value2 = syncItem.month == 2 ? syncItem.value : 0;
-                            item.Value3 = syncItem.month == 3 ? syncItem.value : 0;
-                            item.Value4 = syncItem.month == 4 ? syncItem.value : 0;
-                            item.Value5 = syncItem.month == 5 ? syncItem.value : 0;
-                            item.Value6 = syncItem.month == 6 ? syncItem.value : 0;
-                            item.Value7 = syncItem.month == 7 ? syncItem.value : 0;
-                            item.Value8 = syncItem.month == 8 ? syncItem.value : 0;
-                            item.Value9 = syncItem.month == 9 ? syncItem.value : 0;
-                            item.Value10 = syncItem.month == 10 ? syncItem.value : 0;
-                            item.Value11 = syncItem.month == 11 ? syncItem.value : 0;
-                            item.Value12 = syncItem.month == 12 ? syncItem.value : 0;
-                        }                
                     }
                 }
                 foreach (var item in data.ChiPhi)

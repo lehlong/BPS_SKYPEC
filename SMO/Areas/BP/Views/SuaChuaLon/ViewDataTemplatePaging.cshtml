@@ -1,27 +1,30 @@
 ﻿@model IList<T_MD_KHOAN_MUC_SUA_CHUA>
-@using SMO.Core.Entities.BP.SUA_CHUA_THUONG_XUYEN;
+@using SMO.Core.Entities.BP.SUA_CHUA_LON;
 @using SMO.Core.Entities.MD;
 @using System.Text;
 @using SMO.Service.Class;
 @using Newtonsoft.Json.Serialization;
 @using Newtonsoft.Json;
-
 @{
-    var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_THUONG_XUYEN>;
-    var costCFHeader = ViewBag.costCFHeader as T_BP_SUA_CHUA_THUONG_XUYEN_VERSION;
+    var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON>;
+    var costCFHeader = ViewBag.costCFHeader as T_BP_SUA_CHUA_LON_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
     var orgCode = dataCenterModel.ORG_CODE;
     var tempalteCode = dataCenterModel.TEMPLATE_CODE;
     var year = dataCenterModel.YEAR;
-    var lstData = ViewBag.lstData as List<T_BP_SUA_CHUA_THUONG_XUYEN_DATA>;
-    var lstKhoanMuc = lstData.Select(x => x.KhoanMucSuaChua).ToList();
     var version = dataCenterModel.VERSION;
+    var lstData = ViewBag.lstData as List<T_BP_SUA_CHUA_LON_DATA>;
+    var lstKhoanMuc = lstData.Select(x => x.KhoanMucSuaChua).ToList();
     var formIdExportExcel = Guid.NewGuid().ToString();
 }
 
 <style>
     .header-year {
         background-color: #FFFFFF !important;
+    }
+
+    .icon-function {
+        cursor: pointer;
     }
 
     td {
@@ -66,6 +69,7 @@ else
                     <tbody>
                         <tr class="sticky-row strong" data-xls-row="header">
                             <th rowspan="2" colspan="4">HÀNH ĐỘNG</th>
+                            <td class="pre-whitespace" rowspan="2" style="text-align:center">MÃ</td>
                             <td class="pre-whitespace" rowspan="2" style="text-align:center">CHỈ TIÊU</td>
                             <td class="pre-whitespace" rowspan="2">QUY MÔ</td>
 
@@ -77,9 +81,10 @@ else
                             {
                                 <td class="pre-whitespace">@sb.Center.SAN_BAY_CODE</td>
                             }
-                            <td class="pre-whitespace">CỘNG</td>
+                            <td class="pre-whitespace">Cộng</td>
                         </tr>
-                        @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB3")
+
+                        @if (dataCenterModel.PHIEN_BAN == "PB5")
                         {
                             foreach (var item in lstKhoanMuc.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
                             {
@@ -107,15 +112,16 @@ else
                                     {
                                         <td></td>
                                     }
+                                    <td class="pre-whitespace @classParent">@(item.CODE)</td>
                                     <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
-                                    <td class="pre-whitespace"></td>
+                                    <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO)</td>
                                     @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                     {
-                                        var sbCheck = detailCostElements.Any(x=>x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
+                                        var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
                                         isEdit = sbCheck ? "" : "disabled";
-                                        <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(lstData.FirstOrDefault(x => x.SUA_CHUA_PROFIT_CENTER_CODE == sb.CENTER_CODE && x.KHOAN_MUC_SUA_CHUA_CODE == item.CODE)?.KhoanMucSuaChua.Values[0].ToStringVN())" /></td>
+                                        <td class="pre-whitespace"><input class="input-edit" type="text" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
                                     }
-                                    <td class="pre-whitespace">@lstKhoanMuc.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
+                                    <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
                                     <td>@item.DESCRIPTION</td>
                                 </tr>
                             }
@@ -148,20 +154,20 @@ else
                                     {
                                         <td></td>
                                     }
+                                    <td class="pre-whitespace @classParent">@(item.CODE)</td>
                                     <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
-                                    <td class="pre-whitespace"></td>
+                                    <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO)</td>
                                     @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                     {
                                         var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
                                         isEdit = sbCheck ? "" : "disabled";
-                                        <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
+                                        <td class="pre-whitespace"><input class="input-edit" type="text" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
                                     }
                                     <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
                                     <td>@item.DESCRIPTION</td>
                                 </tr>
                             }
                         }
-
 
 
                     </tbody>
@@ -174,6 +180,7 @@ else
         <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("DownloadDataSCL", new { model = JsonConvert.SerializeObject(dataCenterModel)})">
         </form>
     </div>
+
     <script>
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
         function mask(e) {
@@ -191,9 +198,8 @@ else
             var templateCode = $("#TEMPLATE_CODE").val();
             var version = $("#VERSION").val();
             var year = $("#YEAR").val();
-            var month = $("#month_bs").val();
             var ajaxParams = {
-                url: 'BP/SuaChuaThuongXuyen/EditCellValue',
+                url: 'BP/SuaChuaLon/EditCellValue',
                 type: "POST",
                 data: {
                     templateCode: templateCode,
@@ -201,8 +207,7 @@ else
                     year: year,
                     elementCode: element,
                     sanBayCode: sanBayCode,
-                    value: value,
-                    month: month 
+                    value: value
                 },
                 dataType: 'json',
                 success: function (response) {
@@ -217,7 +222,7 @@ else
             var version = $("#VERSION").val();
             var year = $("#YEAR").val();
             var ajaxParams = {
-                url: 'BP/SuaChuaThuongXuyen/GetHistoryElement',
+                url: 'BP/SuaChuaLon/GetHistoryElement',
                 type: "POST",
                 data: {
                     templateCode: templateCode,
@@ -234,7 +239,7 @@ else
             var version = $("#VERSION").val();
             var year = $("#YEAR").val();
             var ajaxParams = {
-                url: 'BP/SuaChuaThuongXuyen/GetCommentElement',
+                url: 'BP/SuaChuaLon/GetCommentElement',
                 type: "POST",
                 data: {
                     templateCode: templateCode,
@@ -251,7 +256,7 @@ else
             var version = $("#VERSION").val();
             var year = $("#YEAR").val();
             var ajaxParams = {
-                url: 'BP/SuaChuaThuongXuyen/GetAssignDepartmentElement',
+                url: 'BP/SuaChuaLon/GetAssignDepartmentElement',
                 type: "POST",
                 data: {
                     templateCode: templateCode,
@@ -264,74 +269,74 @@ else
         }
 
         function IsDoneExpertise(isCheck, element) {
-        var originalCheckboxState = $('#chkItem' + element).prop('checked');
-        if (!isCheck) {
-            Swal.fire({
-                title: "Lưu ý?",
-                text: "Hạng mục này đã được thẩm định! Hành động này sẽ không được lưu lại!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Đồng ý",
-                cancelButtonText: "Huỷ"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var ajaxParams = {
-                        url: 'BP/SuaChuaThuongXuyen/UnExpertise',
-                        type: 'POST',
-                        data: {
-                            templateCode: '@tempalteCode',
-                            version: '@version',
-                            year: '@year',
-                            elementCode: element,
-                        },
-                        dataType: 'json',
-                        success: function (response) {
-                            Message.execute(response)
-                        }
-                    };
-                    Forms.Ajax(ajaxParams);
-                }
-                else {
-                    $('#chkItem' + element).prop('checked', !originalCheckboxState);
-                }
-            });
-            return;
-        } else {
-            Swal.fire({
-                title: "Lưu ý?",
-                text: "Bạn có chắc hoàn thành thẩm định chỉ tiêu này?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Đồng ý",
-                cancelButtonText: "Huỷ"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var ajaxParams = {
-                        url: 'BP/SuaChuaThuongXuyen/Expertise',
-                        type: 'POST',
-                        data: {
-                            templateCode: '@tempalteCode',
-                            version: '@version',
-                            year: '@year',
-                            elementCode: element,
-                        },
-                        dataType: 'json',
-                        success: function (response) {
-                            Message.execute(response)
-                        }
-                    };
-                    Forms.Ajax(ajaxParams);
-                }
-                else {
-                    $('#chkItem' + element).prop('checked', !originalCheckboxState);
-                }
-            });
+            var originalCheckboxState = $('#chkItem' + element).prop('checked');
+            if (!isCheck) {
+                Swal.fire({
+                    title: "Lưu ý?",
+                    text: "Hạng mục này đã được thẩm định! Hành động này sẽ không được lưu lại!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Đồng ý",
+                    cancelButtonText: "Huỷ"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var ajaxParams = {
+                            url: 'BP/SuaChuaLon/UnExpertise',
+                            type: 'POST',
+                            data: {
+                                templateCode: '@tempalteCode',
+                                version: '@version',
+                                year: '@year',
+                                elementCode: element,
+                            },
+                            dataType: 'json',
+                            success: function (response) {
+                                Message.execute(response)
+                            }
+                        };
+                        Forms.Ajax(ajaxParams);
+                    }
+                    else {
+                        $('#chkItem' + element).prop('checked', !originalCheckboxState);
+                    }
+                });
+                return;
+            } else {
+                Swal.fire({
+                    title: "Lưu ý?",
+                    text: "Bạn có chắc hoàn thành thẩm định chỉ tiêu này?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Đồng ý",
+                    cancelButtonText: "Huỷ"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var ajaxParams = {
+                            url: 'BP/SuaChuaLon/Expertise',
+                            type: 'POST',
+                            data: {
+                                templateCode: '@tempalteCode',
+                                version: '@version',
+                                year: '@year',
+                                elementCode: element,
+                            },
+                            dataType: 'json',
+                            success: function (response) {
+                                Message.execute(response)
+                            }
+                        };
+                        Forms.Ajax(ajaxParams);
+                    }
+                    else {
+                        $('#chkItem' + element).prop('checked', !originalCheckboxState);
+                    }
+                });
+            }
         }
-    }
 
         function HandleSearch(inputElement) {
             var value = inputElement.value;

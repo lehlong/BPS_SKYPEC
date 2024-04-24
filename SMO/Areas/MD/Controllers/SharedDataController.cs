@@ -86,26 +86,5 @@ namespace SMO.Areas.MD.Controllers
             }
             return result.ToJsonResult();
         }
-        [HttpPost]
-        public ActionResult Caculate()
-        {
-            var result = new TransferObject
-            {
-                Type = TransferType.AlertSuccessAndJsCommand
-            };
-            _service.CalCulaTion();
-            if (_service.State)
-            {
-                SMOUtilities.GetMessage("1002", _service, result);
-                result.ExtData = "try{RefreshData();}catch(e){};";
-            }
-            else
-            {
-                result.Type = TransferType.AlertDanger;
-                SMOUtilities.GetMessage("1005", _service, result);
-            }
-            return result.ToJsonResult();
-        }
-
     }
 }

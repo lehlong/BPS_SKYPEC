@@ -11,6 +11,19 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
         public virtual string KHOAN_MUC_DAU_TU_CODE { get; set; }
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
+        public virtual decimal? MONTH1 { get; set; }
+        public virtual decimal? MONTH2 { get; set; }
+        public virtual decimal? MONTH3 { get; set; }
+        public virtual decimal? MONTH4 { get; set; }
+        public virtual decimal? MONTH5 { get; set; }
+        public virtual decimal? MONTH6 { get; set; }
+        public virtual decimal? MONTH7 { get; set; }
+        public virtual decimal? MONTH8 { get; set; }
+        public virtual decimal? MONTH9 { get; set; }
+        public virtual decimal? MONTH10 { get; set; }
+        public virtual decimal? MONTH11 { get; set; }
+        public virtual decimal? MONTH12 { get; set; }
+        public virtual decimal? SumMonth { get; set; }
         public virtual decimal? VALUE { get; set; }    
         public virtual string DESCRIPTION { get; set; }
         public virtual string PROCESS { get; set; }

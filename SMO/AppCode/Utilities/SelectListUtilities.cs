@@ -171,6 +171,17 @@ namespace SMO
             return new SelectList(lstData, "Value", "Text", new Data { });
         }
 
+        public static SelectList GetAllMonth()
+        {
+            IUnitOfWork UnitOfWork = new NHUnitOfWork();
+            var lstData = new List<Data>();
+            for(int i = 1; i <= 12; i++)
+               {
+                lstData.Add(new Data { Value = i.ToString(), Text = "Tháng " + i.ToString() });
+            }
+            return new SelectList(lstData, "Value", "Text", new Data { });
+        }
+
         public static SelectList GetTypeUpload()
         {
             var lstData = new List<Data>();

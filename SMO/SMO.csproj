@@ -2101,6 +2101,8 @@
     <Content Include="Areas\BP\Views\Report\GenDataBM02D1.cshtml" />
     <Content Include="Areas\BP\Views\Report\IndexBM02D2.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataBM02D2.cshtml" />
+    <Content Include="Areas\BP\Views\SuaChuaLon\ViewDataTemplate.cshtml" />
+    <Content Include="Areas\BP\Views\SuaChuaLon\ViewDataTemplatePaging.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

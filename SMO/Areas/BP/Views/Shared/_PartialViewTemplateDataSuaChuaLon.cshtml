@@ -16,6 +16,7 @@
     var lstData = ViewBag.lstData as List<T_BP_SUA_CHUA_LON_DATA>;
     var lstKhoanMuc = lstData.Select(x => x.KhoanMucSuaChua).ToList();
     var formIdExportExcel = Guid.NewGuid().ToString();
+
 }
 
 <style>
@@ -68,10 +69,10 @@ else
                 <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
                     <tbody>
                         <tr class="sticky-row strong" data-xls-row="header">
-                            <th rowspan="2" colspan="4">HÀNH ĐỘNG</th>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">MÃ</td>
-                            <td class="pre-whitespace" rowspan="2" style="text-align:center">CHỈ TIÊU</td>
-                            <td class="pre-whitespace" rowspan="2">QUY MÔ</td>
+                            <th class="sticky-cell pre-whitespace" rowspan="2" colspan="4">HÀNH ĐỘNG</th>
+                            <td class="sticky-cell pre-whitespace" rowspan="2" style="text-align:center">MÃ</td>
+                            <td class="sticky-cell pre-whitespace" rowspan="2" style="text-align:center">CHỈ TIÊU</td>
+                            <td class="sticky-cell pre-whitespace" rowspan="2">QUY MÔ</td>
 
                             <td class="pre-whitespace" style="text-align:center" colspan="@(detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Count() + 1)">KINH PHÍ</td>
                             <td rowspan="2">GHI CHÚ</td>
@@ -84,7 +85,7 @@ else
                             <td class="pre-whitespace">Cộng</td>
                         </tr>
 
-                        @if (dataCenterModel.PHIEN_BAN == "PB5")
+                        @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB3")
                         {
                             foreach (var item in lstKhoanMuc.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
                             {
@@ -119,9 +120,9 @@ else
                                     {
                                         var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
                                         isEdit = sbCheck ? "" : "disabled";
-                                        <td class="pre-whitespace"><input class="input-edit" type="text" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
+                                        <td class="pre-whitespace"><input class="input-edit" type="text" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(lstData.FirstOrDefault(x => x.SUA_CHUA_PROFIT_CENTER_CODE == sb.CENTER_CODE && x.KhoanMucSuaChua.CODE == item.CODE)?.KhoanMucSuaChua.Values[0].ToStringVN())" /></td>
                                     }
-                                    <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
+                                    <td class="pre-whitespace">@lstKhoanMuc.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
                                     <td>@item.DESCRIPTION</td>
                                 </tr>
                             }
@@ -198,6 +199,7 @@ else
             var templateCode = $("#TEMPLATE_CODE").val();
             var version = $("#VERSION").val();
             var year = $("#YEAR").val();
+            var month = $("#month_bs").val();
             var ajaxParams = {
                 url: 'BP/SuaChuaLon/EditCellValue',
                 type: "POST",
@@ -207,7 +209,8 @@ else
                     year: year,
                     elementCode: element,
                     sanBayCode: sanBayCode,
-                    value: value
+                    value: value,
+                    month: month 
                 },
                 dataType: 'json',
                 success: function (response) {

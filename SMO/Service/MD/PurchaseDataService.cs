@@ -56,12 +56,58 @@ namespace SMO.Service.MD
                     UnitOfWork.Repository<PurchaseDataRepo>().Create(item);
                 }
                 UnitOfWork.Commit();
+                CalCulaTion(year);
             }
             catch (Exception ex)
             {
                 UnitOfWork.Rollback();
                 State = false;
                 Exception = ex;
+            }
+        }
+
+        public void CalCulaTion(int year)
+        {
+            try
+            {
+                var lstPurchase = UnitOfWork.Repository<PurchaseDataRepo>().GetAll();
+                decimal SumSL = UnitOfWork.Repository<PurchaseDataRepo>().GetAll().Sum(x => x.S0002);
+                decimal SumTS = 0;
+                UnitOfWork.BeginTransaction();
+                var serviceKHGV = new ElementService();
+                string area = string.Empty;
+                var lstKHGV = serviceKHGV.GetDataKeHoachGiaVon(year, area);
+                var lstData = lstKHGV.KeHoachGiaThanhData.ToList();
+                decimal sumThueUD = 0;
+                decimal sumThueNK = 0;
+                foreach (var item in lstData)
+                {
+                    var sl = item.S0002;
+                    var thueNK = item.ThueSuat;
+                    var thueUD = item.U0004;
+                    sumThueNK = sumThueNK + thueNK * sl;
+                    sumThueUD = sumThueUD + thueUD * sl * item.S0008;
+                }
+                decimal tnkBQ = (decimal)sumThueUD / sumThueNK;
+
+
+                var objVN = UnitOfWork.Repository<SharedDataRepo>().Get("TNK-VN");
+                var objOV = UnitOfWork.Repository<SharedDataRepo>().Get("TNK-0V");
+                var priceFlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
+                var HS = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
+                var TG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
+                objVN.VALUE = tnkBQ;
+                objOV.VALUE = tnkBQ;
+                UnitOfWork.Repository<SharedDataRepo>().Update(objVN);
+                UnitOfWork.Repository<SharedDataRepo>().Update(objOV);
+                UnitOfWork.Commit();
+                State = true;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                State = false;
+                throw ex;
             }
         }
 

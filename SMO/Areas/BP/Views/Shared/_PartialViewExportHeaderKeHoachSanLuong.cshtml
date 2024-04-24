@@ -79,6 +79,16 @@ else
     })
     </div>
     <div class="col-xs-6">
+        @Html.MyDropDownListFor(x => x.MONTH, SelectListUtilities.GetAllMonth(),
+    new
+    {
+        @class = "selectpicker show-tick dropdown",
+        @onchange = "OnChangeYear();",
+        @data_container = "body",
+        @data_live_search = "true"
+    })
+    </div>
+    <div class="col-xs-6">
         @Html.MyDropDownListFor(x => x.PHIEN_BAN, SelectListUtilities.GetAllPhienBan(),
      new
      {

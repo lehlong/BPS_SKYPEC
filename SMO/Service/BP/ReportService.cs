@@ -723,14 +723,14 @@ namespace SMO.Service.BP
                 return new ReportDataCenter();
             }
         }
-        public ReportDataCenter GenDataBM02D (int year, string kichBan)
+        public ReportDataCenter GenDataBM02D(int year, string kichBan)
         {
             try
             {
                 var service = new KichBanService();
                 var dataSXKDCurrent = service.GetData(year, kichBan);
                 var data = new ReportDataCenter();
-                foreach(var item in ElementDataReport)
+                foreach (var item in ElementDataReport)
                 {
                     data.BM02D.Add(new ReportModel
                     {
@@ -745,7 +745,7 @@ namespace SMO.Service.BP
                 }
                 return data;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 UnitOfWork.Rollback();
                 return new ReportDataCenter();

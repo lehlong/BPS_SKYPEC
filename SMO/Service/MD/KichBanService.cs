@@ -157,7 +157,7 @@ namespace SMO.Service.MD
                              select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
-                Id= "I.1.1",
+                Id = "I.1.1",
                 Name = "Cung ứng cho VNA",
                 Order = 5,
                 Value1 = value_5_1 ?? 0,
@@ -188,7 +188,7 @@ namespace SMO.Service.MD
                              select y).Sum(x => x.VALUE_SUM_YEAR);
             data.Add(new SynthesisReportModel
             {
-                Id= "I.1.2",
+                Id = "I.1.2",
                 Name = "Cung ứng cho các hãng hàng không khác trong VNA Group",
                 Order = 6,
                 Value1 = value_6_1 ?? 0,
@@ -606,7 +606,7 @@ namespace SMO.Service.MD
             var value_36_5 = dataKeHoachTaiChinh.FirstOrDefault(x => x.ElementCode == "U0138" && x.Screen == "KE_HOACH_TAI_CHINH_2").Value;
             data.Add(new SynthesisReportModel
             {
-                Stt="2",
+                Stt = "2",
                 Name = "Chi phí tài chính",
                 UnitName = "Tr.đ",
                 Order = 36,
@@ -620,7 +620,7 @@ namespace SMO.Service.MD
                               select y).Sum(x => x.AMOUNT);
             data.Add(new SynthesisReportModel
             {
-                Stt="3",
+                Stt = "3",
                 Name = "Chi phí khác",
                 UnitName = "Tr.đ",
                 Order = 37,
@@ -630,10 +630,10 @@ namespace SMO.Service.MD
 
             data.Add(new SynthesisReportModel
             {
-                Stt="V",
+                Stt = "V",
                 Name = "Lợi nhuận",
                 Order = 38,
-                IsBold=true,
+                IsBold = true,
             });
 
             #region Chi phí sản xuất kinh doanh
@@ -692,14 +692,14 @@ namespace SMO.Service.MD
             });
             data.Add(new SynthesisReportModel
             {
-                Stt="3",
+                Stt = "3",
                 Name = "Lợi nhuận chia về TCTHK",
                 UnitName = "Tr.đ",
                 Order = 42,
             });
             data.Add(new SynthesisReportModel
             {
-                Stt="VI",
+                Stt = "VI",
                 Name = "Lao động sử dụng",
                 UnitName = "Tr.đ",
                 Order = 43,
@@ -719,10 +719,10 @@ namespace SMO.Service.MD
             });
             data.Add(new SynthesisReportModel
             {
-                Stt="VII",
+                Stt = "VII",
                 Name = "Vốn đầu tư của chủ sở hữu",
                 Order = 46,
-                IsBold= true,
+                IsBold = true,
             });
             data.Add(new SynthesisReportModel
             {
@@ -744,7 +744,7 @@ namespace SMO.Service.MD
             });
             data.Add(new SynthesisReportModel
             {
-                Stt="VIII",
+                Stt = "VIII",
                 Name = "Tỷ suất LN thực hiện/Vốn CSH BQ",
                 UnitName = "%",
                 Order = 50,
@@ -753,8 +753,8 @@ namespace SMO.Service.MD
 
             #region - Giá trị khối lượng công việc hoàn thành
             var value_t1_53_5 = (from x in UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
-                              join y in UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
-                              select y).Sum(x => x.VALUE);
+                                 join y in UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
+                                 select y).Sum(x => x.VALUE);
             var value_t2_53_5 = (from x in UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB2" && x.KICH_BAN == kichBan && x.STATUS == Approve_Status.DaPheDuyet).ToList()
                                  join y in UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4032") on x.TEMPLATE_CODE equals y.TEMPLATE_CODE
                                  select y).Sum(x => x.VALUE);
@@ -802,7 +802,7 @@ namespace SMO.Service.MD
                               select y).Sum(x => x.VALUE_3);
             data.Add(new SynthesisReportModel
             {
-                Stt="2",
+                Stt = "2",
                 Name = "Đầu tư vốn vào DN khác",
                 UnitName = "Tr.đ",
                 Order = 55,

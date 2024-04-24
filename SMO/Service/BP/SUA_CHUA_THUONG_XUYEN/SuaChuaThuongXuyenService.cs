@@ -4266,39 +4266,85 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             
         }
 
-        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, string valueInput)
+        public void EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, string valueInput, int? month)
         {
             try
             {
+                UnitOfWork.BeginTransaction();
                 string value = valueInput.Replace(".", "");
-                var a = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode&& x.SuaChuaProfitCenter.SAN_BAY_CODE == sanBayCode);
-                var item = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().FirstOrDefault(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.VERSION == version && x.SuaChuaProfitCenter.SAN_BAY_CODE == sanBayCode && x.TIME_YEAR == year);
-                if (item == null)
+                var rowsChange = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.KHOAN_MUC_SUA_CHUA_CODE == elementCode && x.SuaChuaProfitCenter.SAN_BAY_CODE == sanBayCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
+                if (rowsChange.Count() == 0)
                 {
+                    this.State = false;
+                    this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
                     return;
                 }
-                UnitOfWork.BeginTransaction();
-                if (item != null)
+                var oldValue = rowsChange.FirstOrDefault().VALUE;
+                foreach (var item in rowsChange)
                 {
-                    var oldValue = item.VALUE;
-                    item.VALUE = Convert.ToDecimal(value);
-                    UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Update(item);
-                    /*UnitOfWork.Repository<SuaChuaThuongXuyenEditHistoryRepo>().Create(new T_BP_SUA_CHUA_THUONG_XUYEN_EDIT_HISTORY
+                    /*item.VALUE = Convert.ToDecimal(value);*/
+                    switch (month)
                     {
-                        ID = Guid.NewGuid(),
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = version,
-                        YEAR = year,
-                        SAN_BAY_CODE = sanBayCode,
-                        ELEMENT_CODE = elementCode,
-                        OLD_VALUE = oldValue,
-                        NEW_VALUE = Convert.ToDecimal(value),
-                        ACTIVE = true,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now
-                    });*/
+                        case 1:
+                            item.MONTH1 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 2:
+                            item.MONTH2 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 3:
+                            item.MONTH3 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 4:
+                            item.MONTH4 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 5:
+                            item.MONTH5 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 6:
+                            item.MONTH6 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 7:
+                            item.MONTH7 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 8:
+                            item.MONTH8 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 9:
+                            item.MONTH9 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 10:
+                            item.MONTH10 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 11:
+                            item.MONTH11 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        case 12:
+                            item.MONTH12 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                        default:
+                            item.VALUE = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                            break;
+                    }
+                    item.SumMonth = item.MONTH1 + item.MONTH2 + item.MONTH3 + item.MONTH4 + item.MONTH5 + item.MONTH6 + item.MONTH7 + item.MONTH8 + item.MONTH9 + item.MONTH10 + item.MONTH11 + item.MONTH12;
+                    UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Update(item);
                 }
-                
+
+
+                /*UnitOfWork.Repository<SuaChuaLonEditHistoryRepo>().Create(new T_BP_SUA_CHUA_LON_EDIT_HISTORY
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    SAN_BAY_CODE = sanBayCode,
+                    ELEMENT_CODE = elementCode,
+                    OLD_VALUE = oldValue,
+                    NEW_VALUE = value,
+                    ACTIVE = true,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now
+                });*/
+
                 UnitOfWork.Commit();
             }
             catch (Exception ex)
@@ -4622,6 +4668,18 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
         {
             var lstdata = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == TemplateCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
             return lstdata;
+        }
+
+        public void GetDataKhoanMucSCTX(ViewDataCenterModel model)
+        {
+            var lstdata = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
+            var lstKhoanMuc = new List<T_MD_KHOAN_MUC_SUA_CHUA>();
+            foreach (var item in lstdata)
+            {
+                var value = item.GetType().GetProperty($"MONTH{model.MONTH}").GetValue(item);
+                item.KhoanMucSuaChua.Values[0] = value != null ? Convert.ToDecimal(value) : 0;
+                lstKhoanMuc.Add(item.KhoanMucSuaChua);
+            }
         }
 
     }

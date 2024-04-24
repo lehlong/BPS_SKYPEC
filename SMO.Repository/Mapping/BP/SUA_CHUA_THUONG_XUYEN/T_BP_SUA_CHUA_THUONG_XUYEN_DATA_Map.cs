@@ -20,6 +20,19 @@ namespace SMO.Repository.Mapping.BP.SUA_CHUA_THUONG_XUYEN
             Map(x => x.KHOAN_MUC_SUA_CHUA_CODE);
             Map(x => x.VERSION);
             Map(x => x.TIME_YEAR);
+            Map(x => x.MONTH1);
+            Map(x => x.MONTH2);
+            Map(x => x.MONTH3);
+            Map(x => x.MONTH4);
+            Map(x => x.MONTH5);
+            Map(x => x.MONTH6);
+            Map(x => x.MONTH7);
+            Map(x => x.MONTH8);
+            Map(x => x.MONTH9);
+            Map(x => x.MONTH10);
+            Map(x => x.MONTH11);
+            Map(x => x.MONTH12);
+            Map(x => x.SumMonth);
             Map(x => x.VALUE);
             Map(x => x.QUY_MO);
             

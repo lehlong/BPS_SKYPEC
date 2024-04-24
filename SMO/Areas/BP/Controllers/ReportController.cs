@@ -99,7 +99,7 @@ namespace SMO.Areas.BP.Controllers
         }
         public async Task<ActionResult> GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
         {
-            var data =await _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
+            var data = await _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
             return PartialView(data);
@@ -133,7 +133,7 @@ namespace SMO.Areas.BP.Controllers
         {
             MemoryStream outFileStream = new MemoryStream();
             var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_DOANH_THU.xlsx");
-            _servicePhienBan.ExportExcelDoanhThu(ref outFileStream, path, year,  phienBan, kichBan, hangHangKhong);
+            _servicePhienBan.ExportExcelDoanhThu(ref outFileStream, path, year, phienBan, kichBan, hangHangKhong);
             if (!_servicePhienBan.State)
             {
                 return Content(_servicePhienBan.ErrorMessage);
@@ -171,7 +171,7 @@ namespace SMO.Areas.BP.Controllers
 
         public async Task<ActionResult> GenDataTraNapCungUng(int year, string phienBan, string kichBan, string hangHangKhong)
         {
-            var data =await _servicePhienBan.GetDataTraNapCungUng(year, phienBan, kichBan, hangHangKhong);
+            var data = await _servicePhienBan.GetDataTraNapCungUng(year, phienBan, kichBan, hangHangKhong);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
             return PartialView(data);
@@ -271,7 +271,7 @@ namespace SMO.Areas.BP.Controllers
         {
             var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_SO_SANH_DT.xlsx");
             MemoryStream outFileStream = new MemoryStream();
-            _servicePhienBan.ExportExcelCompaseDT(ref outFileStream, path, year, phienBan, kichBan,hangHangKhong );
+            _servicePhienBan.ExportExcelCompaseDT(ref outFileStream, path, year, phienBan, kichBan, hangHangKhong);
             if (!_servicePhienBan.State)
             {
                 return Content(_servicePhienBan.ErrorMessage);

@@ -5,6 +5,7 @@ using SMO.Core.Entities.BP.SUA_CHUA_LON;
 using SMO.Core.Entities.MD;
 using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.SUA_CHUA_LON;
+using SMO.Repository.Implement.MD;
 using SMO.Service.BP;
 using SMO.Service.BP.SUA_CHUA_LON;
 using SMO.Service.Class;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -52,6 +54,33 @@ namespace SMO.Areas.BP.Controllers
 
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
+
+        public ActionResult ViewDataTemplate(string model)
+        {
+            var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
+            ViewBag.dataCenterModel = modelJson;
+            ViewBag.Skip = 0;
+            return PartialView();
+        }
+
+        public ActionResult ViewDataTemplatePaging(string modelJson, int skip)
+        {
+            var model = JsonConvert.DeserializeObject<ViewDataCenterModel>(modelJson);
+            var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_SUA_CHUA_LON> detailCostElements,
+                 out IList<T_BP_SUA_CHUA_LON_DATA> detailCostData, out bool isDrillDownApply, model);
+
+
+            if (dataCost == null)
+            {
+                ViewBag.dataCenterModel = model;
+                return PartialView(dataCost);
+            }
+            dataCost = dataCost.Distinct().ToList();
+            // chuyển đơn vị tiền tệ 
+            ViewBag.dataCenterModel = model;
+            return PartialView(dataCost);
+        }
+
 
         public override ActionResult ViewTemplate(string templateId, int? version, int year, string centerCode = "")
         {
@@ -122,7 +151,11 @@ namespace SMO.Areas.BP.Controllers
                 ViewBag.lstCenterCode = _service.GetSanBaySuaChua(model);
             }
             ViewBag.costCFHeader = _service.GetHeader(model);
-            ViewBag.lstData = _service.GetDataSCL(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
+            ViewBag.lstData = _service.GetDataSCL(model);
+            if (model.PHIEN_BAN == "PB3" || model.PHIEN_BAN == "PB5")
+            {
+                _service.GetDataKhoanMucSCL(model);
+            }
             model.IS_DRILL_DOWN = isDrillDownApply;
             model.EXCHANGE_RATE = 12;
             ViewBag.dataCenterModel = model;
@@ -319,13 +352,13 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        public ActionResult EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, string value)
+        public ActionResult EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, string value, int? month)
         {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
-            _service.EditCellValue(templateCode, version, year, elementCode, sanBayCode, value);
+            _service.EditCellValue(templateCode, version, year, elementCode, sanBayCode, value, month);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

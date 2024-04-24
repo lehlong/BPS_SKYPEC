@@ -19,6 +19,17 @@
                 }
                 @Html.MyButton("cmdBack", "Lọc", "ShowLeft();", "Alt+N", "sort")
             </div>
+            @if (Model.PHIEN_BAN == "PB3" || Model.PHIEN_BAN == "PB5")
+            {
+                <div class="col-md-1" style="margin-bottom: 12px">
+                    <select class="form-control selectpicker show-tick" id="month_bs">
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <option value="@i">Tháng @i</option>
+                        }
+                    </select>
+                </div>
+            }
             <div class="btn-function m-l-5" id="btn-function">
             </div>
             <div style="position: absolute; right: 15px; top: 15px;"><b>KẾ HOẠCH SỬA CHỮA THƯỜNG XUYÊN</b></div>
@@ -28,7 +39,7 @@
                 <div class="export-left-header" id="divExportHeader_@viewId">
                     @using (Ajax.BeginForm("SummaryDataCenter", null, FormDataUtils.GetAjaxOptions(viewId, $"#divExportRight_{viewId}"), new { @id = formId }))
                     {
-
+                        @Html.HiddenFor(model => model.MONTH, new { id = "hiddenMonth" })
                         Html.RenderPartial("_PartialViewExportHeaderSuaChuaThuongXuyen", Model,
                             new ViewDataDictionary
                             {
@@ -38,7 +49,7 @@
                                 new KeyValuePair<string, object>("objectType", TemplateObjectType.SuaChuaThuongXuyen),
                                 new KeyValuePair<string, object>("budgetType", BudgetType.SuaChuaThuongXuyen),
                                 new KeyValuePair<string, object>("elementType", ElementType.SuaChuaThuongXuyen),
-            });
+    });
                     }
                 </div>
                 <div class="export-left-tab" id="divExportTab_@viewId">
@@ -110,6 +121,17 @@
             setTimeout(function () {
                 $("#divExportLeft_@viewId").toggle();
             }, 2000)
+
+            var monthValue = $("#month_bs").val(); // Đây là giá trị bạn muốn thiết lập
+            $("#hiddenMonth").val(monthValue);
+
+            $("#month_bs").change(function () {
+                // Lấy giá trị mới từ select box
+                var selectedMonth = $(this).val();
+
+                // Gán giá trị mới cho trường input ẩn MONTH
+                $("#hiddenMonth").val(selectedMonth);
+            });
         });
 
         function ShowLeft() {

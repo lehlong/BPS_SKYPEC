@@ -14,6 +14,7 @@ using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG.DAU_TU_XAY_DUNG_DATA_BASE;
 using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
+using SMO.Repository.Implement.BP.SUA_CHUA_LON;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Class;
 using SMO.Service.Common;
@@ -4093,7 +4094,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             }
         }
 
-        public void UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string valueInput)
+        public void UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string valueInput, int?month)
         {
             try
             {
@@ -4111,7 +4112,49 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                     var oldValue = rowsChange.FirstOrDefault().VALUE;
                     foreach (var item in rowsChange)
                     {
-                        item.VALUE = Convert.ToDecimal(value);
+                        switch (month)
+                        {
+                            case 1:
+                                item.MONTH1 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 2:
+                                item.MONTH2 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 3:
+                                item.MONTH3 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 4:
+                                item.MONTH4 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 5:
+                                item.MONTH5 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 6:
+                                item.MONTH6 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 7:
+                                item.MONTH7 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 8:
+                                item.MONTH8 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 9:
+                                item.MONTH9 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 10:
+                                item.MONTH10 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 11:
+                                item.MONTH11 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            case 12:
+                                item.MONTH12 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                            default:
+                                item.VALUE = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                                break;
+                        }
+                        item.SumMonth = item.MONTH1 + item.MONTH2 + item.MONTH3 + item.MONTH4 + item.MONTH5 + item.MONTH6 + item.MONTH7 + item.MONTH8 + item.MONTH9 + item.MONTH10 + item.MONTH11 + item.MONTH12;
                         UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
                     }
                     var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
@@ -4244,6 +4287,18 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
         {
             var lstProject = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == TemplateCode && x.VERSION == version && x.TIME_YEAR == year).ToList();
             return lstProject;
+        }
+
+        public void GetDataProject(ViewDataCenterModel model)
+        {
+            var lstdata = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
+            var lstKhoanMuc = new List<T_MD_KHOAN_MUC_DAU_TU>();
+            foreach (var item in lstdata)
+            {
+                var value = item.GetType().GetProperty($"MONTH{model.MONTH}").GetValue(item);
+                item.VALUE= value != null ? Convert.ToDecimal(value) : 0;
+                lstKhoanMuc.Add(item.KhoanMucDauTu);
+            }
         }
 
         public void GenerateData(ref MemoryStream outFileStream, string path, ViewDataCenterModel model, List<T_BP_DAU_TU_XAY_DUNG_DATA> lstData, List<T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER> lstProject)

@@ -502,6 +502,7 @@ namespace SMO.Service.MD
                     dataCalculate.DeliveryConditionsCode = item.DELIVERY_CONDITIONS_CODE;
                     dataCalculate.DeliveryConditions = item.DELIVERY_CONDITIONS_CODE;
                     dataCalculate.S0008 = item.S0008 / 100;
+                    dataCalculate.ThueSuat = dataCalculate.S0008 * (dataCalculate.U0003 + dataCalculate.S0006); // tính thuế NK($/Tấn) 
                     dataCalculate.AreaCode = item.AREA_ID;
                     data.KeHoachGiaThanhData.Add(dataCalculate);
                 }

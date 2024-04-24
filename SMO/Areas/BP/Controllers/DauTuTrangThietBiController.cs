@@ -109,6 +109,10 @@ namespace SMO.Areas.BP.Controllers
             model.IS_DRILL_DOWN = isDrillDownApply;
             model.EXCHANGE_RATE = 12;
             ViewBag.lstProject = _service.GetProject(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
+            if (model.PHIEN_BAN == "PB3" || model.PHIEN_BAN == "PB5")
+            {
+                _service.GetDataProject(model);
+            }
             ViewBag.dataCenterModel = model;
             return PartialView(dataCost);
         }
@@ -185,13 +189,13 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string value)
+        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string value, int? month)
         {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
-            _service.UpdateCellValue(templateCode, version, year, type, projectCode, costCenter, elementCode, value);
+            _service.UpdateCellValue(templateCode, version, year, type, projectCode, costCenter, elementCode, value, month);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

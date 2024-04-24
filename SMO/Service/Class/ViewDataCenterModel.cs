@@ -13,6 +13,7 @@
         public string KICH_BAN { get; set; }
         public string PHIEN_BAN { get; set; }
         public int YEAR { get; set; }
+        public int? MONTH { get; set; }
         public decimal? EXCHANGE_RATE { get; set; } = 1;
         public string EXCHANGE_TYPE { get; set; } = "VND";  // fix value is VND
         public int? VERSION { get; set; }

@@ -122,6 +122,10 @@ namespace SMO.Areas.BP.Controllers
             }
             ViewBag.costCFHeader = _service.GetHeader(model);
             ViewBag.lstData = _service.GetDataSCL(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
+            if (model.PHIEN_BAN == "PB3" || model.PHIEN_BAN == "PB5")
+            {
+                _service.GetDataKhoanMucSCTX(model);
+            }
             model.IS_DRILL_DOWN = isDrillDownApply;
             model.EXCHANGE_RATE = 12;
             ViewBag.dataCenterModel = model;
@@ -317,13 +321,13 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        public ActionResult EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, string value)
+        public ActionResult EditCellValue(string templateCode, int version, int year, string elementCode, string sanBayCode, string value, int? month)
         {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
-            _service.EditCellValue(templateCode, version, year, elementCode, sanBayCode, value);
+            _service.EditCellValue(templateCode, version, year, elementCode, sanBayCode, value, month);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

@@ -78,7 +78,7 @@ else
                         <td class="pre-whitespace">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
                         <td class="pre-whitespace">KH NĂM</td>
                     </tr>
-                    @if (dataCenterModel.PHIEN_BAN == "PB5")
+                    @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB3")
                     {
                         foreach (var detail in lstProject.Where(x => x.CODE != null).Select(x => x.CODE).Distinct())
                         {
@@ -245,6 +245,7 @@ else
             var templateCode = $("#TEMPLATE_CODE").val();
             var version = $("#VERSION").val();
             var year = $("#YEAR").val();
+            var month = $("#month_bs").val();
             var ajaxParams = {
                 url: 'BP/DauTuXayDung/UpdateCellValue',
                 type: "POST",
@@ -256,7 +257,8 @@ else
                     projectCode: projectCode,
                     costCenter: costCenter,
                     elementCode: elementCode,
-                    value: value
+                    value: value,
+                    month: month 
                 },
                 dataType: 'json',
                 success: function (response) {

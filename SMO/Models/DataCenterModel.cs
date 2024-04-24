@@ -46,6 +46,8 @@ namespace SMO.Models
         public decimal U0008 { get; set; }
         public decimal U0009 { get; set; }
         public decimal U0010 { get; set; }
+        public decimal ThueSuat { get; set; }
+
 
     }
 
