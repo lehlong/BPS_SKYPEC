@@ -4,7 +4,11 @@ using SMO.Repository.Common;
 using SMO.Repository.Implement.BP.DAU_TU_NGOAI_DOANH_NGHIEP;
 using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
+using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
+using SMO.Repository.Implement.BP.KE_HOACH_DOANH_THU;
+using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.MD;
+using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.MD;
 using System;
 using System.Collections.Generic;
@@ -696,7 +700,7 @@ namespace SMO.Service.BP
                     Parent = "A",
                 });
 
-                foreach(var prj in lstProject.Where(x => x.NGANH_NGHE == "KDC" && x.PHAN_LOAI == "CTC"))
+                foreach (var prj in lstProject.Where(x => x.NGANH_NGHE == "KDC" && x.PHAN_LOAI == "CTC"))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1150,21 +1154,471 @@ namespace SMO.Service.BP
         {
             try
             {
-                var service = new KichBanService();
-                var dataSXKDCurrent = service.GetData(year, kichBan);
                 var data = new ReportDataCenter();
-                foreach (var item in ElementDataReport)
+
+
+                var headerSL_TH_5 = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB5" && x.TIME_YEAR == year - 5).Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSL_TH_5 = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_TH_5.Contains(x.TEMPLATE_CODE)).ToList();              
+                var headerSL_KH_1 = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year - 1 && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSL_KH_1 = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_KH_1.Contains(x.TEMPLATE_CODE)).ToList();                
+                var headerSL_KH = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSL_KH = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_KH.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var headerDT_TH_5 = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB5" && x.TIME_YEAR == year - 5).Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDT_TH_5 = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => headerDT_TH_5.Contains(x.TEMPLATE_CODE) && (x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002")).ToList();
+                var headerDT_KH_1 = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year - 1 && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDT_KH_1 = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => headerDT_KH_1.Contains(x.TEMPLATE_CODE) && (x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002")).ToList();
+                var headerDT_KH = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDT_KH = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => headerDT_KH.Contains(x.TEMPLATE_CODE) && (x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002")).ToList();
+
+                var headerCP_TH_5 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB5" && x.TIME_YEAR == year - 5).Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_TH_5 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_TH_5.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerCP_KH_1 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year - 1 && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_KH_1 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_KH_1.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerCP_KH = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_KH = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_KH.Contains(x.TEMPLATE_CODE)).ToList();
+
+
+                data.BM02D = new List<ReportModel>(){
+            new ReportModel()
+            {
+                Id = "I",
+                Name = "I. Sản lượng",
+                IsBold = true,
+            },
+            new ReportModel()
+            {
+                Id = "I.1",
+                Parent = "I",
+                Name = "1. Cung ứng cho VNA Group",
+            },
+            new ReportModel()
+            {
+                Id = "I.1.1",
+                Parent = "I.1",
+                Name = "- Cung ứng cho VNA",
+                Col1 = dataSL_TH_5.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataSL_KH_1.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataSL_KH.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "I.1.2",
+                Parent = "I.1",
+                Name = "- Cung ứng cho các DN khác trong VNA Group",
+                Col1 = dataSL_TH_5.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataSL_KH_1.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataSL_KH.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "I.2",
+                Parent = "I",
+                Name = "2. Cung ứng cho đối tác khác (*)",
+                Col1 = dataSL_TH_5.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataSL_KH_1.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataSL_KH.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "II",
+                Name = "II. Doanh thu từ hoạt động SXKD",
+                IsBold = true,
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.1",
+                Parent = "II",
+                Name = "1. Doanh thu cung ứng cho VNA Group",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "II.1.1",
+                Parent = "II.1",
+                Name = "- Doanh thu VNA",
+                Unit = "Tr.đ/USD",
+                Col1 = dataDT_TH_5.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataDT_KH_1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataDT_KH.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "II.1.1.1",
+                Parent = "II.1.1",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.1.2",
+                Parent = "II.1",
+                Name = "- Doanh thu các DN khác trong VNA group",
+                Unit = "Tr.đ/USD",
+                Col1 = dataDT_TH_5.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataDT_KH_1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataDT_KH.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "II.1.2.1",
+                Parent = "II.1.2",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.2",
+                Parent = "II",
+                Name = "2. Doanh thu cung ứng cho đối tác khác (*)",
+                Unit = "Tr.đ/USD",
+                Col1 = dataDT_TH_5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataDT_KH_1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataDT_KH.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "II.2.1",
+                Parent = "II.2",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III",
+                Name = "III. Các khoản chi phí",
+                Unit = "Tr.đ/USD",
+                IsBold = true
+            },
+            new ReportModel()
+            {
+                Id = "III.1",
+                Parent = "III",
+                Name = "1. Chi phí dịch vụ mua ngoài",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "III.1.1",
+                Parent = "III.1",
+                Name = "1.1. Chi phí bảo hiểm tài sản",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.2",
+                Parent = "III.1",
+                Name = "1.2. Thuê sửa chữa nhà cửa VKT",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.3",
+                Parent = "III.1",
+                Name = "1.3. Thuê sửa chữa máy móc thiết bị",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.4",
+                Parent = "III.1",
+                Name = "1.4. Thuê sửa chữa PTVT",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.5",
+                Parent = "III.1",
+                Name = "1.5. Thuê sửa chữa thiết bị quản lý",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.6",
+                Parent = "III.1",
+                Name = "1.6. Thuê sửa chữa kho bể",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.7",
+                Parent = "III.1",
+                Name = "1.7. Thuê sửa chữa TSCĐ khác",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.8",
+                Parent = "III.1",
+                Name = "1.8. Thuê cửa hàng kho bãi",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.9",
+                Parent = "III.1",
+                Name = "1.9. Thuê vận chuyển",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.10",
+                Parent = "III.1",
+                Name = "1.10. Tiền điện mua ngoài",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.11",
+                Parent = "III.1",
+                Name = "1.11. Tiền nước mua ngoài",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.12",
+                Parent = "III.1",
+                Name = "1.12. Cước thông tin liên lạc",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.13",
+                Parent = "III.1",
+                Name = "1.13. Chi phí dịch vụ mua ngoài khác",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2",
+                Parent = "III",
+                Name = "2. Chi khác bằng tiền",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "III.2.1",
+                Parent = "III.2",
+                Name = "2.1. Chi ANAT, PCBT, PCCC",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.2",
+                Parent = "III.2",
+                Name = "2.2. Chi phí trang phục ngành",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.3",
+                Parent = "III.2",
+                Name = "2.3. Chi giao dịch tiếp khách",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.4",
+                Parent = "III.2",
+                Name = "2.4. Chi quảng cáo, marketing",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.5",
+                Parent = "III.2",
+                Name = "2.5. Chi hoa hồng môi giới",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.6",
+                Parent = "III.2",
+                Name = "2.6. Chi đào tạo",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            
+            new ReportModel()
+            {
+                Id = "II.2.7",
+                Parent = "III.2",
+                Name = "2.7. Công tác phí, phép",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.8",
+                Parent = "III.2",
+                Name = "2.8. Lệ phí cầu đường",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            
+            new ReportModel()
+            {
+                Id = "III.2.9",
+                Parent = "III.2",
+                Name = "2.9. Chi bồi dưỡng độc hại",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.10",
+                Parent = "III.2",
+                Name = "2.10. Phí nhượng quyền khai thác",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.11",
+                Parent = "III.2",
+                Name = "2.11. Chi VSCN, y tế, môi trường",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.12",
+                Parent = "III.2",
+                Name = "2.12. Phí ngân hàng",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.13",
+                Parent = "III.2",
+                Name = "2.13. Khoản chi có tính chất phúc lợi",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.14",
+                Parent = "III.2",
+                Name = "1.14. Chi bằng tiền khác",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            };
+
+                foreach (var i in data.BM02D.OrderByDescending(x => x.Id))
                 {
-                    data.BM02D.Add(new ReportModel
-                    {
-                        Id = item.Id,
-                        Parent = item.Parent,
-                        Name = item.Name,
-                        Unit = item.Unit,
-                        IsBold = item.IsBold,
-                        Col2 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value2),
-                        Col4 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value5),
-                    });
+                    var child = data.BM02D.Where(x => x.Parent == i.Id).ToList();
+                    i.Col1 = child.Count() == 0 ? i.Col1 : child.Count() != 0 && child.Sum(x => x.Col1) == 0 ? i.Col1 : child.Sum(x => x.Col1);
+                    i.Col2 = child.Count() == 0 ? i.Col2 : child.Count() != 0 && child.Sum(x => x.Col2) == 0 ? i.Col2 : child.Sum(x => x.Col2);
+                    i.Col3 = child.Count() == 0 ? i.Col3 : child.Count() != 0 && child.Sum(x => x.Col3) == 0 ? i.Col3 : child.Sum(x => x.Col3);
+                    i.Col4 = child.Count() == 0 ? i.Col4 : child.Count() != 0 && child.Sum(x => x.Col4) == 0 ? i.Col4 : child.Sum(x => x.Col4);
                 }
                 return data;
             }
@@ -1179,22 +1633,472 @@ namespace SMO.Service.BP
         {
             try
             {
-                var service = new PhienBanService();
-                var dataSXKDCurrent = service.GetData(year, phienBan);
                 var data = new ReportDataCenter();
-                foreach (var item in ElementDataReport)
+
+
+                var headerSL_C = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "C" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSL_C = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_C.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerSL_TB = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "TB" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSL_TB = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_TB.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerSL_T = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "T" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSL_T = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_T.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var headerDT_C = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "C" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDT_C = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => headerDT_C.Contains(x.TEMPLATE_CODE) && (x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002")).ToList();
+                var headerDT_TB = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "TB" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDT_TB = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => headerDT_TB.Contains(x.TEMPLATE_CODE) && (x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002")).ToList();
+                var headerDT_T = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "T" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDT_T = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => headerDT_T.Contains(x.TEMPLATE_CODE) && (x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002")).ToList();
+
+
+                var headerCP_C = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "C" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_C = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_C.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerCP_TB = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "TB" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_TB = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_TB.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerCP_T = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "T" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_T = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_T.Contains(x.TEMPLATE_CODE)).ToList();
+                
+
+                data.BM02D = new List<ReportModel>(){
+            new ReportModel()
+            {
+                Id = "I",
+                Name = "I. Sản lượng",
+                IsBold = true,
+            },
+            new ReportModel()
+            {
+                Id = "I.1",
+                Parent = "I",
+                Name = "1. Cung ứng cho VNA Group",
+            },
+            new ReportModel()
+            {
+                Id = "I.1.1",
+                Parent = "I.1",
+                Name = "- Cung ứng cho VNA",
+                Col1 = dataSL_C.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataSL_TB.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataSL_T.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "I.1.2",
+                Parent = "I.1",
+                Name = "- Cung ứng cho các DN khác trong VNA Group",
+                Col1 = dataSL_C.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataSL_TB.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataSL_T.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "I.2",
+                Parent = "I",
+                Name = "2. Cung ứng cho đối tác khác (*)",
+                Col1 = dataSL_C.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataSL_TB.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataSL_T.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "II",
+                Name = "II. Doanh thu từ hoạt động SXKD",
+                IsBold = true,
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.1",
+                Parent = "II",
+                Name = "1. Doanh thu cung ứng cho VNA Group",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "II.1.1",
+                Parent = "II.1",
+                Name = "- Doanh thu VNA",
+                Unit = "Tr.đ/USD",
+                Col1 = dataDT_C.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataDT_TB.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataDT_T.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "II.1.1.1",
+                Parent = "II.1.1",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.1.2",
+                Parent = "II.1",
+                Name = "- Doanh thu các DN khác trong VNA group",
+                Unit = "Tr.đ/USD",
+                Col1 = dataDT_C.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataDT_TB.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataDT_T.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "II.1.2.1",
+                Parent = "II.1.2",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "II.2",
+                Parent = "II",
+                Name = "2. Doanh thu cung ứng cho đối tác khác (*)",
+                Unit = "Tr.đ/USD",
+                Col1 = dataDT_C.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col2 = dataDT_TB.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                Col3 = 0,
+                Col4 = dataDT_T.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+            },
+            new ReportModel()
+            {
+                Id = "II.2.1",
+                Parent = "II.2",
+                Name = "Trong đó: CK/Giảm giá",
+                Unit = "Tr.đ/USD"
+            },
+            new ReportModel()
+            {
+                Id = "III",
+                Name = "III. Các khoản chi phí",
+                Unit = "Tr.đ/USD",
+                IsBold = true
+            },
+            new ReportModel()
+            {
+                Id = "III.1",
+                Parent = "III",
+                Name = "1. Chi phí dịch vụ mua ngoài",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "III.1.1",
+                Parent = "III.1",
+                Name = "1.1. Chi phí bảo hiểm tài sản",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.2",
+                Parent = "III.1",
+                Name = "1.2. Thuê sửa chữa nhà cửa VKT",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.3",
+                Parent = "III.1",
+                Name = "1.3. Thuê sửa chữa máy móc thiết bị",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.4",
+                Parent = "III.1",
+                Name = "1.4. Thuê sửa chữa PTVT",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.5",
+                Parent = "III.1",
+                Name = "1.5. Thuê sửa chữa thiết bị quản lý",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.6",
+                Parent = "III.1",
+                Name = "1.6. Thuê sửa chữa kho bể",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.7",
+                Parent = "III.1",
+                Name = "1.7. Thuê sửa chữa TSCĐ khác",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.8",
+                Parent = "III.1",
+                Name = "1.8. Thuê cửa hàng kho bãi",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.9",
+                Parent = "III.1",
+                Name = "1.9. Thuê vận chuyển",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.10",
+                Parent = "III.1",
+                Name = "1.10. Tiền điện mua ngoài",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.11",
+                Parent = "III.1",
+                Name = "1.11. Tiền nước mua ngoài",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.12",
+                Parent = "III.1",
+                Name = "1.12. Cước thông tin liên lạc",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.1.13",
+                Parent = "III.1",
+                Name = "1.13. Chi phí dịch vụ mua ngoài khác",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2",
+                Parent = "III",
+                Name = "2. Chi khác bằng tiền",
+                Unit = "Tr.đ/USD",
+            },
+            new ReportModel()
+            {
+                Id = "III.2.1",
+                Parent = "III.2",
+                Name = "2.1. Chi ANAT, PCBT, PCCC",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.2",
+                Parent = "III.2",
+                Name = "2.2. Chi phí trang phục ngành",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.3",
+                Parent = "III.2",
+                Name = "2.3. Chi giao dịch tiếp khách",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.4",
+                Parent = "III.2",
+                Name = "2.4. Chi quảng cáo, marketing",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.5",
+                Parent = "III.2",
+                Name = "2.5. Chi hoa hồng môi giới",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.6",
+                Parent = "III.2",
+                Name = "2.6. Chi đào tạo",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
+            },
+
+            new ReportModel()
+            {
+                Id = "II.2.7",
+                Parent = "III.2",
+                Name = "2.7. Công tác phí, phép",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.8",
+                Parent = "III.2",
+                Name = "2.8. Lệ phí cầu đường",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
+            },
+
+            new ReportModel()
+            {
+                Id = "III.2.9",
+                Parent = "III.2",
+                Name = "2.9. Chi bồi dưỡng độc hại",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.10",
+                Parent = "III.2",
+                Name = "2.10. Phí nhượng quyền khai thác",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.11",
+                Parent = "III.2",
+                Name = "2.11. Chi VSCN, y tế, môi trường",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.12",
+                Parent = "III.2",
+                Name = "2.12. Phí ngân hàng",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.13",
+                Parent = "III.2",
+                Name = "2.13. Khoản chi có tính chất phúc lợi",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            new ReportModel()
+            {
+                Id = "III.2.14",
+                Parent = "III.2",
+                Name = "1.14. Chi bằng tiền khác",
+                Unit = "Tr.đ/USD",
+                Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
+                Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
+                Col3 = 0,
+                Col4 = dataCP_T.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
+            },
+            };
+
+                foreach (var i in data.BM02D.OrderByDescending(x => x.Id))
                 {
-                    data.BM02D1.Add(new ReportModel
-                    {
-                        Id = item.Id,
-                        Parent = item.Parent,
-                        Name = item.Name,
-                        Unit = item.Unit,
-                        IsBold = item.IsBold,
-                        Col1 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value1),
-                        Col2 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value2),
-                        Col3 = dataSXKDCurrent.Where(x => x.Id == item.Id).Sum(x => x.Value3),
-                    });
+                    var child = data.BM02D.Where(x => x.Parent == i.Id).ToList();
+                    i.Col1 = child.Count() == 0 ? i.Col1 : child.Count() != 0 && child.Sum(x => x.Col1) == 0 ? i.Col1 : child.Sum(x => x.Col1);
+                    i.Col2 = child.Count() == 0 ? i.Col2 : child.Count() != 0 && child.Sum(x => x.Col2) == 0 ? i.Col2 : child.Sum(x => x.Col2);
+                    i.Col3 = child.Count() == 0 ? i.Col3 : child.Count() != 0 && child.Sum(x => x.Col3) == 0 ? i.Col3 : child.Sum(x => x.Col3);
+                    i.Col4 = child.Count() == 0 ? i.Col4 : child.Count() != 0 && child.Sum(x => x.Col4) == 0 ? i.Col4 : child.Sum(x => x.Col4);
                 }
                 return data;
             }
