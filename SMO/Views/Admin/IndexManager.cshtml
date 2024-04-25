@@ -116,6 +116,12 @@
                                         <i class="material-icons">notes</i> Kế hoạch giá vốn
                                     </div>
                                 }
+                                @if (AuthorizeUtilities.CheckUserRight("R5.8") || AuthorizeUtilities.CheckUserRight("R0"))
+                                {
+                                    <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexKeHoachGiaVon", "MD/Element", new {slug = 3})')">
+                                        <i class="material-icons">notes</i> Kế hoạch giá vốn theo tháng
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

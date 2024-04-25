@@ -74,6 +74,12 @@ namespace SMO.Models
         public decimal Value11 { get; set; }
         public decimal Value12 { get; set; }
         public decimal SumGV { get; set; }
+        public int Order { get; set; }
+        public int Level { get; set; }
+        public bool IsBold { get; set; }
+
+        public string Parent { get; set; }
+
 
     }
 

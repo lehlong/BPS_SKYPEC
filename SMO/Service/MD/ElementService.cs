@@ -594,7 +594,7 @@ namespace SMO.Service.MD
                             Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010" && (x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP")).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             IsBold = true,
                             Order = order + 3,
-                            Parent = (order+1).ToString(),
+                            Parent = (order + 1).ToString(),
                             Level = 2
                         });
 
@@ -615,7 +615,7 @@ namespace SMO.Service.MD
                             Value10 = FHS_NBA ?? 0,
                             Value11 = value11,
                             Order = order + 4,
-                            Parent = (order+3).ToString(),
+                            Parent = (order + 3).ToString(),
                             Level = 3
                         });
                         data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
@@ -765,7 +765,7 @@ namespace SMO.Service.MD
                     decimal valueQFS = 0;
                     var valueSumSL = data.KeHoachGiaVonData.FirstOrDefault(x => x.Code == "TC")?.Value1;
 
-                    var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "TB" && x.KICH_BAN == "C" && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                    var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == "TB" && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                     if (dataHeaderDoanhThu.Count() == 0)
                     {
                         return data;
@@ -775,17 +775,17 @@ namespace SMO.Service.MD
 
                     var dataDetails = dataInHeaderSL.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020").ToList();
                     var month1 = dataDetails.Sum(x => x.VALUE_JAN) ?? 0;
-                    var month2= dataDetails.Sum(x => x.VALUE_FEB) ?? 0;
-                    var month3= dataDetails.Sum(x => x.VALUE_MAR) ?? 0;
-                    var month4= dataDetails.Sum(x => x.VALUE_APR) ?? 0;
-                    var month5= dataDetails.Sum(x => x.VALUE_MAY) ?? 0;
-                    var month6= dataDetails.Sum(x => x.VALUE_JUN) ?? 0;
-                    var month7= dataDetails.Sum(x => x.VALUE_JUL) ?? 0;
-                    var month8= dataDetails.Sum(x => x.VALUE_AUG) ?? 0;
-                    var month9= dataDetails.Sum(x => x.VALUE_SEP) ?? 0;
-                    var month10= dataDetails.Sum(x => x.VALUE_OCT) ?? 0;
-                    var month11= dataDetails.Sum(x => x.VALUE_NOV) ?? 0;
-                    var month12= dataDetails.Sum(x => x.VALUE_SEP) ?? 0;
+                    var month2 = dataDetails.Sum(x => x.VALUE_FEB) ?? 0;
+                    var month3 = dataDetails.Sum(x => x.VALUE_MAR) ?? 0;
+                    var month4 = dataDetails.Sum(x => x.VALUE_APR) ?? 0;
+                    var month5 = dataDetails.Sum(x => x.VALUE_MAY) ?? 0;
+                    var month6 = dataDetails.Sum(x => x.VALUE_JUN) ?? 0;
+                    var month7 = dataDetails.Sum(x => x.VALUE_JUL) ?? 0;
+                    var month8 = dataDetails.Sum(x => x.VALUE_AUG) ?? 0;
+                    var month9 = dataDetails.Sum(x => x.VALUE_SEP) ?? 0;
+                    var month10 = dataDetails.Sum(x => x.VALUE_OCT) ?? 0;
+                    var month11 = dataDetails.Sum(x => x.VALUE_NOV) ?? 0;
+                    var month12 = dataDetails.Sum(x => x.VALUE_SEP) ?? 0;
                     var sum = dataDetails.Sum(x => x.VALUE_SUM_YEAR) ?? 0;
 
                     foreach (var hhk in lstHangHangKhong)
@@ -793,14 +793,15 @@ namespace SMO.Service.MD
                         var valueNDHHK = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
                         valueND = valueND + valueNDHHK;
                     }
-
+                    var orderTC = 0;
+                    // Mops
                     var Mops = new KeHoachGiaVonTheoThang
                     {
                         Code = "Mops",
                         Name = "Mops",
                         DVT = "USD/tấn",
                         ValueDG = value2,
-                        Value1 =  month1 * value2 * value11,
+                        Value1 = month1 * value2 * value11,
                         Value2 = month2 * value2 * value11,
                         Value3 = month3 * value2 * value11,
                         Value4 = month4 * value2 * value11,
@@ -813,9 +814,11 @@ namespace SMO.Service.MD
                         Value11 = month11 * value2 * value11,
                         Value12 = month12 * value2 * value11,
                         SumGV = sum * value2 * value11,
+                        Order = 1,
+                        Parent = orderTC.ToString()
                     };
                     data.KeHoachGiaVonTheoThang.Add(Mops);
-
+                    //Pre
                     var Pre = new KeHoachGiaVonTheoThang
                     {
                         Code = "Pre",
@@ -835,6 +838,8 @@ namespace SMO.Service.MD
                         Value11 = month11 * value3 * value11,
                         Value12 = month12 * value3 * value11,
                         SumGV = sum * value3 * value11,
+                        Order = 2,
+                        Parent = orderTC.ToString()
                     };
                     data.KeHoachGiaVonTheoThang.Add(Pre);
 
@@ -856,37 +861,41 @@ namespace SMO.Service.MD
                         Value10 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                        Order = 4,
+                        Parent = 3.ToString()
                     };
 
                     var sumSL = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-
+                    //Thue
                     var thue = new KeHoachGiaVonTheoThang
                     {
                         Code = "Thue",
                         Name = "Thuế nhập khẩu",
                         DVT = "USD/tấn",
                         ValueDG = value5,
-                        Value1 = value5* SLND.Value1 * value11,
-                        Value2 = value5* SLND.Value2 * value11,
-                        Value3 = value5* SLND.Value3 * value11,
-                        Value4 = value5* SLND.Value4 * value11,
-                        Value5 = value5* SLND.Value5 * value11,
-                        Value6 = value5* SLND.Value6 * value11,
-                        Value7 = value5* SLND.Value7 * value11,
-                        Value8 = value5* SLND.Value8 * value11,
-                        Value9 = value5* SLND.Value9 * value11,
-                        Value10 = value5* SLND.Value10 * value11,
-                        Value11 = value5* SLND.Value11 * value11,
+                        Value1 = value5 * SLND.Value1 * value11,
+                        Value2 = value5 * SLND.Value2 * value11,
+                        Value3 = value5 * SLND.Value3 * value11,
+                        Value4 = value5 * SLND.Value4 * value11,
+                        Value5 = value5 * SLND.Value5 * value11,
+                        Value6 = value5 * SLND.Value6 * value11,
+                        Value7 = value5 * SLND.Value7 * value11,
+                        Value8 = value5 * SLND.Value8 * value11,
+                        Value9 = value5 * SLND.Value9 * value11,
+                        Value10 = value5 * SLND.Value10 * value11,
+                        Value11 = value5 * SLND.Value11 * value11,
                         Value12 = value5 * SLND.Value12 * value11,
-                        SumGV = sumSL * value5 * value11
+                        SumGV = sumSL * value5 * value11,
+                        Order = 3,
+                        Parent = orderTC.ToString()
                     };
                     data.KeHoachGiaVonTheoThang.Add(thue);
                     data.KeHoachGiaVonTheoThang.Add(SLND);
-
+                    //Dv mua ngoài
                     var dvmn = new KeHoachGiaVonTheoThang
                     {
                         Code = "DV",
-                        Name = "Thuế nhập khẩu",
+                        Name = "Dịch vụ mua ngoài",
                         DVT = "VND/tấn",
                         ValueDG = value6,
                         Value1 = value6 * month1,
@@ -902,6 +911,8 @@ namespace SMO.Service.MD
                         Value11 = value6 * month11,
                         Value12 = value6 * month12,
                         SumGV = value6 * sum,
+                        Order = 5,
+                        Parent = orderTC.ToString()
                     };
                     data.KeHoachGiaVonTheoThang.Add(dvmn);
 
@@ -922,12 +933,14 @@ namespace SMO.Service.MD
                         Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-X" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-X" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-X" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                        Order = 9,
+                        Parent = 6.ToString()
                     };
                     var sumSLQX = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-X" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
                     var SLQN = new KeHoachGiaVonTheoThang
                     {
-                        Code = "SLQX",
-                        Name = "Sản lượng qua xe",
+                        Code = "SLQN",
+                        Name = "Sản lượng qua ngầm",
                         DVT = "tấn",
                         Value1 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-N" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_JAN) ?? 0,
                         Value2 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-N" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_FEB) ?? 0,
@@ -941,8 +954,169 @@ namespace SMO.Service.MD
                         Value10 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-N" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-N" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-N" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
+                        Order = 10,
+                        Parent = 6.ToString()
                     };
                     var sumSLQN = dataDetails.Where(x => x.SanLuongProfitCenter.SanBay.NHOM_SAN_BAY_CODE == "NI-N" && x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+
+                    //Tính chi phí
+                    var TLXe = lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE;
+                    var TLNg = lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE;
+                    var valueDGTLXe = TLXe * (Mops.ValueDG + Pre.ValueDG + thue.ValueDG);
+                    var valueDGTLNg = TLNg * (Mops.ValueDG + Pre.ValueDG + thue.ValueDG);
+
+                    var CPXe = new KeHoachGiaVonTheoThang
+                    {
+                        Code = "CPXe",
+                        Name = "Chi phí HH qua xe",
+                        DVT = "USD/tấn",
+                        ValueDG = valueDGTLXe,
+                        Value1 = valueDGTLXe * SLQX.Value1,
+                        Value2 = valueDGTLXe * SLQX.Value2,
+                        Value3 = valueDGTLXe * SLQX.Value3,
+                        Value4 = valueDGTLXe * SLQX.Value4,
+                        Value5 = valueDGTLXe * SLQX.Value5,
+                        Value6 = valueDGTLXe * SLQX.Value6,
+                        Value7 = valueDGTLXe * SLQX.Value7,
+                        Value8 = valueDGTLXe * SLQX.Value8,
+                        Value9 = valueDGTLXe * SLQX.Value9,
+                        Value10 = valueDGTLXe * SLQX.Value10,
+                        Value11 = valueDGTLXe * SLQX.Value11,
+                        Value12 = valueDGTLXe * SLQX.Value12,
+                        SumGV = valueDGTLXe * sumSLQX,
+                        Order = 7,
+                        Parent = 6.ToString()
+                    };
+                    data.KeHoachGiaVonTheoThang.Add(CPXe);
+                    var CPQN = new KeHoachGiaVonTheoThang
+                    {
+                        Code = "CPQN",
+                        Name = "Chi phí HH qua ngầm",
+                        DVT = "USD/tấn",
+                        ValueDG = valueDGTLNg,
+                        Value1 = valueDGTLNg * SLQN.Value1,
+                        Value2 = valueDGTLNg * SLQN.Value2,
+                        Value3 = valueDGTLNg * SLQN.Value3,
+                        Value4 = valueDGTLNg * SLQN.Value4,
+                        Value5 = valueDGTLNg * SLQN.Value5,
+                        Value6 = valueDGTLNg * SLQN.Value6,
+                        Value7 = valueDGTLNg * SLQN.Value7,
+                        Value8 = valueDGTLNg * SLQN.Value8,
+                        Value9 = valueDGTLNg * SLQN.Value9,
+                        Value10 = valueDGTLNg * SLQN.Value10,
+                        Value11 = valueDGTLNg * SLQN.Value11,
+                        Value12 = valueDGTLNg * SLQN.Value12,
+                        SumGV = valueDGTLNg * sumSLQN,
+                        Order = 8,
+                        Parent = 6.ToString()
+                    };
+
+                    var CPHH = new KeHoachGiaVonTheoThang
+                    {
+                        Code = "CPHH",
+                        Name = "Chi phí hao hụt",
+                        DVT = "VND/tấn",
+                        Value1 = CPXe.Value1 + CPQN.Value1,
+                        Value2 = CPXe.Value2 + CPQN.Value2 ,
+                        Value3 = CPXe.Value3 + CPQN.Value3 ,
+                        Value4 = CPXe.Value4 + CPQN.Value4 ,
+                        Value5 = CPXe.Value5 + CPQN.Value5 ,
+                        Value6 = CPXe.Value6 + CPQN.Value6 ,
+                        Value7 = CPXe.Value7 + CPQN.Value7 ,
+                        Value8 = CPXe.Value8 + CPQN.Value8 ,
+                        Value9 = CPXe.Value9 + CPQN.Value9 ,
+                        Value10 =CPXe.Value10 + CPQN.Value10 ,
+                        Value11 =CPXe.Value11+ CPQN.Value11,
+                        Value12 = CPXe.Value12 + CPQN.Value12 ,
+                        SumGV = CPXe.SumGV + CPQN.SumGV ,
+                        Order = 6,
+                        Parent = orderTC.ToString()
+                    };
+                    data.KeHoachGiaVonTheoThang.Add(CPHH);
+                    data.KeHoachGiaVonTheoThang.Add(CPQN);
+                    data.KeHoachGiaVonTheoThang.Add(SLQX);
+                    data.KeHoachGiaVonTheoThang.Add(SLQN);
+
+                    //Tính phí FHS
+                    var fhs = new KeHoachGiaVonTheoThang();
+                    foreach (var hhk in lstHangHangKhong)
+                    {
+                        var FHS_NBA = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-NBA-" + hhk.GROUP_ITEM)?.VALUE;
+                        var FHS_TNS = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-TNS-" + hhk.GROUP_ITEM)?.VALUE;
+
+                        var valueSLNBA1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JAN) ?? 0;
+                        var valueSLNBA2 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_FEB) ?? 0;
+                        var valueSLNBA3 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_MAR) ?? 0;
+                        var valueSLNBA4 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_APR) ?? 0;
+                        var valueSLNBA5 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_MAY) ?? 0;
+                        var valueSLNBA6 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JUN) ?? 0;
+                        var valueSLNBA7 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JUL) ?? 0;
+                        var valueSLNBA8 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_AUG) ?? 0;
+                        var valueSLNBA9 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_SEP) ?? 0;
+                        var valueSLNBA10 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_OCT) ?? 0;
+                        var valueSLNBA11 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_NOV) ?? 0;
+                        var valueSLNBA12 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_SEP) ?? 0;
+                        var valueSLNBASum= dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+
+
+
+                        var valueSLTNS1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JAN) ?? 0;
+                        var valueSLTNS2 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_FEB) ?? 0;
+                        var valueSLTNS3 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_MAR) ?? 0;
+                        var valueSLTNS4 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_APR) ?? 0;
+                        var valueSLTNS5 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_MAY) ?? 0;
+                        var valueSLTNS6 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JUN) ?? 0;
+                        var valueSLTNS7 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JUL) ?? 0;
+                        var valueSLTNS8 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_AUG) ?? 0;
+                        var valueSLTNS9 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SEP) ?? 0;
+                        var valueSLTNS10 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_OCT) ?? 0;
+                        var valueSLTNS11 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_NOV) ?? 0;
+                        var valueSLTNS12 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SEP) ?? 0;
+                        var valueSLTNSSum = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+
+
+
+                        fhs.Value1 =fhs.Value1 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA1  +  FHS_TNS * value11 * valueSLTNS1  );
+                        fhs.Value2 =fhs.Value2 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA2  +  FHS_TNS * value11 * valueSLTNS2  );
+                        fhs.Value3 =fhs.Value3 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA3  +  FHS_TNS * value11 * valueSLTNS3  );
+                        fhs.Value4 =fhs.Value4 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA4  +  FHS_TNS * value11 * valueSLTNS4  );
+                        fhs.Value5 =fhs.Value5 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA5  +  FHS_TNS * value11 * valueSLTNS5  );
+                        fhs.Value6 =fhs.Value6 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA6  +  FHS_TNS * value11 * valueSLTNS6  );
+                        fhs.Value7 =fhs.Value7 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA7  +  FHS_TNS * value11 * valueSLTNS7  );
+                        fhs.Value8 =fhs.Value8 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA8  + FHS_TNS * value11 * valueSLTNS8);
+                        fhs.Value9 =fhs.Value9 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA9 +  FHS_TNS * value11 * valueSLTNS9 );
+                        fhs.Value10 =fhs.Value10 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA10  +  FHS_TNS * value11 * valueSLTNS10  );
+                        fhs.Value11 =fhs.Value11 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA11  +  FHS_TNS * value11 * valueSLTNS11  );
+                        fhs.Value12 =fhs.Value12 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA12  +  FHS_TNS * value11 * valueSLTNS12  );
+                        fhs.SumGV = fhs.SumGV + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBASum + FHS_TNS * value11 * valueSLTNSSum);
+                    }
+                    fhs.Order = 11;
+                    fhs.Parent = orderTC.ToString();
+                    fhs.Name = "Chi phí FHS";
+                    fhs.DVT = "VND/tấn";
+                    data.KeHoachGiaVonTheoThang.Add(fhs);
+                    // Tính toorng
+
+                    var Tong = new KeHoachGiaVonTheoThang
+                    {
+                        Code = "Tong",
+                        Order = 0,
+                        Name = "Tổng cộng",
+                        Value1 = Mops.Value1 + Pre.Value1 + thue.Value1 + dvmn.Value1 + CPHH.Value1 + fhs.Value1,
+                        Value2 = Mops.Value2 + Pre.Value2 + thue.Value2 + dvmn.Value2 + CPHH.Value2 + fhs.Value2,
+                        Value3 = Mops.Value3 + Pre.Value3 + thue.Value3 + dvmn.Value3 + CPHH.Value3 + fhs.Value3,
+                        Value4 = Mops.Value4 + Pre.Value4 + thue.Value4 + dvmn.Value4 + CPHH.Value4 + fhs.Value4,
+                        Value5 = Mops.Value5 + Pre.Value5 + thue.Value5 + dvmn.Value5 + CPHH.Value5 + fhs.Value5,
+                        Value6 = Mops.Value6 + Pre.Value6 + thue.Value6 + dvmn.Value6 + CPHH.Value6 + fhs.Value6,
+                        Value7 = Mops.Value7 + Pre.Value7 + thue.Value7 + dvmn.Value7 + CPHH.Value7 + fhs.Value7,
+                        Value8 = Mops.Value8 + Pre.Value8 + thue.Value8 + dvmn.Value8 + CPHH.Value8 + fhs.Value8,
+                        Value9 = Mops.Value9 + Pre.Value9 + thue.Value9 + dvmn.Value9 + CPHH.Value9 + fhs.Value9,
+                        Value10 = Mops.Value10 + Pre.Value10 + thue.Value10 + dvmn.Value10 + CPHH.Value10 + fhs.Value10,
+                        Value11 = Mops.Value11 + Pre.Value11 + thue.Value11 + dvmn.Value11 + CPHH.Value11 + fhs.Value11,
+                        Value12 = Mops.Value12 + Pre.Value12 + thue.Value12 + dvmn.Value12 + CPHH.Value12 + fhs.Value12,
+                        SumGV = Mops.SumGV + Pre.SumGV + thue.SumGV + dvmn.SumGV + CPHH.SumGV + fhs.SumGV,
+                    };
+                    data.KeHoachGiaVonTheoThang.Add(Tong);
 
                 }
 

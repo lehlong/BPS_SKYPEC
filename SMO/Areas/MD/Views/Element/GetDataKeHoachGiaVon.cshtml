@@ -64,6 +64,28 @@
         Value19 = x.Value19 == 0 ? "" : Math.Round(x.Value19).ToStringVN(),
         Value20 = x.Value20 == 0 ? "" : Math.Round(x.Value20).ToStringVN(),
     });
+
+    var jsonDataTab3 = Model.KeHoachGiaVonTheoThang.OrderBy(x => x.Order).Select(x => new
+    {
+        Id = x.Order.ToString(),
+        Parent = x.Parent,
+        Name = x.Name,
+        dvt = x.DVT,
+        ValueDG = x.ValueDG == 0 ? "" : x.ValueDG.ToString("F2"),
+        Value1 = Math.Round(x.Value1).ToStringVN(),
+        Value2 = Math.Round(x.Value2).ToStringVN(),
+        Value3 = Math.Round(x.Value3).ToStringVN(),
+        Value4 = Math.Round(x.Value4).ToStringVN(),
+        Value5 = Math.Round(x.Value5).ToStringVN(),
+        Value6 = Math.Round(x.Value6).ToStringVN(),
+        Value7 = Math.Round(x.Value7).ToStringVN(),
+        Value8 = Math.Round(x.Value8).ToStringVN(),
+        Value9 = Math.Round(x.Value9).ToStringVN() ,
+        Value10 = Math.Round(x.Value10).ToStringVN(),
+        Value11 = Math.Round(x.Value11).ToStringVN(),
+        Value12 = Math.Round(x.Value12).ToStringVN(),
+        Value13 = Math.Round(x.SumGV).ToStringVN()
+    });
 }
 
 <style>
@@ -149,7 +171,7 @@
     });
     const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab1, jsonSerializeSettings));
     const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab2, jsonSerializeSettings));
-    const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab2, jsonSerializeSettings));
+    const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab3, jsonSerializeSettings));
     let columns = [
         { id: "warehouse", header: [{ text: "KHO ĐẦU NGUỒN", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
         { id: "areaCode", header: [{ text: "KHU VỰC", align: "center", rowspan: 2 }], align: "center", minWidth: 180 },
@@ -202,21 +224,21 @@
 
     let columnsTab3 = [
         { id: "name", header: [{ text: "KHÁCH HÀNG", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
-        { id: "value1", header: [{ text: "DVT", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "value2", header: [{ text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "value3", header: [{ text: "CHI TIẾT GIÁ VỐN(USD/TẤN)", align: "center", colspan: 12 }, { text: "THÁNG 1", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value4", header: [{ text: "", align: "center" }, { text: "THÁNG 2", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value5", header: [{ text: "", align: "center" }, { text: "THÁNG 3", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value6", header: [{ text: "", align: "center" }, { text: "THÁNG 4", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value7", header: [{ text: "", align: "center" }, { text: "THÁNG 5", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value8", header: [{ text: "", align: "center" }, { text: "THÁNG 6", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value9", header: [{ text: "", align: "center" }, { text: "THÁNG 7", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value10", header: [{ text: "", align: "center" }, { text: "THÁNG 8", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value11", header: [{ text: "", align: "center" }, { text: "THÁNG 9", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value12", header: [{ text: "", align: "center" }, { text: "THÁNG 10", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value13", header: [{ text: "", align: "center" }, { text: "THÁNG 11", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value14", header: [{ text: "", align: "center" }, { text: "THÁNG 12", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value15", header: [{ text: "CỘNG GIÁ VỐN", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "dvt", header: [{ text: "DVT", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "valueDG", header: [{ text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "value1", header: [{ text: "CHI TIẾT GIÁ VỐN(USD/TẤN)", align: "center", colspan: 12 }, { text: "THÁNG 1", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value2", header: [{ text: "", align: "center" }, { text: "THÁNG 2", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value3", header: [{ text: "", align: "center" }, { text: "THÁNG 3", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value4", header: [{ text: "", align: "center" }, { text: "THÁNG 4", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value5", header: [{ text: "", align: "center" }, { text: "THÁNG 5", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value6", header: [{ text: "", align: "center" }, { text: "THÁNG 6", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value7", header: [{ text: "", align: "center" }, { text: "THÁNG 7", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value8", header: [{ text: "", align: "center" }, { text: "THÁNG 8", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value9", header: [{ text: "", align: "center" }, { text: "THÁNG 9", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value10", header: [{ text: "", align: "center" }, { text: "THÁNG 10", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value11", header: [{ text: "", align: "center" }, { text: "THÁNG 11", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value12", header: [{ text: "", align: "center" }, { text: "THÁNG 12", align: "center" }], align: "right", minWidth: 180 },
+        { id: "value13", header: [{ text: "CỘNG GIÁ VỐN", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
         
 
     ]
