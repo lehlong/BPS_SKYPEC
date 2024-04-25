@@ -9,6 +9,8 @@ namespace SMO.Models
     {
         public List<KeHoachGiaThanhData> KeHoachGiaThanhData { get; set; } = new List<KeHoachGiaThanhData> { };
         public List<KeHoachGiaVonData> KeHoachGiaVonData { get; set; } = new List<KeHoachGiaVonData> { };
+        public List<KeHoachGiaVonTheoThang> KeHoachGiaVonTheoThang { get; set; } = new List<KeHoachGiaVonTheoThang> { };
+
         public List<PreTrungBinhKhoData> PreTrungBinhKhoData { get; set; } = new List<PreTrungBinhKhoData> { };
         public List<KeHoachTaiChinhData> KeHoachTaiChinhData { get; set; } = new List<KeHoachTaiChinhData> { };
         public List<KhoDauNguonData> KhoDauNguonData { get; set; } = new List<KhoDauNguonData> { };
@@ -48,6 +50,30 @@ namespace SMO.Models
         public decimal U0010 { get; set; }
         public decimal ThueSuat { get; set; }
 
+
+    }
+
+    public class KeHoachGiaVonTheoThang
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string DVT { get; set; }
+        public decimal ValueDG { get; set; }
+
+        public string ParentCode { get; set; }
+        public decimal Value1 { get; set; }
+        public decimal Value2 { get; set; }
+        public decimal Value3 { get; set; }
+        public decimal Value4 { get; set; }
+        public decimal Value5 { get; set; }
+        public decimal Value6 { get; set; }
+        public decimal Value7 { get; set; }
+        public decimal Value8 { get; set; }
+        public decimal Value9 { get; set; }
+        public decimal Value10 { get; set; }
+        public decimal Value11 { get; set; }
+        public decimal Value12 { get; set; }
+        public decimal SumGV { get; set; }
 
     }
 

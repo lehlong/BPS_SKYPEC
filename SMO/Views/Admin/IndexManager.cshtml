@@ -197,9 +197,37 @@
                                         <i class="material-icons">notes</i> Kế hoạch SXKD theo các kịch bản
                                     </div>
                                 }
-                            <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02A", "BP/Report")')">
-                                <i class="material-icons">notes</i> Kế hoạch đầu tư XDCB và TTB năm kế hoạch
+                                <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02A", "BP/Report")')">
+                                    <i class="material-icons">notes</i> Kế hoạch đầu tư XDCB và TTB năm kế hoạch
+                                </div>
+                                <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02C", "BP/Report")')">
+                                    <i class="material-icons">notes</i> Kế hoạch hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp
+                                </div>
+                                <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02C1", "BP/Report")')">
+                                    <i class="material-icons">notes</i> Hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp các kịch bản
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (AuthorizeUtilities.CheckUserRight("R5.13") || AuthorizeUtilities.CheckUserRight("R5.14") || AuthorizeUtilities.CheckUserRight("R0"))
+        {
+            <div class="col-md-4" style="margin-top: 3px; padding: 6px">
+                <div class="card">
+                    <div class="body" style="padding: 12px 22px; height: 290px;">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a style="padding-top: 0px !important;" class="text-uppercase">BÁO CÁO SO SÁNH THỰC HIỆN - KẾ HOẠCH</a>
+                            </li>
+                        </ul>
+
+                        <div class="p-t-10 p-b-5">
+                            <div class="row">
+                                
+                                
                             </div>
                         </div>
                     </div>
