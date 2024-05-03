@@ -8,6 +8,7 @@ using SMO.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SMO.Helper
@@ -869,7 +870,7 @@ namespace SMO.Helper
                     rowCur.Cells[19].SetCellValue((double)item.U0010);
                 }
             }
-            else
+            else if(module.Trim() == "KeHoachGiaVon2")
             {
                 ICellStyle styleCellNumber = workbook.CreateCellStyle();
                 styleCellNumber.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
@@ -923,6 +924,63 @@ namespace SMO.Helper
                     rowCur.Cells[18].SetCellValue((double)(item.Value18));
                     rowCur.Cells[19].SetCellValue((double)(item.Value19));
                     rowCur.Cells[20].SetCellValue((double)(item.Value20));
+
+                }
+            }
+            else
+            {
+                ICellStyle styleCellNumber = workbook.CreateCellStyle();
+                styleCellNumber.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+                styleCellNumber.WrapText = true;
+
+                ICellStyle styleCellName = workbook.CreateCellStyle();
+                styleCellName.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+                styleCellName.WrapText = true;
+
+
+                ICellStyle styleCellBold = workbook.CreateCellStyle();
+                styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+                styleCellBold.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+
+                ICellStyle styleCellHeader = workbook.CreateCellStyle();
+                styleCellHeader.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+                int startRow = 7;
+                foreach (var item in data.KeHoachGiaVonTheoThang.OrderBy(x => x.Order))
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                    for (int i = 0; i < NUM_CELL; i++)
+                    {
+                        if (item.IsBold)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellNumber;
+                        }
+                    }
+                    StringBuilder space = new StringBuilder();
+                    for(int i = 0;i < item.Level; i++)
+                    {
+                        space.Append("        ");
+                    }
+                    rowCur.Cells[0].SetCellValue(space.ToString() + item.Name);
+                    rowCur.Cells[1].SetCellValue(item.DVT);
+                    rowCur.Cells[2].SetCellValue((double)item.ValueDG);
+                    rowCur.Cells[3].SetCellValue((double)(item.Value1));
+                    rowCur.Cells[4].SetCellValue((double)(item.Value2));
+                    rowCur.Cells[5].SetCellValue((double)(item.Value3));
+                    rowCur.Cells[6].SetCellValue((double)(item.Value4));
+                    rowCur.Cells[7].SetCellValue((double)(item.Value5));
+                    rowCur.Cells[8].SetCellValue((double)(item.Value6));
+                    rowCur.Cells[9].SetCellValue((double)(item.Value7));
+                    rowCur.Cells[10].SetCellValue((double)(item.Value8));
+                    rowCur.Cells[11].SetCellValue((double)(item.Value9));
+                    rowCur.Cells[12].SetCellValue((double)(item.Value10));
+                    rowCur.Cells[13].SetCellValue((double)(item.Value11));
+                    rowCur.Cells[14].SetCellValue((double)(item.Value12));
+                    rowCur.Cells[15].SetCellValue((double)(item.SumGV));
 
                 }
             }

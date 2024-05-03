@@ -1,5 +1,7 @@
 ﻿using NHibernate.Criterion;
 using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using SMO.Repository.Common;
 using SMO.Repository.Implement.BP.DAU_TU_NGOAI_DOANH_NGHIEP;
 using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
@@ -12,6 +14,7 @@ using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.MD;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -25,6 +28,227 @@ namespace SMO.Service.BP
             UnitOfWork = new NHUnitOfWork();
         }
 
+        public void ExportExcelGridData(ref MemoryStream outFileStream, List<ReportModel> lstData, string path, int NUMCELL, string Template)
+        {
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook templateWorkbook;
+            templateWorkbook = new XSSFWorkbook(fs);
+            templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachSanLuong));
+            fs.Close();
+            ISheet sheet = templateWorkbook.GetSheetAt(0);
+            var startRow = 6;
+            switch (Template)
+            {
+                case "BM_02A":
+                    InsertDataToTableBM_02A(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+                case "BM_02B":
+                    InsertDataToTableBM_02B(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+                case "BM_01D":
+                    InsertDataToTableBM_01D(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+                default:
+                    InsertDataToTableBM_02B(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+            }
+            templateWorkbook.Write(outFileStream);
+        }
+
+        public void InsertDataToTableBM_02A(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+            styleCellName.CloneStyleFrom(sheet.GetRow(6).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            foreach(var item in dataDetails)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(item.Name);
+                rowCur.Cells[1].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
+                rowCur.Cells[2].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
+                rowCur.Cells[3].SetCellValue(item.Tdth);
+                rowCur.Cells[4].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
+                rowCur.Cells[5].SetCellValue(item.Col5 == null ? 0 : Convert.ToDouble(item.Col5));
+                rowCur.Cells[6].SetCellValue(item.Tdtk);
+                rowCur.Cells[7].SetCellValue(item.Col7 == null ? 0 : Convert.ToDouble(item.Col7));
+                rowCur.Cells[8].SetCellValue(item.Col8 == null ? 0 : Convert.ToDouble(item.Col8));
+                rowCur.Cells[9].SetCellValue(item.Des);
+                for(int i = 0; i < NUM_CELL; i++)
+                {
+                    if (item.IsBold)
+                    {
+                        if(i == 0 || i == NUM_CELL - 1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBodyBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if(i == 0 || i == NUM_CELL - 1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBody;
+
+                        }
+                    }
+                }
+            }
+
+        }
+
+        public void InsertDataToTableBM_02B(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+            styleCellName.CloneStyleFrom(sheet.GetRow(6).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            foreach (var item in dataDetails)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(item.Name);
+                rowCur.Cells[1].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
+                rowCur.Cells[2].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
+                rowCur.Cells[3].SetCellValue(item.Col3 == null ? 0 : Convert.ToDouble(item.Col3));
+                rowCur.Cells[4].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
+                rowCur.Cells[5].SetCellValue(item.Col5 == null ? 0 : Convert.ToDouble(item.Col5));
+                rowCur.Cells[6].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col6));
+                rowCur.Cells[7].SetCellValue(item.Des);
+                for (int i = 0; i < NUM_CELL; i++)
+                {
+                    if (item.IsBold)
+                    {
+                        if (i == 0 || i == NUM_CELL - 1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBodyBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (i == 0 || i == NUM_CELL - 1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBody;
+
+                        }
+                    }
+                }
+            }
+
+        }
+
+        public void InsertDataToTableBM_01D(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+            styleCellName.CloneStyleFrom(sheet.GetRow(6).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            foreach (var item in dataDetails)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(item.Name);
+                rowCur.Cells[1].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
+                rowCur.Cells[2].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
+                rowCur.Cells[3].SetCellValue(item.Col3 == null ? 0 : Convert.ToDouble(item.Col3));
+                rowCur.Cells[4].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
+                rowCur.Cells[5].SetCellValue(item.Col5 == null ? 0 : Convert.ToDouble(item.Col5));
+                rowCur.Cells[6].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col6));
+                rowCur.Cells[7].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col7));
+                rowCur.Cells[8].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col8));
+                rowCur.Cells[9].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col9));
+                rowCur.Cells[10].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col10));
+                rowCur.Cells[11].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col11));
+                rowCur.Cells[12].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col12));
+                rowCur.Cells[13].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col13));
+
+                for (int i = 0; i < NUM_CELL; i++)
+                {
+                    if (item.IsBold)
+                    {
+                        if (i == 0 || i == NUM_CELL - 1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBodyBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (i == 0 || i == NUM_CELL - 1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBody;
+
+                        }
+                    }
+                }
+            }
+
+        }
         public ReportDataCenter GenDataBM01D(int year, string orgCode)
         {
             try

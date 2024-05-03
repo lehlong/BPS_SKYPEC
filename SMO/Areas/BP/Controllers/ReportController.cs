@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
+using Newtonsoft.Json;
 using SMO.Service.BP;
+using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.MD;
 using System;
 using System.Collections.Generic;
@@ -435,6 +437,38 @@ namespace SMO.Areas.BP.Controllers
         public ActionResult GenDataBM02D2(int year, string phienBan, string kichBan, string hangHangKhong)
         {
             return PartialView();
+        }
+        #endregion
+
+        #region dowload
+        [HttpPost]
+        public FileContentResult ExportExcelGridData(string Treedata, string Template)
+        {
+            var data = JsonConvert.DeserializeObject<List<ReportModel>>(Treedata);
+            MemoryStream outFileStream = new MemoryStream();
+            var fileName = string.Empty;
+            if(Template == "BM_02A")
+            {
+                var path = Server.MapPath("~/TemplateExcel/" + "BM_02A.xlsx");
+                int NUMCELL = 10;
+                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                fileName = "Biểu mẫu Kế hoạch đầu tư XDCB và trang thiết bị năm kế hoạch";
+            }
+            else if(Template == "BM_02B")
+            {
+                var path = Server.MapPath("~/TemplateExcel/" + "BM_02B.xlsx");
+                int NUMCELL = 8;
+                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                fileName = "Biểu mẫu Kế hoạch đầu tư vốn ra ngoài doanh nghiệp năm kế hoạch";
+            }
+            else if(Template == "BM_01D")
+            {
+                var path = Server.MapPath("~/TemplateExcel/" + "BM_01D.xlsx");
+                int NUMCELL = 14;
+                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                fileName = "Biểu mẫu Báo cáo ước tình hình thực hiện đầu tư vào các dự án hình thành TSCĐ năm trước kế hoạch";
+            }
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
         #endregion
     }
