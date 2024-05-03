@@ -36,17 +36,34 @@ namespace SMO.Service.BP
             templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachSanLuong));
             fs.Close();
             ISheet sheet = templateWorkbook.GetSheetAt(0);
-            var startRow = 6;
+            var startRow = 10;
             switch (Template)
             {
                 case "BM_02A":
                     InsertDataToTableBM_02A(templateWorkbook, sheet, lstData, startRow, NUMCELL);
                     break;
                 case "BM_02B":
+                    startRow = 8;
                     InsertDataToTableBM_02B(templateWorkbook, sheet, lstData, startRow, NUMCELL);
                     break;
                 case "BM_01D":
                     InsertDataToTableBM_01D(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+                case "BM_02C":
+                    startRow = 7;
+                    InsertDataToTableBM_02C(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+                case "BM_02C1":
+                    startRow = 7;
+                    InsertDataToTableBM_02C(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+                case "BM_02D":
+                    startRow = 8;
+                    InsertDataToTableBM_02D(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+                case "BM_02D1":
+                    startRow = 8;
+                    InsertDataToTableBM_02D1(templateWorkbook, sheet, lstData, startRow, NUMCELL);
                     break;
                 default:
                     InsertDataToTableBM_02B(templateWorkbook, sheet, lstData, startRow, NUMCELL);
@@ -58,20 +75,20 @@ namespace SMO.Service.BP
         public void InsertDataToTableBM_02A(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
-            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleCellBold.CloneStyleFrom(sheet.GetRow(10).Cells[0].CellStyle);
             var fontBold = templateWorkbook.CreateFont();
             fontBold.Boldweight = (short)FontBoldWeight.Bold;
-            fontBold.FontHeightInPoints = 11;
+            fontBold.FontHeightInPoints = 13;
             fontBold.FontName = "Times New Roman";
 
             ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
-            styleCellName.CloneStyleFrom(sheet.GetRow(6).Cells[1].CellStyle);
+            styleCellName.CloneStyleFrom(sheet.GetRow(10).Cells[1].CellStyle);
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(11).Cells[0].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
-            styleBodyBold.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(11).Cells[1].CellStyle);
             styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
 
             foreach(var item in dataDetails)
@@ -104,7 +121,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if(i == 0 || i == NUM_CELL - 1)
+                        if(i == 0 ||  i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
@@ -116,26 +133,30 @@ namespace SMO.Service.BP
                     }
                 }
             }
-
+            IRow rowEnd = ReportUtilities.CreateRow(ref sheet, startRow + 2, NUM_CELL);
+            rowEnd.Cells[7].SetCellValue("Ngày  .......... tháng ........... năm..............");
+            IRow rowEnd2 = ReportUtilities.CreateRow(ref sheet, startRow + 3, NUM_CELL);
+            rowEnd2.Cells[7].SetCellValue("Người đại diện ký, ghi rõ họ tên");
+            rowEnd2.Cells[7].CellStyle.SetFont(fontBold);
         }
 
         public void InsertDataToTableBM_02B(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
-            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
             var fontBold = templateWorkbook.CreateFont();
             fontBold.Boldweight = (short)FontBoldWeight.Bold;
-            fontBold.FontHeightInPoints = 11;
+            fontBold.FontHeightInPoints = 13;
             fontBold.FontName = "Times New Roman";
 
             ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
-            styleCellName.CloneStyleFrom(sheet.GetRow(6).Cells[1].CellStyle);
+            styleCellName.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
-            styleBodyBold.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
             styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
 
             foreach (var item in dataDetails)
@@ -153,7 +174,7 @@ namespace SMO.Service.BP
                 {
                     if (item.IsBold)
                     {
-                        if (i == 0 || i == NUM_CELL - 1)
+                        if ( i == 0 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -166,7 +187,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if (i == 0 || i == NUM_CELL - 1)
+                        if ( i == 0 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
@@ -178,51 +199,63 @@ namespace SMO.Service.BP
                     }
                 }
             }
+            IRow rowEnd = ReportUtilities.CreateRow(ref sheet, startRow + 2, NUM_CELL);
+            rowEnd.Cells[7].SetCellValue("Ngày  .......... tháng ........... năm..............");
+            IRow rowEnd2 = ReportUtilities.CreateRow(ref sheet, startRow + 3, NUM_CELL);
+            rowEnd2.Cells[7].SetCellValue("Người đại diện ký, ghi rõ họ tên");
+            rowEnd2.Cells[7].CellStyle.SetFont(fontBold);
 
         }
 
-        public void InsertDataToTableBM_01D(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
+        public void InsertDataToTableBM_02C(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
-            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
             var fontBold = templateWorkbook.CreateFont();
             fontBold.Boldweight = (short)FontBoldWeight.Bold;
-            fontBold.FontHeightInPoints = 11;
+            fontBold.FontHeightInPoints = 13;
             fontBold.FontName = "Times New Roman";
 
             ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
-            styleCellName.CloneStyleFrom(sheet.GetRow(6).Cells[1].CellStyle);
+            styleCellName.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
-            styleBodyBold.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
             styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            ICellStyle styleEnd = templateWorkbook.CreateCellStyle();
+            styleEnd.CloneStyleFrom(sheet.GetRow(8).Cells[2].CellStyle);
 
             foreach (var item in dataDetails)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                rowCur.Cells[0].SetCellValue(item.Name);
-                rowCur.Cells[1].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
-                rowCur.Cells[2].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
-                rowCur.Cells[3].SetCellValue(item.Col3 == null ? 0 : Convert.ToDouble(item.Col3));
-                rowCur.Cells[4].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
-                rowCur.Cells[5].SetCellValue(item.Col5 == null ? 0 : Convert.ToDouble(item.Col5));
-                rowCur.Cells[6].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col6));
-                rowCur.Cells[7].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col7));
-                rowCur.Cells[8].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col8));
-                rowCur.Cells[9].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col9));
-                rowCur.Cells[10].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col10));
-                rowCur.Cells[11].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col11));
-                rowCur.Cells[12].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col12));
-                rowCur.Cells[13].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col13));
+                if(item.Stt == "SUM")
+                {
+                    rowCur.Cells[0].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[0].SetCellValue(item.Stt);
+                }
+                rowCur.Cells[1].SetCellValue(item.Name);
+                rowCur.Cells[2].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
+                rowCur.Cells[3].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
+                rowCur.Cells[4].SetCellValue(item.Col3 == null ? 0 : Convert.ToDouble(item.Col3));
+                rowCur.Cells[5].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
+                rowCur.Cells[6].SetCellValue(item.Col5 == null ? 0 : Convert.ToDouble(item.Col5));
+                rowCur.Cells[7].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col6));
+                rowCur.Cells[8].SetCellValue(item.Col7 == null ? 0 : Convert.ToDouble(item.Col7));
+                rowCur.Cells[9].SetCellValue(item.Col8 == null ? 0 : Convert.ToDouble(item.Col8));
+                rowCur.Cells[10].SetCellValue(item.Col9 == null ? 0 : Convert.ToDouble(item.Col9));
 
                 for (int i = 0; i < NUM_CELL; i++)
                 {
                     if (item.IsBold)
                     {
-                        if (i == 0 || i == NUM_CELL - 1)
+                        if (i == 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -235,7 +268,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if (i == 0 || i == NUM_CELL - 1)
+                        if (i == 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
@@ -247,6 +280,236 @@ namespace SMO.Service.BP
                     }
                 }
             }
+            IRow rowEnd = ReportUtilities.CreateRow(ref sheet, startRow + 2, NUM_CELL);
+            rowEnd.Cells[7].SetCellValue("Ngày  .......... tháng ........... năm..............");
+            IRow rowEnd2 = ReportUtilities.CreateRow(ref sheet, startRow + 3, NUM_CELL);
+            rowEnd2.Cells[7].SetCellValue("Người đại diện ký, ghi rõ họ tên");
+            rowEnd2.Cells[7].CellStyle.SetFont(fontBold);
+
+        }
+
+        public void InsertDataToTableBM_02D(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 13;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+            styleCellName.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
+            styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            ICellStyle styleEnd = templateWorkbook.CreateCellStyle();
+            styleEnd.CloneStyleFrom(sheet.GetRow(8).Cells[2].CellStyle);
+
+            foreach (var item in dataDetails)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                if (item.Id == "SUM")
+                {
+                    rowCur.Cells[0].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[0].SetCellValue(item.Id);
+                }
+                rowCur.Cells[1].SetCellValue(item.NameExcel);
+                rowCur.Cells[2].SetCellValue(item.Unit);
+                rowCur.Cells[3].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
+                rowCur.Cells[4].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
+                rowCur.Cells[5].SetCellValue(item.Col3 == null ? 0 : Convert.ToDouble(item.Col3));
+                rowCur.Cells[6].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
+                rowCur.Cells[7].SetCellValue(item.Col5 == null ? 0 : Convert.ToDouble(item.Col5));
+                for (int i = 0; i < NUM_CELL; i++)
+                {
+                    if (item.IsBold)
+                    {
+                        if (i == 1 || i == 0)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBodyBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (i == 1 || i == 0)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBody;
+
+                        }
+                    }
+                }
+            }
+            IRow rowEnd = ReportUtilities.CreateRow(ref sheet, startRow + 2, NUM_CELL);
+            rowEnd.Cells[5].SetCellValue("Ngày  .......... tháng ........... năm..............");
+            IRow rowEnd2 = ReportUtilities.CreateRow(ref sheet, startRow + 3, NUM_CELL);
+            rowEnd2.Cells[5].SetCellValue("Người đại diện ký, ghi rõ họ tên");
+            rowEnd2.Cells[5].CellStyle.SetFont(fontBold);
+
+        }
+        public void InsertDataToTableBM_02D1(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 13;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+            styleCellName.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
+            styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            ICellStyle styleEnd = templateWorkbook.CreateCellStyle();
+            styleEnd.CloneStyleFrom(sheet.GetRow(8).Cells[2].CellStyle);
+
+            foreach (var item in dataDetails)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                if (item.Id == "SUM")
+                {
+                    rowCur.Cells[0].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[0].SetCellValue(item.Id);
+                }
+                rowCur.Cells[1].SetCellValue(item.NameExcel);
+                rowCur.Cells[2].SetCellValue(item.Unit);
+                rowCur.Cells[3].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
+                rowCur.Cells[4].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
+                rowCur.Cells[5].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
+                for (int i = 0; i < NUM_CELL; i++)
+                {
+                    if (item.IsBold)
+                    {
+                        if (i == 1 || i == 0)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBodyBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (i == 1 || i == 0)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBody;
+
+                        }
+                    }
+                }
+            }
+            IRow rowEnd = ReportUtilities.CreateRow(ref sheet, startRow + 2, NUM_CELL);
+            rowEnd.Cells[3].SetCellValue("Ngày  .......... tháng ........... năm..............");
+            IRow rowEnd2 = ReportUtilities.CreateRow(ref sheet, startRow + 3, NUM_CELL);
+            rowEnd2.Cells[3].SetCellValue("Người đại diện ký, ghi rõ họ tên");
+            rowEnd2.Cells[3].CellStyle.SetFont(fontBold);
+
+        }
+        public void InsertDataToTableBM_01D(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellBold.CloneStyleFrom(sheet.GetRow(10).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 13;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+            styleCellName.CloneStyleFrom(sheet.GetRow(10).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(11).Cells[0].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(11).Cells[1].CellStyle);
+            styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            foreach (var item in dataDetails)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(item.Stt);
+                rowCur.Cells[1].SetCellValue(item.NameExcel);
+                rowCur.Cells[2].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
+                rowCur.Cells[3].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
+                rowCur.Cells[4].SetCellValue(item.Col3 == null ? 0 : Convert.ToDouble(item.Col3));
+                rowCur.Cells[5].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
+                rowCur.Cells[6].SetCellValue(item.Col5 == null ? 0 : Convert.ToDouble(item.Col5));
+                rowCur.Cells[7].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col6));
+                rowCur.Cells[8].SetCellValue(item.Col7 == null ? 0 : Convert.ToDouble(item.Col7));
+                rowCur.Cells[9].SetCellValue(item.Col8 == null ? 0 : Convert.ToDouble(item.Col8));
+                rowCur.Cells[10].SetCellValue(item.Col9 == null ? 0 : Convert.ToDouble(item.Col9));
+                rowCur.Cells[11].SetCellValue(item.Col10 == null ? 0 : Convert.ToDouble(item.Col10));
+                rowCur.Cells[12].SetCellValue(item.Col11 == null ? 0 : Convert.ToDouble(item.Col11));
+                rowCur.Cells[13].SetCellValue(item.Col12 == null ? 0 : Convert.ToDouble(item.Col12));
+                rowCur.Cells[14].SetCellValue(item.Col13 == null ? 0 : Convert.ToDouble(item.Col13));
+                for (int i = 0; i < NUM_CELL; i++)
+                {
+                    if (item.IsBold)
+                    {
+                        if (i == 1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBodyBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (i == 1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBody;
+
+                        }
+                    }
+                }
+            }
+
+            IRow rowEnd = ReportUtilities.CreateRow(ref sheet, startRow + 2, NUM_CELL);
+            rowEnd.Cells[11].SetCellValue("Ngày  .......... tháng ........... năm..............");
+            IRow rowEnd2 = ReportUtilities.CreateRow(ref sheet, startRow + 3, NUM_CELL);
+            rowEnd2.Cells[11].SetCellValue("Người đại diện ký, ghi rõ họ tên");
+            rowEnd2.Cells[11].CellStyle.SetFont(fontBold);
 
         }
         public ReportDataCenter GenDataBM01D(int year, string orgCode)
@@ -268,6 +531,7 @@ namespace SMO.Service.BP
                     Id = "A",
                     Stt = "A",
                     Name = "A. Dự án chuyển tiếp kỳ truớc",
+                    NameExcel = "Dự án chuyển tiếp kỳ truớc",
                     IsBold = true,
                 });
                 data.BM01D.Add(new ReportModel
@@ -275,14 +539,16 @@ namespace SMO.Service.BP
                     Id = "A.I",
                     Stt = "I",
                     Name = "I. Đầu tư trang thiết bị",
+                    NameExcel = "Đầu tư trang thiết bị",
                     Parent = "A",
                     IsBold = true,
-                });
+                }); 
                 data.BM01D.Add(new ReportModel
                 {
                     Id = "A.I.1",
                     Stt = "1",
                     Name = "1. Các dự án chuẩn bị đầu tư",
+                    NameExcel = "Các dự án chuẩn bị đầu tư",
                     Parent = "A.I",
                 });
                 foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "CBDT"))
@@ -292,6 +558,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "A.I.1",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -307,6 +574,7 @@ namespace SMO.Service.BP
                     Id = "A.I.2",
                     Stt = "2",
                     Name = "2. Các dự án thực hiện đầu tư",
+                    NameExcel = "Các dự án thực hiện đầu tư",
                     Parent = "A.I",
                 });
                 foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "TTDT"))
@@ -316,6 +584,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "A.I.2",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -331,6 +600,7 @@ namespace SMO.Service.BP
                     Id = "A.I.3",
                     Stt = "3",
                     Name = "3. Đầu tư trang thiết bị lẻ",
+                    NameExcel = "Đầu tư trang thiết bị lẻ",
                     Parent = "A.I",
                 });
 
@@ -341,6 +611,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "A.I.3",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -355,6 +626,7 @@ namespace SMO.Service.BP
                     Id = "A.II",
                     Stt = "II",
                     Name = "II. Đầu tư xây dựng cơ bản",
+                    NameExcel = "Đầu tư xây dựng cơ bản",
                     Parent = "A",
                     IsBold = true,
                 });
@@ -363,6 +635,7 @@ namespace SMO.Service.BP
                     Id = "A.II.1",
                     Stt = "1",
                     Name = "1. Các dự án chuẩn bị đầu tư",
+                    NameExcel = "Các dự án chuẩn bị đầu tư",
                     Parent = "A.II",
                 });
                 foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year && x.GIAI_DOAN == "CBDT"))
@@ -372,6 +645,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "A.II.1",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -386,6 +660,7 @@ namespace SMO.Service.BP
                     Id = "A.II.2",
                     Stt = "2",
                     Name = "2. Các dự án thực hiện đầu tư",
+                    NameExcel = "Các dự án thực hiện đầu tư",
                     Parent = "A.II",
                 });
                 foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year && x.GIAI_DOAN == "TTDT"))
@@ -395,6 +670,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "A.II.2",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -409,6 +685,7 @@ namespace SMO.Service.BP
                     Id = "B",
                     Stt = "B",
                     Name = "B. Dự án đầu tư mới",
+                    NameExcel = "Dự án đầu tư mới",
                     IsBold = true,
                 });
                 data.BM01D.Add(new ReportModel
@@ -416,6 +693,7 @@ namespace SMO.Service.BP
                     Id = "B.I",
                     Stt = "I",
                     Name = "I. Đầu tư trang thiết bị",
+                    NameExcel = "Đầu tư trang thiết bị",
                     Parent = "B",
                     IsBold = true,
                 });
@@ -424,6 +702,7 @@ namespace SMO.Service.BP
                     Id = "B.I.1",
                     Stt = "1",
                     Name = "1. Các dự án chuẩn bị đầu tư",
+                    NameExcel = "Các dự án chuẩn bị đầu tư",
                     Parent = "B.I",
                 });
                 foreach (var i in lstProjectTtb.Where(x => x.YEAR == year && x.GIAI_DOAN == "CBDT"))
@@ -433,6 +712,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "B.I.1",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -448,6 +728,7 @@ namespace SMO.Service.BP
                     Id = "B.I.2",
                     Stt = "2",
                     Name = "2. Các dự án thực hiện đầu tư",
+                    NameExcel = "Các dự án thực hiện đầu tư",
                     Parent = "B.I",
                 });
                 foreach (var i in lstProjectTtb.Where(x => x.YEAR == year && x.GIAI_DOAN == "TTDT"))
@@ -457,6 +738,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "B.I.2",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -472,6 +754,7 @@ namespace SMO.Service.BP
                     Id = "B.I.3",
                     Stt = "3",
                     Name = "3. Đầu tư trang thiết bị lẻ",
+                    NameExcel = "Đầu tư trang thiết bị lẻ",
                     Parent = "B.I",
                 });
 
@@ -482,6 +765,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "B.I.3",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -496,6 +780,7 @@ namespace SMO.Service.BP
                     Id = "B.II",
                     Stt = "II",
                     Name = "II. Đầu tư xây dựng cơ bản",
+                    NameExcel = "Đầu tư xây dựng cơ bản",
                     Parent = "B",
                     IsBold = true,
                 });
@@ -504,6 +789,7 @@ namespace SMO.Service.BP
                     Id = "B.II.1",
                     Stt = "1",
                     Name = "1. Các dự án chuẩn bị đầu tư",
+                    NameExcel = "Các dự án chuẩn bị đầu tư",
                     Parent = "B.II",
                 });
                 foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year && x.GIAI_DOAN == "CBDT"))
@@ -513,6 +799,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "B.II.1",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -527,6 +814,7 @@ namespace SMO.Service.BP
                     Id = "B.II.2",
                     Stt = "2",
                     Name = "2. Các dự án thực hiện đầu tư",
+                    NameExcel = "Các dự án thực hiện đầu tư",
                     Parent = "B.II",
                 });
                 foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year && x.GIAI_DOAN == "TTDT"))
@@ -536,6 +824,7 @@ namespace SMO.Service.BP
                         Id = i.CODE,
                         Parent = "B.II.2",
                         Name = i.NAME,
+                        NameExcel = i.NAME,
                         Col1 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4001")?.Sum(x => x.VALUE) ?? 0,
                         Col2 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4002")?.Sum(x => x.VALUE) ?? 0,
                         Col3 = dataDTXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "4003")?.Sum(x => x.VALUE) ?? 0,
@@ -1408,6 +1697,7 @@ namespace SMO.Service.BP
             {
                 Id = "I",
                 Name = "I. Sản lượng",
+                NameExcel = "Sản lượng",
                 IsBold = true,
             },
             new ReportModel()
@@ -1415,6 +1705,8 @@ namespace SMO.Service.BP
                 Id = "I.1",
                 Parent = "I",
                 Name = "1. Cung ứng cho VNA Group",
+                NameExcel = "Cung ứng cho VNA Group",
+
             },
             new ReportModel()
             {
@@ -1424,7 +1716,9 @@ namespace SMO.Service.BP
                 Col1 = dataSL_TH_5.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataSL_KH_1.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col3 = 0,
-                Col4 = dataSL_KH.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0
+                Col4 = dataSL_KH.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                NameExcel = "- Cung ứng cho VNA",
+
             },
             new ReportModel()
             {
@@ -1434,7 +1728,9 @@ namespace SMO.Service.BP
                 Col1 = dataSL_TH_5.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataSL_KH_1.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col3 = 0,
-                Col4 = dataSL_KH.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0
+                Col4 = dataSL_KH.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                NameExcel = "- Cung ứng cho các DN khác trong VNA Group",
+
             },
             new ReportModel()
             {
@@ -1444,12 +1740,15 @@ namespace SMO.Service.BP
                 Col1 = dataSL_TH_5.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataSL_KH_1.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col3 = 0,
+                NameExcel = "Cung ứng cho đối tác khác (*)",
                 Col4 = dataSL_KH.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0
             },
             new ReportModel()
             {
                 Id = "II",
                 Name = "II. Doanh thu từ hoạt động SXKD",
+                NameExcel = "Doanh thu từ hoạt động SXKD",
+
                 IsBold = true,
                 Unit = "Tr.đ/USD"
             },
@@ -1458,6 +1757,8 @@ namespace SMO.Service.BP
                 Id = "II.1",
                 Parent = "II",
                 Name = "1. Doanh thu cung ứng cho VNA Group",
+                NameExcel = "Doanh thu cung ứng cho VNA Group",
+
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
@@ -1465,6 +1766,8 @@ namespace SMO.Service.BP
                 Id = "II.1.1",
                 Parent = "II.1",
                 Name = "- Doanh thu VNA",
+                NameExcel = "- Doanh thu VNA",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataDT_TH_5.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataDT_KH_1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
@@ -1476,6 +1779,8 @@ namespace SMO.Service.BP
                 Id = "II.1.1.1",
                 Parent = "II.1.1",
                 Name = "Trong đó: CK/Giảm giá",
+                NameExcel = "Trong đó: CK/Giảm giá",
+
                 Unit = "Tr.đ/USD"
             },
             new ReportModel()
@@ -1483,6 +1788,8 @@ namespace SMO.Service.BP
                 Id = "II.1.2",
                 Parent = "II.1",
                 Name = "- Doanh thu các DN khác trong VNA group",
+                NameExcel = "- Doanh thu các DN khác trong VNA group",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataDT_TH_5.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataDT_KH_1.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
@@ -1494,6 +1801,8 @@ namespace SMO.Service.BP
                 Id = "II.1.2.1",
                 Parent = "II.1.2",
                 Name = "Trong đó: CK/Giảm giá",
+                NameExcel = "Trong đó: CK/Giảm giá",
+
                 Unit = "Tr.đ/USD"
             },
             new ReportModel()
@@ -1501,6 +1810,8 @@ namespace SMO.Service.BP
                 Id = "II.2",
                 Parent = "II",
                 Name = "2. Doanh thu cung ứng cho đối tác khác (*)",
+                NameExcel = "Doanh thu cung ứng cho đối tác khác (*)",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataDT_TH_5.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataDT_KH_1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
@@ -1512,12 +1823,16 @@ namespace SMO.Service.BP
                 Id = "II.2.1",
                 Parent = "II.2",
                 Name = "Trong đó: CK/Giảm giá",
+                NameExcel = "Trong đó: CK/Giảm giá",
+
                 Unit = "Tr.đ/USD"
             },
             new ReportModel()
             {
                 Id = "III",
                 Name = "III. Các khoản chi phí",
+                NameExcel = "Các khoản chi phí",
+
                 Unit = "Tr.đ/USD",
                 IsBold = true
             },
@@ -1525,6 +1840,8 @@ namespace SMO.Service.BP
             {
                 Id = "III.1",
                 Parent = "III",
+                NameExcel = "Chi phí dịch vụ mua ngoài",
+
                 Name = "1. Chi phí dịch vụ mua ngoài",
                 Unit = "Tr.đ/USD",
             },
@@ -1533,6 +1850,8 @@ namespace SMO.Service.BP
                 Id = "III.1.1",
                 Parent = "III.1",
                 Name = "1.1. Chi phí bảo hiểm tài sản",
+                NameExcel = "Chi phí bảo hiểm tài sản",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
@@ -1544,6 +1863,8 @@ namespace SMO.Service.BP
                 Id = "III.1.2",
                 Parent = "III.1",
                 Name = "1.2. Thuê sửa chữa nhà cửa VKT",
+                NameExcel = "Thuê sửa chữa nhà cửa VKT",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
@@ -1555,6 +1876,8 @@ namespace SMO.Service.BP
                 Id = "III.1.3",
                 Parent = "III.1",
                 Name = "1.3. Thuê sửa chữa máy móc thiết bị",
+                NameExcel = "Thuê sửa chữa máy móc thiết bị",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
@@ -1566,6 +1889,8 @@ namespace SMO.Service.BP
                 Id = "III.1.4",
                 Parent = "III.1",
                 Name = "1.4. Thuê sửa chữa PTVT",
+                NameExcel = "Thuê sửa chữa PTVT",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
@@ -1577,6 +1902,8 @@ namespace SMO.Service.BP
                 Id = "III.1.5",
                 Parent = "III.1",
                 Name = "1.5. Thuê sửa chữa thiết bị quản lý",
+                NameExcel = "Thuê sửa chữa thiết bị quản lý",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
@@ -1588,6 +1915,8 @@ namespace SMO.Service.BP
                 Id = "III.1.6",
                 Parent = "III.1",
                 Name = "1.6. Thuê sửa chữa kho bể",
+                NameExcel = "Thuê sửa chữa kho bể",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
@@ -1599,6 +1928,8 @@ namespace SMO.Service.BP
                 Id = "III.1.7",
                 Parent = "III.1",
                 Name = "1.7. Thuê sửa chữa TSCĐ khác",
+                NameExcel = "Thuê sửa chữa TSCĐ khác",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
@@ -1610,6 +1941,8 @@ namespace SMO.Service.BP
                 Id = "III.1.8",
                 Parent = "III.1",
                 Name = "1.8. Thuê cửa hàng kho bãi",
+                NameExcel = "Thuê cửa hàng kho bãi",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
@@ -1621,6 +1954,8 @@ namespace SMO.Service.BP
                 Id = "III.1.9",
                 Parent = "III.1",
                 Name = "1.9. Thuê vận chuyển",
+                NameExcel = "Thuê vận chuyển",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
@@ -1632,6 +1967,8 @@ namespace SMO.Service.BP
                 Id = "III.1.10",
                 Parent = "III.1",
                 Name = "1.10. Tiền điện mua ngoài",
+                NameExcel = "Tiền điện mua ngoài",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
@@ -1643,6 +1980,8 @@ namespace SMO.Service.BP
                 Id = "III.1.11",
                 Parent = "III.1",
                 Name = "1.11. Tiền nước mua ngoài",
+                NameExcel = "Tiền nước mua ngoài",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
@@ -1654,6 +1993,8 @@ namespace SMO.Service.BP
                 Id = "III.1.12",
                 Parent = "III.1",
                 Name = "1.12. Cước thông tin liên lạc",
+                NameExcel = "Cước thông tin liên lạc",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
@@ -1665,6 +2006,8 @@ namespace SMO.Service.BP
                 Id = "III.1.13",
                 Parent = "III.1",
                 Name = "1.13. Chi phí dịch vụ mua ngoài khác",
+                NameExcel = "Chi phí dịch vụ mua ngoài khác",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
@@ -1676,6 +2019,8 @@ namespace SMO.Service.BP
                 Id = "III.2",
                 Parent = "III",
                 Name = "2. Chi khác bằng tiền",
+                NameExcel = "Chi khác bằng tiền",
+
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
@@ -1683,6 +2028,8 @@ namespace SMO.Service.BP
                 Id = "III.2.1",
                 Parent = "III.2",
                 Name = "2.1. Chi ANAT, PCBT, PCCC",
+                NameExcel = "Chi ANAT, PCBT, PCCC",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
@@ -1694,6 +2041,8 @@ namespace SMO.Service.BP
                 Id = "III.2.2",
                 Parent = "III.2",
                 Name = "2.2. Chi phí trang phục ngành",
+                NameExcel = "Chi phí trang phục ngành",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
@@ -1705,6 +2054,8 @@ namespace SMO.Service.BP
                 Id = "III.2.3",
                 Parent = "III.2",
                 Name = "2.3. Chi giao dịch tiếp khách",
+                NameExcel = "Chi giao dịch tiếp khách",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
@@ -1716,6 +2067,8 @@ namespace SMO.Service.BP
                 Id = "III.2.4",
                 Parent = "III.2",
                 Name = "2.4. Chi quảng cáo, marketing",
+                NameExcel = "Chi quảng cáo, marketing",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
@@ -1727,6 +2080,8 @@ namespace SMO.Service.BP
                 Id = "III.2.5",
                 Parent = "III.2",
                 Name = "2.5. Chi hoa hồng môi giới",
+                NameExcel = "Chi hoa hồng môi giới",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
@@ -1738,6 +2093,8 @@ namespace SMO.Service.BP
                 Id = "III.2.6",
                 Parent = "III.2",
                 Name = "2.6. Chi đào tạo",
+                NameExcel = "Chi đào tạo",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
@@ -1750,6 +2107,8 @@ namespace SMO.Service.BP
                 Id = "II.2.7",
                 Parent = "III.2",
                 Name = "2.7. Công tác phí, phép",
+                NameExcel = "Công tác phí, phép",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
@@ -1761,6 +2120,8 @@ namespace SMO.Service.BP
                 Id = "III.2.8",
                 Parent = "III.2",
                 Name = "2.8. Lệ phí cầu đường",
+                NameExcel = "Lệ phí cầu đường",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
@@ -1773,6 +2134,8 @@ namespace SMO.Service.BP
                 Id = "III.2.9",
                 Parent = "III.2",
                 Name = "2.9. Chi bồi dưỡng độc hại",
+                NameExcel = "Chi bồi dưỡng độc hại",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
@@ -1784,6 +2147,8 @@ namespace SMO.Service.BP
                 Id = "III.2.10",
                 Parent = "III.2",
                 Name = "2.10. Phí nhượng quyền khai thác",
+                NameExcel = "Phí nhượng quyền khai thác",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
@@ -1795,6 +2160,8 @@ namespace SMO.Service.BP
                 Id = "III.2.11",
                 Parent = "III.2",
                 Name = "2.11. Chi VSCN, y tế, môi trường",
+                NameExcel = "Chi VSCN, y tế, môi trường",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
@@ -1806,6 +2173,8 @@ namespace SMO.Service.BP
                 Id = "III.2.12",
                 Parent = "III.2",
                 Name = "2.12. Phí ngân hàng",
+                NameExcel = "Phí ngân hàng",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
@@ -1817,6 +2186,8 @@ namespace SMO.Service.BP
                 Id = "III.2.13",
                 Parent = "III.2",
                 Name = "2.13. Khoản chi có tính chất phúc lợi",
+                NameExcel = "Khoản chi có tính chất phúc lợi",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
@@ -1828,6 +2199,8 @@ namespace SMO.Service.BP
                 Id = "III.2.14",
                 Parent = "III.2",
                 Name = "1.14. Chi bằng tiền khác",
+                NameExcel = "Chi bằng tiền khác",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_TH_5.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_KH_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
@@ -1888,6 +2261,7 @@ namespace SMO.Service.BP
             {
                 Id = "I",
                 Name = "I. Sản lượng",
+                NameExcel = "Sản lượng",
                 IsBold = true,
             },
             new ReportModel()
@@ -1895,12 +2269,16 @@ namespace SMO.Service.BP
                 Id = "I.1",
                 Parent = "I",
                 Name = "1. Cung ứng cho VNA Group",
+                NameExcel = "Cung ứng cho VNA Group",
+
             },
             new ReportModel()
             {
                 Id = "I.1.1",
                 Parent = "I.1",
                 Name = "- Cung ứng cho VNA",
+                NameExcel = "- Cung ứng cho VNA",
+
                 Col1 = dataSL_C.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataSL_TB.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col3 = 0,
@@ -1911,6 +2289,8 @@ namespace SMO.Service.BP
                 Id = "I.1.2",
                 Parent = "I.1",
                 Name = "- Cung ứng cho các DN khác trong VNA Group",
+                NameExcel = "- Cung ứng cho các DN khác trong VNA Group",
+
                 Col1 = dataSL_C.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataSL_TB.Where(x => x.SanLuongProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.SanLuongProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col3 = 0,
@@ -1921,6 +2301,8 @@ namespace SMO.Service.BP
                 Id = "I.2",
                 Parent = "I",
                 Name = "2. Cung ứng cho đối tác khác (*)",
+                NameExcel = "Cung ứng cho đối tác khác (*)",
+
                 Col1 = dataSL_C.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataSL_TB.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col3 = 0,
@@ -1930,6 +2312,8 @@ namespace SMO.Service.BP
             {
                 Id = "II",
                 Name = "II. Doanh thu từ hoạt động SXKD",
+                NameExcel = "Doanh thu từ hoạt động SXKD",
+
                 IsBold = true,
                 Unit = "Tr.đ/USD"
             },
@@ -1938,6 +2322,8 @@ namespace SMO.Service.BP
                 Id = "II.1",
                 Parent = "II",
                 Name = "1. Doanh thu cung ứng cho VNA Group",
+                NameExcel = "Doanh thu cung ứng cho VNA Group",
+
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
@@ -1945,6 +2331,8 @@ namespace SMO.Service.BP
                 Id = "II.1.1",
                 Parent = "II.1",
                 Name = "- Doanh thu VNA",
+                NameExcel = "- Doanh thu VNA",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataDT_C.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataDT_TB.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE == "VN").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
@@ -1956,6 +2344,8 @@ namespace SMO.Service.BP
                 Id = "II.1.1.1",
                 Parent = "II.1.1",
                 Name = "Trong đó: CK/Giảm giá",
+                NameExcel = "Trong đó: CK/Giảm giá",
+
                 Unit = "Tr.đ/USD"
             },
             new ReportModel()
@@ -1963,6 +2353,8 @@ namespace SMO.Service.BP
                 Id = "II.1.2",
                 Parent = "II.1",
                 Name = "- Doanh thu các DN khác trong VNA group",
+                NameExcel = "- Doanh thu các DN khác trong VNA group",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataDT_C.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataDT_TB.Where(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE != "VN" && x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == true).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
@@ -1974,6 +2366,8 @@ namespace SMO.Service.BP
                 Id = "II.1.2.1",
                 Parent = "II.1.2",
                 Name = "Trong đó: CK/Giảm giá",
+                NameExcel = "Trong đó: CK/Giảm giá",
+
                 Unit = "Tr.đ/USD"
             },
             new ReportModel()
@@ -1981,6 +2375,8 @@ namespace SMO.Service.BP
                 Id = "II.2",
                 Parent = "II",
                 Name = "2. Doanh thu cung ứng cho đối tác khác (*)",
+                NameExcel = "Doanh thu cung ứng cho đối tác khác (*)",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataDT_C.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataDT_TB.Where(x => x.DoanhThuProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
@@ -1992,12 +2388,16 @@ namespace SMO.Service.BP
                 Id = "II.2.1",
                 Parent = "II.2",
                 Name = "Trong đó: CK/Giảm giá",
+                NameExcel = "Trong đó: CK/Giảm giá",
+
                 Unit = "Tr.đ/USD"
             },
             new ReportModel()
             {
                 Id = "III",
                 Name = "III. Các khoản chi phí",
+                NameExcel = "Các khoản chi phí",
+
                 Unit = "Tr.đ/USD",
                 IsBold = true
             },
@@ -2006,6 +2406,8 @@ namespace SMO.Service.BP
                 Id = "III.1",
                 Parent = "III",
                 Name = "1. Chi phí dịch vụ mua ngoài",
+                NameExcel = "Chi phí dịch vụ mua ngoài",
+
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
@@ -2013,6 +2415,8 @@ namespace SMO.Service.BP
                 Id = "III.1.1",
                 Parent = "III.1",
                 Name = "1.1. Chi phí bảo hiểm tài sản",
+                NameExcel = "Chi phí bảo hiểm tài sản",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G001")).Sum(x => x.AMOUNT) ?? 0,
@@ -2024,6 +2428,8 @@ namespace SMO.Service.BP
                 Id = "III.1.2",
                 Parent = "III.1",
                 Name = "1.2. Thuê sửa chữa nhà cửa VKT",
+                NameExcel = "Thuê sửa chữa nhà cửa VKT",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G002")).Sum(x => x.AMOUNT) ?? 0,
@@ -2035,6 +2441,8 @@ namespace SMO.Service.BP
                 Id = "III.1.3",
                 Parent = "III.1",
                 Name = "1.3. Thuê sửa chữa máy móc thiết bị",
+                NameExcel = "Thuê sửa chữa máy móc thiết bị",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G003")).Sum(x => x.AMOUNT) ?? 0,
@@ -2046,6 +2454,8 @@ namespace SMO.Service.BP
                 Id = "III.1.4",
                 Parent = "III.1",
                 Name = "1.4. Thuê sửa chữa PTVT",
+                NameExcel = "Thuê sửa chữa PTVT",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G004")).Sum(x => x.AMOUNT) ?? 0,
@@ -2057,6 +2467,8 @@ namespace SMO.Service.BP
                 Id = "III.1.5",
                 Parent = "III.1",
                 Name = "1.5. Thuê sửa chữa thiết bị quản lý",
+                NameExcel = "Thuê sửa chữa thiết bị quản lý",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G005")).Sum(x => x.AMOUNT) ?? 0,
@@ -2068,6 +2480,8 @@ namespace SMO.Service.BP
                 Id = "III.1.6",
                 Parent = "III.1",
                 Name = "1.6. Thuê sửa chữa kho bể",
+                NameExcel = "Thuê sửa chữa kho bể",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G006")).Sum(x => x.AMOUNT) ?? 0,
@@ -2079,6 +2493,8 @@ namespace SMO.Service.BP
                 Id = "III.1.7",
                 Parent = "III.1",
                 Name = "1.7. Thuê sửa chữa TSCĐ khác",
+                NameExcel = "Thuê sửa chữa TSCĐ khác",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G007")).Sum(x => x.AMOUNT) ?? 0,
@@ -2090,6 +2506,8 @@ namespace SMO.Service.BP
                 Id = "III.1.8",
                 Parent = "III.1",
                 Name = "1.8. Thuê cửa hàng kho bãi",
+                NameExcel = "Thuê cửa hàng kho bãi",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G008")).Sum(x => x.AMOUNT) ?? 0,
@@ -2101,6 +2519,8 @@ namespace SMO.Service.BP
                 Id = "III.1.9",
                 Parent = "III.1",
                 Name = "1.9. Thuê vận chuyển",
+                NameExcel = "Thuê vận chuyển",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G009")).Sum(x => x.AMOUNT) ?? 0,
@@ -2112,6 +2532,8 @@ namespace SMO.Service.BP
                 Id = "III.1.10",
                 Parent = "III.1",
                 Name = "1.10. Tiền điện mua ngoài",
+                NameExcel = "Tiền điện mua ngoài",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G010")).Sum(x => x.AMOUNT) ?? 0,
@@ -2123,6 +2545,8 @@ namespace SMO.Service.BP
                 Id = "III.1.11",
                 Parent = "III.1",
                 Name = "1.11. Tiền nước mua ngoài",
+                NameExcel = "Tiền nước mua ngoài",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G011")).Sum(x => x.AMOUNT) ?? 0,
@@ -2134,6 +2558,8 @@ namespace SMO.Service.BP
                 Id = "III.1.12",
                 Parent = "III.1",
                 Name = "1.12. Cước thông tin liên lạc",
+                NameExcel = "Cước thông tin liên lạc",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G012")).Sum(x => x.AMOUNT) ?? 0,
@@ -2145,6 +2571,8 @@ namespace SMO.Service.BP
                 Id = "III.1.13",
                 Parent = "III.1",
                 Name = "1.13. Chi phí dịch vụ mua ngoài khác",
+                NameExcel = "Chi phí dịch vụ mua ngoài khác",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6277G019")).Sum(x => x.AMOUNT) ?? 0,
@@ -2156,6 +2584,8 @@ namespace SMO.Service.BP
                 Id = "III.2",
                 Parent = "III",
                 Name = "2. Chi khác bằng tiền",
+                NameExcel = "Chi khác bằng tiền",
+
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
@@ -2163,6 +2593,8 @@ namespace SMO.Service.BP
                 Id = "III.2.1",
                 Parent = "III.2",
                 Name = "2.1. Chi ANAT, PCBT, PCCC",
+                NameExcel = "Chi ANAT, PCBT, PCCC",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H001")).Sum(x => x.AMOUNT) ?? 0,
@@ -2174,6 +2606,8 @@ namespace SMO.Service.BP
                 Id = "III.2.2",
                 Parent = "III.2",
                 Name = "2.2. Chi phí trang phục ngành",
+                NameExcel = "Chi phí trang phục ngành",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H002")).Sum(x => x.AMOUNT) ?? 0,
@@ -2185,6 +2619,8 @@ namespace SMO.Service.BP
                 Id = "III.2.3",
                 Parent = "III.2",
                 Name = "2.3. Chi giao dịch tiếp khách",
+                NameExcel = "Chi giao dịch tiếp khách",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H004")).Sum(x => x.AMOUNT) ?? 0,
@@ -2196,6 +2632,8 @@ namespace SMO.Service.BP
                 Id = "III.2.4",
                 Parent = "III.2",
                 Name = "2.4. Chi quảng cáo, marketing",
+                NameExcel = "Chi quảng cáo, marketing",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H014")).Sum(x => x.AMOUNT) ?? 0,
@@ -2207,6 +2645,8 @@ namespace SMO.Service.BP
                 Id = "III.2.5",
                 Parent = "III.2",
                 Name = "2.5. Chi hoa hồng môi giới",
+                NameExcel = "Chi hoa hồng môi giới",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H005")).Sum(x => x.AMOUNT) ?? 0,
@@ -2218,6 +2658,8 @@ namespace SMO.Service.BP
                 Id = "III.2.6",
                 Parent = "III.2",
                 Name = "2.6. Chi đào tạo",
+                NameExcel = "Chi đào tạo",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
@@ -2230,6 +2672,8 @@ namespace SMO.Service.BP
                 Id = "II.2.7",
                 Parent = "III.2",
                 Name = "2.7. Công tác phí, phép",
+                NameExcel = "Công tác phí, phép",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H007")).Sum(x => x.AMOUNT) ?? 0,
@@ -2241,6 +2685,8 @@ namespace SMO.Service.BP
                 Id = "III.2.8",
                 Parent = "III.2",
                 Name = "2.8. Lệ phí cầu đường",
+                NameExcel = "Lệ phí cầu đường",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
@@ -2253,6 +2699,8 @@ namespace SMO.Service.BP
                 Id = "III.2.9",
                 Parent = "III.2",
                 Name = "2.9. Chi bồi dưỡng độc hại",
+                NameExcel = "Chi bồi dưỡng độc hại",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H008")).Sum(x => x.AMOUNT) ?? 0,
@@ -2264,6 +2712,8 @@ namespace SMO.Service.BP
                 Id = "III.2.10",
                 Parent = "III.2",
                 Name = "2.10. Phí nhượng quyền khai thác",
+                NameExcel = "Phí nhượng quyền khai thác",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H009")).Sum(x => x.AMOUNT) ?? 0,
@@ -2275,6 +2725,8 @@ namespace SMO.Service.BP
                 Id = "III.2.11",
                 Parent = "III.2",
                 Name = "2.11. Chi VSCN, y tế, môi trường",
+                NameExcel = "Chi VSCN, y tế, môi trường",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H010")).Sum(x => x.AMOUNT) ?? 0,
@@ -2286,6 +2738,8 @@ namespace SMO.Service.BP
                 Id = "III.2.12",
                 Parent = "III.2",
                 Name = "2.12. Phí ngân hàng",
+                NameExcel = "Phí ngân hàng",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H015")).Sum(x => x.AMOUNT) ?? 0,
@@ -2297,6 +2751,8 @@ namespace SMO.Service.BP
                 Id = "III.2.13",
                 Parent = "III.2",
                 Name = "2.13. Khoản chi có tính chất phúc lợi",
+                NameExcel = "Khoản chi có tính chất phúc lợi",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H018")).Sum(x => x.AMOUNT) ?? 0,
@@ -2308,6 +2764,8 @@ namespace SMO.Service.BP
                 Id = "III.2.14",
                 Parent = "III.2",
                 Name = "1.14. Chi bằng tiền khác",
+                NameExcel = "Chi bằng tiền khác",
+
                 Unit = "Tr.đ/USD",
                 Col1 = dataCP_C.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
                 Col2 = dataCP_TB.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H019")).Sum(x => x.AMOUNT) ?? 0,
@@ -2677,6 +3135,8 @@ namespace SMO.Service.BP
         public string Id { get; set; }
         public string Parent { get; set; }
         public string Name { get; set; }
+        public string NameExcel { get; set; }
+
         public int Order { get; set; }
         public bool IsBold { get; set; }
         public decimal? Col1 { get; set; }

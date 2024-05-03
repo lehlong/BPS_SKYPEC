@@ -5,6 +5,8 @@
 @{
     var gridId = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var formIdExportExcel = Guid.NewGuid();
+
 }
 <style>
     .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
@@ -21,7 +23,13 @@
 </style>
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
+        @Html.Hidden("Treedata")
+        @Html.Hidden("Template")
 
+    </form>
+</div>
 <script type="text/javascript">
     var rawData = @Html.Raw(JsonConvert.SerializeObject(Model.BM02D, jsonSerializeSettings));
     rawData.forEach((item) => {
@@ -50,7 +58,13 @@
         selection: true,
         autoHeight: true,
     });
-
+    function ExportData() {
+        var Treedata = JSON.stringify(treeGrid.data.serialize());
+        var template = "BM_02D";
+        $('#@formIdExportExcel #Treedata').val(Treedata);
+        $('#@formIdExportExcel #Template').val(template);
+        $('#@formIdExportExcel').submit();
+    }
 
 </script>
 
