@@ -419,7 +419,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if (i == 1 || i == 0)
+                        if (i == 1 || i == 0  )
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
