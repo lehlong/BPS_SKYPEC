@@ -1,0 +1,12 @@
+- VPN:
+
+Remote gateway IP: 118.70.198.210
+Pre-Shared Key: feconfecon123 
+User VPN: d2s/ Fcn@2022
+
+- Server:
+
+Ebidding: 192.168.0.27 - Administrator/ Fcn@2022
+PMS-DB: 192.168.0.25 - Administrator/ Fcn@2021
+PMS-Prd: 192.168.2.206 - Administrator/ Fcn@2021
+PMS-BI: 192.168.0.206 - Administrator/ Fcn@2021
