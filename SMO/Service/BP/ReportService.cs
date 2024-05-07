@@ -2232,8 +2232,15 @@ namespace SMO.Service.BP
             try
             {
                 var data = new List<ReportModel>();
-                var header = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var details = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => header.Contains(x.TEMPLATE_CODE)).ToList();
+
+
+                var header1_1 = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x =>x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var details1_1 = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => header1_1.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var headerTH = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x =>x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var detailsTH = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => headerTH.Contains(x.TEMPLATE_CODE)).ToList();
+
+
                 var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.LOAI_HINH == "XDCB" && x.YEAR > 0).ToList();
                 var order = 1;
                 data.Add(new ReportModel
@@ -2241,36 +2248,200 @@ namespace SMO.Service.BP
                     Id = "A",
                     Name = "Tổng kinh phí đầu tư XDCB",
                     IsBold = true,
-                    Col1 = details.Where(x=>x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x=>x.VALUE),
-                    Col2 = details.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE),
-
                 });
+
+
                 foreach(var project in projects)
                 {
-                    data.Add(new ReportModel
+                    decimal col4 = 0;
+                    decimal col7 = 0;
+                    var dataCol4 = detailsTH.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE);
+                    var dataCol7 = detailsTH.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4021" && x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE);
+                    switch (month)
+                    {
+                        case 1:
+                            col4 = dataCol4.Sum(x => x.MONTH1) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1) ?? 0;
+                            break;
+                        case 2:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2) ?? 0;
+                            break;
+                        case 3:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3) ?? 0;
+                            break;
+                        case 4:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4) ?? 0;
+                            break;
+                        case 5:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5) ?? 0;
+                            break;
+                        case 6:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6) ?? 0;
+                            break;
+                        case 7:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7) ?? 0;
+                            break;
+                        case 8:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8) ?? 0;
+                            break;
+                        case 9:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9) ?? 0;
+                            break;
+                        case 10:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5+ x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
+                            break;
+                        case 11:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11) ?? 0;
+                            break;
+                        case 12:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8+ x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
+                            break;
+                    }
+
+                    var i = new ReportModel
                     {
                         Id = $"A.{order}",
                         Parent = "A",
                         Name = $"{order}. {project.NAME}",
-                    });
-                    data.Add(new ReportModel
-                    {
-                        Id = $"A.{order}.a",
-                        Parent = $"A.{order}",
-                        Name = "a. Chuẩn bị đầu tư",
-                    });
-                    data.Add(new ReportModel
-                    {
-                        Id = $"A.{order}.b",
-                        Parent = $"A.{order}",
-                        Name = "b. Thực hiện đầu tư",
-                    });
+                        Col1 = details1_1.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE) ?? 0,
+                        Col2 = details1_1.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE) ?? 0,
+                        Col4 = col4,
+                        Col7 = col7,
 
+                    };
+                    i.Col5 = i.Col2 == 0 || i.Col4 == 0 ? 0 : i.Col4 / i.Col2;
+
+
+                    data.Add(i);
                     order++;
                 }
                 return data;
 
             }catch(Exception ex)
+            {
+                UnitOfWork.Rollback();
+                return new List<ReportModel>();
+            }
+        }
+
+        public List<ReportModel> GenDataBM2108(int year, int month, string phienBan, string kichBan)
+        {
+            try
+            {
+                var data = new List<ReportModel>();
+
+
+                var header1_1 = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var details1_1 = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => header1_1.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var headerTH = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var detailsTH = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => headerTH.Contains(x.TEMPLATE_CODE)).ToList();
+
+
+                var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.LOAI_HINH == "TTB").ToList();
+                var order = 1;
+                data.Add(new ReportModel
+                {
+                    Id = "A",
+                    Name = "Tổng kinh phí đầu tư trang thiết bị",
+                    IsBold = true,
+                });
+
+
+                foreach (var project in projects)
+                {
+                    decimal col4 = 0;
+                    decimal col7 = 0;
+                    var dataCol4 = detailsTH.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE);
+                    var dataCol7 = detailsTH.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4021" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE);
+                    switch (month)
+                    {
+                        case 1:
+                            col4 = dataCol4.Sum(x => x.MONTH1) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1) ?? 0;
+                            break;
+                        case 2:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2) ?? 0;
+                            break;
+                        case 3:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3) ?? 0;
+                            break;
+                        case 4:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4) ?? 0;
+                            break;
+                        case 5:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5) ?? 0;
+                            break;
+                        case 6:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6) ?? 0;
+                            break;
+                        case 7:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7) ?? 0;
+                            break;
+                        case 8:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8) ?? 0;
+                            break;
+                        case 9:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9) ?? 0;
+                            break;
+                        case 10:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
+                            break;
+                        case 11:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11) ?? 0;
+                            break;
+                        case 12:
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
+                            col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
+                            break;
+                    }
+
+                    var i = new ReportModel
+                    {
+                        Id = $"A.{order}",
+                        Parent = "A",
+                        Name = $"{order}. {project.NAME}",
+                        Col1 = details1_1.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4030" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE) ?? 0,
+                        Col2 = details1_1.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4031" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE ?? 0,
+                        Col4 = detailsTH.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4030" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE) ?? 0,
+                        Col5 = detailsTH.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4031" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE ?? 0,
+                        Col7 = col4,
+                        Col10 = col7,
+
+                    };
+                    i.Col3 = i.Col1 * i.Col2;
+                    i.Col6 = i.Col4 * i.Col5;
+                    i.Col8 = i.Col6 == 0 || i.Col3 == 0 ? 0 : i.Col6 / i.Col3;
+
+
+                    data.Add(i);
+                    order++;
+                }
+                return data;
+
+            }
+            catch (Exception ex)
             {
                 UnitOfWork.Rollback();
                 return new List<ReportModel>();

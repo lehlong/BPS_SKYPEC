@@ -33,17 +33,17 @@
     let columns = [
         { id: "name", header: [{ text: "Danh mục dự án đầu tư xây dựng cơ bản", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
 
-        { id: "col1", header: [{ text: "Tổng vốn đầu tư giai đoạn", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "col2", header: [{ text: "Kế hoạch kinh phí đầu tư", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "col1", header: [{ text: "Tổng vốn đầu tư giai đoạn", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col2", header: [{ text: "Kế hoạch kinh phí đầu tư", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
 
-        { id: "col3", header: [{ text: "Giá trị khối lượng công việc thực hiện", align: "center", colspan: 3 }, { text: "Ước thực hiện tháng báo cáo", align: "center" }], align: "right", minWidth: 180 },
-        { id: "col4", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center" }], align: "right", minWidth: 180 },
-        { id: "col5", header: ["", { text: "%TH/KH", align: "center" }], align: "right", minWidth: 180 },
+        { id: "col3", header: [{ text: "Giá trị khối lượng công việc thực hiện", align: "center", colspan: 3 }, { text: "Ước thực hiện tháng báo cáo", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col4", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col5", header: ["", { text: "%TH/KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
 
-        { id: "col6", header: [{ text: "Giá trị giải ngân", align: "center", colspan: 2 }, { text: "Ước giải ngân tháng báo cáo", align: "center" }], align: "right", minWidth: 180 },
-        { id: "col7", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center" }], align: "right", minWidth: 180 },
+        { id: "col6", header: [{ text: "Giá trị giải ngân", align: "center", colspan: 2 }, { text: "Ước giải ngân tháng báo cáo", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col7", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
 
-        { id: "col8", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "des", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
     ];
     rawData.forEach((item) => {
         if (item.id == "A" || item.id == "B") delete item.parent;
