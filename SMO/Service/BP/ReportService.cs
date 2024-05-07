@@ -1,4 +1,5 @@
 ﻿using NHibernate.Criterion;
+using NPOI.HSSF.Record.Chart;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -2223,6 +2224,53 @@ namespace SMO.Service.BP
             {
                 UnitOfWork.Rollback();
                 return new ReportDataCenter();
+            }
+        }
+
+        public List<ReportModel> GenDataBM2107(int year, int month, string phienBan, string kichBan)
+        {
+            try
+            {
+                var data = new List<ReportModel>();
+                var header = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var details = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => header.Contains(x.TEMPLATE_CODE)).ToList();
+                var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.LOAI_HINH == "XDCB" && x.YEAR > 0).ToList();
+                var order = 1;
+                data.Add(new ReportModel
+                {
+                    Id = "A",
+                    Name = "Tổng kinh phí đầu tư XDCB",
+                    IsBold = true
+                });
+                foreach(var project in projects)
+                {
+                    data.Add(new ReportModel
+                    {
+                        Id = $"A.{order}",
+                        Parent = "A",
+                        Name = $"{order}. {project.NAME}",
+                    });
+                    data.Add(new ReportModel
+                    {
+                        Id = $"A.{order}.a",
+                        Parent = $"A.{order}",
+                        Name = "a. Chuẩn bị đầu tư",
+                    });
+                    data.Add(new ReportModel
+                    {
+                        Id = $"A.{order}.b",
+                        Parent = $"A.{order}",
+                        Name = "b. Thực hiện đầu tư",
+                    });
+
+                    order++;
+                }
+                return data;
+
+            }catch(Exception ex)
+            {
+                UnitOfWork.Rollback();
+                return new List<ReportModel>();
             }
         }
 

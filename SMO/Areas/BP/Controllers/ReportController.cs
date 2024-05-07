@@ -440,7 +440,54 @@ namespace SMO.Areas.BP.Controllers
         }
         #endregion
 
-        #region dowload
+        #region BM2107 - BÁO CÁO TÌNH HÌNH THỰC HIỆN KẾ HOẠCH ĐẦU TƯ CÓ XÂY DỰNG
+        public ActionResult IndexBM2107()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM2107(int year, string phienBan, string kichBan, int month)
+        {
+            var data = _service.GenDataBM2107(year, month, phienBan, kichBan);
+            return PartialView(data);
+        }
+        #endregion
+
+        #region BM2108 - BÁO CÁO TÌNH HÌNH THỰC HIỆN KẾ HOẠCH ĐẦU TƯ KHÔNG CÓ XÂY DỰNG
+        public ActionResult IndexBM2108()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM2108(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM2109 - BÁO CÁO TÌNH HÌNH THỰC HIỆN KẾ HOẠCH SỬA CHỮA TSCĐ
+        public ActionResult IndexBM2109()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM2109(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region BM2110 - Tổng hợp kế hoạch chi phí
+        public ActionResult IndexBM2110()
+        {
+            return PartialView();
+        }
+        public ActionResult GenDataBM2110(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            return PartialView();
+        }
+        #endregion
+
+
+
+        #region Export Excel Data
         [HttpPost]
         public FileContentResult ExportExcelGridData(string Treedata, string Template)
         {

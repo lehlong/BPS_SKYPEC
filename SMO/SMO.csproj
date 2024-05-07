@@ -2103,6 +2103,14 @@
     <Content Include="Areas\BP\Views\Report\GenDataBM02D2.cshtml" />
     <Content Include="Areas\BP\Views\SuaChuaLon\ViewDataTemplate.cshtml" />
     <Content Include="Areas\BP\Views\SuaChuaLon\ViewDataTemplatePaging.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM2107.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM2107.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM2108.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM2108.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM2109.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM2109.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexBM2110.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataBM2110.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
