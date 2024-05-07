@@ -2240,7 +2240,10 @@ namespace SMO.Service.BP
                 {
                     Id = "A",
                     Name = "Tổng kinh phí đầu tư XDCB",
-                    IsBold = true
+                    IsBold = true,
+                    Col1 = details.Where(x=>x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x=>x.VALUE),
+                    Col2 = details.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4011").Sum(x => x.VALUE),
+
                 });
                 foreach(var project in projects)
                 {

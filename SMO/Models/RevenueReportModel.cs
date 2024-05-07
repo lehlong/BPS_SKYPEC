@@ -117,6 +117,7 @@ namespace SMO.Models
     public class SuaChuaLonReportModel
     {
         public string Code { get; set; }
+        public string Stt { get; set; }
         public string Name { get; set; }
         public string Parent { get; set; }
         public decimal valueGT { get; set; }

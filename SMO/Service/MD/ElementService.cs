@@ -856,7 +856,6 @@ namespace SMO.Service.MD
                         Value11 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
                         Order = 4,
-
                         Level = 1,
 
                         Parent = 3.ToString()

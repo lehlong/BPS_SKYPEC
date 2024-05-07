@@ -15,7 +15,39 @@ namespace SMO
 {
     public static class UtilsCore
     {
+        public static string IntToRoman(int number)
+        {
+            if (number < 1 || number > 3999)
+                throw new ArgumentOutOfRangeException("number", "Số nguyên phải nằm trong khoảng từ 1 đến 3999");
 
+            Dictionary<int, string> romanNumerals = new Dictionary<int, string>
+        {
+            { 1000, "M" },
+            { 900, "CM" },
+            { 500, "D" },
+            { 400, "CD" },
+            { 100, "C" },
+            { 90, "XC" },
+            { 50, "L" },
+            { 40, "XL" },
+            { 10, "X" },
+            { 9, "IX" },
+            { 5, "V" },
+            { 4, "IV" },
+            { 1, "I" }
+        };
+
+            string roman = "";
+            foreach (var kvp in romanNumerals)
+            {
+                while (number >= kvp.Key)
+                {
+                    roman += kvp.Value;
+                    number -= kvp.Key;
+                }
+            }
+            return roman;
+        }
         public static string[] GetValueOfObject<T>(object pObjData, string pStrColumn)
         {
             if (pObjData != null)

@@ -3974,11 +3974,17 @@ namespace SMO.Service.MD
                 }
                 lstParentCodeArea = lstParentCodeArea.Distinct().ToList();
                 var parentOrder = order;
+                int sttParent = 1;
                 foreach (var code in lstParentCodeArea)
                 {
+                    if (string.IsNullOrEmpty(code))
+                    {
+                        continue;
+                    }
                     var nameElement = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.CODE == code).NAME;
                     var sumElement = new SuaChuaLonReportModel
                     {
+                        Stt = UtilsCore.IntToRoman(sttParent),
                         Name = nameElement,
                         valueGT = dataInHeaderSCL2.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.Contains(code)).Sum(x => x.VALUE) ?? 0,
                         Order = order + 1,
@@ -3986,13 +3992,16 @@ namespace SMO.Service.MD
                         IsBold = true
                     };
                     data.Add(sumElement);
+                    sttParent++;
                     order++;
                     var dataElement = dataInHeaderSCL2.Where(x => x.KhoanMucSuaChua.PARENT_CODE == code).ToList();
                     var parentOrderChild = order;
+                    int sttChild = 1;
                     foreach (var element in dataElement)
                     {
                         var elementItem = new SuaChuaLonReportModel
                         {
+                            Stt = sttChild.ToString(),
                             Name = element.KhoanMucSuaChua.NAME,
                             valueGT = dataElement.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == element.KHOAN_MUC_SUA_CHUA_CODE).Sum(x => x.VALUE) ?? 0,
                             Order = order + 1,
@@ -4000,6 +4009,7 @@ namespace SMO.Service.MD
                         };
                         data.Add(elementItem);
                         order++;
+                        sttChild++;
                     }
                 }
             }
@@ -4261,7 +4271,7 @@ namespace SMO.Service.MD
             foreach (var item in dataDetails.OrderBy(x => x.Order))
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                rowCur.Cells[0].SetCellValue(item.Order);
+                rowCur.Cells[0].SetCellValue(item.Stt);
                 rowCur.Cells[1].SetCellValue(item.Name);
                 rowCur.Cells[2].SetCellValue((double)item.valueGT);
                 rowCur.Cells[3].SetCellValue(item.valueQM);
