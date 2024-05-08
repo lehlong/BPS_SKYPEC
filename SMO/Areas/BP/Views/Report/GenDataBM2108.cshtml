@@ -50,7 +50,6 @@
     ];
     rawData.forEach((item) => {
         if (item.id == "A" || item.id == "B") delete item.parent;
-        item.col7 = Number(item.col5) == 0 || Number(item.col3) == 0 ? 0 : Number(item.col5) / Number(item.col3) * 100
     });
 
     const treeGrid = new dhx.TreeGrid("@gridId", {
