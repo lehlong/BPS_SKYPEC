@@ -2,6 +2,10 @@
     var viewId = Guid.NewGuid().ToString();
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
+    var lstPhienBan = SelectListUtilities.GetAllPhienBan();
+    var lstKichBan = SelectListUtilities.GetAllKichBan();
+    var lstArea = SelectListUtilities.GetAllArea();
+    var selectedValue = "TB";
 }
 <div id="@viewId" class="container-fluid child-content">
     <div class="card border-grey">
@@ -35,6 +39,15 @@
                                 }
                             </select>
                         </div>
+                        <div class="col-md-2">
+                            <select class="form-control selectpicker show-tick" id="kich-ban">
+                                @foreach (var item in lstKichBan)
+                                {
+                                    var isSelected = item.Value == selectedValue ? "selected" : string.Empty;
+                                    <option value="@item.Value" @isSelected>@item.Text</option>
+                                }
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,6 +65,7 @@
             url: "@Url.Action("GenDataBM01D")",
             data: {
                 year: $("#time-year").val(),
+                kichBan: $("#kich-ban").val(),
             },
             htmlTarget:'#divReport',
         };

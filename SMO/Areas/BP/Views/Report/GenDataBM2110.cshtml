@@ -1,1 +1,66 @@
-﻿
+﻿@model List<SMO.Service.BP.ReportModel>
+@using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var formIdExportExcel = Guid.NewGuid();
+}
+<style>
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
+    }
+
+    .grid .dhx_grid-cell {
+        word-break: break-word
+    }
+
+    .dhx_header-wrapper {
+        z-index: 1;
+    }
+</style>
+
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
+        @Html.Hidden("Treedata")
+        @Html.Hidden("Template")
+    </form>
+</div>
+<script type="text/javascript">
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
+    let columns = [
+        { id: "name", header: [{ text: "Danh mục chi phí", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
+        { id: "col1", header: [{ text: "Kế hoạch năm", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col2", header: [{ text: "Kế hoạch bổ sung, điều chỉnh (theo CV đã được phê duyệt) ", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col3", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col4", header: [{ text: "Giá trị thực hiện", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col5", header: [{ text: "% so với KH", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+
+        { id: "des", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+    ]; 
+    const treeGrid = new dhx.Grid("@gridId", {
+        columns,
+        data: rawData,
+        leftSplit: 1,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        selection: true,
+        autoHeight: true,
+    });
+
+     function ExportData() {
+        var Treedata = JSON.stringify(treeGrid.data.serialize());
+        var template = "BM_01D";
+        $('#@formIdExportExcel #Treedata').val(Treedata);
+        $('#@formIdExportExcel #Template').val(template);
+    $('#@formIdExportExcel').submit();
+}
+</script>
+
+
+
+
+

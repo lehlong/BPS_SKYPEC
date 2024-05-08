@@ -1,4 +1,4 @@
-﻿
+﻿@model SMO.Service.BP.ReportDataCenter
 @using System.Text;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
@@ -23,27 +23,29 @@
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 
 <script type="text/javascript">
-    var rawData = [];
+       var rawData = @Html.Raw(JsonConvert.SerializeObject(Model.BM02A, jsonSerializeSettings));
+rawData.forEach((item) => {
+    if (item.id == "A" || item.id == "B") delete item.parent;
+});
     let columns = [
-        { id: "stt", header: [{ text: "STT", align: "center" }], minWidth: 100 },
-        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 320 },
 
-        { id: "col1", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM ĐẦU NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "col1", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM ĐẦU NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
 
-        { id: "col2", header: [{ text: "PHÁT SINH", align: "center", colspan: 4 }, { text: "KH", align: "center" }], align: "right", minWidth: 180 },
-        { id: "col3", header: ["", { text: "9T ĐN", align: "center" }], align: "right", minWidth: 180 },
-        { id: "col4", header: ["", { text: "TH", align: "center" }], align: "right", minWidth: 180 },
-        { id: "col5", header: ["", { text: "%TH/KH", align: "center" }], align: "right", minWidth: 180 },
+        { id: "col2", header: [{ text: "PHÁT SINH", align: "center", colspan: 4 }, { text: "KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col3", header: ["", { text: "9T ĐN", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col4", header: ["", { text: "TH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col5", header: ["", { text: "%TH/KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
 
-        { id: "col6", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "col7", header: [{ text: "TỶ LỆ VỐN GÓP (%) ĐẾN CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "col8", header: [{ text: "CỔ TỨC HOẶC LỢI NHUẬN ĐƯỢC CHIA", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "col9", header: [{ text: "TY LỆ LN ĐƯỢC CHIA TRÊN VỐN ĐẦU TƯ BÌNH QUÂN", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "col10", header: [{ text: "GIÁ TRỊ ĐÃ TRÍCH LẬP DỰ PHÒNG GIẢM GIÁ ĐT", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-       
+        { id: "col6", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col7", header: [{ text: "TỶ LỆ VỐN GÓP (%) ĐẾN CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col8", header: [{ text: "CỔ TỨC HOẶC LỢI NHUẬN ĐƯỢC CHIA", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col9", header: [{ text: "TY LỆ LN ĐƯỢC CHIA TRÊN VỐN ĐẦU TƯ BÌNH QUÂN", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col10", header: [{ text: "GIÁ TRỊ ĐÃ TRÍCH LẬP DỰ PHÒNG GIẢM GIÁ ĐT", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+
     ];
 
-    const treeGrid = new dhx.Grid("@gridId", {
+    const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
         leftSplit: 2,

@@ -52,9 +52,22 @@
     ];
     rawData.forEach((item) => {
         if (item.id == "A" || item.id == "B") delete item.parent;
-        item.col7 = Number(item.col5) == 0 || Number(item.col3) == 0 ? 0 : Number(item.col5) / Number(item.col3) * 100
     });
-
+    for (var i = rawData.length - 1; i >= 0; i--) {
+        var allIds = rawData.filter(x => x.parent == rawData[i].id);
+        rawData[i].col1 = allIds.length == 0 ? rawData[i].col1 : _.sumBy(allIds, 'col1');
+        rawData[i].col2 = allIds.length == 0 ? rawData[i].col2 : _.sumBy(allIds, 'col2');
+        rawData[i].col3 = allIds.length == 0 ? rawData[i].col3 : _.sumBy(allIds, 'col3');
+        rawData[i].col4 = allIds.length == 0 ? rawData[i].col4 : _.sumBy(allIds, 'col4');
+        rawData[i].col5 = allIds.length == 0 ? rawData[i].col5 : _.sumBy(allIds, 'col5');
+        rawData[i].col6 = allIds.length == 0 ? rawData[i].col6 : _.sumBy(allIds, 'col6');
+        rawData[i].col7 = allIds.length == 0 ? rawData[i].col7 : _.sumBy(allIds, 'col7');
+        rawData[i].col8 = allIds.length == 0 ? rawData[i].col8 : _.sumBy(allIds, 'col8');
+        rawData[i].col9 = allIds.length == 0 ? rawData[i].col9 : _.sumBy(allIds, 'col9');
+        rawData[i].col10 = allIds.length == 0 ? rawData[i].col10 : _.sumBy(allIds, 'col10');
+        rawData[i].col11 = allIds.length == 0 ? rawData[i].col11 : _.sumBy(allIds, 'col11');
+        rawData[i].col12 = allIds.length == 0 ? rawData[i].col12 : _.sumBy(allIds, 'col12');
+    }
     const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,

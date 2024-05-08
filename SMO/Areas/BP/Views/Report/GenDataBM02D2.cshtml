@@ -1,4 +1,4 @@
-﻿
+﻿@model List<SMO.Service.BP.ReportModel>
 @using System.Text;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
@@ -23,9 +23,8 @@
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 
 <script type="text/javascript">
-    var rawData = [];
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
     let columns = [
-        { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], minWidth: 100 },
         { id: "name", header: [{ text: "NỘI DUNG", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
 
         { id: "col1", header: [{ text: "TH 2019", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
@@ -40,8 +39,10 @@
         { id: "col8", header: [{ text: "KH 2024", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
         { id: "col9", header: [{ text: "GHI CHÚ", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
     ];
-
-    const treeGrid = new dhx.Grid("@gridId", {
+    rawData.forEach((item) => {
+        if (item.isBold == true) delete item.parent;
+    });
+    const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
         leftSplit: 2,

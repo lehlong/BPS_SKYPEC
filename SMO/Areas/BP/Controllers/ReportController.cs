@@ -339,9 +339,9 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult GenDataBM01D(int year, string orgCode)
+        public ActionResult GenDataBM01D(int year, string kichBan)
         {
-            var data = _service.GenDataBM01D(year, orgCode);
+            var data = _service.GenDataBM01D(year, kichBan);
             return PartialView(data);
         }
         #endregion
@@ -353,7 +353,8 @@ namespace SMO.Areas.BP.Controllers
         }
         public ActionResult GenDataBM01E(int year, string phienBan, string kichBan, string hangHangKhong)
         {
-            return PartialView();
+            var data = _service.GenDataBM01E(year, kichBan);
+            return PartialView(data);
         }
         #endregion
 
@@ -434,9 +435,10 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult GenDataBM02D2(int year, string phienBan, string kichBan, string hangHangKhong)
+        public ActionResult GenDataBM02D2(int year, string phienBan, string kichBan, int month)
         {
-            return PartialView();
+            var data = _service.GenDataBM02D2(year, month, phienBan, kichBan);
+            return PartialView(data);
         }
         #endregion
 
@@ -469,9 +471,10 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult GenDataBM2109(int year, string phienBan, string kichBan, string hangHangKhong)
+        public ActionResult GenDataBM2109(int year, string phienBan, string kichBan, int month)
         {
-            return PartialView();
+            var data = _service.GenDataBM2109(year, month, phienBan, kichBan);
+            return PartialView(data);
         }
         #endregion
 
@@ -480,9 +483,10 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult GenDataBM2110(int year, string phienBan, string kichBan, string hangHangKhong)
+        public ActionResult GenDataBM2110(int year, string phienBan, string kichBan, int month)
         {
-            return PartialView();
+            var data = _service.GenDataBM2110(year, month, phienBan, kichBan);
+            return PartialView(data);
         }
         #endregion
 
