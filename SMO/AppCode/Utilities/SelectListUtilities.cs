@@ -106,6 +106,10 @@ namespace SMO
             var lstData = new List<Data>();
 
             var lstOrgUser = ProfileUtilities.UserOrg.Select(x => x.ORG_CODE).ToList();
+            if (lstOrgUser.Any(x => x == "1000") || ProfileUtilities.User.ORGANIZE_CODE == "1000")
+            {
+                lstData.Add(new Data { Value = "", Text = "Tất cả chi nhánh" });
+            }
             if (lstOrgUser.Contains("100001") || ProfileUtilities.User.ORGANIZE_CODE.Contains("100001"))
             {
                 lstData.Add(new Data { Value = "CQ", Text = "CQ - Cơ quan công ty" });
