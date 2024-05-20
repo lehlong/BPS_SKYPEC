@@ -1,0 +1,88 @@
+﻿@model List<SMO.Models.SupplyReportModel>
+@using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
+    var year = ViewBag.Year as int?;
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var jsonData = Model.OrderBy(x => x.Order).Select(x => new
+    {
+        Id = x.Order.ToString(),
+        Parent = x.Parent.ToString(),
+        Name = x.Name,
+        Value1 = x.ValueSL.ToStringVN(),
+        Value2 = x.ValueDG.ToStringVN(),
+        Value3 = x.ValueMOPS.ToStringVN(),
+        Value4 = x.ValueDTTNK.ToStringVN(),
+        Value5 = x.ValueD.ToStringVN(),
+        Value6 = x.ValueFH.ToStringVN(),
+        Value7 = x.ValueThue.ToStringVN(),
+        Value8 = x.ValueDT.ToStringVN(),
+        Value9 = x.ValueDTMOPS.ToStringVN(),
+        Value10 = x.ValueDTTNK.ToStringVN(),
+        Value11 = x.ValueDTD.ToStringVN(),
+        Value12 = x.ValueDTFH.ToStringVN(),
+        IsBold = x.IsBold
+    });
+
+}
+<style>
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
+    }
+
+    .grid .dhx_grid-cell {
+        word-break: break-word
+    }
+</style>
+
+<div style="height: calc(100vh - 240px);" id="@gridId"></div>
+
+<script type="text/javascript">
+   const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+    const columns = [
+        { id: "name", header: [{ text: "DOANH THU", align: "center", rowspan: 2 }], width: 300 },
+        { id: "value1", header: [{ text: "SẢN LƯỢNG(TẤN) PA TRUNG", align: "center", rowspan: 2 }], align: "right", width: 220 },
+
+        {
+            id: "value2", header: [
+                { text: "ĐƠN GIÁ (VND/TẤN)", colspan: 5, align: 'center' },
+                { text: 'ĐƠN GIÁ (VND/TẤN)', align: 'center' }
+            ], align: "right", width: 180
+        },
+        { id: "value3", header: ["", { text: "MOPS (VND/TẤN)", align: "center" }], align: "right", width: 180 },
+        { id: "value4", header: ["", { text: "TNK (VND/TẤN)", align: "center" }], align: "right", width: 180 },
+        { id: "value5", header: ["", { text: "D (VND/TẤN)", align: "center" }], align: "right", width: 180 },
+        { id: "value6", header: ["", { text: "FH (VND/TẤN)", align: "center" }], align: "right", width: 180 },
+
+        { id: "value7", header: [{ text: "THUẾ BVMT (TR. VNĐ) ", align: "center", rowspan: 2 }], align: "right", width: 180 },
+        { id: "value8", header: [{ text: "DOANH THU (TR. VNĐ)", align: "center", rowspan: 2 }], align: "right", width: 180 },
+
+        {
+            id: "value9", header: [
+                { text: "DOANH THU THEO YẾU TỐ (TR. VND)", colspan: 4, align: 'center' },
+                { text: 'MOPS (VNĐ)', align: 'center' }
+            ], align: "right", width: 180
+        },
+
+        { id: "value10", header: ["", { text: "TNK (VNĐ)", align: "center" }], align: "right", width: 180 },
+        { id: "value11", header: ["", { text: "D (VNĐ)", align: "center" }], align: "right", width: 180 },
+        { id: "value12", header: ["", { text: "FH (VNĐ)", align: "center" }], align: "right", width: 180 },
+    ];
+
+    rawData.forEach((item) => {
+        if (item.parent == null || item.parent == '') {
+            delete item.parent
+        }
+    });
+
+    const treeGrid = new dhx.TreeGrid("@gridId", {
+        columns,
+        leftSplit: 1,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true? "row-bold" : "" },
+    });
+    treeGrid.data.parse(rawData);
+</script>

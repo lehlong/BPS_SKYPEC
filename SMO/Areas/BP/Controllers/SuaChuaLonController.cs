@@ -152,7 +152,7 @@ namespace SMO.Areas.BP.Controllers
             }
             ViewBag.costCFHeader = _service.GetHeader(model);
             ViewBag.lstData = _service.GetDataSCL(model);
-            if (model.PHIEN_BAN == "PB3" || model.PHIEN_BAN == "PB5")
+            if (model.PHIEN_BAN == "PB3" || model.PHIEN_BAN == "PB5" || model.PHIEN_BAN == "PB4")
             {
                 _service.GetDataKhoanMucSCL(model);
             }

@@ -490,7 +490,19 @@ namespace SMO.Areas.BP.Controllers
         }
         #endregion
 
-
+        #region CKP - BÁO CÁO CẤP KINH PHÍ HÀNG THÁNG CHO ĐƠN VỊ
+        public ActionResult IndexCKP()
+        {
+            return PartialView();
+        }
+        public async Task<ActionResult> GenDataCKP(int year, string phienBan, string kichBan, string area)
+        {
+            var data = await _servicePhienBan.GetDataCKP(year, phienBan, kichBan, area);
+            ViewBag.PhienBan = phienBan;
+            ViewBag.Year = year;
+            return PartialView(data);
+        }
+        #endregion
 
         #region Export Excel Data
         [HttpPost]
@@ -499,54 +511,77 @@ namespace SMO.Areas.BP.Controllers
             var data = JsonConvert.DeserializeObject<List<ReportModel>>(Treedata);
             MemoryStream outFileStream = new MemoryStream();
             var fileName = string.Empty;
-            if(Template == "BM_02A")
+            var path = Server.MapPath("~/TemplateExcel/" + Template + ".xlsx");
+            int NUMCELL = 0;
+            switch (Template)
             {
-                var path = Server.MapPath("~/TemplateExcel/" + "BM_02A.xlsx");
-                int NUMCELL = 10;
-                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
-                fileName = "Biểu mẫu Kế hoạch đầu tư XDCB và trang thiết bị năm kế hoạch.";
-            }
-            else if(Template == "BM_02B")
-            {
-                var path = Server.MapPath("~/TemplateExcel/" + "BM_02B.xlsx");
-                int NUMCELL = 8;
-                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
-                fileName = "Biểu mẫu Kế hoạch đầu tư vốn ra ngoài doanh nghiệp năm kế hoạch.";
-            }
-            else if (Template == "BM_02C")
-            {
-                var path = Server.MapPath("~/TemplateExcel/" + "BM_02C.xlsx");
-                int NUMCELL = 11;
-                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
-                fileName = "Kế hoạch hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp (Kịch bản Cao/Trung bình/Thấp)";
-            }
-            else if (Template == "BM_02C1")
-            {
-                var path = Server.MapPath("~/TemplateExcel/" + "BM_02C1.xlsx");
-                int NUMCELL = 11;
-                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
-                fileName = "Biểu mẫu Hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp các kịch bản (nếu có)";
-            }
-            else if (Template == "BM_02D")
-            {
-                var path = Server.MapPath("~/TemplateExcel/" + "BM_02D.xlsx");
-                int NUMCELL = 8;
-                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
-                fileName = "Chi tiết các khoản mục sản lượng, doanh thu, chi phí UTH (Kịch bản Cao/Trung bình/ Thấp)";
-            }
-            else if (Template == "BM_02D1")
-            {
-                var path = Server.MapPath("~/TemplateExcel/" + "BM_02D1.xlsx");
-                int NUMCELL = 6;
-                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
-                fileName = "Biểu mẫu Chi tiết các khoản mục sản lượng, doanh thu, chi phí UTH năm trước theo các kịch bản (nếu có).";
-            }
-            else if(Template == "BM_01D")
-            {
-                var path = Server.MapPath("~/TemplateExcel/" + "BM_01D.xlsx");
-                int NUMCELL = 15;
-                _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
-                fileName = "Biểu mẫu Báo cáo ước tình hình thực hiện đầu tư vào các dự án hình thành TSCĐ năm trước kế hoạch.";
+                case "BM_02A":
+                    NUMCELL = 10;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "BIỂU MẪU KẾ HOẠCH ĐẦU TƯ XDCB VÀ TTB NĂM KẾ HOẠCH";
+                    break;
+                case "BM_02B":
+                    NUMCELL = 8;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "BÁO CÁO TÌNH HÌNH THỰC HIỆN ĐẦU TƯ VÀO CÁC DỰ ÁN HÌNH THÀNH TSCĐ NĂM TRƯỚC KẾ HOẠCH";
+                    break;
+                case "BM_02C":
+                    NUMCELL = 11;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "KẾ HOẠCH HIỆU QUẢ TỪNG LĨNH VỰC KINH DOANH CỦA DOANH NGHIỆP";
+                    break;
+                case "BM_02C1":
+                    NUMCELL = 11;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "HIỆU QUẢ TỪNG LĨNH VỰC KINH DOANH CỦA DOANH NGHIỆP CÁC KỊCH BẢN";
+                    break;
+                case "BM_02D":
+                    NUMCELL = 8;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "CHI TIẾT CÁC KHOẢN MỤC SẢN LƯỢNG, DOANH THU, CHI PHÍ UTH (KỊCH BẢN CAO/TRUNG BÌNH/THẤP)";
+                    break;
+                case "BM_02D1":
+                    NUMCELL = 6;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "CHI TIẾT CÁC KHOẢN MỤC SẢN LƯỢNG, DOANH THU, CHI PHÍ UTH NĂM TRƯỚC THEO CÁC KỊCH BẢN";
+                    break;
+                case "BM_02D2":
+                    NUMCELL = 10;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "TỔNG HỢP NHỮNG BIẾN ĐỘNG ẢNH HƯỞNG ĐẾN SẢN XUẤT KINH DOANH CỦA CÁC DOANH NGHIỆP QUA CÁC NĂM";
+                    break;
+                case "BM_01D":
+                    NUMCELL = 15;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "BÁO CÁO TÌNH HÌNH THỰC HIỆN ĐẦU TƯ VÀO CÁC DỰ ÁN HÌNH THÀNH TSCĐ NĂM TRƯỚC KẾ HOẠCH";
+                    break;
+                case "BM_01E":
+                    NUMCELL = 11;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "BÁO CÁO ƯỚC TÍNH TÌNH HÌNH ĐẦU TƯ VỐN RA NGOÀI DOANH NGHIỆP RA TRƯỚC KẾ HOẠCH";
+                    break;
+                case "BM_2107":
+                    NUMCELL = 9;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "Báo cáo tình hình thực hiện đầu tư có xây dựng";
+                    break;
+                case "BM_2108":
+                    NUMCELL = 12;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "Báo cáo tình hình thực hiện đầu tư không có xây dựng";
+                    break;
+                case "BM_2109":
+                    NUMCELL = 7;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "Báo cáo tình hình thực hiện sửa chữa lớn TSCĐ";
+                    break;
+                case "BM_2110":
+                    NUMCELL = 7;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "Tổng hợp kế hoạch chi phí";
+                    break;
+                default:
+                    break;
             }
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }

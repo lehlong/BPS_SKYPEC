@@ -49,6 +49,7 @@ namespace SMO.Areas.BP.Controllers
 
         public override ActionResult ExportData(string templateCode, int year, int version, string orgCode, string kichBan, string phienBan)
         {
+            orgCode = orgCode ?? ProfileUtilities.User.ORGANIZE_CODE;
             var model = new ViewDataCenterModel
             {
                 ORG_CODE = orgCode,

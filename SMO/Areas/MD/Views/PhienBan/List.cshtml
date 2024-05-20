@@ -9,6 +9,8 @@
             <tr>
                 <th style="max-width: 120px;">Mã </th>
                 <th>Tên </th>
+                <th>Mã phiên bản DB</th>
+
             </tr>
         </thead>
         <tbody>
@@ -21,6 +23,8 @@
                         <a href="#" onclick="@vdbclickAction">@item.CODE</a>
                     </td>
                     <td ondblclick="@vdbclickAction">@item.TEXT</td>
+                    <td>@item.MA_PB_DB</td>
+
                 </tr>
             }
         </tbody>

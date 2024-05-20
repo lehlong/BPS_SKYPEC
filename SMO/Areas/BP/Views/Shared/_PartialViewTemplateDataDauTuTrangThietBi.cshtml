@@ -86,7 +86,7 @@ else
                         <td class="pre-whitespace">ĐƠN GIÁ</td>
                         <td class="pre-whitespace">THÀNH TIỀN</td>
                     </tr>
-                    @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB3")
+                    @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB3" || dataCenterModel.PHIEN_BAN == "PB4")
                     {
                         foreach (var detail in lstProject.Where(x => x.CODE != null).Select(x => x.CODE).Distinct())
                         {

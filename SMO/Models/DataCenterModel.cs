@@ -244,4 +244,20 @@ namespace SMO.Models
         public decimal HKNN { get; set; }
 
     }
+
+    public class CKPData
+    {
+        public int Order { get; set; }
+        public bool IsBold { get; set; }
+        public string Code { get; set; }
+        public string ParentCode { get; set; }
+
+        public string Name { get; set; }
+        public string Col1 { get; set; }
+
+        public decimal[] ValueKP { get; set; }
+        public decimal ColSum { get; set; }
+
+        public string Des { get; set; }
+    }
 }

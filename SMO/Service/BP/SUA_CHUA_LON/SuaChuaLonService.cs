@@ -4692,13 +4692,20 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
         public void GetDataKhoanMucSCL(ViewDataCenterModel model)
         {
+            var lstTemplateDetailCode = UnitOfWork.Repository<TemplateDetailSuaChuaLonRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE  && x.TIME_YEAR == model.YEAR).Select(x=>x.ELEMENT_CODE).ToList();
             var lstdata = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
-            var lstKhoanMuc = new List<T_MD_KHOAN_MUC_SUA_CHUA>();
-            foreach(var item in lstdata)
+            var lstParent = lstdata.Where(x => !lstTemplateDetailCode.Contains(x.KHOAN_MUC_SUA_CHUA_CODE)).ToList();
+            var lstChild = lstdata.Where(x => lstTemplateDetailCode.Contains(x.KHOAN_MUC_SUA_CHUA_CODE)).ToList();
+            var lstParentCode = lstdata.Select(x => x.KhoanMucSuaChua.PARENT_CODE).Distinct().ToList();
+            foreach(var item in lstChild)
             {
                 var value = item.GetType().GetProperty($"MONTH{model.MONTH}").GetValue(item);
                 item.KhoanMucSuaChua.Values[0] = value != null ? Convert.ToDecimal(value) : 0;
-                lstKhoanMuc.Add(item.KhoanMucSuaChua);
+            }
+            foreach(var item in lstParent)
+            {
+                var value = lstChild.Where(x => x.SUA_CHUA_PROFIT_CENTER_CODE == item.SUA_CHUA_PROFIT_CENTER_CODE && x.KHOAN_MUC_SUA_CHUA_CODE.StartsWith(item.KHOAN_MUC_SUA_CHUA_CODE)).Sum(x => x.KhoanMucSuaChua.Values[0]);
+                item.KhoanMucSuaChua.Values[0] = Convert.ToDecimal(value);
             }
         }
 

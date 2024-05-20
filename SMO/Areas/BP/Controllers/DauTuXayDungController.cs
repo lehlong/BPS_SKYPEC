@@ -111,7 +111,7 @@ namespace SMO.Areas.BP.Controllers
             model.EXCHANGE_RATE = 12;
             ViewBag.dataCenterModel = model;
             ViewBag.lstProject = _service.GetProject(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
-            if (model.PHIEN_BAN == "PB3" || model.PHIEN_BAN == "PB5")
+            if (model.PHIEN_BAN == "PB3" || model.PHIEN_BAN == "PB5" || model.PHIEN_BAN == "PB4")
             {
                 _service.GetDataProject(model);
             }

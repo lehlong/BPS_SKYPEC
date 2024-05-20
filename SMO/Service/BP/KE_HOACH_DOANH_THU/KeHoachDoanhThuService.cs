@@ -5306,13 +5306,13 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     var itemNoiDiaDT_Pump = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2003");
                     var itemQuocTeDT_Pump = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2004");
 
-                    var itemNoiDiaHistorySL = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10010");
+                    /*var itemNoiDiaHistorySL = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10010");
                     var itemQuocTeHistorySL = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10020");
 
                     var itemNoiDiaHistoryDT = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2001");
                     var itemQuocTeHistoryDT = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2002");
                     var itemNoiDiaHistoryDT_Pump = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2003");
-                    var itemQuocTeHistoryDT_Pump = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2004");
+                    var itemQuocTeHistoryDT_Pump = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2004");*/
 
                     var currencyUSD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
 
@@ -5405,7 +5405,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemQuocTeDT_Pump.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeSL.VALUE_SUM_YEAR_PREVENTIVE * pricePump;
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemQuocTeDT_Pump);
                     #endregion
-                    //Tính toán doanh thu nội địa history
+                    /*//Tính toán doanh thu nội địa history
                     itemNoiDiaHistoryDT.VALUE_JAN = itemNoiDiaHistorySL.VALUE_JAN * price;
                     itemNoiDiaHistoryDT.VALUE_FEB = itemNoiDiaHistorySL.VALUE_FEB * price;
                     itemNoiDiaHistoryDT.VALUE_MAR = itemNoiDiaHistorySL.VALUE_MAR * price;
@@ -5472,7 +5472,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemQuocTeHistoryDT.VALUE_SUM_YEAR = itemQuocTeHistorySL.VALUE_SUM_YEAR * price;
                     itemQuocTeHistoryDT.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeHistorySL.VALUE_SUM_YEAR_PREVENTIVE * price;
                     UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemQuocTeHistoryDT);
-
+*/
 
                 }
                 UnitOfWork.Commit();

@@ -114,6 +114,102 @@ namespace SMO.Models
 
     }
 
+    public class ReportCKPModel
+    {
+        public IList<DauTuCKP> DauTu { get; set; } = new List<DauTuCKP> { };
+        public IList<SuaChuaCKP> SuaChuaLon { get; set; } = new List<SuaChuaCKP> { };
+        public IList<ChiPhiCKP> ChiPhi { get; set; } = new List<ChiPhiCKP> { };
+    }
+
+
+    public class DauTuCKP
+    {
+        public int Order { get; set; }
+        public string Name { get; set; }
+        public string Col1 {  get; set; }
+
+        public decimal? Col2 { get; set; }
+        public string Col3 { get; set; }
+        public decimal Col4 { get; set; }
+        public decimal Col5 { get; set; }
+        public decimal Col6 { get; set; }
+        public decimal Col7 { get; set; }
+        public decimal Col8 { get; set; }
+        public decimal Col9 { get; set; }
+        public decimal Col10 { get; set; }
+        public decimal Col11 { get; set; }
+        public decimal Col12 { get; set; }
+        public decimal Col13 { get; set; }
+        public decimal Col14 { get; set; }
+        public decimal Col15 { get; set; }
+        public string Col16 { get; set; }
+        public string Col17 { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Level { get; set; }
+
+    }
+
+    public class SuaChuaCKP
+    {
+        public string code { get; set; }
+        public string parentCode { get; set; }
+
+        public int Order { get; set; }
+        public string Name { get; set; }
+        public decimal Col1 { get; set; }
+
+        public decimal Col2 { get; set; }
+        public decimal Col3 { get; set; }
+        public decimal Col4 { get; set; }
+        public decimal Col5 { get; set; }
+        public decimal Col6 { get; set; }
+
+        public decimal Col7 { get; set; }
+        public decimal Col8 { get; set; }
+        public decimal Col9 { get; set; }
+        public decimal Col9_2 { get; set; }
+
+        public decimal Col10 { get; set; }
+        public decimal Col11 { get; set; }
+        public decimal Col12 { get; set; }
+        public decimal Col13 { get; set; }
+        public decimal Col14 { get; set; }
+        public decimal Col15 { get; set; }
+        public string Col16 { get; set; }
+        public string Col17 { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Level { get; set; }
+    }
+
+    public class ChiPhiCKP
+    {
+        public int Order { get; set; }
+        public string Name { get; set; }
+        public decimal? Col1 { get; set; }
+
+        public decimal? Col2 { get; set; }
+        public decimal? Col3 { get; set; }
+        public decimal Col4 { get; set; }
+        public decimal Col5 { get; set; }
+        public decimal Col6 { get; set; }
+        public decimal Col6_2 { get; set; }
+
+        public decimal Col7 { get; set; }
+        public decimal Col8 { get; set; }
+        public decimal Col9 { get; set; }
+        public decimal Col10 { get; set; }
+        public decimal Col11 { get; set; }
+        public decimal Col12 { get; set; }
+        public decimal Col13 { get; set; }
+        public decimal Col14 { get; set; }
+        public decimal Col15 { get; set; }
+        public string Col16 { get; set; }
+        public string Col17 { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Level { get; set; }
+    }
+
+
     public class SuaChuaLonReportModel
     {
         public string Code { get; set; }
@@ -183,6 +279,19 @@ namespace SMO.Models
         public string Value4 { get; set; }
         public string Value5 { get; set; }
         public decimal ValueDLTH { get; set; }
+        public decimal valueDLTH1 { get; set; }
+        public decimal valueDLTH2 { get; set; }
+        public decimal valueDLTH3 { get; set; }
+        public decimal valueDLTH4 { get; set; }
+        public decimal valueDLTH5 { get; set; }
+        public decimal valueDLTH6 { get; set; }
+        public decimal valueDLTH7 { get; set; }
+        public decimal valueDLTH8 { get; set; }
+        public decimal valueDLTH9 { get; set; }
+        public decimal valueDLTH10 { get; set; }
+        public decimal valueDLTH11 { get; set; }
+        public decimal valueDLTH12 { get; set; }
+
 
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
@@ -199,6 +308,19 @@ namespace SMO.Models
         public string valueQM { get; set; }
         public string description { get; set; }
         public decimal valueDLTH { get; set; }
+        public decimal valueDLTH1 { get; set; }
+        public decimal valueDLTH2 { get; set; }
+        public decimal valueDLTH3 { get; set; }
+        public decimal valueDLTH4 { get; set; }
+        public decimal valueDLTH5 { get; set; }
+        public decimal valueDLTH6 { get; set; }
+        public decimal valueDLTH7 { get; set; }
+        public decimal valueDLTH8 { get; set; }
+        public decimal valueDLTH9 { get; set; }
+        public decimal valueDLTH10 { get; set; }
+        public decimal valueDLTH11 { get; set; }
+        public decimal valueDLTH12 { get; set; }
+
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
         public int Level { get; set; }

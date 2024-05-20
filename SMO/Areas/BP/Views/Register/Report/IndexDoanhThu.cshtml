@@ -1,0 +1,115 @@
+﻿@{
+    var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+    var lstPhienBan = SelectListUtilities.GetAllPhienBan();
+    var lstKichBan = SelectListUtilities.GetAllKichBan();
+    var lstHangHangKhong = SelectListUtilities.GetSelectHangHangKhong();
+    var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
+    var selectedValue = "TB";
+}
+<div class="container-fluid child-content">
+    <div class="card border-grey">
+        <div class="body" style="padding-top: 0px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> BÁO CÁO TỔNG HỢP KẾ HOẠCH DOANH THU</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="page-function" style="width:100%">
+                    <div class="page-function-button m-r-20" style="float:left">
+                        @Html.MyButton("cmdBack", "Quay lại", "Goback()", "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
+                        @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
+                    </div>
+                    <div class="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px">
+                        <div class="col-md-2">
+                            <select class="form-control selectpicker show-tick" id="time-year">
+                                @foreach (var temp in lstTimeYear)
+                                {
+                                    if (temp.Value == yearDefault)
+                                    {
+                                        <option value="@temp.Value" selected>@temp.Text</option>
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control selectpicker show-tick" id="kich-ban">
+                                @foreach (var item in lstKichBan)
+                                {
+                                    var isSelected = item.Value == selectedValue ? "selected" : string.Empty;
+                                    <option value="@item.Value" @isSelected>@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control selectpicker show-tick" id="phien-ban">
+                                @foreach (var item in lstPhienBan)
+                                {
+                                    <option value="@item.Value">@(item.Text)</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-5">
+                            <select class="form-control selectpicker show-tick" id="hang-hang-khong">
+                                @foreach (var item in lstHangHangKhong)
+                                {
+                                    <option value="@item.Value">@(item.Text)</option>
+                                }
+                            </select>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="divReport">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        Forms.CompleteUI();
+    });
+    function Goback() {
+        window.location.reload();
+    }
+    function ViewData() {
+        $("#divReport").empty();
+        var ajaxParams = {
+            url: "@Url.Action("GenDataDoanhThu")",
+            data: {
+                year: $("#time-year").val(),
+                phienBan: $("#phien-ban").val(),
+                kichBan: $("#kich-ban").val(),
+                hangHangKhong: $("#hang-hang-khong").val(),
+            },
+            htmlTarget:'#divReport',
+        };
+        Forms.LoadAjax(ajaxParams);
+    }
+
+    $(function () {
+        Forms.CompleteUI();
+        ViewData();
+    });
+
+    function ExportData() {
+        var year = $("#time-year").val()
+        var phienBan = $("#phien-ban").val()
+        var kichBan = $("#kich-ban").val()
+        var hangHangKhong = $("#hang-hang-khong").val()
+        window.open(`/BP/Report/ExportExcelDataDoanhThu?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
+    }
+</script>
+
+

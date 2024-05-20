@@ -59,13 +59,26 @@
             </ul>
 
             <div class="tab-content">
-                <div>
-                    @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
-                    @Html.MyButton("cmdDownload", "Xuất Excel", "ExportExcel();", "Alt+N", "download")
-                    @Html.MyButton("cmdDownload", "Kết xuất", "LoadUpdate();", "Alt+N", "search")
-                    @Html.MyButton("cmdDownload", "Ẩn chi tiết", "HideDetailColumns();", "Alt+N", "visibility_off")
-                    @Html.MyButton("cmdDownload", "Hiện chi tiết", "ShowAllColumns();", "Alt+N", "visibility")
-                    <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank" hidden></a>
+                <div style="margin: 5px; border-bottom: 1px dotted #e4e4e4; padding-bottom: 5px; display: flex">
+                    <div class="fixed-btn">
+                        @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdDownload", "Xuất Excel", "ExportExcel();", "Alt+N", "download")
+                        @Html.MyButton("cmdDownload", "Kết xuất", "LoadUpdate();", "Alt+N", "search")
+                        @Html.MyButton("cmdDownload", "Ẩn chi tiết", "HideDetailColumns();", "Alt+N", "visibility_off")
+                        @Html.MyButton("cmdDownload", "Hiện chi tiết", "ShowAllColumns();", "Alt+N", "visibility")
+                        <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank" hidden></a>
+                    </div>
+                    @if (dataCenterModel.PHIEN_BAN == "PB3" || dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB4")
+                    {
+                        <div class="col-md-1" style="margin-bottom: 12px">
+                            <select class="form-control selectpicker show-tick" id="month_bs" style="display:block !important;">
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <option value="@i">Tháng @i</option>
+                                }
+                            </select>
+                        </div>
+                    }
                 </div>
                 <hr />
                 <div id="load-paging">
@@ -81,13 +94,19 @@
     }
 
     function LoadPaging() {
+        var month = $("#month_bs");
+        let monthVal = 0;
+        if (month.length > 0) {
+            monthVal = month.val();
+        }
         $("#load-paging").empty();
         const model = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
         var ajaxParams = {
             url: "@Url.Action("ViewDataTemplatePaging")",
             data: {
                 model: JSON.stringify(model),
-                skip: 0
+                skip: 0,
+                month: monthVal
             },
             htmlTarget: '#load-paging',
         };
@@ -100,15 +119,13 @@
     }
 
     $(function () {
+        Forms.CompleteUI();
         setTimeout(function () {
             LoadPaging();
         }, 500)
     });
 
-    function onEditCell(type, sanBay, costCenter, elementCode, value) {
-        if (value == null || value == "") {
-            return;
-        }
+    function onEditCellPBBS(type, sanBay, costCenter, elementCode, value, month) {
         var templateCode = '@dataCenterModel.TEMPLATE_CODE';
         var version = @dataCenterModel.VERSION;
         var year = @dataCenterModel.YEAR;
@@ -123,15 +140,53 @@
                 sanBay: sanBay,
                 costCenter: costCenter,
                 elementCode: elementCode,
-                value: value
+                value: value,
+                month: month
             },
             dataType: 'json',
             success: function (response) {
                 Message.execute(response);
                 $("#reload_paging").click();
             }
-        };
-        Forms.Ajax(ajaxParams);
+            };
+            Forms.Ajax(ajaxParams);
+    }
+
+    function onEditCell(type, sanBay, costCenter, elementCode, value) {
+        if (value == null || value == "") {
+            return;
+        }
+        var month = $("#month_bs");
+        if (month.length > 0) {
+            let monthVal = month.val();
+            onEditCellPBBS(type, sanBay, costCenter, elementCode, value, monthVal);
+        } else {
+            var templateCode = '@dataCenterModel.TEMPLATE_CODE';
+            var version = @dataCenterModel.VERSION;
+            var year = @dataCenterModel.YEAR;
+            var ajaxParams = {
+                url: 'BP/KeHoachChiPhi/UpdateCellValue',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    type: type,
+                    sanBay: sanBay,
+                    costCenter: costCenter,
+                    elementCode: elementCode,
+                    value: value,
+                    month: 0
+                },
+                dataType: 'json',
+                success: function (response) {
+                    Message.execute(response);
+                    $("#reload_paging").click();
+                }
+                };
+                Forms.Ajax(ajaxParams);
+        }
+
     }
 
     function getHistoryEditElement(elementCode) {

@@ -10,5 +10,7 @@ namespace SMO.Core.Entities
         public virtual string CODE { get; set; }
         [Required(ErrorMessage = "Trường này bắt buộc nhập", AllowEmptyStrings = false)]
         public virtual string TEXT { get; set; }
+        public virtual string MA_PB_DB { get; set; }
+
     }
 }

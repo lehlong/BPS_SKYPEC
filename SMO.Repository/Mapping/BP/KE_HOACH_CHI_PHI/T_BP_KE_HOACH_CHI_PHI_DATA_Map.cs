@@ -20,6 +20,7 @@ namespace SMO.Repository.Mapping.BP.KE_HOACH_CHI_PHI
             Map(x => x.KHOAN_MUC_HANG_HOA_CODE);
             Map(x => x.VERSION);
             Map(x => x.TIME_YEAR);
+            Map(x => x.MONTH);
             Map(x => x.QUANTITY);
             Map(x => x.PRICE);
             Map(x => x.AMOUNT);

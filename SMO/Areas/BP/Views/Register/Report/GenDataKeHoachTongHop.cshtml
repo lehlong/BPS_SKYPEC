@@ -1,0 +1,189 @@
+﻿@model SMO.Models.SynthesizeThePlanReportModel
+@using System.Text;
+@{
+    var year = ViewBag.Year as int?;
+}
+<style>
+    .header-table {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+<h4>I. KẾ HOẠCH SẢN LƯỢNG</h4>
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td rowspan="2">STT</td>
+                <td rowspan="2" colspan="2">Sản lượng tra nạp theo sân bay</td>
+                <td colspan="3">HKVN</td>
+                <td rowspan="2">HKQT</td>
+                <td rowspan="2">Tổng</td>
+            </tr>
+            <tr class="header-table">
+                <td>VNA</td>
+                <td>HKVN#</td>
+                <td>Tổng</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SanLuong.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.Level; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
+                    <td class="align-center">@item.Code</td>
+                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                    <td class="align-right">@item.Value4.ToStringVN()</td>
+                    <td class="align-right">@item.Value5.ToStringVN()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h4>II. KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ</h4>
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td>STT</td>
+                <td>Danh mục đầu tư mua sắm</td>
+                <td>Nguồn vốn</td>
+                <td>Tổng vốn đầu tư giai đoạn</td>
+                <td>Kế hoạch kinh phí đầu tư năm</td>
+                <td>Tiến độ triển khai giai đoạn đầu tư</td>
+                <td>Dữ liệu thực hiện</td>
+                <td>Ghi chú</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DauTu.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.Level; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
+                    <td class="align-right">@item.Value1</td>
+                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                    <td class="align-right">@item.Value4</td>
+                    <td class="align-right">@item.ValueDLTH</td>
+                    <td class="align-right">@item.Value5</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h4>III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH</h4>
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td>STT</td>
+                <td>Danh mục sửa chữa lớn</td>
+                <td>Kế hoạch kinh phí sửa chữa năm 2024</td>
+                <td>Quy mô sửa chữa</td>
+                <td>Dữ liệu thực hiện</td>
+                <td>Ghi chú</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SuaChuaLon.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.Level; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td class="">@($"{space.ToString()}{item.name}")</td>
+                    <td class="align-right">@item.valueKP.ToStringVN()</td>
+                    <td class="align-right">@item.valueQM</td>
+                    <td class="align-right">@item.valueDLTH</td>
+                    <td class="align-right">@item.description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h4>IV. KẾ HOẠCH CHI PHÍ</h4>
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td rowspan="2">STT</td>
+                <td rowspan="2">Danh mục chi phí</td>
+                <td colspan="2">Kế hoạch năm 2024</td>
+                <td rowspan="2">Tháng 1</td>
+                <td rowspan="2">Tháng 2</td>
+                <td rowspan="2">Tháng 3</td>
+                <td rowspan="2">Tháng 4</td>
+                <td rowspan="2">Tháng 5</td>
+                <td rowspan="2">Tháng 6</td>
+                <td rowspan="2">Tháng 7</td>
+                <td rowspan="2">Tháng 8</td>
+                <td rowspan="2">Tháng 9</td>
+                <td rowspan="2">Tháng 10</td>
+                <td rowspan="2">Tháng 11</td>
+                <td rowspan="2">Tháng 12</td>
+                <td rowspan="2">Ghi chú</td>
+            </tr>
+            <tr class="header-table">
+                <td>Chi phí</td>
+                <td>Đơn giá chi phí trên 1 tấn nhiên liệu</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ChiPhi.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.Level; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td><div>@($"{space.ToString()}{item.name}")</div></td>
+                    <td class="align-right">@item.price.ToStringVN()</td>
+                    <td class="align-right">@item.valueCP</td>
+                    <td class="align-right">@item.Value1.ToStringVN()</td>
+                    <td class="align-right">@item.Value2.ToStringVN()</td>
+                    <td class="align-right">@item.Value3.ToStringVN()</td>
+                    <td class="align-right">@item.Value4.ToStringVN()</td>
+                    <td class="align-right">@item.Value5.ToStringVN()</td>
+                    <td class="align-right">@item.Value6.ToStringVN()</td>
+                    <td class="align-right">@item.Value7.ToStringVN()</td>
+                    <td class="align-right">@item.Value8.ToStringVN()</td>
+                    <td class="align-right">@item.Value9.ToStringVN()</td>
+                    <td class="align-right">@item.Value10.ToStringVN()</td>
+                    <td class="align-right">@item.Value11.ToStringVN()</td>
+                    <td class="align-right">@item.Value12.ToStringVN()</td>
+                    <td class="align-right">@item.description</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

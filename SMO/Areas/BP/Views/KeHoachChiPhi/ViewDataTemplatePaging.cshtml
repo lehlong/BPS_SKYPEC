@@ -156,7 +156,7 @@
     treeGrid.collapseAll();
 
     treeGrid.events.on("cellClick", function (row, column) {
-        if (row.isBold) return;
+        if (row.isBold && dataCenterModel.PHIEN_BAN != "PB4") return;
         if (column.id.includes("price") || column.id.includes("quantity_")) treeGrid.editCell(row.id, column.id);
     });
 

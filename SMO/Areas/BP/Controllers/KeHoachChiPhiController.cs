@@ -165,11 +165,11 @@ namespace SMO.Areas.BP.Controllers
             return PartialView(data);
         }
 
-        public async Task<ActionResult> ViewDataTemplatePaging(string model, int skip)
+        public async Task<ActionResult> ViewDataTemplatePaging(string model, int skip, int? month)
         {
             var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
             var lstSanBay = _service.GetSanBayInTemplate(modelJson).ToList();
-            var data = await _service.GetDataChiPhi(modelJson, lstSanBay);
+            var data = await _service.GetDataChiPhi(modelJson, lstSanBay, month);
             ViewBag.dataCenterModel = modelJson;
             skip = skip < 0 ? 0 : skip;
             ViewBag.Skip = skip;
@@ -237,13 +237,13 @@ namespace SMO.Areas.BP.Controllers
         #region Update and History cell value
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value, int month)
         {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
-            _service.UpdateCellValue(templateCode,version, year, type, sanBay, costCenter, elementCode, value);
+            _service.UpdateCellValue(templateCode,version, year, type, sanBay, costCenter, elementCode, value, month);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

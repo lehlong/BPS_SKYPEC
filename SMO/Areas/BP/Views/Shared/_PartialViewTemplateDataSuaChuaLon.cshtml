@@ -85,7 +85,7 @@ else
                             <td class="pre-whitespace">Cộng</td>
                         </tr>
 
-                        @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB3")
+                        @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB3" || dataCenterModel.PHIEN_BAN == "PB4")
                         {
                             foreach (var item in lstKhoanMuc.OrderBy(x => x.CODE).GroupBy(x => x.CODE).Select(x => x.First()))
                             {

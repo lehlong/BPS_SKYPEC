@@ -2111,6 +2111,8 @@
     <Content Include="Areas\BP\Views\Report\GenDataBM2109.cshtml" />
     <Content Include="Areas\BP\Views\Report\IndexBM2110.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataBM2110.cshtml" />
+    <Content Include="Areas\BP\Views\Report\IndexCKP.cshtml" />
+    <Content Include="Areas\BP\Views\Report\GenDataCKP.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

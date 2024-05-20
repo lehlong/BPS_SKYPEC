@@ -1,0 +1,36 @@
+﻿@model List<SMO.Models.SynthesisReportModel>
+@{
+    var year = ViewBag.Year as int?;
+}
+<style>
+    .header-table {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+<table class="table-condensed table-bordered table-striped font-13" style="width:100%">
+    <tbody>
+        <tr class="header-table">
+            <td>STT</td>
+            <td>Diễn giải</td>
+            <td>ĐVT</td>
+            <td>Kế hoạch @year (kịch bản cao)</td>
+            <td>Kế hoạch @year (kịch bản trung bình)</td>
+            <td>Kế hoạch @year (kịch bản thấp)</td>
+        </tr>
+        @foreach (var item in Model.OrderBy(x => x.Order))
+        {
+            var bold = item.IsBold == true ? "bold" : "";
+            <tr style="font-weight:@bold">
+                <td>@item.Stt</td>
+                <td>@item.Name</td>
+                <td>@item.UnitName</td>
+                <td>@item.Value1.ToStringVN()</td>
+                <td>@item.Value2.ToStringVN()</td>
+                <td>@item.Value3.ToStringVN()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

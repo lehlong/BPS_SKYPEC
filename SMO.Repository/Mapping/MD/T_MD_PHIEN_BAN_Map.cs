@@ -11,6 +11,7 @@ namespace SMO.Repository.Mapping.MD
             Table("T_MD_PHIEN_BAN");
             Id(x => x.CODE);
             Map(x => x.TEXT).Nullable();
+            Map(x => x.MA_PB_DB).Nullable();
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
         }
     }

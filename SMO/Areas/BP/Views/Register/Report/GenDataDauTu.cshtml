@@ -1,0 +1,51 @@
+﻿@model  List<SMO.Models.ReportDauTuModel>
+@using System.Text;
+@{
+    var year = ViewBag.Year as int?;
+}
+<style>
+    .header-table {
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+
+<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
+    <table class="table table-condensed table-bordered table-striped">
+        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
+            <tr class="header-table">
+                <td rowspan="2">STT</td>
+                <td rowspan="2">Danh mục đầu tư mua sắm</td>
+                <td colspan="5">KH năm 2024</td>
+            </tr>
+            <tr class="header-table">
+                <td>Nguồn vốn</td>
+                <td>Tổng vốn đầu tư</td>
+                <td>Kế hoạch kinh phí đầu tư năm 2024</td>
+                <td>Tiến độ triển khai giai đoạn đầu tư</td>
+                <td>Ghi chú</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderBy(x => x.Order))
+            {
+                var space = new StringBuilder();
+                for (int i = 0; i < item.lever; i++)
+                {
+                    space.Append("\t");
+                }
+                var bold = item.IsBold == true ? "bold" : "";
+                <tr style="font-weight:@bold">
+                    <td class="align-center">@item.Order</td>
+                    <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
+                    <td class="align-right">@item.equity_sources</td>
+                    <td class="align-right">@item.valueVDT.ToStringVN()</td>
+                    <td class="align-right">@item.valueKHKP.ToStringVN()</td>
+                    <td class="align-right">@item.tdtk</td>
+                    <td class="align-right">@item.description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

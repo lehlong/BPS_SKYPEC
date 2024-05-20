@@ -4946,12 +4946,13 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
 
         public void SynchronizeData()
         {
+            var MaPhienBanDB = UnitOfWork.Repository<PhienBanRepo>().Queryable().FirstOrDefault(x => x.CODE == ObjDetail.PHIEN_BAN)?.MA_PB_DB;
             string connection = ConfigurationManager.ConnectionStrings["SKYPEC"].ConnectionString;
             DataTable tableData = new DataTable();
             DataTable tableDataVoucher = new DataTable();
             using (SqlConnection con = new SqlConnection(connection))
             {
-                SqlCommand cmd = new SqlCommand($"SELECT * FROM SKYPECLGS_KHBAY WHERE TranYear = '{ObjDetail.TIME_YEAR}' AND VoucherTypeID = '{ObjDetail.VOUCHER_TYPE_ID}'", con);
+                SqlCommand cmd = new SqlCommand($"SELECT * FROM SKYPECLGS_KHBAY WHERE TranYear = '{ObjDetail.TIME_YEAR}' AND VoucherTypeID = '{MaPhienBanDB}'", con);
                 cmd.CommandType = CommandType.Text;
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 try
