@@ -2205,6 +2205,15 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
+                        var str1 = tableData.Rows[i][7].ToString();
+
+
+                        if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
                         costData = new T_BP_SUA_CHUA_LON_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),

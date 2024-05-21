@@ -2025,6 +2025,37 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
 
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
+                        var valueStr = tableData.Rows[i][2].ToString();
+                        var valueStr1 = tableData.Rows[i][5].ToString();
+                        var valueStr2 = tableData.Rows[i][6].ToString();
+                        var valueStr3 = tableData.Rows[i][8].ToString();
+
+                        if (!decimal.TryParse(tableData.Rows[i][2].ToString(), out decimal value) && !string.IsNullOrEmpty(valueStr))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 3";
+                            return;
+                        }
+                        if (!decimal.TryParse(tableData.Rows[i][5].ToString(), out decimal value1) && !string.IsNullOrEmpty(valueStr1))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 6";
+                            return;
+                        }
+                        if (!decimal.TryParse(tableData.Rows[i][6].ToString(), out decimal value2) && !string.IsNullOrEmpty(valueStr2))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 7";
+                            return;
+                        }
+
+                        if (!decimal.TryParse(tableData.Rows[i][8].ToString(), out decimal value3) && !string.IsNullOrEmpty(valueStr3))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 9";
+                            return;
+                        }
+
                         var value4001 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? 0 : tableData.Rows[i][2]);
                         var value4010 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? 0 : tableData.Rows[i][5]);
                         var value4011 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);

@@ -161,6 +161,7 @@
     });
 
     treeGrid.events.on("afterEditEnd", function (value, row, column) {
+        console.log(value);
         if (column.id.includes("price")) {
             onEditCell('DG', '', '', row.code, value)
         } else {

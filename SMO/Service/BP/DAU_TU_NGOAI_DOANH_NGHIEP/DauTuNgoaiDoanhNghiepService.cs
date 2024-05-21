@@ -2143,6 +2143,49 @@ namespace SMO.Service.BP.DAU_TU_NGOAI_DOANH_NGHIEP
 
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
+                        var valueStr = tableData.Rows[i][4].ToString();
+                        var valueStr1 = tableData.Rows[i][5].ToString();
+                        var valueStr2 = tableData.Rows[i][6].ToString();
+                        var valueStr3 = tableData.Rows[i][7].ToString();
+                        var valueStr4 = tableData.Rows[i][8].ToString();
+                        var valueStr5 = tableData.Rows[i][9].ToString();
+
+                        if (!decimal.TryParse(valueStr, out decimal value) && !string.IsNullOrEmpty(valueStr))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 5";
+                            return;
+                        }
+                        if (!decimal.TryParse(valueStr1, out decimal value1) && !string.IsNullOrEmpty(valueStr1))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 6";
+                            return;
+                        }
+                        if (!decimal.TryParse(valueStr2, out decimal value2) && !string.IsNullOrEmpty(valueStr2))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 7";
+                            return;
+                        }
+                        if (!decimal.TryParse(valueStr3, out decimal value3) && !string.IsNullOrEmpty(valueStr3))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 8";
+                            return;
+                        }
+                        if (!decimal.TryParse(valueStr4, out decimal value4) && !string.IsNullOrEmpty(valueStr4))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 9";
+                            return;
+                        }
+                        if (!decimal.TryParse(valueStr5, out decimal value5) && !string.IsNullOrEmpty(valueStr5))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 10";
+                            return;
+                        }
                         costData = new T_BP_DAU_TU_NGOAI_DOANH_NGHIEP_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),

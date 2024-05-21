@@ -2437,6 +2437,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         continue;
                     }
 
+
+
                     // Rẽ nhánh vào phiên bản bổ sung
                     if(ObjDetail.PHIEN_BAN == "PB3")
                     {
@@ -2444,6 +2446,50 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         {
                             if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100001"))
                             {
+
+                                var str1 = tableData.Rows[i][2].ToString();
+                                var str3 = tableData.Rows[i][4].ToString();
+                                var str4 = tableData.Rows[i][5].ToString();
+                                var str5 = tableData.Rows[i][6].ToString();
+                                var str6 = tableData.Rows[i][3].ToString();
+
+                                var str2 = tableData.Rows[i][8].ToString();
+                                if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str3, out decimal value1) && !string.IsNullOrEmpty(str3))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str4, out decimal value2) && !string.IsNullOrEmpty(str4))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str5, out decimal value3) && !string.IsNullOrEmpty(str5))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str6, out decimal value4) && !string.IsNullOrEmpty(str6))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str2, out decimal value5) && !string.IsNullOrEmpty(str2))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
                                 var centerCodeVPCT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCT" && x.COST_CENTER_CODE == "100001");
                                 var centerCodeMB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "MB" && x.COST_CENTER_CODE == "100001");
                                 var centerCodeMT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "MT" && x.COST_CENTER_CODE == "100001");
@@ -2566,6 +2612,65 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
                             {
+                                var str1 = tableData.Rows[i][2].ToString();
+                                var str2 = tableData.Rows[i][3].ToString();
+                                var str3 = tableData.Rows[i][4].ToString();
+                                var str4 = tableData.Rows[i][5].ToString();
+                                var str5 = tableData.Rows[i][6].ToString();
+                                var str6 = tableData.Rows[i][7].ToString();
+                                var str7 = tableData.Rows[i][8].ToString();
+
+                                var str8 = tableData.Rows[i][10].ToString();
+                                if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str5, out decimal value4) && !string.IsNullOrEmpty(str5))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str6, out decimal value5) && !string.IsNullOrEmpty(str6))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str8, out decimal value7) && !string.IsNullOrEmpty(str8))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+
+
                                 var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100002");
                                 var centerCodeHAN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "HAN" && x.COST_CENTER_CODE == "100002");
                                 var centerCodeHPH = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "HPH" && x.COST_CENTER_CODE == "100002");
@@ -2736,6 +2841,71 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
                             {
+                                var str1 = tableData.Rows[i][2].ToString();
+                                var str2 = tableData.Rows[i][3].ToString();
+                                var str3 = tableData.Rows[i][4].ToString();
+                                var str4 = tableData.Rows[i][5].ToString();
+                                var str5 = tableData.Rows[i][6].ToString();
+                                var str6 = tableData.Rows[i][7].ToString();
+                                var str7 = tableData.Rows[i][8].ToString();
+                                var str8 = tableData.Rows[i][9].ToString();
+
+                                var str9 = tableData.Rows[i][11].ToString();
+                                if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str5, out decimal value4) && !string.IsNullOrEmpty(str5))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str6, out decimal value5) && !string.IsNullOrEmpty(str6))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str8, out decimal value7) && !string.IsNullOrEmpty(str8))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+
                                 var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100003");
                                 var centerCodeDAD = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "DAD" && x.COST_CENTER_CODE == "100003");
                                 var centerCodeCXR = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "CXR" && x.COST_CENTER_CODE == "100003");
@@ -2934,6 +3104,64 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
                             {
+                                var str1 = tableData.Rows[i][2].ToString();
+                                var str2 = tableData.Rows[i][3].ToString();
+                                var str3 = tableData.Rows[i][4].ToString();
+                                var str4 = tableData.Rows[i][5].ToString();
+                                var str5 = tableData.Rows[i][6].ToString();
+                                var str6 = tableData.Rows[i][7].ToString();
+                                var str7 = tableData.Rows[i][8].ToString();
+
+                                var str9 = tableData.Rows[i][10].ToString();
+                                if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str5, out decimal value4) && !string.IsNullOrEmpty(str5))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str6, out decimal value5) && !string.IsNullOrEmpty(str6))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+
                                 var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100004");
                                 var centerCodeSGN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "SGN" && x.COST_CENTER_CODE == "100004");
                                 var centerCodePQC = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "PQC" && x.COST_CENTER_CODE == "100004");
@@ -3103,6 +3331,42 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
                             {
+                                var str1 = tableData.Rows[i][2].ToString();
+                                var str2 = tableData.Rows[i][3].ToString();
+                                var str3 = tableData.Rows[i][4].ToString();
+                                var str4 = tableData.Rows[i][5].ToString();
+
+                                var str9 = tableData.Rows[i][7].ToString();
+                                if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
+                                if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
+                                {
+                                    this.State = false;
+                                    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                    return;
+                                }
                                 var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100005");
                                 var centerCodeVTMB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMB" && x.COST_CENTER_CODE == "100005");
                                 var centerCodeVTMT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMT" && x.COST_CENTER_CODE == "100005");
@@ -3212,6 +3476,50 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                         if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100001"))
                         {
+                            var str1 = tableData.Rows[i][2].ToString();
+                            var str3 = tableData.Rows[i][4].ToString();
+                            var str4 = tableData.Rows[i][5].ToString();
+                            var str5 = tableData.Rows[i][6].ToString();
+                            var str6 = tableData.Rows[i][3].ToString();
+
+                            var str2 = tableData.Rows[i][8].ToString();
+                            if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str3, out decimal value1) && !string.IsNullOrEmpty(str3))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str4, out decimal value2) && !string.IsNullOrEmpty(str4))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str5, out decimal value3) && !string.IsNullOrEmpty(str5))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str6, out decimal value4) && !string.IsNullOrEmpty(str6))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str2, out decimal value5) && !string.IsNullOrEmpty(str2))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+
                             var centerCodeVPCT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCT" && x.COST_CENTER_CODE == "100001");
                             var centerCodeMB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "MB" && x.COST_CENTER_CODE == "100001");
                             var centerCodeMT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "MT" && x.COST_CENTER_CODE == "100001");
@@ -3325,6 +3633,64 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
                         {
+                            var str1 = tableData.Rows[i][2].ToString();
+                            var str2 = tableData.Rows[i][3].ToString();
+                            var str3 = tableData.Rows[i][4].ToString();
+                            var str4 = tableData.Rows[i][5].ToString();
+                            var str5 = tableData.Rows[i][6].ToString();
+                            var str6 = tableData.Rows[i][7].ToString();
+                            var str7 = tableData.Rows[i][8].ToString();
+
+                            var str8 = tableData.Rows[i][10].ToString();
+                            if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str5, out decimal value4) && !string.IsNullOrEmpty(str5))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str6, out decimal value5) && !string.IsNullOrEmpty(str6))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str8, out decimal value7) && !string.IsNullOrEmpty(str8))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+
                             var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100002");
                             var centerCodeHAN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "HAN" && x.COST_CENTER_CODE == "100002");
                             var centerCodeHPH = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "HPH" && x.COST_CENTER_CODE == "100002");
@@ -3481,6 +3847,71 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
                         {
+                            var str1 = tableData.Rows[i][2].ToString();
+                            var str2 = tableData.Rows[i][3].ToString();
+                            var str3 = tableData.Rows[i][4].ToString();
+                            var str4 = tableData.Rows[i][5].ToString();
+                            var str5 = tableData.Rows[i][6].ToString();
+                            var str6 = tableData.Rows[i][7].ToString();
+                            var str7 = tableData.Rows[i][8].ToString();
+                            var str8 = tableData.Rows[i][9].ToString();
+
+                            var str9 = tableData.Rows[i][11].ToString();
+                            if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str5, out decimal value4) && !string.IsNullOrEmpty(str5))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str6, out decimal value5) && !string.IsNullOrEmpty(str6))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str8, out decimal value7) && !string.IsNullOrEmpty(str8))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+
                             var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100003");
                             var centerCodeDAD = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "DAD" && x.COST_CENTER_CODE == "100003");
                             var centerCodeCXR = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "CXR" && x.COST_CENTER_CODE == "100003");
@@ -3663,6 +4094,65 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
                         {
+                            var str1 = tableData.Rows[i][2].ToString();
+                            var str2 = tableData.Rows[i][3].ToString();
+                            var str3 = tableData.Rows[i][4].ToString();
+                            var str4 = tableData.Rows[i][5].ToString();
+                            var str5 = tableData.Rows[i][6].ToString();
+                            var str6 = tableData.Rows[i][7].ToString();
+                            var str7 = tableData.Rows[i][8].ToString();
+
+                            var str9 = tableData.Rows[i][10].ToString();
+                            if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str5, out decimal value4) && !string.IsNullOrEmpty(str5))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str6, out decimal value5) && !string.IsNullOrEmpty(str6))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+
+
                             var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100004");
                             var centerCodeSGN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "SGN" && x.COST_CENTER_CODE == "100004");
                             var centerCodePQC = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "PQC" && x.COST_CENTER_CODE == "100004");
@@ -3818,6 +4308,44 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
                         {
+
+                            var str1 = tableData.Rows[i][2].ToString();
+                            var str2 = tableData.Rows[i][3].ToString();
+                            var str3 = tableData.Rows[i][4].ToString();
+                            var str4 = tableData.Rows[i][5].ToString();
+
+                            var str9 = tableData.Rows[i][7].ToString();
+                            if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+                            if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
+                            {
+                                this.State = false;
+                                this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                                return;
+                            }
+
                             var centerCodeVPCN = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VPCN" && x.COST_CENTER_CODE == "100005");
                             var centerCodeVTMB = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMB" && x.COST_CENTER_CODE == "100005");
                             var centerCodeVTMT = allChiPhiProfitCenters.FirstOrDefault(x => x.SAN_BAY_CODE == "VTMT" && x.COST_CENTER_CODE == "100005");

@@ -153,7 +153,10 @@
     }
 
     function onEditCell(type, sanBay, costCenter, elementCode, value) {
-        if (value == null || value == "") {
+        if (value == "") {
+            value = 0;
+        } 
+        if (value == null) {
             return;
         }
         var month = $("#month_bs");

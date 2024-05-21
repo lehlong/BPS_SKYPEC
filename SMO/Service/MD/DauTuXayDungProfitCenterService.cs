@@ -56,6 +56,7 @@ namespace SMO.Service.MD
 
             var template = UnitOfWork.Repository<TemplateRepo>().Get(templateId);
             var allProjects = UnitOfWork.Repository<ProjectRepo>().GetAll();
+            var lstPJ = allProjects.Where(x=>x.YEAR == year && x.LOAI_HINH == "XDCB").ToList();
             var lstDetails = new List<string>();
             if (template != null)
             {
@@ -68,7 +69,7 @@ namespace SMO.Service.MD
             var selectedProjects = CurrentRepository.GetManyWithFetch(x => lstDetails.Contains(x.CODE))
                 .GroupBy(x => x.PROJECT_CODE)
                 .Select(x => x.First().PROJECT_CODE);
-            foreach (var item in allProjects)
+            foreach (var item in lstPJ)
             {
                 var node = new NodeProject()
                 {

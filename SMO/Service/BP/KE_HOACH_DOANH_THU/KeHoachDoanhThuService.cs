@@ -2173,6 +2173,94 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
 
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
+
+                        var str1 = tableData.Rows[i][6].ToString();
+                        var str2 = tableData.Rows[i][7].ToString();
+                        var str3 = tableData.Rows[i][8].ToString();
+                        var str4 = tableData.Rows[i][9].ToString();
+                        var str5 = tableData.Rows[i][10].ToString();
+                        var str6 = tableData.Rows[i][11].ToString();
+                        var str7 = tableData.Rows[i][12].ToString();
+                        var str8 = tableData.Rows[i][13].ToString();
+                        var str9 = tableData.Rows[i][14].ToString();
+                        var str10 = tableData.Rows[i][15].ToString();
+                        var str11 = tableData.Rows[i][16].ToString();
+                        var str12 = tableData.Rows[i][17].ToString();
+
+
+                        if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str2, out decimal value1) && !string.IsNullOrEmpty(str2))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str3, out decimal value2) && !string.IsNullOrEmpty(str3))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str4, out decimal value3) && !string.IsNullOrEmpty(str4))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str5, out decimal value4) && !string.IsNullOrEmpty(str5))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str6, out decimal value5) && !string.IsNullOrEmpty(str6))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str8, out decimal value7) && !string.IsNullOrEmpty(str8))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str10, out decimal value9) && !string.IsNullOrEmpty(str10))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str11, out decimal value10) && !string.IsNullOrEmpty(str11))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                        if (!decimal.TryParse(str12, out decimal value11) && !string.IsNullOrEmpty(str12))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+
                         costData = new T_BP_KE_HOACH_DOANH_THU_DATA()
                         {
                             PKID = Guid.NewGuid().ToString(),
