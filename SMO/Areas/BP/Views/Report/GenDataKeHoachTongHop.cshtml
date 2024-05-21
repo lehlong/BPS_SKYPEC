@@ -1,57 +1,103 @@
 ﻿@model SMO.Models.SynthesizeThePlanReportModel
 @using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
     var year = ViewBag.Year as int?;
+    var gridTab1 = Guid.NewGuid().ToString("N");
+    var gridTab4 = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
 <style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
+    }
+
+    .grid .dhx_grid-cell {
+        word-break: break-word
+    }
+
+    .dhx_header-wrapper {
+        z-index: 1;
     }
 </style>
-<h4>I. KẾ HOẠCH SẢN LƯỢNG</h4>
-<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td rowspan="2">STT</td>
-                <td rowspan="2" colspan="2">Sản lượng tra nạp theo sân bay</td>
-                <td colspan="3">HKVN</td>
-                <td rowspan="2">HKQT</td>
-                <td rowspan="2">Tổng</td>
-            </tr>
-            <tr class="header-table">
-                <td>VNA</td>
-                <td>HKVN#</td>
-                <td>Tổng</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.SanLuong.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.Level; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="align-center">@item.Order</td>
-                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                    <td class="align-center">@item.Code</td>
-                    <td class="align-right">@item.Value1.ToStringVN()</td>
-                    <td class="align-right">@item.Value2.ToStringVN()</td>
-                    <td class="align-right">@item.Value3.ToStringVN()</td>
-                    <td class="align-right">@item.Value4.ToStringVN()</td>
-                    <td class="align-right">@item.Value5.ToStringVN()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
+    <li role="presentation" class="active" style="cursor: pointer;">
+        <a href="#tab1" title="Kế hoạch theo tháng" data-toggle="tab">I. KẾ HOẠCH SẢN LƯỢNG</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#tab2">II. KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#tab3">III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#tab4">IV. KẾ HOẠCH CHI PHÍ</a>
+    </li>
+</ul>
+<div class="tab-content" style="padding-bottom:0">
+    <div role="tabpanel" class="tab-pane fade in active" id="tab1">
+        <div style="height: calc(100vh - 262px); width: 100%" id="@gridTab1"></div>
+    </div>
 
-<h4>II. KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ</h4>
+    <div role="tabpanel" class="tab-pane fade" id="tab2">
+
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="tab3">
+
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="tab4">
+        <div style="height: calc(100vh - 262px); width: 100%" id="@gridTab4"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    var rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model.SanLuong.OrderBy(x => x.Order), jsonSerializeSettings));
+    let columnsTab1 = [
+        { id: "order", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+
+        { id: "code", header: [{ text: "Sản lượng theo sân bay", align: "center", colspan: 2 }, { text: "Mã sân bay", align: "center" }] },
+        { id: "name", header: ["", { text: "Tên sân bay", align: "center" }], footer: [{ text: "TỔNG CỘNG" }] },
+
+        { id: "value1", header: [{ text: "HKVN", align: "center", colspan: 3 }, { text: "VNA", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+        { id: "value2", header: ["", { text: "HKVN#", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+        { id: "value3", header: ["", { text: "TỔNG", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+
+        { id: "value4", header: [{ text: "HKQT", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+        { id: "value5", header: [{ text: "TỔNG", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+
+    ];
+    const gridTab1 = new dhx.Grid("@gridTab1", {
+        columns: columnsTab1,
+        data: rawDataTab1,
+        resizable: true,
+        selection: "row",
+        adjust: true
+    });
+</script>
+
+<script type="text/javascript">
+    var rawDataTab4 = @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi, jsonSerializeSettings));
+    let columnsTab4 = [
+        { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+        { id: "name", header: [{ text: "Danh mục chi phí", align: "center" }]},
+
+        { id: "valueCP", header: [{ text: "Kế hoạch", align: "center", colspan: 2 }, { text: "Chi phí", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#"},
+        { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#"},       
+    ];
+    const gridTab4 = new dhx.Grid("@gridTab4", {
+        columns: columnsTab4,
+        data: rawDataTab4,
+        resizable: true,
+        selection: "row",
+        adjust: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    });
+</script>
+
+
+@*<h4>II. KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ</h4>
 <div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
     <table class="table table-condensed table-bordered table-striped">
         <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
@@ -184,6 +230,6 @@
             }
         </tbody>
     </table>
-</div>
+</div>*@
 
 

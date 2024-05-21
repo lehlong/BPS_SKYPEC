@@ -99,9 +99,9 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public async Task<ActionResult> GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
+        public ActionResult GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
         {
-            var data = await _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
+            var data = _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
             return PartialView(data);

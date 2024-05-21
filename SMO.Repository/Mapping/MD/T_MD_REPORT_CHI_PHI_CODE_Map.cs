@@ -18,7 +18,10 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.GROUP_2_ID);
             Map(x => x.GROUP_NAME);
             Map(x => x.TIME_YEAR);
+            Map(x => x.C_ORDER);
+            Map(x => x.STT);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
+            Map(x => x.IS_BOLD).Not.Nullable().CustomType<YesNoType>();
         }
     }
 }

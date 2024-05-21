@@ -1,85 +1,59 @@
 ﻿@model  SMO.Models.ReportChiPhiModel
 @using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
     var year = ViewBag.Year as int?;
     var lstHeader = ViewBag.Header as List<string>;
+    var gridTab = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
 <style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    td {
-        border: 1pt solid black;
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
     }
 
-    td.diagonalRising {
-        background: linear-gradient(to right bottom, #ffffff 0%,#ffffff 49.9%,#000000 50%,#000000 51%,#ffffff 51.1%,#ffffff 100%);
+    .grid .dhx_grid-cell {
+        word-break: break-word
     }
 
-    td.diagonalFalling {
-        background: linear-gradient(to right top, #eee 0%,#eee 49.9%,#d5d5d5 50%,#d5d5d5 51%,#eee 51.1%,#eee 100%);
-        width: 300px;
-    }
-
-    td.diagonalCross {
-        position: relative;
-        background: linear-gradient(to right bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 49.9%,rgba(0,0,0,1) 50%,rgba(0,0,0,1) 51%,rgba(0,0,0,0) 51.1%,rgba(0,0,0,0) 100%);
-    }
-
-    td.diagonalCross:after {
-        content: "";
-        display: block;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: -1;
-        background: linear-gradient(to right top, #ffffff 0%,#ffffff 49.9%,#000000 50%,#000000 51%,#ffffff 51.1%,#ffffff 100%);
+    .dhx_header-wrapper {
+        z-index: 1;
     }
 </style>
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridTab"></div>
+<script type="text/javascript">
+    var rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model.chiPhiInReports, jsonSerializeSettings));
+    var parentData = rawDataTab1.filter(x => x.isBold == true);
+    rawDataTab1.unshift({
+        name: 'TỔNG CỘNG',
+        isBold: true,
+        valueCQCT: _.sumBy(parentData, "valueCQCT"),
+        valueCNMB: _.sumBy(parentData, "valueCNMB"),
+        valueCNMT: _.sumBy(parentData, "valueCNMT"),
+        valueCNMN: _.sumBy(parentData, "valueCNMN"),
+        valueCNVT: _.sumBy(parentData, "valueCNVT"),
+        valueTcty: _.sumBy(parentData, "valueTcty"),
+    })
+    let columnsTab1 = [
+        { id: "stt", header: [{ text: "STT", align: "center"}], align: "center", minWidth: 100 },
+        { id: "name", header: [{ text: "Danh mục chi phí", align: "center" }] },
 
-<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td rowspan="2">STT</td>
-                <td class="diagonalFalling">Đơn vị <br /><br /><br />Danh mục chi phí</td>
-                <td rowspan="2">CQ Công ty</td>
-                <td rowspan="2">Chi nhánh Miền Bắc</td>
-                <td rowspan="2">Chi nhánh Miền Trung</td>
-                <td rowspan="2">Chi nhánh Miền Nam</td>
-                <td rowspan="2">Chi nhánh Vận tải</td>
-                <td rowspan="2">Kế hoạch giao đơn vị năm 2024</td>
-                <td rowspan="2">BC Tcty</td>
-                <td rowspan="2">ƯTH 2023</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.chiPhiInReports.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.Level; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="align-center">@item.Order</td>
-                    <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
-                    <td class="align-center">@item.valueCQCT.ToStringVN()</td>
-                    <td class="align-center">@item.valueCNMB.ToStringVN()</td>
-                    <td class="align-center">@item.valueCNMT.ToStringVN()</td>
-                    <td class="align-center">@item.valueCNMN.ToStringVN()</td>
-                    <td class="align-center">@item.valueCNVT.ToStringVN()</td>
-                    <td class="align-center"></td>
-                    <td class="align-center"></td>
-                    <td class="align-center"></td>
+        { id: "valueCQCT", header: [{ text: "CQ Công ty", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueCNMB", header: [{ text: "CN Miền Bắc", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueCNMT", header: [{ text: "CN Miền Trung", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueCNMN", header: [{ text: "CN Miền Nam", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueCNVT", header: [{ text: "CN Vận Tải", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueTcty", header: [{ text: "Tổng cộng", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
 
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+    ];
+    const gridTab1 = new dhx.Grid("@gridTab", {
+        columns: columnsTab1,
+        data: rawDataTab1,
+        resizable: true,
+        selection: "row",
+        adjust: true,
+        topSplit: 2,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    });
+</script>

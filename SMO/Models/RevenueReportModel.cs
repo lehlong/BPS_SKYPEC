@@ -349,6 +349,7 @@ namespace SMO.Models
         public string description { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
+        public string Stt { get; set; }
         public int Level { get; set; }
     }
 
@@ -369,6 +370,7 @@ namespace SMO.Models
 
     public class ChiPhiInReport
     {
+        public string Stt { get; set; }
         public string code { get; set; }
         public string name { get; set; }
 

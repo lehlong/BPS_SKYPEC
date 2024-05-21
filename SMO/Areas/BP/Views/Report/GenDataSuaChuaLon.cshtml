@@ -5,46 +5,33 @@
 @{
     var year = ViewBag.Year as int?;
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var gridTab = Guid.NewGuid().ToString("N");
 }
 <style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
+    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
+        font-weight: bold
     }
 </style>
 
-<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td rowspan="2">STT</td>
-                <td rowspan="2">Danh mục</td>
-                <td colspan="3">KH năm 2024</td>
-            </tr>
-            <tr class="header-table">
-                <td>Giá trị</td>
-                <td>Quy mô</td>
-                <td>Hiện trạng</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.Level; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="align-center">@item.Stt</td>
-                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                    <td class="align-right">@item.valueGT.ToStringVN()</td>
-                    <td class="align-right">@item.valueQM</td>
-                    <td class="align-right">@item.valueHT</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridTab"></div>
+<script type="text/javascript">
+    var rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
+    let columnsTab1 = [
+        { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2}], align: "center", minWidth: 100 },
+        { id: "name", header: [{ text: "Danh mục", align: "center", rowspan: 2 }] },
+
+        { id: "valueGT", header: [{ text: "Kế hoạch", align: "center", colspan: 3 }, { text: "Giá trị", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueQM", header: ["",{ text: "Quy mô", align: "center" }], minWidth: 160 },
+        { id: "valueHT", header: ["",{ text: "Ghi chú", align: "center" }], minWidth: 160 },
+
+    ];
+    const gridTab1 = new dhx.Grid("@gridTab", {
+        columns: columnsTab1,
+        data: rawDataTab1,
+        resizable: true,
+        selection: "row",
+        adjust: true,
+        topSplit: 2,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    });
+</script>

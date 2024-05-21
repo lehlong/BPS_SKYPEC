@@ -1061,531 +1061,56 @@ namespace SMO.Service.MD
             }
         }
 
-        public async Task<SynthesizeThePlanReportModel> GetDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
+        public SynthesizeThePlanReportModel GetDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
         {
             try
             {
                 var data = new SynthesizeThePlanReportModel();
                 var lstSanBay = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != null && x.OTHER_PM_CODE != "").ToList();
                 lstSanBay = !string.IsNullOrEmpty(area) ? lstSanBay.Where(x => x.AREA_CODE == area).ToList() : lstSanBay;
-                Dictionary<string, string> ChiNhanh = new Dictionary<string, string>()
-                {
-                    {"", "" },
-                    {"MB", "CNMB" },
-                    {"MN", "CNMN" },
-                    {"MT", "CNMT" },
-                    {"VT", "CNVT" },
-                    {"CQ", "CQCT" }
-                };
-                var sapCode = ChiNhanh[area];
-                var costCenter = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCode).CODE;
-                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-                CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-                Task task1 = Task.Run(() =>
+                #region KẾ HOẠCH SẢN LƯỢNG
+                var dataHeaderSanLuong = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSanLuong.Contains(x.TEMPLATE_CODE)).ToList();
+                var orderSL = 1;
+                foreach (var sb in lstSanBay)
                 {
-                    lock (lockObject)
+                    var dataSb = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE);
+                    var item = new SanLuong
                     {
-                        #region KẾ HOẠCH SẢN LƯỢNG
-                        var dataHeaderSanLuong = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        /*if (dataHeaderSanLuong.Count() == 0)
-                        {
-                            cancellationTokenSource.Cancel();
-                        }*/
-
-                        var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSanLuong.Contains(x.TEMPLATE_CODE)).ToList();
-                        var orderSL = 1;
-                        foreach (var sb in lstSanBay)
-                        {
-                            var item = new SanLuong
-                            {
-                                Code = sb.CODE,
-                                Name = sb.NAME,
-                                Value1 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE && x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                Value2 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE && !x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                Value3 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                Value4 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE && x.SanLuongProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                Value5 = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                                Order = orderSL,
-                            };
-                            data.SanLuong.Add(item);
-                            orderSL += 1;
-                        }
-                        data.SanLuong.Add(new SanLuong
-                        {
-                            Name = "TỔNG CỘNG",
-                            Value1 = data.SanLuong.Sum(x => x.Value1),
-                            Value2 = data.SanLuong.Sum(x => x.Value2),
-                            Value3 = data.SanLuong.Sum(x => x.Value3),
-                            Value4 = data.SanLuong.Sum(x => x.Value4),
-                            Value5 = data.SanLuong.Sum(x => x.Value5),
-                            Order = 0,
-                            IsBold = true,
-                        });
-                        #endregion
-
-                    }
-                });
-
-                Task task2 = Task.Run(() =>
-                {
-                    lock (lockObject)
-                    {
-                        #region KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ
-                        var sapCodeDT = ChiNhanh[area];
-                        var costCenterDT = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCodeDT).CODE;
-
-                        var dataHeaderDTXD =!string.IsNullOrEmpty(area)?UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList():
-                                                                         UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
-                        var dataHeaderDTTTB = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
-                                                                         UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
-                        if (dataHeaderDTXD.Count() + dataHeaderDTTTB.Count() == 0)
-                        {
-                            cancellationTokenSource.Cancel();
-                        }
-
-                        var dataInHeaderDTXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD.Contains(x.TEMPLATE_CODE)).ToList();
-                        var dataInHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTTTB.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var lstPjInDTXD = dataInHeaderDTXD.Select(x => x.DauTuXayDungProfitCenter.PROJECT_CODE).Distinct().ToList();
-                        var lstPjInDTTTB = dataInHeaderDTTTB.Select(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE).Distinct().ToList();
-                        var lstProject = new List<string>();
-                        lstProject.AddRange(lstPjInDTXD);
-                        lstProject.AddRange(lstPjInDTTTB);
-                        lstProject = lstProject.Distinct().ToList();
-                        var dataHeaderDTXD_DLTH = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
-                                                                        UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
-                        var dataHeaderTTB_DLTH = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
-                                                                        UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
-                        
-                        var dataInHeaderXD_DLTH = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD_DLTH.Contains(x.TEMPLATE_CODE)).ToList();
-                        var dataInHeaderTTB_DLTH = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderTTB_DLTH.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var orderDT = 1;
-                        foreach (var pj in lstProject)
-                        {
-                            var item = new DauTu
-                            {
-                                Name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x=>x.CODE == pj).NAME,
-                                Value2 = dataInHeaderDTXD.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
-                                valueDLTH1 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH1) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH1) ?? 0,
-                                valueDLTH2 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH2) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH2) ?? 0,
-                                valueDLTH3 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH3) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH3) ?? 0,
-                                valueDLTH4 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH4) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH4) ?? 0,
-                                valueDLTH5 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH5) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH5) ?? 0,
-                                valueDLTH6 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH6) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH6) ?? 0,
-                                valueDLTH7 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH7) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH7) ?? 0,
-                                valueDLTH8 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH8) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH8) ?? 0,
-                                valueDLTH9 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH9) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH9) ?? 0,
-                                valueDLTH10 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH10) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH10) ?? 0,
-                                valueDLTH11 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH11) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH11) ?? 0,
-                                valueDLTH12 = dataInHeaderXD_DLTH.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH12) + dataInHeaderTTB_DLTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH12) ?? 0,
-
-                                Order = orderDT,
-                            };
-                            item.ValueDLTH = item.valueDLTH1 + item.valueDLTH2 + item.valueDLTH3 + item.valueDLTH4 + item.valueDLTH5 + item.valueDLTH6 + item.valueDLTH7 + item.valueDLTH8 + item.valueDLTH9 + item.valueDLTH10 + item.valueDLTH11 + item.valueDLTH12;
-                            data.DauTu.Add(item);
-                            orderDT += 1;
-                        }
-
-                        data.DauTu.Add(new DauTu
-                        {
-                            Name = "TỔNG CỘNG",
-                            Value2 = data.DauTu.Sum(x => x.Value2),
-                            ValueDLTH = data.DauTu.Sum(x=>x.ValueDLTH),
-                            Order = 0,
-                            IsBold = true,
-                        });
-
-                        #endregion
-
-                    }
-                });
-
-                Task task3 = Task.Run(() =>
-                {
-                    lock (lockObject)
-                    {
-                        string orgCost = ChiNhanh[area];
-                        
-                        #region KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH
-                        var dataHeaderSuaChuaLon = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        /*if (dataHeaderSuaChuaLon.Count() == 0)
-                        {
-                            cancellationTokenSource.Cancel();
-
-                        }*/
-                        var dataHeaderDLTHSCL = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-
-                        var dataInHeaderSCL = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSuaChuaLon.Contains(x.TEMPLATE_CODE)).ToList();
-                        var dataInHeaderDLTHSCL = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDLTHSCL.Contains(x.TEMPLATE_CODE)).ToList();
-                        var sumSCL = new SuaChuaLon
-                        {
-                            name = "TỔNG CỘNG",
-                            Order = 0,
-                            IsBold = true
-                        };
-                        var lstData = !string.IsNullOrEmpty(area) ? dataInHeaderSCL.Where(x=> x.ORG_CODE.StartsWith(costCenter)).ToList() : dataInHeaderSCL;
-                        var lstDataDLTH = !string.IsNullOrEmpty(area) ? dataInHeaderDLTHSCL.Where(x => x.ORG_CODE.StartsWith(costCenter)).ToList() : dataInHeaderDLTHSCL;
-
-                        var lstKhoanMuc = lstData.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
-                        var lstKhoanMucDLTH = lstDataDLTH.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
-                        var orderSCL = 1;
-
-                        List<SuaChuaLon> lstElementSCL = new List<SuaChuaLon>();
-                        foreach (var kmCode in lstKhoanMuc)
-                        {
-                            var name = lstData.FirstOrDefault(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).KhoanMucSuaChua.NAME;
-                            // Lấy mã cha
-                            var parentCodeItem = lstData.FirstOrDefault(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).KhoanMucSuaChua.PARENT_CODE;
-                            var item = new SuaChuaLon
-                            {
-                                parentCode = parentCodeItem,
-                                name = name,
-                                valueKP = lstData.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.VALUE) ?? 0,
-                                valueDLTH1 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH1) ?? 0,
-                                valueDLTH2 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH2) ?? 0,
-                                valueDLTH3 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH3) ?? 0,
-                                valueDLTH4 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH4) ?? 0,
-                                valueDLTH5 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH5) ?? 0,
-                                valueDLTH6 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH6) ?? 0,
-                                valueDLTH7 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH7) ?? 0,
-                                valueDLTH8 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH8) ?? 0,
-                                valueDLTH9 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH9) ?? 0,
-                                valueDLTH10 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH10) ?? 0,
-                                valueDLTH11 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH11) ?? 0,
-                                valueDLTH12 = lstDataDLTH.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.MONTH12) ?? 0,
-                                IsBold = false
-                            };
-                            item.valueDLTH = item.valueDLTH1 + item.valueDLTH2 + item.valueDLTH3 + item.valueDLTH4 + item.valueDLTH5 + item.valueDLTH6 + item.valueDLTH7 + item.valueDLTH8 + item.valueDLTH9 + item.valueDLTH10 + item.valueDLTH11 + item.valueDLTH12;
-                            lstElementSCL.Add(item);
-                            sumSCL.valueKP = sumSCL.valueKP + item.valueKP;
-                            sumSCL.valueDLTH = sumSCL.valueDLTH + item.valueDLTH;
-                        }
-
-                        var lstParentCode = lstElementSCL.Select(x => x.parentCode).Distinct().ToList();
-                        foreach (var code in lstParentCode)
-                        {
-                            if (string.IsNullOrEmpty(code))
-                            {
-                                continue;
-                            }
-                            var name = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.CODE == code)?.NAME;
-                            var countSCL = lstElementSCL.Where(x => x.parentCode == code).Count();
-                            var parent = new SuaChuaLon
-                            {
-                                name = name,
-                                valueKP = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.valueKP),
-                                valueDLTH = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.valueDLTH),
-                                Order = orderSCL,
-                                IsBold = true
-                            };
-                            data.SuaChuaLon.Add(parent);
-                            for (int i = 0; i < lstElementSCL.Count(); i++)
-                            {
-                                if (lstElementSCL[i].parentCode == code)
-                                {
-                                    lstElementSCL[i].Order = orderSCL + 1;
-                                    orderSCL++;
-                                    data.SuaChuaLon.Add(lstElementSCL[i]);
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-                            orderSCL++;
-                        }
-
-                        data.SuaChuaLon.Add(sumSCL);
-                        #endregion
-
-                    }
-                });
-
-                await Task.WhenAll(task1, task2, task3);
-
-
-                #region Tổng hợp báo cáo chi phí
-                //Lấy dữ liệu đồng bộ
-                string areaSyncCost = ChiNhanh[area];
-                var lstSyncCost = !string.IsNullOrEmpty(areaSyncCost) ? UnitOfWork.Repository<SyncCostRepo>().Queryable().Where(x => x.YEAR == year && x.CHI_NHANH == areaSyncCost).ToList() :
-                                                                        UnitOfWork.Repository<SyncCostRepo>().Queryable().Where(x => x.YEAR == year).ToList();
-                var lstSyncCostSum = lstSyncCost.GroupBy(x => new { x.CHI_NHANH, x.GROUP_2_ID, x.GROUP_1_ID, x.MONTH }).Select(x => new { Key = x.Key, Total = x.Sum(g => g.VALUE) }).ToList();
-
-                List<SyncCostModel> lstSyncCode = new List<SyncCostModel>();
-                Dictionary<string, string> lstCharCode = new Dictionary<string, string>()
-                {
-                    {"", "" },
-                    {"CNMB", "B" },
-                    {"CNMN", "N" },
-                    {"CNMT", "T" },
-                    {"CNVT", "VT" },
-                    {"CQCT", "CQ" }
-                };
-
-                foreach (var item in lstSyncCostSum)
-                {
-                    string code = lstCharCode[item.Key.CHI_NHANH] + item.Key.GROUP_1_ID + item.Key.GROUP_2_ID;
-                    var syncCode = new SyncCostModel
-                    {
-                        code = code,
-                        value = item.Total,
-                        month = item.Key.MONTH
+                        Code = sb.CODE,
+                        Name = sb.NAME,
+                        Value1 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value2 = dataSb.Where(x => !x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value3 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value4 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value5 = dataSb.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Order = orderSL,
                     };
-                    lstSyncCode.Add(syncCode);
+                    data.SanLuong.Add(item);
+                    orderSL += 1;
                 }
-
-                /*var lstCostCenterChild = UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(x => x.PARENT_CODE == costCenter).Select(x => x.CODE).ToList();*/
-                // Lấy template theo costCenter
-                var dataHeaderCP = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.ORG_CODE.StartsWith(costCenter)).Select(x => x.TEMPLATE_CODE).ToList()
-                                                            : UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                if (dataHeaderCP.Count() == 0)
-                {
-                    return data;
-                }
-
-                var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderCP.Contains(x.TEMPLATE_CODE)).ToList();
-                #region test
-                /* var elements = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().Where(x=>x.TIME_YEAR == year).ToList();
-                 if (string.IsNullOrEmpty(area))
-                 {
-                     var lstElementMB = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("B62")).OrderBy(x => x.C_ORDER).ToList();
-                     var lstElementMT = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("T62")).OrderBy(x => x.C_ORDER).ToList();
-                     var lstElementMN = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("N62")).OrderBy(x => x.C_ORDER).ToList();
-                     var lstElementCQ = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("CQ62")).OrderBy(x => x.C_ORDER).ToList();
-                     var lstElementVT = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("VT62")).OrderBy(x => x.C_ORDER).ToList();
-
-                     var dataMB = new ChiPhi();
-                     var dataMT = new ChiPhi();
-                     var dataMN = new ChiPhi();
-                     var dataCQ = new ChiPhi();
-                     var dataVT = new ChiPhi();
-
-                 }
-                 else
-                 {
-                     elements = elements.Where(x => x.TIME_YEAR == year && x.CODE.StartsWith("CQ62")).OrderBy(x => x.C_ORDER).ToList();
-                     var dataChild = new ChiPhi();
-                 }*/
                 #endregion
 
-                #region code gốc
-                var lstDataCP = dataInHeaderCP;
-                var lstKhoanMucCP = lstDataCP.GroupBy(x => x.KHOAN_MUC_HANG_HOA_CODE).Select(x => x.First()).Select(x => new { KhoanMucCode = x.KHOAN_MUC_HANG_HOA_CODE, KhoanMucName = x.KhoanMucHangHoa.NAME }).ToList();
-                var orderCP = 1;
-                List<ChiPhi> lstElementCP = new List<ChiPhi>();
-                List<string> lstParenCodeCP = new List<string>();
-                foreach (var element in lstKhoanMucCP)
+                #region KẾ HOẠCH CHI PHÍ
+                var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+                var dataHeaderCP = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderCP.Contains(x.TEMPLATE_CODE)).ToList();
+                var firstCode = area == "CQ" ? "CQ" : area == "MB" ? "B" : area == "MT" ? "T" : area == "MN" ? "N" : area == "VT" ? "VT" : "";
+                
+                foreach(var i in elements)
                 {
-                    var khoanmuc = element.KhoanMucCode;
-                    string parentCode = null;
-                    var areaChar = khoanmuc.Substring(0, 1);
-                    var checkCode = khoanmuc.Substring(1, 3);
-                    var checkCodeVC = khoanmuc.Substring(2, 3);
-                    if (areaChar == "B" || areaChar == "T" || areaChar == "N")
-                    {
-                        if (checkCode == "621")
-                        {
-                            parentCode = khoanmuc.Substring(0, 4);
-                        }
-                        else
-                        {
-                            parentCode = khoanmuc.Substring(0, 5);
-                        }
-                    }
-                    else
-                    {
-                        if (checkCodeVC == "621")
-                        {
-                            parentCode = khoanmuc.Substring(0, 5);
-                        }
-                        else
-                        {
-                            parentCode = khoanmuc.Substring(0, 6);
-                        }
-                    }
                     var item = new ChiPhi
                     {
-                        name = element.KhoanMucName,
-                        code = khoanmuc,
-                        parenCode = parentCode,
+                        Stt = i.STT,
+                        name = i.GROUP_NAME,
+                        valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(firstCode + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                        IsBold = i.IS_BOLD,
                     };
-                    lstParenCodeCP.Add(parentCode);
-                    lstElementCP.Add(item);
-                }
-                List<string> lstCodeFix = new List<string> { "B6271A", "T62711", "N62711", "VT6271A", "CQ6271A" };
-                lstParenCodeCP = lstParenCodeCP.Distinct().ToList();
-                List<string> lstChild = new List<string>();
-                foreach (var code in lstParenCodeCP)
-                {
-                    var codeChild = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().Where(x => x.PARENT_CODE == code).Select(x => x.CODE).ToList();
-                    lstChild.AddRange(codeChild);
-                }
-                lstChild = lstChild.Distinct().ToList();
-                //Tính tổng các khoản mục theo khoản mục con
-                var countTake = lstElementCP.Count() / 4;
-                var lstTask1 = lstElementCP.Skip(0).Take(countTake).ToList();
-                var lstTask2 = lstElementCP.Skip(countTake).Take(countTake).ToList();
-                var lstTask3 = lstElementCP.Skip(countTake * 2).Take(countTake).ToList();
-                var lstTask4 = lstElementCP.Skip(countTake * 3).ToList();
-               
-                Task taskchild1 = Task.Run(() =>
-                {
-                    foreach (var element in lstTask1)
-                    {
-                        element.price = lstDataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.code).Sum(x => x.AMOUNT) ?? 0;
-                    }
-                });
-
-                Task taskchild2 = Task.Run(() =>
-                {
-                    foreach (var element in lstTask2)
-                    {
-                        element.price = lstDataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.code).Sum(x => x.AMOUNT) ?? 0;
-                    }
-                });
-
-                Task taskchild3 = Task.Run(() =>
-                {
-                    foreach (var element in lstTask3)
-                    {
-                        element.price = lstDataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.code).Sum(x => x.AMOUNT) ?? 0;
-                    }
-                });
-
-                Task taskchild4 = Task.Run(() =>
-                {
-                    foreach (var element in lstTask4)
-                    {
-                        element.price = lstDataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.code).Sum(x => x.AMOUNT) ?? 0;
-                    }
-                });
-                await Task.WhenAll(taskchild1, taskchild2, taskchild3, taskchild4);
-                List<ChiPhi> lstElementChild = new List<ChiPhi>();
-                foreach (var child in lstChild)
-                {
-                    if (lstCodeFix.Contains(child))
-                    {
-                        var lstcodeChild = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().Where(x => x.PARENT_CODE == child).Select(x => x.CODE).ToList();
-                        foreach (var code in lstcodeChild)
-                        {
-                            var nameParent = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().FirstOrDefault(x => x.CODE == code).NAME;
-                            var lstElement = lstDataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(code)).ToList();
-                            var parencode = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().FirstOrDefault(x => x.CODE == code).PARENT_CODE;
-                            var parencode2 = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().FirstOrDefault(x => x.CODE == child).PARENT_CODE;
-                            var item = new ChiPhi
-                            {
-                                code = code,
-                                name = nameParent,
-                                price = lstElement.Sum(x => x.AMOUNT) ?? 0,
-                                parenCode = parencode,
-                                parentCode2 = parencode2
-                            };
-                            lstElementChild.Add(item);
-                        }
-                    }
-                    else
-                    {
-                        var nameParent = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().FirstOrDefault(x => x.CODE == child).NAME;
-                        var lstElement = lstDataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(child)).ToList();
-                        var parencode = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().FirstOrDefault(x => x.CODE == child).PARENT_CODE;
-                        var item = new ChiPhi
-                        {
-                            code = child,
-                            name = nameParent,
-                            price = lstElement.Sum(x => x.AMOUNT) ?? 0,
-                            parenCode = parencode
-                        };
-                        lstElementChild.Add(item);
-                    }
-                }
-                // Sắp số thứ tự và tính tổng
-                foreach (var parentCode in lstParenCodeCP)
-                {
-                    var nameParent = UnitOfWork.Repository<KhoanMucHangHoaRepo>().Queryable().FirstOrDefault(x => x.CODE == parentCode).NAME;
-                    var item = new ChiPhi
-                    {
-                        code = parentCode,
-                        name = nameParent,
-                        price = lstElementCP.Where(x => x.parenCode == parentCode).Sum(x => x.price),
-                        Order = orderCP,
-                        IsBold = true
-                    };
-                    for (int i = 0; i < lstElementChild.Count(); i++)
-                    {
-                        if (lstElementChild[i].parenCode == parentCode || lstElementChild[i].parentCode2 == parentCode)
-                        {
-                            lstElementChild[i].Order = orderCP + 1;
-                            data.ChiPhi.Add(lstElementChild[i]);
-                            orderCP++;
-
-                        }
-                        else
-                        {
-                            var a = lstElementCP[i];
-                            continue;
-                        }
-                    }
                     data.ChiPhi.Add(item);
-                    orderCP++;
                 }
-                // Tính giá trị của các tháng
-                foreach (var item in data.ChiPhi)
-                {
-                    for(int i = 1; i <= 12; i++)
-                    {
-                        var syncItem = lstSyncCode.FirstOrDefault(x => x.code == item.code && x.month == i);
-                        if(syncItem!= null)
-                        {
-                            item.GetType().GetProperty($"Value{i}").SetValue(item, syncItem.value);
-                        }
-                    }
-                }
-                foreach (var item in data.ChiPhi)
-                {
-                    if (lstParenCodeCP.Contains(item.code))
-                    {
-                        item.Value1 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x=>x.Value1);
-                        item.Value2 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value2);
-                        item.Value3 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value3);
-                        item.Value4 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value4);
-                        item.Value5 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value5);
-                        item.Value6 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value6);
-                        item.Value7 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value7);
-                        item.Value8 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value8);
-                        item.Value9 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value9);
-                        item.Value10 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value10);
-                        item.Value11 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value11);
-                        item.Value12 = data.ChiPhi.Where(x => x.code.StartsWith(item.code)).Sum(x => x.Value12);
-
-                    }
-                }
-
-                    var sumCP = new ChiPhi
-                {
-                    name = "TỔNG CỘNG",
-                    Order = 0,
-                    IsBold = true,
-                    price = lstDataCP.Sum(x => x.AMOUNT) ?? 0,
-                    Value1 = data.ChiPhi.Sum(x => x.Value1),
-                    Value2 = data.ChiPhi.Sum(x => x.Value2),
-                    Value3 = data.ChiPhi.Sum(x => x.Value3),
-                    Value4 = data.ChiPhi.Sum(x => x.Value4),
-                    Value5 = data.ChiPhi.Sum(x => x.Value5),
-                    Value6 = data.ChiPhi.Sum(x => x.Value6),
-                    Value7 = data.ChiPhi.Sum(x => x.Value7),
-                    Value8 = data.ChiPhi.Sum(x => x.Value8),
-                    Value9 = data.ChiPhi.Sum(x => x.Value9),
-                    Value10 = data.ChiPhi.Sum(x => x.Value10),
-                    Value11 = data.ChiPhi.Sum(x => x.Value11),
-                    Value12 = data.ChiPhi.Sum(x => x.Value12),
-
-                };
-                data.ChiPhi.Add(sumCP);
                 #endregion
 
-                #endregion
                 return data;
             }
             catch (Exception ex)
@@ -3624,104 +3149,104 @@ namespace SMO.Service.MD
 
         internal async Task<MemoryStream> ExportExcelTongHop(string path, int year, string phienBan, string kichBan, string area)
         {
-            try
-            {
-                MemoryStream outFileStream = new MemoryStream();
-                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-                IWorkbook templateWorkbook;
-                templateWorkbook = new XSSFWorkbook(fs);
-                fs.Close();
+            //try
+            //{
+            MemoryStream outFileStream = new MemoryStream();
+            //    FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            //    IWorkbook templateWorkbook;
+            //    templateWorkbook = new XSSFWorkbook(fs);
+            //    fs.Close();
 
-                var data =await GetDataKeHoachTongHop(year, phienBan, kichBan, area);
-                //San Luong
-                var dataSL = data.SanLuong.OrderBy(x => x.Order).ToList();
-                var dataDT = data.DauTu.OrderBy(x => x.Order).ToList();
-                var dataSC = data.SuaChuaLon.OrderBy(x => x.Order).ToList();
-                var dataCP = data.ChiPhi.OrderBy(x => x.Order).ToList();
+            //    var data = GetDataKeHoachTongHop(year, phienBan, kichBan, area);
+            //    //San Luong
+            //    var dataSL = data.SanLuong.OrderBy(x => x.Order).ToList();
+            //    var dataDT = data.DauTu.OrderBy(x => x.Order).ToList();
+            //    var dataSC = data.SuaChuaLon.OrderBy(x => x.Order).ToList();
+            //    var dataCP = data.ChiPhi.OrderBy(x => x.Order).ToList();
 
-                var countSL = dataSL.Count();
-                var countDt = dataDT.Count();
-                var countSC = dataSC.Count();
-                var countCP = dataCP.Count();
+            //    var countSL = dataSL.Count();
+            //    var countDt = dataDT.Count();
+            //    var countSC = dataSC.Count();
+            //    var countCP = dataCP.Count();
 
-                var stringHeaderSL = "I.KẾ HOẠCH SẢN LƯỢNG";
-                var stringHeaderDT = "II.KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ";
-                var stringHeaderSC = "III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH";
-                var stringHeaderCP = "IV. KẾ HOẠCH CHI PHÍ";
+            //    var stringHeaderSL = "I.KẾ HOẠCH SẢN LƯỢNG";
+            //    var stringHeaderDT = "II.KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ";
+            //    var stringHeaderSC = "III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH";
+            //    var stringHeaderCP = "IV. KẾ HOẠCH CHI PHÍ";
 
-                var rowStartSL = 7;
-                var rowStartDT = rowStartSL + countSL;
-                var rowStartSC = rowStartDT + countDt + 4;
-                var rowStartCP = rowStartSC + countSC +4;
-                ISheet sheet = templateWorkbook.GetSheetAt(0);
-                ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
-                styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
-                styleCellBold.WrapText = true;
+            //    var rowStartSL = 7;
+            //    var rowStartDT = rowStartSL + countSL;
+            //    var rowStartSC = rowStartDT + countDt + 4;
+            //    var rowStartCP = rowStartSC + countSC +4;
+            //    ISheet sheet = templateWorkbook.GetSheetAt(0);
+            //    ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            //    styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            //    styleCellBold.WrapText = true;
 
-                ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
-                styleCellName.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            //    ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+            //    styleCellName.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
 
 
-                ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
-                styleBodyBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
-                styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
-                styleBodyBold.WrapText = true;
+            //    ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
+            //    styleBodyBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            //    styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            //    styleBodyBold.WrapText = true;
 
-                ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-                styleBody.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
-                styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
-                styleBody.WrapText = true;
+            //    ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            //    styleBody.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
+            //    styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            //    styleBody.WrapText = true;
 
-                ICellStyle styleHeader = templateWorkbook.CreateCellStyle();
-                styleHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
-                Task task1 = Task.Run(() =>
-                {
-                    lock (lockObject)
-                    {
-                        var NUM_CELL = 8;
-                        InsertDataTongHopSL(templateWorkbook, sheet, dataSL, rowStartSL, NUM_CELL);
-                    }
-                });
-                //Dau Tu
-                Task task2 = Task.Run(() =>
-                {
-                    lock (lockObject)
-                    {
-                        var NUM_CELL = 8;
-                        InsertDataTongHopDT(templateWorkbook, sheet, dataDT, rowStartDT, NUM_CELL, styleCellBold, styleCellName, styleBodyBold, styleBody, styleHeader);
-                    }
-                });
-                //Sua Chua
-                Task task3 = Task.Run(() =>
-                {
-                    lock (lockObject)
-                    {
-                        var NUM_CELL = 6;
-                        InsertDataTongHopSC(templateWorkbook, sheet, dataSC, rowStartSC, NUM_CELL, styleCellBold, styleCellName, styleBodyBold, styleBody, styleHeader);
-                    }
-                });
-                //Chi phi
-                Task task4 = Task.Run(() =>
-                {
-                    lock (lockObject)
-                    {
-                        var NUM_CELL = 17;
-                        InsertDataTongHopCP(templateWorkbook, sheet, dataCP, rowStartCP, NUM_CELL, styleCellBold, styleCellName, styleBodyBold, styleBody, styleHeader);
-                    }
-                });
+            //    ICellStyle styleHeader = templateWorkbook.CreateCellStyle();
+            //    styleHeader.CloneStyleFrom(sheet.GetRow(5).Cells[0].CellStyle);
+            //    Task task1 = Task.Run(() =>
+            //    {
+            //        lock (lockObject)
+            //        {
+            //            var NUM_CELL = 8;
+            //            InsertDataTongHopSL(templateWorkbook, sheet, dataSL, rowStartSL, NUM_CELL);
+            //        }
+            //    });
+            //    //Dau Tu
+            //    Task task2 = Task.Run(() =>
+            //    {
+            //        lock (lockObject)
+            //        {
+            //            var NUM_CELL = 8;
+            //            InsertDataTongHopDT(templateWorkbook, sheet, dataDT, rowStartDT, NUM_CELL, styleCellBold, styleCellName, styleBodyBold, styleBody, styleHeader);
+            //        }
+            //    });
+            //    //Sua Chua
+            //    Task task3 = Task.Run(() =>
+            //    {
+            //        lock (lockObject)
+            //        {
+            //            var NUM_CELL = 6;
+            //            InsertDataTongHopSC(templateWorkbook, sheet, dataSC, rowStartSC, NUM_CELL, styleCellBold, styleCellName, styleBodyBold, styleBody, styleHeader);
+            //        }
+            //    });
+            //    //Chi phi
+            //    Task task4 = Task.Run(() =>
+            //    {
+            //        lock (lockObject)
+            //        {
+            //            var NUM_CELL = 17;
+            //            InsertDataTongHopCP(templateWorkbook, sheet, dataCP, rowStartCP, NUM_CELL, styleCellBold, styleCellName, styleBodyBold, styleBody, styleHeader);
+            //        }
+            //    });
 
-                await Task.WhenAll(task1, task2, task3, task4);
-                templateWorkbook.Write(outFileStream);
-                return outFileStream;
+            //    await Task.WhenAll(task1, task2, task3, task4);
+            //    templateWorkbook.Write(outFileStream);
+            return outFileStream;
 
-            }
-            catch (Exception ex)
-            {
-                this.State = false;
-                this.ErrorMessage = "Có lỗi xẩy ra trong quá trình tạo file excel!";
-                this.Exception = ex;
-                return new MemoryStream();
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    this.State = false;
+            //    this.ErrorMessage = "Có lỗi xẩy ra trong quá trình tạo file excel!";
+            //    this.Exception = ex;
+            //    return new MemoryStream();
+            //}
 
         }
 
@@ -4117,9 +3642,44 @@ namespace SMO.Service.MD
                 }
             }
         }
-    
-
         internal List<SuaChuaLonReportModel> GetReportDataSuaChuaLon(int year, string phienBan, string kichBan, string area)
+        {
+            var data = new List<SuaChuaLonReportModel>();
+            switch (area)
+            {
+                case "":
+                    data.AddRange(GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "CQ"));
+                    data.AddRange(GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "MB"));
+                    data.AddRange(GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "MT"));
+                    data.AddRange(GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "MN"));
+                    data.AddRange(GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "VT"));
+                    return data;
+                    break;
+                case "MB":
+                    data = GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "MB");
+                    return data;
+                    break;
+                case "MT":
+                    data = GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "MT");
+                    return data;
+                    break;
+                case "MN":
+                    data = GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "MN");
+                    return data;
+                    break;
+                case "CQ":
+                    data = GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "CQ");
+                    return data;
+                    break;
+                case "VT":
+                    data = GetReportDataSuaChuaLonByArea(year, phienBan, kichBan, "VT");
+                    return data;
+                    break;
+                default:
+                    return data;
+            }
+        }
+        internal List<SuaChuaLonReportModel> GetReportDataSuaChuaLonByArea(int year, string phienBan, string kichBan, string area)
         {
             var data = new List<SuaChuaLonReportModel>();
             Dictionary<string, string> ChiNhanh = new Dictionary<string, string>()
@@ -4190,11 +3750,11 @@ namespace SMO.Service.MD
                 };
             Dictionary<string, string> TenChiNhanh = new Dictionary<string, string>()
                 {
-                    {"MB", "Chi nhánh khu vực miền bắc" },
-                    {"MN", "Chi nhánh khu vực miền nam" },
-                    {"MT", "Chi nhánh khu vực miền trung" },
-                    {"VT", "Chi nhánh vận tải" },
-                    {"CQ", "Cơ quan công ty" }
+                    {"MB", "CHI NHÁNH KHU VỰC MIỀN BẮC" },
+                    {"MN", "CHI NHÁNH KHU VỰC MIỀN NAM" },
+                    {"MT", "CHI NHÁNH KHU VỰC MIỀN TRUNG" },
+                    {"VT", "CHI NHÁNH VẬN TẢI" },
+                    {"CQ", "CƠ QUAN CÔNG TY" },
                 };
             if (string.IsNullOrEmpty(area))
             {
@@ -4622,17 +4182,27 @@ namespace SMO.Service.MD
         {
             try
             {
-                #region
-                // Lấy danh sách khoản mục
-                var lstKhoanMucAll = UnitOfWork.Repository<ReportChiPhiCodeRepo>().Queryable().Select(x => x.GROUP_1_ID).Distinct().ToList(); 
-                lstKhoanMucAll = lstKhoanMucAll.Distinct().ToList();
-                #endregion
                 var data = new ReportChiPhiModel();
                 var header = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TIME_YEAR == year).Select(x=>x.TEMPLATE_CODE).ToList();
                 var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && header.Contains(x.TEMPLATE_CODE)).ToList();
-                data = SyncElement(lstKhoanMucAll, dataInHeaderCP);
-
-                 return data;
+                var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+                foreach(var i in elements)
+                {
+                    var item = new ChiPhiInReport
+                    {
+                        Stt = i.STT,
+                        name = i.GROUP_NAME,
+                        IsBold = i.IS_BOLD,
+                        valueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("CQ" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                        valueCNMB = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("B" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                        valueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("T" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                        valueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("N" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                        valueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("VT" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                        valueTcty = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                    };
+                    data.chiPhiInReports.Add(item);
+                }
+                return data;
             }
             catch(Exception ex)
             {
