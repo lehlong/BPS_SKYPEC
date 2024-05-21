@@ -4410,7 +4410,7 @@ namespace SMO.Service.MD
                     order++;
                     var itemGD = new ReportDauTuModel
                     {
-                        name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT,
+                        name = ""/*UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT*/,
                         Order = order,
                         equity_sources = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
                         valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
@@ -4448,7 +4448,7 @@ namespace SMO.Service.MD
                     order++;
                     var itemGD = new ReportDauTuModel
                     {
-                        name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT,
+                        name = /*UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT*/ "",
                         Order = order,
                         equity_sources = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
                         valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
@@ -4537,7 +4537,7 @@ namespace SMO.Service.MD
                 order++;
                 var itemGD = new ReportDauTuModel
                 {
-                    name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT,
+                    name = /*UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT*/ "",
                     Order = order,
                     equity_sources = dataInHeaderDTXD.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
                     valueVDT = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuXayDungProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,
@@ -4576,7 +4576,7 @@ namespace SMO.Service.MD
                 order++;
                 var itemGD = new ReportDauTuModel
                 {
-                    name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT,
+                    name = /*UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj)?.GiaiDoan.TEXT*/ "",
                     Order = order,
                     equity_sources = dataInHeaderDTTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.EQUITY_SOURCES,
                     valueVDT = dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001" && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj)?.Sum(x => x.VALUE) ?? 0,

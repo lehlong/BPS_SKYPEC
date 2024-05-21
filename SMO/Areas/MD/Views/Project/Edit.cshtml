@@ -42,22 +42,61 @@
                                 </div>
                             </div>
 
-                            <label>Loại hình</label>
-                            <div class="form-group">
-                                @Html.MyDropDownListFor(m => m.ObjDetail.LOAI_HINH, SelectListUtilities.SelectLoaiHinhDauTu(false), new { @class = "selectpicker show-tick", @data_val = false })
-                            </div>
-
-                            <label>Giai đoạn</label>
-                            <div class="form-group">
-                                @Html.MyDropDownListFor(m => m.ObjDetail.GIAI_DOAN, SelectListUtilities.SelectGiaiDoanDauTu(false), new { @class = "selectpicker show-tick", @data_val = false })
-                            </div>
-
-                            <label>Năm bắt đầu</label>
+                            <label>Năm</label>
                             <div class="form-group">
                                 <div class="form-line">
                                     @Html.MyTextBoxFor(m => m.ObjDetail.YEAR)
                                 </div>
                             </div>
+
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col-md-3" style="margin-bottom: 0">
+                                    <div class="col-md-2">
+                                        @Html.MyCheckBoxFor(m => m.ObjDetail.CHUYEN_TIEP, new { @style = "position:unset; opacity: 1" })
+                                    </div>
+                                    <div class="col-md-10">
+                                        <label>Chuyển tiếp</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" style="margin-bottom: 0">
+                                    <div class="col-md-2">
+                                        @Html.MyCheckBoxFor(m => m.ObjDetail.DAU_TU_MOI, new { @style = "position:unset; opacity: 1" })
+                                    </div>
+                                    <div class="col-md-10">
+                                        <label>Đầu tư mới</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" style="margin-bottom: 0">
+                                    <div class="col-md-2">
+                                        @Html.MyCheckBoxFor(m => m.ObjDetail.CHUAN_BI_DAU_TU, new { @style = "position:unset; opacity: 1" })
+                                    </div>
+                                    <div class="col-md-10">
+                                        <label>Chuẩn bị đầu tư</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" style="margin-bottom: 0">
+                                    <div class="col-md-2">
+                                        @Html.MyCheckBoxFor(m => m.ObjDetail.THUC_HIEN_DAU_TU, new { @style = "position:unset; opacity: 1" })
+                                    </div>
+                                    <div class="col-md-10">
+                                        <label>Thực hiện đầu tư</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <label>Kiểu đầu tư</label>
+                            <div class="form-group">
+                                @Html.MyDropDownListFor(m => m.ObjDetail.LOAI_HINH, SelectListUtilities.SelectLoaiHinhDauTu(false), new { @class = "selectpicker show-tick", @data_val = false })
+                            </div>
+
+                            <label>Loại</label>
+                            <div class="form-group">
+                                @Html.MyDropDownListFor(m => m.ObjDetail.TYPE, SelectListUtilities.GetSelectTypeTtb(), new { @class = "selectpicker show-tick", @data_val = false })
+                            </div>
+
 
                             <label>Ngành nghề</label>
                             <div class="form-group">

@@ -1012,7 +1012,7 @@ namespace SMO.Service.BP
                     NameExcel = "Các dự án chuẩn bị đầu tư",
                     Parent = "A.I",
                 });
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1043,7 +1043,7 @@ namespace SMO.Service.BP
                     NameExcel = "Các dự án thực hiện đầu tư",
                     Parent = "A.I",
                 });
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "TTDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1073,7 +1073,7 @@ namespace SMO.Service.BP
                     Parent = "A.I",
                 });
 
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "TTBL"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1110,7 +1110,7 @@ namespace SMO.Service.BP
                     NameExcel = "Các dự án chuẩn bị đầu tư",
                     Parent = "A.II",
                 });
-                foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1137,7 +1137,7 @@ namespace SMO.Service.BP
                     NameExcel = "Các dự án thực hiện đầu tư",
                     Parent = "A.II",
                 });
-                foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year && x.GIAI_DOAN == "TTDT"))
+                foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1182,7 +1182,7 @@ namespace SMO.Service.BP
                     NameExcel = "Các dự án chuẩn bị đầu tư",
                     Parent = "B.I",
                 });
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1211,7 +1211,7 @@ namespace SMO.Service.BP
                     NameExcel = "Các dự án thực hiện đầu tư",
                     Parent = "B.I",
                 });
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year && x.GIAI_DOAN == "TTDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1241,7 +1241,7 @@ namespace SMO.Service.BP
                     Parent = "B.I",
                 });
 
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year && x.GIAI_DOAN == "TTBL"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1278,7 +1278,7 @@ namespace SMO.Service.BP
                     NameExcel = "Các dự án chuẩn bị đầu tư",
                     Parent = "B.II",
                 });
-                foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1305,7 +1305,7 @@ namespace SMO.Service.BP
                     NameExcel = "Các dự án thực hiện đầu tư",
                     Parent = "B.II",
                 });
-                foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year && x.GIAI_DOAN == "TTDT"))
+                foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year ))
                 {
                     data.BM01D.Add(new ReportModel
                     {
@@ -1375,7 +1375,7 @@ namespace SMO.Service.BP
                     Name = "1. Các dự án chuẩn bị đầu tư",
                     Parent = "A.I",
                 });
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1402,7 +1402,7 @@ namespace SMO.Service.BP
                     Name = "2. Các dự án thực hiện đầu tư",
                     Parent = "A.I",
                 });
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "TTDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1430,7 +1430,7 @@ namespace SMO.Service.BP
                     Parent = "A.I",
                 });
 
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year && x.GIAI_DOAN == "TTBL"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR < year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1464,7 +1464,7 @@ namespace SMO.Service.BP
                     Name = "1. Các dự án chuẩn bị đầu tư",
                     Parent = "A.II",
                 });
-                foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1490,7 +1490,7 @@ namespace SMO.Service.BP
                     Name = "2. Các dự án thực hiện đầu tư",
                     Parent = "A.II",
                 });
-                foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year && x.GIAI_DOAN == "TTDT"))
+                foreach (var i in lstProjectXdcb.Where(x => x.YEAR < year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1531,7 +1531,7 @@ namespace SMO.Service.BP
                     Name = "1. Các dự án chuẩn bị đầu tư",
                     Parent = "B.I",
                 });
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1558,7 +1558,7 @@ namespace SMO.Service.BP
                     Name = "2. Các dự án thực hiện đầu tư",
                     Parent = "B.I",
                 });
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year && x.GIAI_DOAN == "TTDT"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1586,7 +1586,7 @@ namespace SMO.Service.BP
                     Parent = "B.I",
                 });
 
-                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year && x.GIAI_DOAN == "TTBL"))
+                foreach (var i in lstProjectTtb.Where(x => x.YEAR == year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1620,7 +1620,7 @@ namespace SMO.Service.BP
                     Name = "1. Các dự án chuẩn bị đầu tư",
                     Parent = "B.II",
                 });
-                foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year && x.GIAI_DOAN == "CBDT"))
+                foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year))
                 {
                     data.BM02A.Add(new ReportModel
                     {
@@ -1646,7 +1646,7 @@ namespace SMO.Service.BP
                     Name = "2. Các dự án thực hiện đầu tư",
                     Parent = "B.II",
                 });
-                foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year && x.GIAI_DOAN == "TTDT"))
+                foreach (var i in lstProjectXdcb.Where(x => x.YEAR == year ))
                 {
                     data.BM02A.Add(new ReportModel
                     {

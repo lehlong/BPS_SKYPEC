@@ -12,11 +12,15 @@ namespace SMO.Core.Entities
         [Required(ErrorMessage = "Trường này bắt buộc nhập", AllowEmptyStrings = false)]
         public virtual string NAME { get; set; }
         public virtual string LOAI_HINH { get; set; }
-        public virtual string GIAI_DOAN { get; set; }
+        public virtual bool CHUYEN_TIEP { get; set; }
+        public virtual bool DAU_TU_MOI { get; set; }
+        public virtual bool CHUAN_BI_DAU_TU { get; set; }
+        public virtual bool THUC_HIEN_DAU_TU { get; set; }
         public virtual int YEAR { get; set; }
         public virtual string NGANH_NGHE { get; set; }
         public virtual string PHAN_LOAI { get; set; }
         public virtual string AREA_CODE { get; set; }
+        public virtual string TYPE { get; set; }
 
         private T_MD_AREA _Area;
         public virtual T_MD_AREA Area
@@ -49,23 +53,6 @@ namespace SMO.Core.Entities
             set
             {
                 _LoaiHinh = value;
-            }
-        }
-
-        private T_MD_GIAI_DOAN_DAU_TU _GiaiDoan;
-        public virtual T_MD_GIAI_DOAN_DAU_TU GiaiDoan
-        {
-            get
-            {
-                if (_GiaiDoan == null)
-                {
-                    _GiaiDoan = new T_MD_GIAI_DOAN_DAU_TU();
-                }
-                return _GiaiDoan;
-            }
-            set
-            {
-                _GiaiDoan = value;
             }
         }
 

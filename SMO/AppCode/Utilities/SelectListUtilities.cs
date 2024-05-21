@@ -162,6 +162,15 @@ namespace SMO
             return new SelectList(lstData, "Value", "Text", new Data {});
         }
 
+        public static SelectList GetSelectTypeTtb()
+        {
+            var lstData = new List<Data>();
+            lstData.Add(new Data { Value = "", Text = "-" });
+            lstData.Add(new Data { Value = "TTB-LON", Text = "Trang thiết bị lớn" });
+            lstData.Add(new Data { Value = "TTB-LE", Text = "Trang thiết bị lẻ" });
+            return new SelectList(lstData, "Value", "Text", new Data { });
+        }
+
         public static SelectList GetAllPhienBan()
         {
             IUnitOfWork UnitOfWork = new NHUnitOfWork();
