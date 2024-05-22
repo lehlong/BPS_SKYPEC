@@ -27,39 +27,26 @@
         IsBold = x.IsBold
     });
 }
-<style>
-    .row-bold .dhx_grid-cell,.row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 
 <script type="text/javascript">
     const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
-
-
     let columns = [
-        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
-        { id: "sumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", minWidth: 180 },
-        { id: "jan", header: [{ text: "THÁNG 1", align: "center" }], align: "right", minWidth: 180 },
-        { id: "feb", header: [{ text: "THÁNG 2", align: "center" }], align: "right", minWidth: 180 },
-        { id: "mar", header: [{ text: "THÁNG 3", align: "center" }], align: "right", minWidth: 180 },
-        { id: "apr", header: [{ text: "THÁNG 4", align: "center" }], align: "right", minWidth: 180 },
-        { id: "may", header: [{ text: "THÁNG 5", align: "center" }], align: "right", minWidth: 180 },
-        { id: "jun", header: [{ text: "THÁNG 6", align: "center" }], align: "right", minWidth: 180 },
-        { id: "jul", header: [{ text: "THÁNG 7", align: "center" }], align: "right", minWidth: 180 },
-        { id: "aug", header: [{ text: "THÁNG 8", align: "center" }], align: "right", minWidth: 180 },
-        { id: "sep", header: [{ text: "THÁNG 9", align: "center" }], align: "right", minWidth: 180 },
-        { id: "oct", header: [{ text: "THÁNG 10", align: "center" }], align: "right", minWidth: 180 },
-        { id: "nov", header: [{ text: "THÁNG 11", align: "center" }], align: "right", minWidth: 180 },
-        { id: "dec", header: [{ text: "THÁNG 12", align: "center" }], align: "right", minWidth: 180 },
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }], minWidth: 220 },
+        { id: "sumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", minWidth: 146 },
+        { id: "jan", header: [{ text: "THÁNG 1", align: "center" }], align: "right", minWidth: 146 },
+        { id: "feb", header: [{ text: "THÁNG 2", align: "center" }], align: "right", minWidth: 146 },
+        { id: "mar", header: [{ text: "THÁNG 3", align: "center" }], align: "right", minWidth: 146 },
+        { id: "apr", header: [{ text: "THÁNG 4", align: "center" }], align: "right", minWidth: 146 },
+        { id: "may", header: [{ text: "THÁNG 5", align: "center" }], align: "right", minWidth: 146 },
+        { id: "jun", header: [{ text: "THÁNG 6", align: "center" }], align: "right", minWidth: 146 },
+        { id: "jul", header: [{ text: "THÁNG 7", align: "center" }], align: "right", minWidth: 146 },
+        { id: "aug", header: [{ text: "THÁNG 8", align: "center" }], align: "right", minWidth: 146 },
+        { id: "sep", header: [{ text: "THÁNG 9", align: "center" }], align: "right", minWidth: 146 },
+        { id: "oct", header: [{ text: "THÁNG 10", align: "center" }], align: "right", minWidth: 146 },
+        { id: "nov", header: [{ text: "THÁNG 11", align: "center" }], align: "right", minWidth: 146 },
+        { id: "dec", header: [{ text: "THÁNG 12", align: "center" }], align: "right", minWidth: 146 },
     ];
     rawData.forEach((item) => {
         if (item.parent == null) {
@@ -69,14 +56,12 @@
     const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
-        leftSplit: 1,
+        leftSplit: 2,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         selection: true,
-        autoHeight: true,
+        rowHeight: 30,
     });
-
-
 </script>
 

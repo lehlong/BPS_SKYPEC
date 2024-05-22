@@ -1,59 +1,41 @@
 ﻿@model List<SMO.Models.SynthesisReportModel>
-@{ 
+@using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
     var year = ViewBag.Year as int?;
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
-<style>
-    .header-table{
-        text-align:center;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-</style>
-<table class="table-condensed table-bordered table-striped font-13" style="width:100%">
-    <tbody>
-        <tr class="header-table sticky-header strong" >
-            <td rowspan="2">STT</td>
-            <td rowspan="2">Diễn giải</td>
-            <td rowspan="2">ĐVT</td>
-            <td rowspan="2">TH @(year - 2)</td>
-            <td colspan="3">Năm @(year - 1)</td>
-            <td rowspan="2">Kế hoạch @year</td>
-            <td rowspan="2">Kế hoạch @year sau điều chỉnh</td>
-            <td rowspan="2">KH @year/ TH @(year - 2) (%)</td>
-            <td rowspan="2">KH @year/ ƯTH @(year - 1) (%)</td>
-        </tr>
-        <tr class="header-table">
-            <td>Kế hoạch</td>
-            <td>9T ĐN</td>
-            <td>Ước TH năm</td>
-        </tr>
-        @*<tr style="font-weight:bold">
-            <td colspan="3">TỔNG CỘNG</td>
-            <td>@Model.Sum(x => x.Value1).ToStringVN()</td>
-            <td>@Model.Sum(x => x.Value2).ToStringVN()</td>
-            <td>@Model.Sum(x => x.Value3).ToStringVN()</td>
-            <td>@Model.Sum(x => x.Value4).ToStringVN()</td>
-            <td>@Model.Sum(x => x.Value5).ToStringVN()</td>
-            <td>@Model.Sum(x => x.Value6).ToStringVN()</td>
-            <td>@(Model.Sum(x => x.Value7)?.ToString("0.00"))</td>
-            <td>@(Model.Sum(x => x.Value8)?.ToString("0.00"))</td>
-        </tr>*@
-        @foreach (var item in Model.OrderBy(x => x.Order))
-        {
-            var bold = item.IsBold == true ? "bold" : "";
-            <tr style="font-weight:@bold">
-                <td>@item.Stt</td>
-                <td>@item.Name</td>
-                <td>@item.UnitName</td>
-                <td class="align-right">@item.Value1.ToStringVN()</td>
-                <td class="align-right">@item.Value2.ToStringVN()</td>
-                <td class="align-right">@item.Value3.ToStringVN()</td>
-                <td class="align-right">@item.Value4.ToStringVN()</td>
-                <td class="align-right">@item.Value5.ToStringVN()</td>
-                <td class="align-right">@item.Value6.ToStringVN()</td>
-                <td class="align-right">@(item.Value7?.ToString("0.00"))</td>
-                <td class="align-right">@(item.Value8?.ToString("0.00"))</td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<script type="text/javascript">
+    const grid = new dhx.Grid("@gridId", {
+        columns: [
+            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }] },
+            { id: "name", header: [{ text: "DIỄN GIẢI", align: "center", rowspan: 2 }] },
+            { id: "unitName", header: [{ text: "ĐVT", align: "center", rowspan: 2 }], align: "center" },
+
+            { id: "value1", header: [{ text: "TH @(year - 2)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
+            { id: "value2", header: [{ text: "NĂM @(year - 1)", align: "center", colspan: 4 }, { text: "KH", align: "center" }], align: "right", type: "number", format: "#.#" },
+
+            { id: "value3", header: ['', { text: "9T ĐN", align: "center" }], align: "right", type: "number", format: "#.#" },
+            { id: "value4", header: ['', { text: "ƯỚC TH NĂM", align: "center" }], align: "right", type: "number", format: "#.#" },
+            { id: "value9", header: ['', { text: "TH/KH", align: "center" }], align: "right", type: "number", format: "#.#" },
+
+            { id: "value5", header: [{ text: "KH @year", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
+            { id: "value6", header: [{ text: "KH @year SAU THẨM ĐỊNH", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
+            { id: "value7", header: [{ text: "KH @year / TH @(year -2) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
+            { id: "value8", header: [{ text: "KH @year / ƯTH @(year - 1) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
+
+        ],
+        data: @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings)),
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        selection: 'row',
+        rowHeight: 30,
+        headerHeight: 30,
+        adjust: true
+    });
+</script>

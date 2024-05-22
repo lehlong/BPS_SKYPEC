@@ -8,19 +8,6 @@
     var gridTab4 = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
-<style>
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
     <li role="presentation" class="active" style="cursor: pointer;">
         <a href="#tab1" title="Kế hoạch theo tháng" data-toggle="tab">I. KẾ HOẠCH SẢN LƯỢNG</a>
@@ -53,47 +40,44 @@
     </div>
 </div>
 <script type="text/javascript">
-    var rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model.SanLuong.OrderBy(x => x.Order), jsonSerializeSettings));
-    let columnsTab1 = [
-        { id: "order", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
-
-        { id: "code", header: [{ text: "Sản lượng theo sân bay", align: "center", colspan: 2 }, { text: "Mã sân bay", align: "center" }] },
-        { id: "name", header: ["", { text: "Tên sân bay", align: "center" }], footer: [{ text: "TỔNG CỘNG" }] },
-
-        { id: "value1", header: [{ text: "HKVN", align: "center", colspan: 3 }, { text: "VNA", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
-        { id: "value2", header: ["", { text: "HKVN#", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
-        { id: "value3", header: ["", { text: "TỔNG", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
-
-        { id: "value4", header: [{ text: "HKQT", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
-        { id: "value5", header: [{ text: "TỔNG", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
-
-    ];
     const gridTab1 = new dhx.Grid("@gridTab1", {
-        columns: columnsTab1,
-        data: rawDataTab1,
+        columns: [
+            { id: "order", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+
+            { id: "code", header: [{ text: "Sản lượng theo sân bay", align: "center", colspan: 2 }, { text: "Mã sân bay", align: "center" }] },
+            { id: "name", header: ["", { text: "Tên sân bay", align: "center" }], footer: [{ text: "TỔNG CỘNG" }] },
+
+            { id: "value1", header: [{ text: "HKVN", align: "center", colspan: 3 }, { text: "VNA", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+            { id: "value2", header: ["", { text: "HKVN#", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+            { id: "value3", header: ["", { text: "TỔNG", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+
+            { id: "value4", header: [{ text: "HKQT", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+            { id: "value5", header: [{ text: "TỔNG", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+
+        ],
+        data: @Html.Raw(JsonConvert.SerializeObject(Model.SanLuong.OrderBy(x => x.Order), jsonSerializeSettings)),
         resizable: true,
         selection: "row",
+        rowHeight: 30,
         adjust: true
     });
-</script>
 
-<script type="text/javascript">
-    var rawDataTab4 = @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi, jsonSerializeSettings));
-    let columnsTab4 = [
-        { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
-        { id: "name", header: [{ text: "Danh mục chi phí", align: "center" }]},
-
-        { id: "valueCP", header: [{ text: "Kế hoạch", align: "center", colspan: 2 }, { text: "Chi phí", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#"},
-        { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#"},       
-    ];
     const gridTab4 = new dhx.Grid("@gridTab4", {
-        columns: columnsTab4,
-        data: rawDataTab4,
+        columns: [
+            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+            { id: "name", header: [{ text: "Danh mục chi phí", align: "center", rowspan: 2 }] },
+            { id: "valueCP", header: [{ text: "Kế hoạch", align: "center", colspan: 2 }, { text: "Chi phí", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "notes", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], minWidth: 160 },
+        ],
+        data: @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi, jsonSerializeSettings)),
         resizable: true,
         selection: "row",
         adjust: true,
+        rowHeight: 30,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
+
 </script>
 
 

@@ -99,35 +99,16 @@
     });
 }
 <style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
     .liNav {
         width: 150px;
         position: absolute;
         right:0;
     }
-
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-
     .dhx_slider{
         padding: 0;
     }
 
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-
-    
+   
 </style>
 
 
@@ -156,21 +137,19 @@
     </ul>
     <div class="tab-content" style="padding-bottom:0">
         <div role="tabpanel" class="tab-pane fade in active" id="tab1">
-            <div style="height: calc(100vh - 220px);" id="@gridTab1" class="table-zoom"></div>
+            <div style="height: calc(100vh - 262px);" id="@gridTab1" class="table-zoom"></div>
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab2">
-            <div style="overflow: auto; height: calc(100vh - 220px)" id="@gridTab2" class="table-zoom"></div>
+            <div style="overflow: auto; height: calc(100vh - 262px)" id="@gridTab2" class="table-zoom"></div>
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab3">
-            <div style="overflow: auto; height: calc(100vh - 220px);" id="@gridTab3" class="table-zoom"></div>
-
+            <div style="overflow: auto; height: calc(100vh - 262px);" id="@gridTab3" class="table-zoom"></div>
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="tab4">
-            <div style="overflow: auto; height: calc(100vh - 220px);" id="@gridTab4" class="table-zoom"></div>
-
+            <div style="overflow: auto; height: calc(100vh - 262px);" id="@gridTab4" class="table-zoom"></div>
         </div>
     </div>
 </div>
@@ -185,78 +164,78 @@
     const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab3, jsonSerializeSettings));
     const rawDataTab4 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab4, jsonSerializeSettings));
     let columns = [
-        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
-        { id: "valueSumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value1", header: [{ text: "THÁNG 1", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value2", header: [{ text: "THÁNG 2", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value3", header: [{ text: "THÁNG 3", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value4", header: [{ text: "THÁNG 4", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value5", header: [{ text: "THÁNG 5", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value6", header: [{ text: "THÁNG 6", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value7", header: [{ text: "THÁNG 7", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value8", header: [{ text: "THÁNG 8", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value9", header: [{ text: "THÁNG 9", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value10", header: [{ text: "THÁNG 10", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value11", header: [{ text: "THÁNG 11", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value12", header: [{ text: "THÁNG 12", align: "center" }], align: "right", minWidth: 180 },
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }], minWidth: 220 },
+        { id: "valueSumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value1", header: [{ text: "THÁNG 1", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value2", header: [{ text: "THÁNG 2", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value3", header: [{ text: "THÁNG 3", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value4", header: [{ text: "THÁNG 4", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value5", header: [{ text: "THÁNG 5", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value6", header: [{ text: "THÁNG 6", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value7", header: [{ text: "THÁNG 7", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value8", header: [{ text: "THÁNG 8", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value9", header: [{ text: "THÁNG 9", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value10", header: [{ text: "THÁNG 10", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value11", header: [{ text: "THÁNG 11", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value12", header: [{ text: "THÁNG 12", align: "center" }], align: "right", minWidth: 120 },
     ];
 
     let columnsTab2 = [
-        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
-        { id: "valueSumYear", header: [{ text: "CỘNG NĂM", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value1", header: [{ text: "CNMB", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value2", header: [{ text: "CNMT", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value3", header: [{ text: "CNMN", align: "center" }], align: "right", minWidth: 180 },
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }], minWidth: 220 },
+        { id: "valueSumYear", header: [{ text: "CỘNG NĂM", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value1", header: [{ text: "CNMB", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value2", header: [{ text: "CNMT", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value3", header: [{ text: "CNMN", align: "center" }], align: "right", minWidth: 120 },
     ];
 
     let columnsTab3 = [
-        { id: "name", header: [{ text: "BAY NỘI ĐỊA", align: "center", colspan: 2 }, { content: "inputFilter" }], minWidth: 300 },
-        { id: "code", header: [{ text: "", align: "center" }], align: "right", minWidth: 60 },
-        { id: "value1", header: [{ text: "VNA", align: "center", rowspan:2 }], align: "right", minWidth: 180 },
+        { id: "code", header: [{ text: "", align: "center", rowspan: 2 }], minWidth: 60 },
+        { id: "name", header: [{ text: "BAY NỘI ĐỊA", align: "center", colspan: 2 }, { content: "inputFilter" }], minWidth: 220 },
+
+        { id: "value1", header: [{ text: "VNA", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
         {
             id: "value2", header: [
             { text: "HKVN", align: "center", colspan: 7 },
             { text: "BL", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value3", header: [{ text: "", align: "center" }, { text: "OV", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value4", header: [{ text: "", align: "center" }, { text: "VJ", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value5", header: [{ text: "", align: "center" }, { text: "QH", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value6", header: [{ text: "", align: "center" }, { text: "VU", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value7", header: [{ text: "", align: "center" }, { text: "HKTN#", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value8", header: [{ text: "", align: "center" }, { text: "CỘNG", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value9", header: [{ text: "HKQT", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "value10", header: [{ text: "CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-
+        { id: "value3", header: [{ text: "", align: "center" }, { text: "OV", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value4", header: [{ text: "", align: "center" }, { text: "VJ", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value5", header: [{ text: "", align: "center" }, { text: "QH", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value6", header: [{ text: "", align: "center" }, { text: "VU", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value7", header: [{ text: "", align: "center" }, { text: "HKTN#", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value8", header: [{ text: "", align: "center" }, { text: "CỘNG", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value9", header: [{ text: "HKQT", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
+        { id: "value10", header: [{ text: "CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
     ]
 
     let columnsTab4 = [
-        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center"}, { content: "inputFilter" }], minWidth: 300 },
-        { id: "value1ND", header: [{ text: "BAY NỘI ĐỊA", align: "center", colspan: 12 }, { text: "Tháng 1", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value2ND", header: [{ text: "", align: "center" }, { text: "Tháng 2", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value3ND", header: [{ text: "", align: "center" }, { text: "Tháng 3", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value4ND", header: [{ text: "", align: "center" }, { text: "Tháng 4", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value5ND", header: [{ text: "", align: "center" }, { text: "Tháng 5", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value6ND", header: [{ text: "", align: "center" }, { text: "Tháng 6", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value7ND", header: [{ text: "", align: "center" }, { text: "Tháng 7", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value8ND", header: [{ text: "", align: "center" }, { text: "Tháng 8", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value9ND", header: [{ text: "", align: "center" }, { text: "Tháng 9", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value10ND", header: [{ text: "", align: "center" }, { text: "Tháng 10", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value11ND", header: [{ text: "", align: "center" }, { text: "Tháng 11", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value12ND", header: [{ text: "", align: "center" }, { text: "Tháng 12", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value1QT", header: [{ text: "BAY QUỐC TẾ", align: "center", colspan: 12 }, { text: "Tháng 1", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value2QT", header: [{ text: "", align: "center" }, { text: "Tháng 2", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value3QT", header: [{ text: "", align: "center" }, { text: "Tháng 3", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value4QT", header: [{ text: "", align: "center" }, { text: "Tháng 4", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value5QT", header: [{ text: "", align: "center" }, { text: "Tháng 5", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value6QT", header: [{ text: "", align: "center" }, { text: "Tháng 6", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value7QT", header: [{ text: "", align: "center" }, { text: "Tháng 7", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value8QT", header: [{ text: "", align: "center" }, { text: "Tháng 8", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value9QT", header: [{ text: "", align: "center" }, { text: "Tháng 9", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value10QT", header: [{ text: "", align: "center" }, { text: "Tháng 10", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value11QT", header: [{ text: "", align: "center" }, { text: "Tháng 11", align: "center" }], align: "right", minWidth: 180 },
-        { id: "value12QT", header: [{ text: "", align: "center" }, { text: "Tháng 12", align: "center" }], align: "right", minWidth: 180 },
-        { id: "valueSumYearND", header: [{ text: "CỘNG NĐ", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "valueSumYearQT", header: [{ text: "CỘNG QT", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "valueSumYearAll", header: [{ text: "CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center"}, { content: "inputFilter" }], minWidth: 160 },
+        { id: "value1ND", header: [{ text: "BAY NỘI ĐỊA", align: "center", colspan: 12 }, { text: "Tháng 1", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value2ND", header: [{ text: "", align: "center" }, { text: "Tháng 2", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value3ND", header: [{ text: "", align: "center" }, { text: "Tháng 3", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value4ND", header: [{ text: "", align: "center" }, { text: "Tháng 4", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value5ND", header: [{ text: "", align: "center" }, { text: "Tháng 5", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value6ND", header: [{ text: "", align: "center" }, { text: "Tháng 6", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value7ND", header: [{ text: "", align: "center" }, { text: "Tháng 7", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value8ND", header: [{ text: "", align: "center" }, { text: "Tháng 8", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value9ND", header: [{ text: "", align: "center" }, { text: "Tháng 9", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value10ND", header: [{ text: "", align: "center" }, { text: "Tháng 10", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value11ND", header: [{ text: "", align: "center" }, { text: "Tháng 11", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value12ND", header: [{ text: "", align: "center" }, { text: "Tháng 12", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value1QT", header: [{ text: "BAY QUỐC TẾ", align: "center", colspan: 12 }, { text: "Tháng 1", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value2QT", header: [{ text: "", align: "center" }, { text: "Tháng 2", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value3QT", header: [{ text: "", align: "center" }, { text: "Tháng 3", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value4QT", header: [{ text: "", align: "center" }, { text: "Tháng 4", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value5QT", header: [{ text: "", align: "center" }, { text: "Tháng 5", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value6QT", header: [{ text: "", align: "center" }, { text: "Tháng 6", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value7QT", header: [{ text: "", align: "center" }, { text: "Tháng 7", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value8QT", header: [{ text: "", align: "center" }, { text: "Tháng 8", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value9QT", header: [{ text: "", align: "center" }, { text: "Tháng 9", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value10QT", header: [{ text: "", align: "center" }, { text: "Tháng 10", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value11QT", header: [{ text: "", align: "center" }, { text: "Tháng 11", align: "center" }], align: "right", minWidth: 120 },
+        { id: "value12QT", header: [{ text: "", align: "center" }, { text: "Tháng 12", align: "center" }], align: "right", minWidth: 120 },
+        { id: "valueSumYearND", header: [{ text: "CỘNG NĐ", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
+        { id: "valueSumYearQT", header: [{ text: "CỘNG QT", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
+        { id: "valueSumYearAll", header: [{ text: "CỘNG", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
 
     ];
     const widthMap = new Map(columns.map(({ minWidth, id }) => ([id, minWidth])));
@@ -285,17 +264,18 @@
     });
 
     const treeGrid = new dhx.TreeGrid("@gridTab1", {
-    columns,
-    leftSplit: 1,
-    resizable: true,
-    keyNavigation: true,
-    rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        columns,
+        rowHeight: 30,
+        resizable: true,
+        leftSplit: 2,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         data: rawData,
     });
 
     const treeGridTab2 = new dhx.TreeGrid("@gridTab2", {
         columns: columnsTab2,
-        leftSplit: 1,
+        rowHeight: 30,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
@@ -303,17 +283,19 @@
     });
 
     const treeGridTab3 = new dhx.Grid("@gridTab3", {
-    columns: columnsTab3,
-    leftSplit: 1,
-    resizable: true,
-    keyNavigation: true,
-    rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-    data: rawDataTab3,
+        columns: columnsTab3,
+        leftSplit: 2,
+        rowHeight: 30,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        data: rawDataTab3,
     });
 
     const treeGridTab4 = new dhx.TreeGrid("@gridTab4", {
     columns: columnsTab4,
-    leftSplit: 1,
+        leftSplit: 1,
+        rowHeight: 30,
     resizable: true,
     keyNavigation: true,
     rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },

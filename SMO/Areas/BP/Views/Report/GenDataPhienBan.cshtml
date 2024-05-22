@@ -1,36 +1,33 @@
 ﻿@model List<SMO.Models.SynthesisReportModel>
+@using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
     var year = ViewBag.Year as int?;
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
-<style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-</style>
-<table class="table-condensed table-bordered table-striped font-13" style="width:100%">
-    <tbody>
-        <tr class="header-table">
-            <td>STT</td>
-            <td>Diễn giải</td>
-            <td>ĐVT</td>
-            <td>Kế hoạch @year (kịch bản cao)</td>
-            <td>Kế hoạch @year (kịch bản trung bình)</td>
-            <td>Kế hoạch @year (kịch bản thấp)</td>
-        </tr>
-        @foreach (var item in Model.OrderBy(x => x.Order))
-        {
-            var bold = item.IsBold == true ? "bold" : "";
-            <tr style="font-weight:@bold">
-                <td>@item.Stt</td>
-                <td>@item.Name</td>
-                <td>@item.UnitName</td>
-                <td class="align-right">@item.Value1.ToStringVN()</td>
-                <td class="align-right">@item.Value2.ToStringVN()</td>
-                <td class="align-right">@item.Value3.ToStringVN()</td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<script type="text/javascript">
+    const grid = new dhx.Grid("@gridId", {
+        columns: [
+            { id: "stt", header: [{ text: "STT", align: "center" }] },
+            { id: "name", header: [{ text: "DIỄN GIẢI", align: "center"}] },
+            { id: "unitName", header: [{ text: "ĐVT", align: "center"}], align: "center" },
+
+            { id: "value1", header: [{ text: "KH @year (CAO)", align: "center" }], align: "right", type: "number", format: "#.#" },
+            { id: "value2", header: [{ text: "KH @year (TRUNG BÌNH)", align: "center" }], align: "right", type: "number", format: "#.#" },
+            { id: "value3", header: [{ text: "KH @year (THẤP)", align: "center" }], align: "right", type: "number", format: "#.#" },
+        ],
+        data: @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings)),
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        selection: 'row',
+        rowHeight: 30,
+        headerHeight: 30,
+        adjust: true
+    });
+</script>
 

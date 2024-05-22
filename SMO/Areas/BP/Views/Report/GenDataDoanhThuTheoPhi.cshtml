@@ -111,20 +111,6 @@
 
 }
 
-<style>
-    .row-bold .dhx_grid-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
-
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
     <li role="presentation" class="active" style="cursor: pointer;">
         <a href="#tab1" data-toggle="tab">Doanh thu giá dịch vụ</a>
@@ -144,19 +130,19 @@
 </ul>
 <div class="tab-content" style="padding-bottom:0">
     <div role="tabpanel" class="tab-pane fade in active" id="tab1">
-        <div style="height: calc(100vh - 250px);" id="@gridTab1"></div>
+        <div style="height: calc(100vh - 262px);" id="@gridTab1"></div>
     </div>
     <div role="tabpanel" class="tab-pane fade" id="tab2">
-        <div style="height: calc(100vh - 250px);" id="@gridTab2"></div>
+        <div style="height: calc(100vh - 262px);" id="@gridTab2"></div>
     </div>
     <div role="tabpanel" class="tab-pane fade" id="tab3">
-        <div style="height: calc(100vh - 250px);" id="@gridTab3"></div>
+        <div style="height: calc(100vh - 262px);" id="@gridTab3"></div>
     </div>
     <div role="tabpanel" class="tab-pane fade" id="tab5">
-        <div style="height: calc(100vh - 250px);" id="@gridTab5"></div>
+        <div style="height: calc(100vh - 262px);" id="@gridTab5"></div>
     </div>
     <div role="tabpanel" class="tab-pane fade" id="tab4">
-        <div style="height: calc(100vh - 250px);" id="@gridTab4"></div>
+        <div style="height: calc(100vh - 262px);" id="@gridTab4"></div>
     </div>
 </div>
 <script type="text/javascript">
@@ -166,7 +152,7 @@
     const rawDataTab4 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab4, jsonSerializeSettings));
     const rawDataTab5 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab5, jsonSerializeSettings));
     const columns = [
-        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], width: 180 },
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }], width: 180 },
         { id: "sumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", width: 180 },
         { id: "jan", header: [{ text: "THÁNG 1", align: "center" }], align: "right", width: 180 },
         { id: "feb", header: [{ text: "THÁNG 2", align: "center" }], align: "right", width: 180 },
@@ -188,7 +174,8 @@
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        data: rawDataTab1
+        data: rawDataTab1,
+        rowHeight: 30,
     });
 
     const treeGridTab2 = new dhx.Grid("@gridTab2", {
@@ -197,7 +184,8 @@
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        data: rawDataTab2
+        data: rawDataTab2,
+        rowHeight: 30,
     });
 
     const treeGridTab3 = new dhx.Grid("@gridTab3", {
@@ -206,7 +194,8 @@
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        data: rawDataTab3
+        data: rawDataTab3,
+        rowHeight: 30,
     });
 
     const treeGridTab4 = new dhx.Grid("@gridTab4", {
@@ -215,7 +204,8 @@
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        data: rawDataTab4
+        data: rawDataTab4,
+        rowHeight: 30,
     });
 
     const treeGridTab5 = new dhx.Grid("@gridTab5", {
@@ -224,6 +214,7 @@
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        data: rawDataTab5
+        data: rawDataTab5,
+        rowHeight: 30,
     });
 </script>
