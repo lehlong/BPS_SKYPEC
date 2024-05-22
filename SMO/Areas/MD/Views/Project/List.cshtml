@@ -9,9 +9,9 @@
         <thead>
             <tr>
                 <th style="max-width: 120px;">Mã</th>
-                <th>Tên</th>
+                <th>Danh mục đầu tư</th>
                 <th>Năm bắt đầu</th>
-                <th>Kiểu đầu tư</th>
+                <th>Loại đầu tư</th>
                 <th>Loại</th>
                 <th>Chuyển tiếp</th>
                 <th>Đầu tư mới</th>
@@ -34,7 +34,7 @@
                     <td ondblclick="@vdbclickAction">@item.NAME</td>
                     <td ondblclick="@vdbclickAction">@(item.YEAR)</td>
                     <td ondblclick="@vdbclickAction">@(item?.LoaiHinh?.TEXT)</td>
-                    <td ondblclick="@vdbclickAction">@(item.TYPE == "TTB-LON" ? "Trang thiết bị lớn" : item.TYPE == "TTB-LE" ? "Trang thiết bị lẻ" : "")</td>
+                    <td ondblclick="@vdbclickAction">@(item.TYPE == "TTB-LON" ? "Đầu tư dự án" : item.TYPE == "TTB-LE" ? "Trang thiết bị lẻ" : "")</td>
                     <td ondblclick="@vdbclickAction"><input type="checkbox" class="form-control" @(item.CHUYEN_TIEP ? "checked" : "") style="position:unset; opacity: 1" disabled /></td>
                     <td ondblclick="@vdbclickAction"><input type="checkbox" class="form-control" @(item.DAU_TU_MOI ? "checked" : "") style="position:unset; opacity: 1" disabled /></td>
                     <td ondblclick="@vdbclickAction"><input type="checkbox" class="form-control" @(item.CHUAN_BI_DAU_TU ? "checked" : "") style="position:unset; opacity: 1" disabled /></td>

@@ -35,7 +35,7 @@
                                 </div>
                             </div>
 
-                            <label>Tên</label>
+                            <label>Danh mục đầu tư</label>
                             <div class="form-group">
                                 <div class="form-line">
                                     @Html.MyTextBoxFor(m => m.ObjDetail.NAME)
@@ -87,7 +87,7 @@
                                 </div>
                             </div>
 
-                            <label>Kiểu đầu tư</label>
+                            <label>Loại đầu tư</label>
                             <div class="form-group">
                                 @Html.MyDropDownListFor(m => m.ObjDetail.LOAI_HINH, SelectListUtilities.SelectLoaiHinhDauTu(false), new { @class = "selectpicker show-tick", @data_val = false })
                             </div>

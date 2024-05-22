@@ -166,7 +166,7 @@ namespace SMO
         {
             var lstData = new List<Data>();
             lstData.Add(new Data { Value = "", Text = "-" });
-            lstData.Add(new Data { Value = "TTB-LON", Text = "Trang thiết bị lớn" });
+            lstData.Add(new Data { Value = "TTB-LON", Text = "Đầu tư dự án" });
             lstData.Add(new Data { Value = "TTB-LE", Text = "Trang thiết bị lẻ" });
             return new SelectList(lstData, "Value", "Text", new Data { });
         }

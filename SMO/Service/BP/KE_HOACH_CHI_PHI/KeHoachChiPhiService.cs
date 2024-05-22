@@ -1487,7 +1487,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     el.Children = elements.Where(x => x.PARENT_CODE == el.CODE).ToList();
                 }
                 var detail = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
-                if(month != null) {
+                if(month != null && month != 0) {
                     detail = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.TIME_YEAR == model.YEAR && x.MONTH == month).ToList();
                 }
                 else
