@@ -12,33 +12,31 @@
 <script type="text/javascript">
     var rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model.chiPhiInReports, jsonSerializeSettings));
     var parentData = rawDataTab1.filter(x => x.isBold == true);
-    rawDataTab1.unshift({
-        name: 'TỔNG CỘNG',
-        isBold: true,
-        valueCQCT: _.sumBy(parentData, "valueCQCT"),
-        valueCNMB: _.sumBy(parentData, "valueCNMB"),
-        valueCNMT: _.sumBy(parentData, "valueCNMT"),
-        valueCNMN: _.sumBy(parentData, "valueCNMN"),
-        valueCNVT: _.sumBy(parentData, "valueCNVT"),
-        valueTcty: _.sumBy(parentData, "valueTcty"),
-    });
+    
+    Number.prototype.format = function (n, x, s, c) {
+        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+            num = this.toFixed(Math.max(0, ~~n));
+
+        return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+    };
 
     const grid = new dhx.Grid("@gridTab", {
         columns: [
-            { id: "stt", header: [{ text: "STT", align: "center" }], align: "center", minWidth: 100 },
-            { id: "name", header: [{ text: "Danh mục chi phí", align: "center" }] },
+            { id: "stt", header: [{ text: "STT", align: "center" }, ""], align: "center", minWidth: 100 },
+            { id: "name", header: [{ text: "Danh mục chi phí", align: "center" }, { text: "TỔNG CỘNG" }] },
 
-            { id: "valueCQCT", header: [{ text: "CQ Công ty", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "valueCNMB", header: [{ text: "CN Miền Bắc", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "valueCNMT", header: [{ text: "CN Miền Trung", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "valueCNMN", header: [{ text: "CN Miền Nam", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "valueCNVT", header: [{ text: "CN Vận Tải", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "valueTcty", header: [{ text: "Tổng cộng", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "valueCQCT", header: [{ text: "CQ Công ty", align: "center" }, { text: _.sumBy(parentData, "valueCQCT").format(0,3,'.',','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "valueCNMB", header: [{ text: "CN Miền Bắc", align: "center" }, { text: _.sumBy(parentData, "valueCNMB").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "valueCNMT", header: [{ text: "CN Miền Trung", align: "center" }, { text: _.sumBy(parentData, "valueCNMT").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "valueCNMN", header: [{ text: "CN Miền Nam", align: "center" }, { text: _.sumBy(parentData, "valueCNMN").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "valueCNVT", header: [{ text: "CN Vận Tải", align: "center" }, { text: _.sumBy(parentData, "valueCNVT").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "valueTcty", header: [{ text: "Tổng cộng", align: "center" }, { text: _.sumBy(parentData, "valueTcty").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
         ],
         adjust: true,
         data: rawDataTab1,
         selection: "row",
         rowHeight: 30,
+    topSplit:2,
         resizable: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
