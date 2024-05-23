@@ -201,44 +201,45 @@
 
                         <div class="p-t-10 p-b-5">
                             <div class="row">
-                                @if (AuthorizeUtilities.CheckUserRight("R5.13") || AuthorizeUtilities.CheckUserRight("R0"))
-                                {
-                                    <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexPhienBan", "BP/Report")')">
-                                        <i class="material-icons">notes</i> Kế hoạch sản xuất kinh doanh
-                                    </div>
-                                }
+
                                 @if (AuthorizeUtilities.CheckUserRight("R5.14") || AuthorizeUtilities.CheckUserRight("R0"))
                                 {
                                     <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexKichBan", "BP/Report")')">
-                                        <i class="material-icons">notes</i> Kế hoạch SXKD theo các kịch bản
+                                        <i class="material-icons">notes</i> (BM.01A) Kế hoạch SXKD theo các kịch bản
+                                    </div>
+                                }
+                                @if (AuthorizeUtilities.CheckUserRight("R5.13") || AuthorizeUtilities.CheckUserRight("R0"))
+                                {
+                                    <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexPhienBan", "BP/Report")')">
+                                        <i class="material-icons">notes</i> (BM.01A.1) Kế hoạch sản xuất kinh doanh
                                     </div>
                                 }
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM01D", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Ước tình hình thực hiện đầu tư vào các dự án hình thành TSCĐ
+                                    <i class="material-icons">notes</i> (BM.01D) Ước tình hình thực hiện đầu tư vào các dự án hình thành TSCĐ
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM01E", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Tình hình đầu tư vốn ra ngoài doanh nghiệp
+                                    <i class="material-icons">notes</i> (BM.01E) Tình hình đầu tư vốn ra ngoài doanh nghiệp
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02A", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Kế hoạch đầu tư XDCB và TTB năm kế hoạch
+                                    <i class="material-icons">notes</i> (BM.02A) Kế hoạch đầu tư XDCB và TTB năm kế hoạch
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02B", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Kế hoạch đầu tư vốn ra ngoài doanh nghiệp năm kế hoạch.
+                                    <i class="material-icons">notes</i> (BM.02B) Kế hoạch đầu tư vốn ra ngoài doanh nghiệp năm kế hoạch.
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02C", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Kế hoạch hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp
+                                    <i class="material-icons">notes</i> (BM.02C) Kế hoạch hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02C1", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp các kịch bản
+                                    <i class="material-icons">notes</i> (BM.02C.1) Hiệu quả từng lĩnh vực kinh doanh của doanh nghiệp các kịch bản
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02D", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Các khoản mục sản lượng, doanh thu, chi phí UTH
+                                    <i class="material-icons">notes</i> (BM.02D) Các khoản mục sản lượng, doanh thu, chi phí UTH
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02D1", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Các khoản mục sản lượng, doanh thu, chi phí UTH theo kịch bản
+                                    <i class="material-icons">notes</i> (BM.02D.1) Các khoản mục sản lượng, doanh thu, chi phí UTH theo kịch bản
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM02D2", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Biến động ảnh hưởng đến SXKD của các DN qua các năm
+                                    <i class="material-icons">notes</i> (BM.02D.2) Biến động ảnh hưởng đến SXKD của các DN qua các năm
                                 </div>
                             </div>
                         </div>
@@ -261,19 +262,19 @@
                         <div class="p-t-10 p-b-5">
                             <div class="row">
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM2107", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Báo cáo tình hình thực hiện đầu tư có xây dựng
+                                    <i class="material-icons">notes</i> (BM.21.07) Báo cáo tình hình thực hiện đầu tư có xây dựng
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM2108", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Báo cáo tình hình thực hiện đầu tư không có xây dựng
+                                    <i class="material-icons">notes</i> (BM.21.08) Báo cáo tình hình thực hiện đầu tư không có xây dựng
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM2109", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Báo cáo tình hình thực hiện sửa chữa lớn TSCĐ
+                                    <i class="material-icons">notes</i> (BM.21.09) Báo cáo tình hình thực hiện sửa chữa lớn TSCĐ
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM2110", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Báo cáo tình hình thực hiện các chỉ tiêu tổng hợp kế hoạch chi phí
+                                    <i class="material-icons">notes</i> (BM.21.10) Báo cáo tình hình thực hiện các chỉ tiêu tổng hợp kế hoạch chi phí
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexCKP", "BP/Report")')">
-                                    <i class="material-icons">notes</i> Báo cáo cấp kinh phí hàng tháng cho các đơn vị
+                                    <i class="material-icons">notes</i> (CKP) Báo cáo cấp kinh phí hàng tháng cho các đơn vị
                                 </div>
                             </div>
                         </div>
