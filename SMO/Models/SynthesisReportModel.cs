@@ -8,6 +8,8 @@ namespace SMO.Models
     public class SynthesisReportModel
     {
         public string Id { get; set; }
+        public Guid PId { get; set; }
+        public Guid Parent {  get; set; }
         public string Stt { get; set; }
         public string Name { get; set; }
         public string UnitName { get; set; }
