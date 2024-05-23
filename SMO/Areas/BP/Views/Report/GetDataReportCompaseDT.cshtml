@@ -168,6 +168,18 @@
         rowHeight: 30,
     });
 
+    treeGridTab1.events.on("scroll", function (e) {
+        treeGridTab2.scroll(e.x, 0);
+        treeGridTab3.scroll(e.x, 0);
+    });
+    treeGridTab2.events.on("scroll", function (e) {
+        treeGridTab1.scroll(e.x, 0);
+        treeGridTab3.scroll(e.x, 0);
+    });
+    treeGridTab3.events.on("scroll", function (e) {
+        treeGridTab1.scroll(e.x, 0);
+        treeGridTab2.scroll(e.x, 0);
+    });
 
 </script>
 
