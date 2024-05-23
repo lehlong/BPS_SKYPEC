@@ -3155,7 +3155,7 @@ namespace SMO.Service.BP
                 return new ReportDataCenter();
             }
         }
-        public List<ReportModel> GenDataBM2107(int year, int month, string phienBan, string kichBan)
+        public List<ReportModel> GenDataBM2107(int year, int month, string phienBan, string kichBan, string area)
         {
             try
             {
@@ -3169,7 +3169,8 @@ namespace SMO.Service.BP
                 var detailsTH = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => headerTH.Contains(x.TEMPLATE_CODE)).ToList();
 
 
-                var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.LOAI_HINH == "XDCB" && x.YEAR > 0).ToList();
+                var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.LOAI_HINH == "XDCB" && x.YEAR == year).ToList();
+                projects = string.IsNullOrEmpty(area) ? projects : projects.Where(x => x.AREA_CODE == area).ToList();
                 var order = 1;
                 data.Add(new ReportModel
                 {
@@ -3262,7 +3263,7 @@ namespace SMO.Service.BP
                 return new List<ReportModel>();
             }
         }
-        public List<ReportModel> GenDataBM2108(int year, int month, string phienBan, string kichBan)
+        public List<ReportModel> GenDataBM2108(int year, int month, string phienBan, string kichBan, string area)
         {
             try
             {
@@ -3275,8 +3276,9 @@ namespace SMO.Service.BP
                 var headerTH = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var detailsTH = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => headerTH.Contains(x.TEMPLATE_CODE)).ToList();
 
+                var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.LOAI_HINH == "TTB" && x.YEAR == year).ToList();
+                projects = string.IsNullOrEmpty(area) ? projects : projects.Where(x => x.AREA_CODE == area).ToList();
 
-                var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.LOAI_HINH == "TTB").ToList();
                 var order = 1;
                 data.Add(new ReportModel
                 {
@@ -3499,7 +3501,7 @@ namespace SMO.Service.BP
                 var header5 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var details5 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
 
-                var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().ToList();
+                var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
 
                 var dataTH = UnitOfWork.Repository<SyncCostRepo>().Queryable().Where(x => x.YEAR == year && x.MONTH <= month).ToList();
 
@@ -3507,8 +3509,9 @@ namespace SMO.Service.BP
                 {
                     var i = new ReportModel
                     {
+                        Stt = e.STT,
                         Name = e.GROUP_NAME,
-                        IsBold = string.IsNullOrEmpty(e.GROUP_2_ID) ? true : false,
+                        IsBold = e.IS_BOLD,
                         Col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID+ e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
                         Col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
                         Col4 = string.IsNullOrEmpty(e.GROUP_2_ID) ? dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID).Sum(x => x.VALUE) :

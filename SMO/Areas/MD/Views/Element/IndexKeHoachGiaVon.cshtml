@@ -18,10 +18,11 @@
                 </li>
             </ul>
 
-            <div class="tab-content">
+            <div class="tab-content" style="padding-bottom: 0">
                 <div class="page-function">
                     <div class="page-function-button m-r-20" style="float:left">
                         @Html.MyButton("cmdBack", "Quay lại", "Goback()", "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdAdd", "Kết xuất", "GetDataKeHoachGiaVon('');", "Alt+N", "search")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "DownloadData();", "Alt+N", "file_download")
                     </div>
 
@@ -52,12 +53,6 @@
                             </div>
                         </div>
                     </div>
-
-                    
-                </div>
-
-                <div id="divResult">
-
                 </div>
                 <div class="hidden">
                     <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("DownloadDataKHGV")">
@@ -65,6 +60,9 @@
                         @Html.Hidden("area")
                     </form>
                 </div>
+            </div>
+            <div id="divResult">
+
             </div>
         </div>
     </div>
@@ -117,7 +115,10 @@
 
         $(function () {
             Forms.CompleteUI();
-            onChangeTimeYear($("#TIME_YEAR").val())
+            setTimeout(function () {
+                onChangeTimeYear($("#TIME_YEAR").val());
+            }, 500);
+            
         });
 
         $(function () {

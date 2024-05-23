@@ -7,19 +7,6 @@
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var formIdExportExcel = Guid.NewGuid();
 }
-<style>
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 <div class="hidden">
@@ -30,35 +17,34 @@
 </div>
 <script type="text/javascript">
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
-    let columns = [
-        { id: "name", header: [{ text: "Danh mục dự án đầu tư xây dựng cơ bản", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
-
-        { id: "col1", header: [{ text: "Tổng vốn đầu tư giai đoạn", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col2", header: [{ text: "Kế hoạch kinh phí đầu tư", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-
-        { id: "col3", header: [{ text: "Giá trị khối lượng công việc thực hiện", align: "center", colspan: 3 }, { text: "Ước thực hiện tháng báo cáo", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col4", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col5", header: ["", { text: "%TH/KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-
-        { id: "col6", header: [{ text: "Giá trị giải ngân", align: "center", colspan: 2 }, { text: "Ước giải ngân tháng báo cáo", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col7", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-
-        { id: "des", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-    ];
     rawData.forEach((item) => {
         if (item.id == "A" || item.id == "B") delete item.parent;
         item.col7 = Number(item.col5) == 0 || Number(item.col3) == 0 ? 0 : Number(item.col5) / Number(item.col3) * 100
     });
 
     const treeGrid = new dhx.TreeGrid("@gridId", {
-        columns,
+        columns: [
+            { id: "name", header: [{ text: "Danh mục dự án đầu tư xây dựng cơ bản", align: "center", rowspan: 2 }], adjust: true },
+
+            { id: "col1", header: [{ text: "Tổng vốn đầu tư giai đoạn", align: "center", rowspan: 2 }], align: "right", width: 160, type: "number", format: "#,#" },
+            { id: "col2", header: [{ text: "Kế hoạch kinh phí đầu tư", align: "center", rowspan: 2 }], align: "right", width: 160, type: "number", format: "#,#" },
+
+            { id: "col3", header: [{ text: "Giá trị khối lượng công việc thực hiện", align: "center", colspan: 3 }, { text: "ƯTH tháng báo cáo", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
+            { id: "col4", header: ["", { text: "LK đến hết tháng báo cáo", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
+            { id: "col5", header: ["", { text: "%TH/KH", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
+
+            { id: "col6", header: [{ text: "Giá trị giải ngân", align: "center", colspan: 2 }, { text: "Ước giải ngân tháng báo cáo", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
+            { id: "col7", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
+
+            { id: "des", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], align: "right", adjust: true },
+        ],
         data: rawData,
         leftSplit: 1,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        selection: true,
-        autoHeight: true,
+        selection: 'row',
+        rowHeight: 30,
     });
 
      function ExportData() {

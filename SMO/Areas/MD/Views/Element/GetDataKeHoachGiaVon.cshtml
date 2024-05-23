@@ -89,32 +89,6 @@
 }
 
 <style>
-
-    table {
-        position: relative;
-        border-collapse: collapse;
-    }
-
-    thead {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        background: #eee;
-    }
-
-    .frozen {
-        position: -webkit-sticky; /* for Safari */
-        position: sticky;
-        left: 0;
-        background: #eee;
-    }
-
-    td, th, tr {
-        border: solid 1px #c2c2c2 !important;
-        text-align: center;
-    }
-
     .liNav {
         width: 150px;
         position: absolute;
@@ -135,28 +109,28 @@
         </div>
     </div>
     <ul class="nav nav-tabs " role="tablist" style="width: 100%; display: flex; position: relative;">
-        <li role="presentation" class="active" style="width:166px; cursor: pointer;">
-            <a href="#tab-1" title="Kế hoạch theo tháng" data-toggle="tab">KH Nhập nhiên liệu</a>
+        <li role="presentation" class="active" >
+            <a href="#tab-1" data-toggle="tab">KH Nhập nhiên liệu</a>
         </li>
-        <li role="presentation" style="cursor: pointer; width:166px;">
-            <a href="#tab-2" title="Kế hoạch theo tháng" data-toggle="tab">KH giá vốn</a>
+        <li role="presentation">
+            <a href="#tab-2" data-toggle="tab">KH giá vốn</a>
         </li>
-        <li role="presentation" style="cursor: pointer; width:166px;">
-            <a href="#tab-3" title="Kế hoạch theo tháng" data-toggle="tab">KH giá vốn theo tháng</a>
+        <li role="presentation">
+            <a href="#tab-3" data-toggle="tab">KH giá vốn theo tháng</a>
         </li>
     </ul>
 
     <div class="tab-content" style="padding-bottom:0">
         <div role="tabpanel" class="tab-pane fade in active" id="tab-1">
-            <div style="height: calc(100vh - 180px); width: 100%" id="@gridId"></div>
+            <div style="height: calc(100vh - 262px); width: 100%" id="@gridId"></div>
         </div>
         <div role="tabpanel" class="tab-pane fade in" id="tab-2">
-            <div style="height: calc(100vh - 180px); width: 100%" id="@gridId2"></div>
+            <div style="height: calc(100vh - 262px); width: 100%" id="@gridId2"></div>
 
         </div>
 
         <div role="tabpanel" class="tab-pane fade in" id="tab-3">
-            <div style="height: calc(100vh - 180px); width: 100%" id="@gridId3"></div>
+            <div style="height: calc(100vh - 262px); width: 100%" id="@gridId3"></div>
 
         </div>
 
@@ -173,42 +147,42 @@
     const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab2, jsonSerializeSettings));
     const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab3, jsonSerializeSettings));
     let columns = [
-        { id: "warehouse", header: [{ text: "KHO ĐẦU NGUỒN", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
-        { id: "areaCode", header: [{ text: "KHU VỰC", align: "center", rowspan: 2 }], align: "center", minWidth: 180 },
-        { id: "delivery", header: [{ text: "ĐK GIAO HÀNG", align: "center", rowspan: 2 }], align: "center", minWidth: 180 },
-        { id: "s0001", header: [{ text: "TỶ LỆ NHẬP", align: "center", colspan: 2 }, { text: "TỶ LỆ NHẬP THEO KHO", align: "center" }], align: "right", minWidth: 180 },
-        { id: "s0002", header: [{ text: "", align: "center" }, { text: "SL NHẬP THEO KHO", align: "center" }], align: "right", minWidth: 180 },
-        { id: "u0001", header: [{ text: "PLATT'S ($/THÙNG)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 180 },
-        { id: "s0003", header: [{ text: "PREMIUM", align: "center", colspan: 2 }, { text: "HÀNG (THÙNG)", align: "center" }], align: "right", minWidth: 180 },
-        { id: "s0004", header: [{ text: "", align: "center" }, { text: "TÀU", align: "center" }], align: "right", minWidth: 180 },
-        { id: "u0002", header: [{ text: "CFR ($/THÙNG)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 180 },
-        { id: "s0005", header: [{ text: "THÙNG/TẤN", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 180 },
-        { id: "u0003", header: [{ text: "GIÁ CFR ($/TẤN)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 180 },
-        { id: "s0006", header: [{ text: "BẢO HIỂM ($/TẤN)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 180 },
-        { id: "s0008", header: [{ text: "THUẾ NK", align: "center", colspan: 2 }, { text: "THUẾ SUẤT", align: "center" }], align: "right", minWidth: 180 },
-        { id: "thueSuat", header: [{ text: "", align: "center"}, { text: "THUẾ ($/TẤN)", align: "center" }], align: "right", minWidth: 180 },
-        { id: "s0007", header: [{ text: "THUẾ ƯU ĐÃI", align: "center", colspan: 2 }, { text: "THUẾ SUẤT", align: "center" }], align: "right", minWidth: 180 },
-        { id: "u0004", header: [{ text: "", align: "center" }, { text: "THUẾ ($/TẤN)", align: "center" }], align: "right", minWidth: 180 },
-        { id: "u0005", header: [{ text: "CIF + TẤN ($/TẤN)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 180 },
-        { id: "u0006", header: [{ text: "CIF + TẤN ($/TẤN) BQ", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "u0007", header: [{ text: "CIF + TẤN ($/TẤN) BQ", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "u0008", header: [{ text: "PRE + BH ($/THÙNG)", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
-        { id: "u0009", header: [{ text: "", align: "center" }], align: "right", minWidth: 60 },
+        { id: "warehouse", header: [{ text: "KHO ĐN", align: "center", rowspan: 2 }], minWidth: 120 },
+        { id: "areaCode", header: [{ text: "KHU VỰC", align: "center", rowspan: 2 }], minWidth: 120 },
+        { id: "delivery", header: [{ text: "ĐK GIAO HÀNG", align: "center", rowspan: 2 }], minWidth: 140 },
+        { id: "s0001", header: [{ text: "TỶ LỆ NHẬP", align: "center", colspan: 2 }, { text: "TỶ LỆ NHẬP THEO KHO", align: "center" }], align: "right", minWidth: 160 },
+        { id: "s0002", header: [{ text: "", align: "center" }, { text: "SL NHẬP THEO KHO", align: "center" }], align: "right", minWidth: 160 },
+        { id: "u0001", header: [{ text: "PLATT'S ($/THÙNG)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 136 },
+        { id: "s0003", header: [{ text: "PREMIUM", align: "center", colspan: 2 }, { text: "HÀNG (THÙNG)", align: "center" }], align: "right", minWidth: 124 },
+        { id: "s0004", header: [{ text: "", align: "center" }, { text: "TÀU", align: "center" }], align: "right", minWidth: 120 },
+        { id: "u0002", header: [{ text: "CFR ($/THÙNG)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 140 },
+        { id: "s0005", header: [{ text: "THÙNG/TẤN", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 120 },
+        { id: "u0003", header: [{ text: "GIÁ CFR ($/TẤN)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 140 },
+        { id: "s0006", header: [{ text: "BẢO HIỂM ($/TẤN)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 140 },
+        { id: "s0008", header: [{ text: "THUẾ NK", align: "center", colspan: 2 }, { text: "THUẾ SUẤT", align: "center" }], align: "right", minWidth: 120 },
+        { id: "thueSuat", header: [{ text: "", align: "center"}, { text: "THUẾ ($/TẤN)", align: "center" }], align: "right", minWidth: 120 },
+        { id: "s0007", header: [{ text: "THUẾ ƯU ĐÃI", align: "center", colspan: 2 }, { text: "THUẾ SUẤT", align: "center" }], align: "right", minWidth: 120 },
+        { id: "u0004", header: [{ text: "", align: "center" }, { text: "THUẾ ($/TẤN)", align: "center" }], align: "right", minWidth: 120 },
+        { id: "u0005", header: [{ text: "CIF + TẤN ($/TẤN)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 140 },
+        { id: "u0006", header: [{ text: "CIF + TẤN ($/TẤN) BQ", align: "center", rowspan: 2 }], align: "right", minWidth: 140 },
+        { id: "u0007", header: [{ text: "CIF + TẤN ($/TẤN) BQ", align: "center", rowspan: 2 }], align: "right", minWidth: 140 },
+        { id: "u0008", header: [{ text: "PRE + BH ($/THÙNG)", align: "center", rowspan: 2 }], align: "right", minWidth: 140 },
+        { id: "u0009", header: [{ text: "", align: "center", rowspan: 2 }], align: "right", minWidth: 60 },
         { id: "u0010", header: [{ text: "GIẢM TRỪ THUẾ HÀNG DUNG QUẤT + FORM D", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
     ];
 
     let columnsTab2 = [
-        { id: "name", header: [{ text: "KHÁCH HÀNG", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
-        { id: "value1", header: [{ text: "SẢN LƯỢNG", align: "center", rowspan:3 }],align:"right", minWidth: 180 },
-        { id: "value2", header: [{ text: "CHI TIẾT GIÁ VỐN (USD/TẤN)", align: "center", colspan:9 }, { text: "MOPS ($/TẤN)", align: "center", rowspan:2 }],align:"right", minWidth: 180 },
-        { id: "value3", header: [{ text: "", align: "center" }, { text: "PRE+BH ($/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 180 },
-        { id: "value4", header: [{ text: "", align: "center" }, { text: "CIF ($/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 180 },
-        { id: "value5", header: [{ text: "", align: "center" }, { text: "THUẾ ($/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 180 },
-        { id: "value6", header: [{ text: "", align: "center" }, { text: "CP MUA HÀNG (Đ/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 180 },
-        { id: "value7", header: [{ text: "", align: "center" }, { text: "HAO HỤT ($/TẤN)", align: "center", colspan:3 }, { text: "CỘNG HH", align: "center" }],align:"right", minWidth: 80 },
-        { id: "value8", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "CƯ", align: "center" }],align:"right", minWidth: 80 },
-        { id: "value9", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "TN", align: "center" }],align:"right", minWidth: 80 },
-        { id: "value10", header: [{ text: "", align: "center" }, { text: "PHÍ FHS", align: "center", rowspan: 2 }],align:"right", minWidth: 180 },
+        { id: "name", header: [{ text: "KHÁCH HÀNG", align: "center", rowspan: 3 }], minWidth: 220 },
+        { id: "value1", header: [{ text: "SẢN LƯỢNG", align: "center", rowspan:3 }],align:"right", minWidth: 120 },
+        { id: "value2", header: [{ text: "CHI TIẾT GIÁ VỐN (USD/TẤN)", align: "center", colspan:9 }, { text: "MOPS ($/TẤN)", align: "center", rowspan:2 }],align:"right", minWidth: 120 },
+        { id: "value3", header: [{ text: "", align: "center" }, { text: "PRE+BH ($/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 120 },
+        { id: "value4", header: [{ text: "", align: "center" }, { text: "CIF ($/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 120 },
+        { id: "value5", header: [{ text: "", align: "center" }, { text: "THUẾ ($/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 120 },
+        { id: "value6", header: [{ text: "", align: "center" }, { text: "CP MUA HÀNG (Đ/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 140 },
+        { id: "value7", header: [{ text: "", align: "center" }, { text: "HAO HỤT ($/TẤN)", align: "center", colspan:3 }, { text: "CỘNG HH", align: "center" }],align:"right", minWidth: 100 },
+        { id: "value8", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "CƯ", align: "center" }],align:"right", minWidth: 100 },
+        { id: "value9", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "TN", align: "center" }],align:"right", minWidth: 100 },
+        { id: "value10", header: [{ text: "", align: "center" }, { text: "PHÍ FHS", align: "center", rowspan: 2 }],align:"right", minWidth: 100 },
         { id: "value11", header: [{ text: "TỶ GIÁ", align: "center", rowspan: 3}],align:"right", minWidth: 180 },
         { id: "value12", header: [{ text: "GIÁ VỐN", align: "center", colspan: 2 }, { text: "CỘNG Đ.GIÁ (Đ/TẤN)", align: "center", rowspan: 2 }],align:"right", minWidth: 180 },
         { id: "value13", header: [{ text: "", align: "center" }, { text: "TỔNG GIÁ VỐN (TRVNĐ)", align: "center", rowspan: 2 }],align:"right", minWidth: 180 },
@@ -260,20 +234,22 @@
     });
     const treeGridTab1 = new dhx.Grid("@gridId", {
         columns,
-        leftSplit: 1,
+        leftSplit: 3,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         data: rawData,
+        rowHeight: 30
     });
 
     const treeGridTab2 = new dhx.TreeGrid("@gridId2", {
-    columns: columnsTab2,
-    leftSplit: 1,
-    resizable: true,
-    keyNavigation: true,
-    rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-    data: rawDataTab2,
+        columns: columnsTab2,
+        leftSplit: 1,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        data: rawDataTab2,
+        rowHeight: 30
     });
 
     const treeGridTab3 = new dhx.TreeGrid("@gridId3", {

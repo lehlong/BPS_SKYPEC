@@ -12,21 +12,21 @@
 <script type="text/javascript">
     const grid = new dhx.Grid("@gridId", {
         columns: [
-            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }] },
-            { id: "name", header: [{ text: "DIỄN GIẢI", align: "center", rowspan: 2 }] },
+            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", width: 100 },
+            { id: "name", header: [{ text: "DIỄN GIẢI", align: "center" }, {content: 'inputFilter'}], adjust: true },
             { id: "unitName", header: [{ text: "ĐVT", align: "center", rowspan: 2 }], align: "center" },
 
-            { id: "value1", header: [{ text: "TH @(year - 2)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
-            { id: "value2", header: [{ text: "NĂM @(year - 1)", align: "center", colspan: 4 }, { text: "KH", align: "center" }], align: "right", type: "number", format: "#.#" },
+            { id: "value1", header: [{ text: "TH @(year - 2)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value2", header: [{ text: "NĂM @(year - 1)", align: "center", colspan: 4 }, { text: "KH (V2)", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
 
-            { id: "value3", header: ['', { text: "9T ĐN", align: "center" }], align: "right", type: "number", format: "#.#" },
-            { id: "value4", header: ['', { text: "ƯỚC TH NĂM", align: "center" }], align: "right", type: "number", format: "#.#" },
-            { id: "value9", header: ['', { text: "TH/KH", align: "center" }], align: "right", type: "number", format: "#.#" },
+            { id: "value3", header: ['', { text: "9T ĐN", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value4", header: ['', { text: "ƯỚC TH NĂM", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value9", header: ['', { text: "% TH/KH", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
 
-            { id: "value5", header: [{ text: "KH @year", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
-            { id: "value6", header: [{ text: "KH @year SAU THẨM ĐỊNH", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
-            { id: "value7", header: [{ text: "KH @year / TH @(year -2) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
-            { id: "value8", header: [{ text: "KH @year / ƯTH @(year - 1) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#" },
+            { id: "value5", header: [{ text: "KH @year (V1)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value6", header: [{ text: "KH @year (V2)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value7", header: [{ text: "KH @year / TH @(year -2) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value8", header: [{ text: "KH @year / ƯTH @(year - 1) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
 
         ],
         data: @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings)),
@@ -35,7 +35,6 @@
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         selection: 'row',
         rowHeight: 30,
-        headerHeight: 30,
-        adjust: true
+        leftSplit: 3
     });
 </script>

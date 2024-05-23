@@ -12,13 +12,12 @@
 <script type="text/javascript">
     const grid = new dhx.Grid("@gridId", {
         columns: [
-            { id: "stt", header: [{ text: "STT", align: "center" }] },
-            { id: "name", header: [{ text: "DIỄN GIẢI", align: "center"}] },
-            { id: "unitName", header: [{ text: "ĐVT", align: "center"}], align: "center" },
-
-            { id: "value1", header: [{ text: "KH @year (CAO)", align: "center" }], align: "right", type: "number", format: "#.#" },
-            { id: "value2", header: [{ text: "KH @year (TRUNG BÌNH)", align: "center" }], align: "right", type: "number", format: "#.#" },
-            { id: "value3", header: [{ text: "KH @year (THẤP)", align: "center" }], align: "right", type: "number", format: "#.#" },
+            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center" },
+            { id: "name", header: [{ text: "DIỄN GIẢI", align: "center" }, {content: "inputFilter"}], adjust: true },
+            { id: "unitName", header: [{ text: "ĐVT", align: "center", rowspan: 2 }], align: "center" },
+            { id: "value1", header: [{ text: "KH @year (CAO)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 160 },
+            { id: "value2", header: [{ text: "KH @year (TRUNG BÌNH)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 160 },
+            { id: "value3", header: [{ text: "KH @year (THẤP)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 160 },
         ],
         data: @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings)),
         resizable: true,
@@ -26,8 +25,6 @@
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         selection: 'row',
         rowHeight: 30,
-        headerHeight: 30,
-        adjust: true
     });
 </script>
 
