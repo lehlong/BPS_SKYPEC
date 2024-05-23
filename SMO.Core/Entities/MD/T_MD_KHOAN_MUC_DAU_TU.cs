@@ -71,6 +71,11 @@ namespace SMO.Core.Entities.MD
         public virtual string QKH { get; set; }
 
 
+        public virtual string PROJECT_CODE { get; set; }
+        public virtual string PROJECT_NAME { get; set; }
+
+        public virtual int LEVEL { get; set; }
+
         public virtual object Clone()
         {
             return MemberwiseClone();

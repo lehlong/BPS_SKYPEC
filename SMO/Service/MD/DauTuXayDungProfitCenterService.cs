@@ -1,4 +1,5 @@
-﻿using SMO.Core.Entities.MD;
+﻿using SMO.Core.Entities;
+using SMO.Core.Entities.MD;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Common;
 
@@ -87,6 +88,12 @@ namespace SMO.Service.MD
             }
 
             return lstNode;
+        }
+
+        internal IList<T_MD_PROJECT> GetListProject(string templateId, int year)
+        {
+            var lstPj = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.LOAI_HINH == "XDCB").ToList();
+            return lstPj;
         }
     }
 }

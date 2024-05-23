@@ -1,0 +1,59 @@
+﻿@model SMO.Service.MD.TemplateService
+@{
+    var frmFormCode = "frmProjectIndex";
+    var number = 1;
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+}
+@using (Ajax.BeginForm("SaveTemplate", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ObjDetail.BUDGET_TYPE)
+    @Html.HiddenFor(m => m.ObjDetail.CODE)
+    @Html.HiddenFor(m => m.ViewId)
+    @Html.HiddenFor(m => m.ObjDetail.ELEMENT_TYPE)
+    @Html.HiddenFor(m => m.ObjDetail.OBJECT_TYPE)
+    @Html.HiddenFor(m => m.ObjDetail.ORG_CODE)
+    @Html.HiddenFor(m => m.TIME_YEAR)
+
+    <div class="table-responsive" style="width:100%;">
+        <table class="table table-condensed table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Danh mục đầu tư</th>
+                    <th>Năm bắt đầu</th>
+                    <th>Loại đầu tư</th>
+                    <th>Loại</th>
+                    <th>Ngành nghề</th>
+                    <th>Phân loại</th>
+                    <th>Khu vực</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lstProject)
+                {
+                    number++;
+                    var check = item.IsCheck == true? "checked": "";
+                    var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Edit", new { id = item.CODE }));
+                    <tr>
+                        <td ondblclick="@vdbclickAction" style="text-align:center; display:flex; justify-content:center;">
+                            <input type="checkbox" @check name="selectedCodes" class="form-control" style="position:unset; opacity: 1" value="@item.CODE" />
+                        </td>
+                        <td ondblclick="@vdbclickAction">@item.NAME</td>
+                        <td ondblclick="@vdbclickAction">@(item.YEAR)</td>
+                        <td ondblclick="@vdbclickAction">@(item?.LoaiHinh?.TEXT)</td>
+                        <td ondblclick="@vdbclickAction">@(item.TYPE == "TTB-LON" ? "Đầu tư dự án" : item.TYPE == "TTB-LE" ? "Trang thiết bị lẻ" : "")</td>
+                        <td ondblclick="@vdbclickAction">@(item?.NganhNghe?.TEXT)</td>
+                        <td ondblclick="@vdbclickAction">@(item?.PhanLoai?.TEXT)</td>
+                        <td ondblclick="@vdbclickAction">@(item?.Area?.TEXT)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <button type="submit" id="saveTemplate" hidden>Submit</button>
+    <script>
+    </script>
+}
+

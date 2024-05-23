@@ -21,6 +21,7 @@ namespace SMO.Core.Common
         public virtual string PKID { get; set; }
         public virtual string TEMPLATE_CODE { get; set; }
         public virtual string ELEMENT_CODE { get; set; }
+
         public virtual string CENTER_CODE { get; set; }
         public virtual TElement Element { get; set; }
         public virtual TCenter Center { get; set; }

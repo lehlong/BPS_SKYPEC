@@ -3139,6 +3139,35 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
         }
 
 
+        public IList<T_MD_KHOAN_MUC_DAU_TU>ViewTemPlate(string templateId, int year)
+        {
+            var templateDetails = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year).ToList();
+            var lstProject = templateDetails.Select(x => x.Center.Project).Distinct().ToList();
+            var lstKhoanMuc = new List<T_MD_KHOAN_MUC_DAU_TU>();
+            foreach(var project in lstProject)
+            {
+                var item = new T_MD_KHOAN_MUC_DAU_TU
+                {
+                    PROJECT_CODE = project.CODE,
+                    PROJECT_NAME = project.NAME,
+                    LEVEL = 0
+                };
+                lstKhoanMuc.Add(item);
+                var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == project.TYPE).ToList();
+                foreach(var gd in lstgiaiDoan)
+                {
+                    var itemChild = new T_MD_KHOAN_MUC_DAU_TU
+                    {
+                        PROJECT_CODE = string.Empty,
+                        PROJECT_NAME = gd?.TEXT,
+                        LEVEL = 1
+                    };
+                    lstKhoanMuc.Add(itemChild);
+                }
+            }
+            return lstKhoanMuc;
+        }
+
 
         /// <summary>
         /// Xem theo center code

@@ -48,8 +48,7 @@ namespace SMO.Areas.BP.Controllers
         {
             if (!string.IsNullOrEmpty(templateId))
             {
-                var dataCost = _service.PreparePureListForTemplate(out IList<T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG> detailOtherCostElements, templateId, year);
-                ViewBag.detailOtherCostElements = detailOtherCostElements;
+                var dataCost = _service.ViewTemPlate(templateId, year);
                 return PartialView("ViewTemplateDauTuXayDung", dataCost);
                 //var isBaseTemplate = _service.GetTemplate(templateId).IS_BASE;
                 //if (isBaseTemplate)

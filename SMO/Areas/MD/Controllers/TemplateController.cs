@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace SMO.Areas.MD.Controllers
 {
@@ -607,6 +608,41 @@ namespace SMO.Areas.MD.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
         }
+
+        public ActionResult ViewDataDauTu(string templateId, string type, int year)
+        {
+            _service.Get(templateId);
+            _service.TIME_YEAR = year;
+            var data = _service.GetDataProject(templateId, year);
+            _service.lstProject = data;
+            return PartialView(_service);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult SaveTemplate(TemplateService service,List<string> selectedCodes)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            if(selectedCodes == null || selectedCodes.Count == 0)
+            {
+                service.State = false;
+                service.ErrorMessage = "Bạn chưa chọn dự án nào!";
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", service, result);
+            }
+            _service.ObjDetail = service.ObjDetail;
+            _service.TIME_YEAR = service.TIME_YEAR;
+            _service.SaveTemplate(selectedCodes);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", service, result);
+            }
+            return result.ToJsonResult();
+        }
+
         [MyValidateAntiForgeryToken]
         public ActionResult BuildTreeDauTuXayDung(string templateId, string type, int year)
         {

@@ -3,14 +3,13 @@
 @using System.Text;
 
 @{
-    var detailOtherCostElements = ViewBag.detailOtherCostElements as IList<T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG>;
     var viewId = Guid.NewGuid().ToString();
 }
 <div id="@viewId" class="container-fluid child-content">
     <div class="card">
         <div class="body" style="padding-top: 0px">
 
-            @if (detailOtherCostElements == null || detailOtherCostElements.Count == 0)
+            @if (Model == null || Model.Count == 0)
             {
                 <div class="p-t-10">
                     @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
@@ -56,11 +55,16 @@
                                 </thead>
                                 <tbody>
 
-                                    @foreach (var detail in detailOtherCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.Organize.CODE).ThenBy(x => x.Center.Project.CODE))
+                                    @foreach (var detail in Model)
                                     {
+                                        var space = new StringBuilder();
+                                        for(int i = 0; i < detail.LEVEL; i++)
+                                        {
+                                            space.Append("\t");
+                                        }
                                         <tr>
-                                            <td>@detail.Center.PROJECT_CODE</td>
-                                            <td>@detail.Center.Project.NAME</td>
+                                            <td>@detail.PROJECT_CODE.ToString()</td>
+                                            <td>@($"{space.ToString()}{detail.PROJECT_NAME}")</td>
                                             <td></td>
                                             <td></td>
                                             <td></td>

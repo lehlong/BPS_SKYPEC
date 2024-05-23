@@ -12,6 +12,7 @@ namespace SMO.Repository.Mapping.MD
             Table("T_MD_GIAI_DOAN_DAU_TU");
             Id(x => x.CODE);
             Map(x => x.TEXT).Nullable();
+            Map(x => x.TYPE);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
         }
     }

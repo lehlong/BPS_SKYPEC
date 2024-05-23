@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using NHibernate.Dialect;
 using NHibernate.Linq;
+using NHibernate.SqlCommand;
 using SMO.Core.Common;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
@@ -28,6 +29,8 @@ using SMO.Repository.Implement.MD;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Web.UI;
 
 namespace SMO.Service.MD
 {
@@ -35,6 +38,8 @@ namespace SMO.Service.MD
     {
         public int TIME_YEAR { get; set; }
         public string TEMPLATE_REFERENCE { get; set; }
+
+        public IList<T_MD_PROJECT> lstProject { get; set; }
         public override void Create()
         {
             if (string.IsNullOrEmpty(ObjDetail.NAME))
@@ -1862,6 +1867,76 @@ namespace SMO.Service.MD
                         }
                     }
                 }
+            }
+        }
+
+        public IList<T_MD_PROJECT> GetDataProject(string templateId, int year)
+        {
+            var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.LOAI_HINH == "XDCB").ToList();
+            var selectedPjCode = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId).Select(x=>x.Center.PROJECT_CODE).Distinct().ToList();
+            foreach (var item in lstProject)
+            {
+                if (selectedPjCode.Contains(item.CODE))
+                {
+                    item.IsCheck = true;
+                }
+            }
+            return lstProject;
+        }
+
+        public void SaveTemplate(List<string> selectedCodes)
+        {
+            try
+            {
+                var companyCode = ObjDetail.ORG_CODE;
+                var template = ObjDetail.CODE;
+                var year = TIME_YEAR;
+                UnitOfWork.BeginTransaction();
+                var lstPjCode = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == template).Select(x => x.CENTER_CODE).Distinct().ToList();
+                UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => lstPjCode.Contains(x.CENTER_CODE) && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                foreach (var projectCode in selectedCodes)
+                {
+                    var project = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x=>x.CODE == projectCode && x.YEAR == year);
+                    var loaiHinhDauTu = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == project.TYPE).Select(x=>x.CODE).ToList();
+                    var profitCenter = UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().Queryable().FirstOrDefault(x => x.ORG_CODE == companyCode && x.PROJECT_CODE == projectCode);
+                    var centerCode = profitCenter == null ? Guid.NewGuid().ToString() : profitCenter.CODE;
+                    if (profitCenter == null)
+                    {
+                        UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().Create(new T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER
+                        {
+                            CODE = centerCode,
+                            ORG_CODE = companyCode,
+                            PROJECT_CODE = projectCode,
+                        });
+                    }
+                    else
+                    {
+                        UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                    }
+
+                    switch (ObjDetail.BUDGET_TYPE.Trim())
+                    {
+                        case BudgetType.DauTuXayDung:
+                            var detailsCostPL = from d in loaiHinhDauTu
+                                                select new T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG
+                                                (Guid.NewGuid().ToString(), template, d, centerCode, year);
+
+                            UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Create(detailsCostPL.ToList());
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                }
+                  UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                Exception = ex;
+                State = false;
+                ErrorMessage = ex.Message;
             }
         }
     }

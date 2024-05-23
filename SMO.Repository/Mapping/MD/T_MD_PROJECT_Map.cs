@@ -25,6 +25,7 @@ namespace SMO.Repository.Mapping.MD
             References(x => x.LoaiHinh).Column("LOAI_HINH").Not.Insert().Not.Update().LazyLoad();
             References(x => x.NganhNghe).Column("NGANH_NGHE").Not.Insert().Not.Update().LazyLoad();
             References(x => x.PhanLoai).Column("PHAN_LOAI").Not.Insert().Not.Update().LazyLoad();
+            References(x => x.GiaiDoan).Column("GIAI_DOAN").Not.Insert().Not.Update().LazyLoad();
             References(x => x.Area).Column("AREA_CODE").Not.Insert().Not.Update().LazyLoad();
         }
     }

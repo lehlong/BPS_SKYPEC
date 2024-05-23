@@ -22,6 +22,8 @@ namespace SMO.Core.Entities
         public virtual string AREA_CODE { get; set; }
         public virtual string TYPE { get; set; }
 
+        public virtual bool IsCheck { get; set; } = false;
+
         private T_MD_AREA _Area;
         public virtual T_MD_AREA Area
         {
@@ -87,6 +89,23 @@ namespace SMO.Core.Entities
             set
             {
                 _PhanLoai = value;
+            }
+        }
+
+        private T_MD_GIAI_DOAN_DAU_TU _GiaiDoan;
+        public virtual T_MD_GIAI_DOAN_DAU_TU GiaiDoan
+        {
+            get
+            {
+                if (_GiaiDoan == null)
+                {
+                    _GiaiDoan = new T_MD_GIAI_DOAN_DAU_TU();
+                }
+                return _GiaiDoan;
+            }
+            set
+            {
+                _GiaiDoan = value;
             }
         }
     }
