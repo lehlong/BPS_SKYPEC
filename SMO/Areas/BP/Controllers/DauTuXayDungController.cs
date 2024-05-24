@@ -48,7 +48,7 @@ namespace SMO.Areas.BP.Controllers
         {
             if (!string.IsNullOrEmpty(templateId))
             {
-                var dataCost = _service.ViewTemPlate(templateId, year);
+                var dataCost = _service.GetDataTemPlate(templateId, year);
                 return PartialView("ViewTemplateDauTuXayDung", dataCost);
                 //var isBaseTemplate = _service.GetTemplate(templateId).IS_BASE;
                 //if (isBaseTemplate)

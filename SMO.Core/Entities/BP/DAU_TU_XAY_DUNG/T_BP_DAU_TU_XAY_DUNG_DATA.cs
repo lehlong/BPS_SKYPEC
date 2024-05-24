@@ -12,13 +12,13 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
         public virtual decimal? VALUE_1 { get; set; }
-        public virtual decimal? VALUE_2 { get; set; }
-        public virtual decimal? VALUE_3 { get; set; }
+        public virtual string VALUE_2 { get; set; }
+        public virtual string VALUE_3 { get; set; }
         public virtual decimal? VALUE_4 { get; set; }
         public virtual decimal? VALUE_5 { get; set; }
-        public virtual decimal? VALUE_6 { get; set; }
+        public virtual string VALUE_6 { get; set; }
         public virtual decimal? VALUE_7 { get; set; }
-        public virtual decimal? VALUE_8 { get; set; }
+        public virtual string VALUE_8 { get; set; }
 
         public virtual decimal? MONTH1 { get; set; }
         public virtual decimal? MONTH2 { get; set; }

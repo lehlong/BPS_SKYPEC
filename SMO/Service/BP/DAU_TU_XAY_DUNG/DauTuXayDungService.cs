@@ -2025,42 +2025,23 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
 
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
-                        var valueStr = tableData.Rows[i][2].ToString();
-                        var valueStr1 = tableData.Rows[i][5].ToString();
-                        var valueStr2 = tableData.Rows[i][6].ToString();
-                        var valueStr3 = tableData.Rows[i][8].ToString();
+                        var valueStr = tableData.Rows[i][3].ToString();
+                        var valueStr1 = tableData.Rows[i][6].ToString();
+                        var valueStr2 = tableData.Rows[i][7].ToString();
+                        var valueStr3 = tableData.Rows[i][9].ToString();
 
-                        if (!decimal.TryParse(tableData.Rows[i][2].ToString(), out decimal value) && !string.IsNullOrEmpty(valueStr))
-                        {
-                            this.State = false;
-                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 3";
-                            return;
-                        }
-                        if (!decimal.TryParse(tableData.Rows[i][5].ToString(), out decimal value1) && !string.IsNullOrEmpty(valueStr1))
-                        {
-                            this.State = false;
-                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 6";
-                            return;
-                        }
-                        if (!decimal.TryParse(tableData.Rows[i][6].ToString(), out decimal value2) && !string.IsNullOrEmpty(valueStr2))
-                        {
-                            this.State = false;
-                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 7";
-                            return;
-                        }
 
-                        if (!decimal.TryParse(tableData.Rows[i][8].ToString(), out decimal value3) && !string.IsNullOrEmpty(valueStr3))
-                        {
-                            this.State = false;
-                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}, cột 9";
-                            return;
-                        }
-
-                        var value4001 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? 0 : tableData.Rows[i][2]);
-                        var value4010 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? 0 : tableData.Rows[i][5]);
-                        var value4011 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
-                        var value4020 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
-                        foreach (var ele in lstElement.Where(x => x.CENTER_CODE == centerCode))
+                        var value_1 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
+                        var value_2 = tableData.Rows[i][4].ToString();
+                        var value_3 = tableData.Rows[i][5].ToString();
+                        var value_4 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
+                        var value_5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
+                        var value_6 = tableData.Rows[i][8].ToString();
+                        var value_7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
+                        var value_8 = tableData.Rows[i][10].ToString();
+                        var description = tableData.Rows[i][11].ToString();
+                        var elementCode = tableData.Rows[i][1].ToString();
+                        if (!string.IsNullOrEmpty(elementCode))
                         {
                             costData = new T_BP_DAU_TU_XAY_DUNG_DATA()
                             {
@@ -2071,17 +2052,25 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 TIME_YEAR = ObjDetail.TIME_YEAR,
                                 STATUS = Approve_Status.ChuaTrinhDuyet,
                                 VERSION = versionNext,
-                                KHOAN_MUC_DAU_TU_CODE = ele.ELEMENT_CODE,
-                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4011" ? value4011 : ele.ELEMENT_CODE == "4020" ? value4020 : 0,
-                                DESCRIPTION = tableData.Rows[i][10].ToString(),
-                                PROCESS = tableData.Rows[i][4].ToString(),
-                                TDTK = tableData.Rows[i][7].ToString(),
-                                EQUITY_SOURCES = tableData.Rows[i][3].ToString(),
-                                QKH = tableData.Rows[i][9].ToString(),
+                                KHOAN_MUC_DAU_TU_CODE = elementCode,
+                                VALUE_1 = value_1,
+                                VALUE_2 = value_2,
+                                VALUE_3 = value_3,
+                                VALUE_4 = value_4,
+                                VALUE_5 = value_5,
+                                VALUE_6 = value_6,
+                                VALUE_7 = value_7,
+                                VALUE_8 = value_8,
+                                DESCRIPTION = description,
                                 CREATE_BY = currentUser
                             };
                             UnitOfWork.Repository<DauTuXayDungDataRepo>().Create(costData);
                         }
+                        else
+                        {
+                            continue;
+                        }
+
                     }
                     else
                     {
@@ -2621,9 +2610,9 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
         /// <param name="year"></param>
         public override void GenerateTemplate(ref MemoryStream outFileStream, string path, string templateId, int year)
         {
-            var dataOtherCost = PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG> detailOtherKhoanMucDauTus, templateId, year, ignoreAuth: true);
+            var dataOtherCost = GetDataTemPlate(templateId, year);
 
-            if (dataOtherCost.Count == 0 || detailOtherKhoanMucDauTus.Count == 0)
+            if (dataOtherCost.Count == 0)
             {
                 State = false;
                 ErrorMessage = "Không tìm thấy dữ liệu";
@@ -2642,7 +2631,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
 
                 //Số hàng và số cột hiện tại
                 int numRowCur = 0;
-                int NUM_CELL = 11;
+                int NUM_CELL = 12;
 
                 //Style cần dùng
                 ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
@@ -2656,6 +2645,12 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
                 styleCellNumber.CloneStyleFrom(styleCellDetail);
                 styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
+
+                ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+                styleCellName.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+
+                ICellStyle styleCellName2 = templateWorkbook.CreateCellStyle();
+                styleCellName2.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
 
                 ICellStyle styleCellNumberColor = templateWorkbook.CreateCellStyle();
                 styleCellNumberColor.CloneStyleFrom(styleCellNumber);
@@ -2692,16 +2687,21 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 #region Details
 
                 numRowCur = 7;
-                foreach (var detail in detailOtherKhoanMucDauTus.GroupBy(x => x.CENTER_CODE)
-                    .Select(x => x.First())
-                    .OrderBy(x => x.Center.Organize.CODE).ThenBy(x => x.Center.Organize.CODE))
+                foreach(var item in dataOtherCost)
                 {
-                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
-                    rowCur.Cells[0].SetCellValue(detail.Center.PROJECT_CODE);
-                    rowCur.Cells[0].CellStyle.SetFont(fontBold);
-                    rowCur.Cells[1].SetCellValue(detail.Center.Project.NAME);
-                    rowCur.Cells[1].CellStyle.SetFont(fontBold);
-                    numRowCur++;
+                    var space = new StringBuilder();
+                    for(int i = 0; i < item.LEVEL; i++)
+                    {
+                        space.Append("    ");
+                    }
+                    var rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur++, NUM_CELL);
+                    rowCur.Cells[0].SetCellValue(item.PROJECT_CODE);
+                    rowCur.Cells[1].SetCellValue(item.TYPE);
+                    rowCur.Cells[2].SetCellValue(space.ToString() + item.PROJECT_NAME);
+                    for(int i = 0; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellName2;
+                    }
                 }
                 #endregion
 
@@ -3139,7 +3139,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
         }
 
 
-        public IList<T_MD_KHOAN_MUC_DAU_TU>ViewTemPlate(string templateId, int year)
+        public IList<T_MD_KHOAN_MUC_DAU_TU>GetDataTemPlate(string templateId, int year)
         {
             var templateDetails = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year).ToList();
             var lstProject = templateDetails.Select(x => x.Center.Project).Distinct().ToList();
@@ -3150,6 +3150,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 {
                     PROJECT_CODE = project.CODE,
                     PROJECT_NAME = project.NAME,
+                    TYPE = string.Empty,
                     LEVEL = 0
                 };
                 lstKhoanMuc.Add(item);
@@ -3158,8 +3159,9 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 {
                     var itemChild = new T_MD_KHOAN_MUC_DAU_TU
                     {
-                        PROJECT_CODE = string.Empty,
+                        PROJECT_CODE = project.CODE,
                         PROJECT_NAME = gd?.TEXT,
+                        TYPE = gd.CODE,
                         LEVEL = 1
                     };
                     lstKhoanMuc.Add(itemChild);

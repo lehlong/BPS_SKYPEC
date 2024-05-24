@@ -73,7 +73,7 @@ namespace SMO.Core.Entities.MD
 
         public virtual string PROJECT_CODE { get; set; }
         public virtual string PROJECT_NAME { get; set; }
-
+        public virtual string TYPE { get; set; }
         public virtual int LEVEL { get; set; }
 
         public virtual object Clone()
