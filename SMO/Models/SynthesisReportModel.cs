@@ -21,6 +21,7 @@ namespace SMO.Models
         public decimal Value6 { get; set; }
         public decimal? Value7 { get; set; }
         public decimal? Value8 { get; set; }
+        public decimal? Value9 { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
     }

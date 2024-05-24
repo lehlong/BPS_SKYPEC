@@ -20,5 +20,9 @@ namespace SMO.Core.Entities
         public virtual string KH_V1 { get; set; }
         public virtual string KH_V2 { get; set; }
 
+        public virtual string KH_C { get; set; }
+        public virtual string KH_TB { get; set; }
+        public virtual string KH_T { get; set; }
+
     }
 }

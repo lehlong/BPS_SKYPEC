@@ -22,6 +22,9 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.UTH_1);
             Map(x => x.KH_V1);
             Map(x => x.KH_V2);
+            Map(x => x.KH_C);
+            Map(x => x.KH_TB);
+            Map(x => x.KH_T);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
         }
     }

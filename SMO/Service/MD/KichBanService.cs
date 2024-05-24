@@ -63,6 +63,8 @@ namespace SMO.Service.MD
                     IsBold = e.IS_BOLD,
                     Order = e.C_ORDER,
                     Value2 = string.IsNullOrEmpty(e.KH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                    Value4 = string.IsNullOrEmpty(e.UTH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.UTH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+
                     Value5 = string.IsNullOrEmpty(e.KH_V1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V1.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]",kichBan)}").List()[0]),
                     Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                 };
@@ -71,9 +73,18 @@ namespace SMO.Service.MD
             foreach (var d in data.OrderByDescending(x => x.Order))
             {
                 var childs = data.Where(x => x.Parent == d.PId).ToList();
+                d.Value1 = childs.Sum(x => x.Value1) == 0 || d.Value1 != 0 ? d.Value1 : childs.Sum(x => x.Value1);
                 d.Value2 = childs.Sum(x => x.Value2) == 0 || d.Value2 != 0 ? d.Value2 : childs.Sum(x => x.Value2);
+                d.Value3 = childs.Sum(x => x.Value3) == 0 || d.Value3 != 0 ? d.Value3 : childs.Sum(x => x.Value3);
+                d.Value4 = childs.Sum(x => x.Value4) == 0 || d.Value4 != 0 ? d.Value4 : childs.Sum(x => x.Value4);
                 d.Value5 = childs.Sum(x => x.Value5) == 0 || d.Value5 != 0 ? d.Value5 : childs.Sum(x => x.Value5);
                 d.Value6 = childs.Sum(x => x.Value6) == 0 || d.Value6 != 0 ? d.Value6 : childs.Sum(x => x.Value6);
+            }
+            foreach(var d in data)
+            {
+                d.Value7 = d.Value5 == 0 || d.Value1 == 0 ? 0 : d.Value5 / d.Value1;
+                d.Value8 = d.Value5 == 0 || d.Value4 == 0 ? 0 : d.Value5 / d.Value4;
+                d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0: d.Value4 / d.Value2;
             }
             return data;
         }
