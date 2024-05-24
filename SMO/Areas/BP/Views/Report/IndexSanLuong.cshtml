@@ -8,6 +8,12 @@
     var numberTab = ViewBag.Slug as int?;
     var tabActive = "#tab" + numberTab.ToString();
 }
+<style>
+    .tab-content {
+        position: relative;
+        z-index: 1001;
+    }
+</style>
 <div class="container-fluid child-content">
     <div class="card border-grey">
         <div class="body" style="padding-top: 0px;">

@@ -236,7 +236,8 @@
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         data: rawData,
-        rowHeight: 30
+        rowHeight: 30,
+        selection: 'row',
     });
 
     const treeGridTab2 = new dhx.TreeGrid("@gridId2", {
@@ -246,7 +247,8 @@
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         data: rawDataTab2,
-        rowHeight: 30
+        rowHeight: 30,
+        selection: 'row',
     });
 
     const treeGridTab3 = new dhx.TreeGrid("@gridId3", {
@@ -256,6 +258,7 @@
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         data: rawDataTab3,
+        selection: 'row',
         rowHeight: 30
     });
 
