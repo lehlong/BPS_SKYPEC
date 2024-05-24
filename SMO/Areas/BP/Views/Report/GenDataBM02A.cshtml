@@ -7,20 +7,6 @@
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var formIdExportExcel = Guid.NewGuid();
 }
-<style>
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
-
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 <div class="hidden">
     <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
@@ -29,39 +15,34 @@
     </form>
 </div>
 <script type="text/javascript">
-    var rawData = @Html.Raw(JsonConvert.SerializeObject(Model.BM02A, jsonSerializeSettings));
-    rawData.forEach((item) => {
-        if (item.id == "A" || item.id == "B") delete item.parent;
-    });
-    let columns = [
-        { id: "name", header: [{ text: "DANH MỤC ĐẦU TƯ", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
+    const treeGrid = new dhx.Grid("@gridId", {
+        columns: [
+            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }],align:"center", minWidth: 100 },
+            { id: "name", header: [{ text: "DANH MỤC ĐẦU TƯ", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
+            {
+                id: "col1", header: [{ text: "THÔNG TIN VỀ DANH MỤC ĐẦU TƯ", align: "center", colspan: 3 }, { text: "TỔNG MỨC ĐẦU TƯ", align: "center" }],
+                align: "right", minWidth: 180, type: "number", format: "#,#",
+            },
+            { id: "col2", header: ["", { text: "TRONG ĐÓ: NGUỒN VCSH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+            { id: "tdth", header: ["", { text: "TIẾN ĐỘ THỰC HIỆN", align: "center" }], align: "right", minWidth: 180 },
 
-        {
-            id: "col1", header: [{ text: "THÔNG TIN VỀ DANH MỤC ĐẦU TƯ", align: "center", colspan: 3 }, { text: "TỔNG MỨC ĐẦU TƯ", align: "center" }],
-            align: "right", minWidth: 180, type: "number", format: "#,#",
-        },
-        { id: "col2", header: ["", { text: "TRONG ĐÓ: NGUỒN VCSH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "tdth", header: ["", { text: "TIẾN ĐỘ THỰC HIỆN", align: "center" }], align: "right", minWidth: 180 },
+            { id: "col4", header: [{ text: "GIÁ TRỊ KHỐI LƯỢNG CÔNG VIỆC HOÀN THÀNH", align: "center", colspan: 3 }, { text: "LK ĐẾN ĐẦU KỲ LẬP KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+            { id: "col5", header: ["", { text: "KH NĂM", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+            { id: "tdtk", header: ["", { text: "TIẾN ĐỘ TRIỂN KHAI TH NĂM KH", align: "center" }], align: "right", minWidth: 180 },
 
-        { id: "col4", header: [{ text: "GIÁ TRỊ KHỐI LƯỢNG CÔNG VIỆC HOÀN THÀNH", align: "center", colspan: 3 }, { text: "LK ĐẾN ĐẦU KỲ LẬP KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col5", header: ["", { text: "KH NĂM", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "tdtk", header: ["", { text: "TIẾN ĐỘ TRIỂN KHAI TH NĂM KH", align: "center" }], align: "right", minWidth: 180 },
+            { id: "col7", header: [{ text: "GIÁ TRỊ GIẢI NGÂN", align: "center", colspan: 2 }, { text: "LK ĐẾN ĐẦU KỲ LẬP KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+            { id: "col8", header: ["", { text: "KH NĂM", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
 
-        { id: "col7", header: [{ text: "GIÁ TRỊ GIẢI NGÂN", align: "center", colspan: 2 }, { text: "LK ĐẾN ĐẦU KỲ LẬP KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col8", header: ["", { text: "KH NĂM", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+            { id: "des", header: [{ text: "GHI CHÚ", align: "center", rowspan: 2 }], align: "right", minWidth: 300 },
 
-        { id: "des", header: [{ text: "GHI CHÚ", align: "center", rowspan: 2 }], align: "right", minWidth: 300 },
-
-    ];
-    const treeGrid = new dhx.TreeGrid("@gridId", {
-        columns,
-        data: rawData,
-        leftSplit: 1,
+        ],
+        data: @Html.Raw(JsonConvert.SerializeObject(Model.BM02A, jsonSerializeSettings)),
+        leftSplit: 2,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         selection: true,
-        autoHeight: true,
+        rowHeight: 30,
     });
     function ExportData() {
         var Treedata = JSON.stringify(treeGrid.data.serialize());

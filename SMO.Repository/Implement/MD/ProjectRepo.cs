@@ -22,6 +22,14 @@ namespace SMO.Repository.Implement.MD
             {
                 query = query.Where(x => x.CODE.ToLower().Contains(objFilter.CODE.ToLower()) || x.NAME.ToLower().Contains(objFilter.CODE.ToLower()));
             }
+            if (!string.IsNullOrWhiteSpace(objFilter.YEAR.ToString()))
+            {
+                query = query.Where(x => x.YEAR == objFilter.YEAR);
+            }
+            if (!string.IsNullOrWhiteSpace(objFilter.LOAI_HINH))
+            {
+                query = query.Where(x => x.LOAI_HINH == objFilter.LOAI_HINH);
+            }
 
             total = 0;
             query = query.OrderByDescending(x => x.CODE);
