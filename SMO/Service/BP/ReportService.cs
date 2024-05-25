@@ -325,10 +325,10 @@ namespace SMO.Service.BP
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
             styleBody.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
-            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            //styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#.###");
             ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
             styleBodyBold.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
-            styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            //styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#.###");
 
             ICellStyle styleEnd = templateWorkbook.CreateCellStyle();
             styleEnd.CloneStyleFrom(sheet.GetRow(8).Cells[2].CellStyle);
@@ -336,21 +336,15 @@ namespace SMO.Service.BP
             foreach (var item in dataDetails)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                if (item.Id == "SUM")
-                {
-                    rowCur.Cells[0].SetCellValue("");
-                }
-                else
-                {
-                    rowCur.Cells[0].SetCellValue(item.Id);
-                }
+                
+                rowCur.Cells[0].SetCellValue(item.Stt);
                 rowCur.Cells[1].SetCellValue(item.NameExcel);
                 rowCur.Cells[2].SetCellValue(item.Unit);
-                rowCur.Cells[3].SetCellValue(item.Col1 == null ? 0 : Convert.ToDouble(item.Col1));
-                rowCur.Cells[4].SetCellValue(item.Col2 == null ? 0 : Convert.ToDouble(item.Col2));
-                rowCur.Cells[5].SetCellValue(item.Col3 == null ? 0 : Convert.ToDouble(item.Col3));
-                rowCur.Cells[6].SetCellValue(item.Col4 == null ? 0 : Convert.ToDouble(item.Col4));
-                rowCur.Cells[7].SetCellValue(item.Col5 == null ? 0 : Convert.ToDouble(item.Col5));
+                rowCur.Cells[3].SetCellValue(item.Col1 == null ? "" : Convert.ToDecimal(item.Col1).ToStringVN());
+                rowCur.Cells[4].SetCellValue(item.Col2 == null ? "" : Convert.ToDecimal(item.Col2).ToStringVN());
+                rowCur.Cells[5].SetCellValue(item.Col3 == null ? "" : Convert.ToDecimal(item.Col3).ToStringVN());
+                rowCur.Cells[6].SetCellValue(item.Col4 == null ? "" : Convert.ToDecimal(item.Col4).ToStringVN());
+                rowCur.Cells[7].SetCellValue(item.Col5 == null ? "" : Convert.ToDecimal(item.Col5).ToStringVN());
                 for (int i = 0; i < NUM_CELL; i++)
                 {
                     if (item.IsBold)

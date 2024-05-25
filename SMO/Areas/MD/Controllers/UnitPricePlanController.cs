@@ -1,5 +1,9 @@
-﻿using SMO.Service.MD;
+﻿using Newtonsoft.Json;
+using SMO.Service.BP;
+using SMO.Service.MD;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Web.Mvc;
 
 namespace SMO.Areas.MD.Controllers
@@ -91,6 +95,17 @@ namespace SMO.Areas.MD.Controllers
                 SMOUtilities.GetMessage("1005", service, result);
             }
             return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        public FileContentResult ExportExcelGridData(int year)
+        {
+            MemoryStream outFileStream = new MemoryStream();
+            var path = Server.MapPath("~/TemplateExcel/" + "DON_GIA_KE_HOACH.xlsx");
+            int NUMCELL = 0;
+            _service.ExportExcel(ref outFileStream, path, NUMCELL, year);
+           
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"DON_GIA_KE_HOACH_{year}" + ".xlsx");
         }
 
     }

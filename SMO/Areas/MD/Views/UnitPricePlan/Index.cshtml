@@ -2,6 +2,7 @@
 @{
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
+    var formIdExportExcel = Guid.NewGuid().ToString();
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
     @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
@@ -21,6 +22,7 @@
                         <div class="page-function-button m-r-20" style="float:left">
                             @Html.MyButton("cmdBack", "Quay lại", "window.location.reload()", "Alt+N", "arrow_back")
                             @Html.MyButton("cmdAdd", "Thêm mới", string.Format("Forms.LoadAjax('{0}');", @Url.Action("Create")), "Alt+N", "add")
+                            @Html.MyButton("cmdAdd", "Xuất Excel", "ExportExcel()", "Alt+N", "file_download")
                         </div>
                         <div class="input-group page-function-search" style="margin-bottom: 7px !important; max-width:720px">
                             <div class="row">
@@ -40,6 +42,12 @@
         </div>
     }
 
+    <div class="hidden">
+        <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
+            @Html.Hidden("year")
+        </form>
+    </div>
+
     <script type="text/javascript">
         function SubmitIndex() {
             Forms.SubmitForm('@Model.FormId');
@@ -50,6 +58,11 @@
             Forms.CompleteUI();
             Forms.SubmitByEnter("@Model.FormId");
         });
+
+        function ExportExcel() {
+            $('#@formIdExportExcel #year').val($('#ddlTimeYear').val());
+            $('#@formIdExportExcel').submit();
+        }
     </script>
 </div>
 
