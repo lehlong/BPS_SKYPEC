@@ -117,7 +117,7 @@ namespace SMO.Service.BP
             styleBodyBold.CloneStyleFrom(sheet.GetRow(11).Cells[1].CellStyle);
             styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
 
-            foreach(var item in dataDetails)
+            foreach (var item in dataDetails)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                 rowCur.Cells[0].SetCellValue(item.Name);
@@ -130,11 +130,11 @@ namespace SMO.Service.BP
                 rowCur.Cells[7].SetCellValue(item.Col7 == null ? 0 : Convert.ToDouble(item.Col7));
                 rowCur.Cells[8].SetCellValue(item.Col8 == null ? 0 : Convert.ToDouble(item.Col8));
                 rowCur.Cells[9].SetCellValue(item.Des);
-                for(int i = 0; i < NUM_CELL; i++)
+                for (int i = 0; i < NUM_CELL; i++)
                 {
                     if (item.IsBold)
                     {
-                        if(i == 0 || i == 3 || i == 6|| i == NUM_CELL - 1)
+                        if (i == 0 || i == 3 || i == 6 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -147,7 +147,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if(i == 0 || i == 3 || i == 6 || i == NUM_CELL - 1)
+                        if (i == 0 || i == 3 || i == 6 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
@@ -199,7 +199,7 @@ namespace SMO.Service.BP
                 {
                     if (item.IsBold)
                     {
-                        if ( i == 0 || i == NUM_CELL - 1)
+                        if (i == 0 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -212,7 +212,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if ( i == 0 || i == NUM_CELL - 1)
+                        if (i == 0 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
@@ -256,7 +256,7 @@ namespace SMO.Service.BP
             foreach (var item in dataDetails)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                if(item.Stt == "SUM")
+                if (item.Stt == "SUM")
                 {
                     rowCur.Cells[0].SetCellValue("");
                 }
@@ -292,7 +292,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if (i == 0||i == 1)
+                        if (i == 0 || i == 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
@@ -501,7 +501,7 @@ namespace SMO.Service.BP
                 {
                     if (item.IsBold)
                     {
-                        if ( i == 0)
+                        if (i == 0)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -645,7 +645,7 @@ namespace SMO.Service.BP
                 {
                     if (item.IsBold)
                     {
-                        if ( i == 0)
+                        if (i == 0)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -658,7 +658,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if ( i == 0)
+                        if (i == 0)
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
@@ -709,7 +709,7 @@ namespace SMO.Service.BP
                 rowCur.Cells[6].SetCellValue(item.Col6 == null ? 0 : Convert.ToDouble(item.Col6));
                 rowCur.Cells[7].SetCellValue(item.Col7 == null ? 0 : Convert.ToDouble(item.Col7));
                 rowCur.Cells[8].SetCellValue(item.Des);
-               
+
                 for (int i = 0; i < NUM_CELL; i++)
                 {
                     if (item.IsBold)
@@ -788,7 +788,7 @@ namespace SMO.Service.BP
                 {
                     if (item.IsBold)
                     {
-                        if (i == 0  || i == NUM_CELL - 1)
+                        if (i == 0 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -857,7 +857,7 @@ namespace SMO.Service.BP
                 {
                     if (item.IsBold)
                     {
-                        if (i == 0  || i == NUM_CELL - 1)
+                        if (i == 0 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -870,7 +870,7 @@ namespace SMO.Service.BP
                     }
                     else
                     {
-                        if (i == 0  || i == NUM_CELL - 1)
+                        if (i == 0 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellName;
                         }
@@ -926,7 +926,7 @@ namespace SMO.Service.BP
                 {
                     if (item.IsBold)
                     {
-                        if (i == 0  || i == NUM_CELL - 1)
+                        if (i == 0 || i == NUM_CELL - 1)
                         {
                             rowCur.Cells[i].CellStyle = styleCellBold;
                             rowCur.Cells[i].CellStyle.SetFont(fontBold);
@@ -967,7 +967,7 @@ namespace SMO.Service.BP
 
                 data.BM01D = GetElementsBM01D(year);
 
-                foreach(var d in data.BM01D)
+                foreach (var d in data.BM01D)
                 {
                     d.Col7 = d.Col6 == 0 || d.Col3 == 0 ? 0 : d.Col6 / d.Col3 * 100;
                     d.Col12 = d.Col11 == 0 || d.Col8 == 0 ? 0 : d.Col11 / d.Col8 * 100;
@@ -1640,10 +1640,10 @@ namespace SMO.Service.BP
             {
                 var data = new ReportDataCenter();
                 var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR > 0 && x.LOAI_HINH == "NDN").ToList();
-                               
+
                 var template = UnitOfWork.Repository<DauTuNgoaiDoanhNghiepRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03" && x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB5").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataCurrent = UnitOfWork.Repository<DauTuNgoaiDoanhNghiepDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.DauTuNgoaiDoanhNghiepProfitCenter != null && template.Contains(x.TEMPLATE_CODE)).ToList();
-                
+
                 var templateKH = UnitOfWork.Repository<DauTuNgoaiDoanhNghiepRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03" && x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataCurrentKH = UnitOfWork.Repository<DauTuNgoaiDoanhNghiepDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.DauTuNgoaiDoanhNghiepProfitCenter != null && templateKH.Contains(x.TEMPLATE_CODE)).ToList();
 
@@ -2049,7 +2049,7 @@ namespace SMO.Service.BP
                     });
                 }
 
-                foreach(var d in data.BM02A)
+                foreach (var d in data.BM02A)
                 {
                     d.Col5 = d.Col4 == 0 || d.Col2 == 0 ? 0 : d.Col4 / d.Col2;
                 }
@@ -2228,9 +2228,9 @@ namespace SMO.Service.BP
 
 
                 var headerSL_TH_5 = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB5" && x.TIME_YEAR == year - 5).Select(x => x.TEMPLATE_CODE).ToList();
-                var dataSL_TH_5 = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_TH_5.Contains(x.TEMPLATE_CODE)).ToList();              
+                var dataSL_TH_5 = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_TH_5.Contains(x.TEMPLATE_CODE)).ToList();
                 var headerSL_KH_1 = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year - 1 && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var dataSL_KH_1 = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_KH_1.Contains(x.TEMPLATE_CODE)).ToList();                
+                var dataSL_KH_1 = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_KH_1.Contains(x.TEMPLATE_CODE)).ToList();
                 var headerSL_KH = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataSL_KH = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL_KH.Contains(x.TEMPLATE_CODE)).ToList();
 
@@ -2252,16 +2252,18 @@ namespace SMO.Service.BP
                 data.BM02D = new List<ReportModel>(){
             new ReportModel()
             {
+                Stt = "I",
                 Id = "I",
-                Name = "I. Sản lượng",
+                Name = "Sản lượng",
                 NameExcel = "Sản lượng",
                 IsBold = true,
             },
             new ReportModel()
             {
+                Stt = "1",
                 Id = "I.1",
                 Parent = "I",
-                Name = "1. Cung ứng cho VNA Group",
+                Name = "Cung ứng cho VNA Group",
                 NameExcel = "Cung ứng cho VNA Group",
 
             },
@@ -2291,9 +2293,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2",
                 Id = "I.2",
                 Parent = "I",
-                Name = "2. Cung ứng cho đối tác khác (*)",
+                Name = "Cung ứng cho đối tác khác (*)",
                 Col1 = dataSL_TH_5.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col2 = dataSL_KH_1.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                 Col3 = 0,
@@ -2302,8 +2305,9 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "II",
                 Id = "II",
-                Name = "II. Doanh thu từ hoạt động SXKD",
+                Name = "Doanh thu từ hoạt động SXKD",
                 NameExcel = "Doanh thu từ hoạt động SXKD",
 
                 IsBold = true,
@@ -2311,9 +2315,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1",
                 Id = "II.1",
                 Parent = "II",
-                Name = "1. Doanh thu cung ứng cho VNA Group",
+                Name = "Doanh thu cung ứng cho VNA Group",
                 NameExcel = "Doanh thu cung ứng cho VNA Group",
 
                 Unit = "Tr.đ/USD",
@@ -2364,9 +2369,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2",
                 Id = "II.2",
                 Parent = "II",
-                Name = "2. Doanh thu cung ứng cho đối tác khác (*)",
+                Name = "Doanh thu cung ứng cho đối tác khác (*)",
                 NameExcel = "Doanh thu cung ứng cho đối tác khác (*)",
 
                 Unit = "Tr.đ/USD",
@@ -2386,8 +2392,9 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "III",
                 Id = "III",
-                Name = "III. Các khoản chi phí",
+                Name = "Các khoản chi phí",
                 NameExcel = "Các khoản chi phí",
 
                 Unit = "Tr.đ/USD",
@@ -2395,18 +2402,20 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1",
                 Id = "III.1",
                 Parent = "III",
                 NameExcel = "Chi phí dịch vụ mua ngoài",
 
-                Name = "1. Chi phí dịch vụ mua ngoài",
+                Name = "Chi phí dịch vụ mua ngoài",
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
             {
+                Stt = "1.1",
                 Id = "III.1.1",
                 Parent = "III.1",
-                Name = "1.1. Chi phí bảo hiểm tài sản",
+                Name = "Chi phí bảo hiểm tài sản",
                 NameExcel = "Chi phí bảo hiểm tài sản",
 
                 Unit = "Tr.đ/USD",
@@ -2417,9 +2426,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.2",
                 Id = "III.1.2",
                 Parent = "III.1",
-                Name = "1.2. Thuê sửa chữa nhà cửa VKT",
+                Name = "Thuê sửa chữa nhà cửa VKT",
                 NameExcel = "Thuê sửa chữa nhà cửa VKT",
 
                 Unit = "Tr.đ/USD",
@@ -2430,9 +2440,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.3",
                 Id = "III.1.3",
                 Parent = "III.1",
-                Name = "1.3. Thuê sửa chữa máy móc thiết bị",
+                Name = "Thuê sửa chữa máy móc thiết bị",
                 NameExcel = "Thuê sửa chữa máy móc thiết bị",
 
                 Unit = "Tr.đ/USD",
@@ -2443,9 +2454,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.4",
                 Id = "III.1.4",
                 Parent = "III.1",
-                Name = "1.4. Thuê sửa chữa PTVT",
+                Name = "Thuê sửa chữa PTVT",
                 NameExcel = "Thuê sửa chữa PTVT",
 
                 Unit = "Tr.đ/USD",
@@ -2456,9 +2468,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.5",
                 Id = "III.1.5",
                 Parent = "III.1",
-                Name = "1.5. Thuê sửa chữa thiết bị quản lý",
+                Name = "Thuê sửa chữa thiết bị quản lý",
                 NameExcel = "Thuê sửa chữa thiết bị quản lý",
 
                 Unit = "Tr.đ/USD",
@@ -2469,9 +2482,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.6",
                 Id = "III.1.6",
                 Parent = "III.1",
-                Name = "1.6. Thuê sửa chữa kho bể",
+                Name = "Thuê sửa chữa kho bể",
                 NameExcel = "Thuê sửa chữa kho bể",
 
                 Unit = "Tr.đ/USD",
@@ -2482,9 +2496,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.7",
                 Id = "III.1.7",
                 Parent = "III.1",
-                Name = "1.7. Thuê sửa chữa TSCĐ khác",
+                Name = "Thuê sửa chữa TSCĐ khác",
                 NameExcel = "Thuê sửa chữa TSCĐ khác",
 
                 Unit = "Tr.đ/USD",
@@ -2495,9 +2510,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.8",
                 Id = "III.1.8",
                 Parent = "III.1",
-                Name = "1.8. Thuê cửa hàng kho bãi",
+                Name = "Thuê cửa hàng kho bãi",
                 NameExcel = "Thuê cửa hàng kho bãi",
 
                 Unit = "Tr.đ/USD",
@@ -2508,9 +2524,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.9",
                 Id = "III.1.9",
                 Parent = "III.1",
-                Name = "1.9. Thuê vận chuyển",
+                Name = "Thuê vận chuyển",
                 NameExcel = "Thuê vận chuyển",
 
                 Unit = "Tr.đ/USD",
@@ -2521,9 +2538,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.10",
                 Id = "III.1.10",
                 Parent = "III.1",
-                Name = "1.10. Tiền điện mua ngoài",
+                Name = "Tiền điện mua ngoài",
                 NameExcel = "Tiền điện mua ngoài",
 
                 Unit = "Tr.đ/USD",
@@ -2534,9 +2552,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.11",
                 Id = "III.1.11",
                 Parent = "III.1",
-                Name = "1.11. Tiền nước mua ngoài",
+                Name = "Tiền nước mua ngoài",
                 NameExcel = "Tiền nước mua ngoài",
 
                 Unit = "Tr.đ/USD",
@@ -2547,9 +2566,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.12",
                 Id = "III.1.12",
                 Parent = "III.1",
-                Name = "1.12. Cước thông tin liên lạc",
+                Name = "Cước thông tin liên lạc",
                 NameExcel = "Cước thông tin liên lạc",
 
                 Unit = "Tr.đ/USD",
@@ -2560,9 +2580,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.13",
                 Id = "III.1.13",
                 Parent = "III.1",
-                Name = "1.13. Chi phí dịch vụ mua ngoài khác",
+                Name = "Chi phí dịch vụ mua ngoài khác",
                 NameExcel = "Chi phí dịch vụ mua ngoài khác",
 
                 Unit = "Tr.đ/USD",
@@ -2573,18 +2594,20 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2",
                 Id = "III.2",
                 Parent = "III",
-                Name = "2. Chi khác bằng tiền",
+                Name = "Chi khác bằng tiền",
                 NameExcel = "Chi khác bằng tiền",
 
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
             {
+                Stt = "2.1",
                 Id = "III.2.1",
                 Parent = "III.2",
-                Name = "2.1. Chi ANAT, PCBT, PCCC",
+                Name = "Chi ANAT, PCBT, PCCC",
                 NameExcel = "Chi ANAT, PCBT, PCCC",
 
                 Unit = "Tr.đ/USD",
@@ -2595,9 +2618,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.2",
                 Id = "III.2.2",
                 Parent = "III.2",
-                Name = "2.2. Chi phí trang phục ngành",
+                Name = "Chi phí trang phục ngành",
                 NameExcel = "Chi phí trang phục ngành",
 
                 Unit = "Tr.đ/USD",
@@ -2608,9 +2632,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.3",
                 Id = "III.2.3",
                 Parent = "III.2",
-                Name = "2.3. Chi giao dịch tiếp khách",
+                Name = "Chi giao dịch tiếp khách",
                 NameExcel = "Chi giao dịch tiếp khách",
 
                 Unit = "Tr.đ/USD",
@@ -2621,9 +2646,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.4",
                 Id = "III.2.4",
                 Parent = "III.2",
-                Name = "2.4. Chi quảng cáo, marketing",
+                Name = "Chi quảng cáo, marketing",
                 NameExcel = "Chi quảng cáo, marketing",
 
                 Unit = "Tr.đ/USD",
@@ -2634,9 +2660,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.5",
                 Id = "III.2.5",
                 Parent = "III.2",
-                Name = "2.5. Chi hoa hồng môi giới",
+                Name = "Chi hoa hồng môi giới",
                 NameExcel = "Chi hoa hồng môi giới",
 
                 Unit = "Tr.đ/USD",
@@ -2647,9 +2674,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.6",
                 Id = "III.2.6",
                 Parent = "III.2",
-                Name = "2.6. Chi đào tạo",
+                Name = "Chi đào tạo",
                 NameExcel = "Chi đào tạo",
 
                 Unit = "Tr.đ/USD",
@@ -2658,12 +2686,13 @@ namespace SMO.Service.BP
                 Col3 = 0,
                 Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H006")).Sum(x => x.AMOUNT) ?? 0,
             },
-            
+
             new ReportModel()
             {
+                Stt = "2.7",
                 Id = "II.2.7",
                 Parent = "III.2",
-                Name = "2.7. Công tác phí, phép",
+                Name = "Công tác phí, phép",
                 NameExcel = "Công tác phí, phép",
 
                 Unit = "Tr.đ/USD",
@@ -2674,9 +2703,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.8",
                 Id = "III.2.8",
                 Parent = "III.2",
-                Name = "2.8. Lệ phí cầu đường",
+                Name = "Lệ phí cầu đường",
                 NameExcel = "Lệ phí cầu đường",
 
                 Unit = "Tr.đ/USD",
@@ -2685,12 +2715,13 @@ namespace SMO.Service.BP
                 Col3 = 0,
                 Col4 = dataCP_KH.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("6278H003")).Sum(x => x.AMOUNT) ?? 0,
             },
-            
+
             new ReportModel()
             {
+                Stt = "2.9",
                 Id = "III.2.9",
                 Parent = "III.2",
-                Name = "2.9. Chi bồi dưỡng độc hại",
+                Name = "Chi bồi dưỡng độc hại",
                 NameExcel = "Chi bồi dưỡng độc hại",
 
                 Unit = "Tr.đ/USD",
@@ -2701,9 +2732,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.10",
                 Id = "III.2.10",
                 Parent = "III.2",
-                Name = "2.10. Phí nhượng quyền khai thác",
+                Name = "Phí nhượng quyền khai thác",
                 NameExcel = "Phí nhượng quyền khai thác",
 
                 Unit = "Tr.đ/USD",
@@ -2714,9 +2746,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.11",
                 Id = "III.2.11",
                 Parent = "III.2",
-                Name = "2.11. Chi VSCN, y tế, môi trường",
+                Name = "Chi VSCN, y tế, môi trường",
                 NameExcel = "Chi VSCN, y tế, môi trường",
 
                 Unit = "Tr.đ/USD",
@@ -2727,9 +2760,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.12",
                 Id = "III.2.12",
                 Parent = "III.2",
-                Name = "2.12. Phí ngân hàng",
+                Name = "Phí ngân hàng",
                 NameExcel = "Phí ngân hàng",
 
                 Unit = "Tr.đ/USD",
@@ -2740,9 +2774,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.13",
                 Id = "III.2.13",
                 Parent = "III.2",
-                Name = "2.13. Khoản chi có tính chất phúc lợi",
+                Name = "Khoản chi có tính chất phúc lợi",
                 NameExcel = "Khoản chi có tính chất phúc lợi",
 
                 Unit = "Tr.đ/USD",
@@ -2753,9 +2788,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.14",
                 Id = "III.2.14",
                 Parent = "III.2",
-                Name = "1.14. Chi bằng tiền khác",
+                Name = "Chi bằng tiền khác",
                 NameExcel = "Chi bằng tiền khác",
 
                 Unit = "Tr.đ/USD",
@@ -2789,10 +2825,10 @@ namespace SMO.Service.BP
                 var data = new List<ReportModel>();
 
 
-                var header1_1 = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x =>x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var header1_1 = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var details1_1 = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => header1_1.Contains(x.TEMPLATE_CODE)).ToList();
 
-                var headerTH = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x =>x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var headerTH = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var detailsTH = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => headerTH.Contains(x.TEMPLATE_CODE)).ToList();
 
 
@@ -2807,7 +2843,7 @@ namespace SMO.Service.BP
                 });
 
 
-                foreach(var project in projects)
+                foreach (var project in projects)
                 {
                     decimal col4 = 0;
                     decimal col7 = 0;
@@ -2852,7 +2888,7 @@ namespace SMO.Service.BP
                             col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9) ?? 0;
                             break;
                         case 10:
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5+ x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
                             col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
                             break;
                         case 11:
@@ -2860,7 +2896,7 @@ namespace SMO.Service.BP
                             col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11) ?? 0;
                             break;
                         case 12:
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8+ x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
+                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
                             col7 = dataCol7.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
                             break;
                     }
@@ -2884,7 +2920,8 @@ namespace SMO.Service.BP
                 }
                 return data;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 UnitOfWork.Rollback();
                 return new List<ReportModel>();
@@ -3015,14 +3052,14 @@ namespace SMO.Service.BP
 
                 var header3 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var details3 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
-                
+
                 var header5 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var details5 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
 
 
 
                 var elements = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
-                foreach(var e in elements)
+                foreach (var e in elements)
                 {
                     decimal col2 = 0;
                     decimal col4 = 0;
@@ -3084,7 +3121,7 @@ namespace SMO.Service.BP
                         Id = e.CODE,
                         Parent = e.PARENT_CODE,
                         Name = e.NAME,
-                        IsBold = e.CODE.Length <= 4 ? true: false,
+                        IsBold = e.CODE.Length <= 4 ? true : false,
                         Col1 = details1_1.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == e.CODE).Sum(x => x.VALUE),
                         Col2 = col2,
                         Col4 = col4,
@@ -3094,8 +3131,8 @@ namespace SMO.Service.BP
                     i.Col5 = i.Col4 == 0 || i.Col3 == 0 ? 0 : i.Col4 / i.Col3;
                     data.Add(i);
                 }
-               
-                foreach(var d in data.OrderByDescending(x => x.Order))
+
+                foreach (var d in data.OrderByDescending(x => x.Order))
                 {
                     var child = data.Where(x => x.Parent == d.Id).ToList();
                     d.Col1 = child.Count() == 0 ? d.Col1 : child.Sum(x => x.Col1);
@@ -3139,7 +3176,7 @@ namespace SMO.Service.BP
                         Stt = e.STT,
                         Name = e.GROUP_NAME,
                         IsBold = e.IS_BOLD,
-                        Col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID+ e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
+                        Col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
                         Col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
                         Col4 = string.IsNullOrEmpty(e.GROUP_2_ID) ? dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID).Sum(x => x.VALUE) :
                         dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID && x.GROUP_2_ID.Contains(e.GROUP_2_ID)).Sum(x => x.VALUE),
@@ -3148,7 +3185,7 @@ namespace SMO.Service.BP
                     i.Col5 = i.Col4 == 0 || i.Col3 == 0 ? 0 : i.Col4 / i.Col3;
                     data.Add(i);
                 }
-               
+
                 return data;
 
             }
@@ -3186,21 +3223,23 @@ namespace SMO.Service.BP
                 var dataCP_TB = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_TB.Contains(x.TEMPLATE_CODE)).ToList();
                 var headerCP_T = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == "T" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataCP_T = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_T.Contains(x.TEMPLATE_CODE)).ToList();
-                
+
 
                 data.BM02D = new List<ReportModel>(){
             new ReportModel()
             {
+                Stt = "I",
                 Id = "I",
-                Name = "I. Sản lượng",
+                Name = "Sản lượng",
                 NameExcel = "Sản lượng",
                 IsBold = true,
             },
             new ReportModel()
             {
+                Stt = "1",
                 Id = "I.1",
                 Parent = "I",
-                Name = "1. Cung ứng cho VNA Group",
+                Name = "Cung ứng cho VNA Group",
                 NameExcel = "Cung ứng cho VNA Group",
 
             },
@@ -3230,9 +3269,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2",
                 Id = "I.2",
                 Parent = "I",
-                Name = "2. Cung ứng cho đối tác khác (*)",
+                Name = "Cung ứng cho đối tác khác (*)",
                 NameExcel = "Cung ứng cho đối tác khác (*)",
 
                 Col1 = dataSL_C.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA == false).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
@@ -3242,6 +3282,7 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "II",
                 Id = "II",
                 Name = "II. Doanh thu từ hoạt động SXKD",
                 NameExcel = "Doanh thu từ hoạt động SXKD",
@@ -3251,9 +3292,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1",
                 Id = "II.1",
                 Parent = "II",
-                Name = "1. Doanh thu cung ứng cho VNA Group",
+                Name = "Doanh thu cung ứng cho VNA Group",
                 NameExcel = "Doanh thu cung ứng cho VNA Group",
 
                 Unit = "Tr.đ/USD",
@@ -3304,9 +3346,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2",
                 Id = "II.2",
                 Parent = "II",
-                Name = "2. Doanh thu cung ứng cho đối tác khác (*)",
+                Name = "Doanh thu cung ứng cho đối tác khác (*)",
                 NameExcel = "Doanh thu cung ứng cho đối tác khác (*)",
 
                 Unit = "Tr.đ/USD",
@@ -3326,8 +3369,9 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "III",
                 Id = "III",
-                Name = "III. Các khoản chi phí",
+                Name = "Các khoản chi phí",
                 NameExcel = "Các khoản chi phí",
 
                 Unit = "Tr.đ/USD",
@@ -3335,18 +3379,20 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1",
                 Id = "III.1",
                 Parent = "III",
-                Name = "1. Chi phí dịch vụ mua ngoài",
+                Name = "Chi phí dịch vụ mua ngoài",
                 NameExcel = "Chi phí dịch vụ mua ngoài",
 
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
             {
+                Stt = "1.1",
                 Id = "III.1.1",
                 Parent = "III.1",
-                Name = "1.1. Chi phí bảo hiểm tài sản",
+                Name = "Chi phí bảo hiểm tài sản",
                 NameExcel = "Chi phí bảo hiểm tài sản",
 
                 Unit = "Tr.đ/USD",
@@ -3357,9 +3403,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.2",
                 Id = "III.1.2",
                 Parent = "III.1",
-                Name = "1.2. Thuê sửa chữa nhà cửa VKT",
+                Name = "Thuê sửa chữa nhà cửa VKT",
                 NameExcel = "Thuê sửa chữa nhà cửa VKT",
 
                 Unit = "Tr.đ/USD",
@@ -3370,9 +3417,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.3",
                 Id = "III.1.3",
                 Parent = "III.1",
-                Name = "1.3. Thuê sửa chữa máy móc thiết bị",
+                Name = "Thuê sửa chữa máy móc thiết bị",
                 NameExcel = "Thuê sửa chữa máy móc thiết bị",
 
                 Unit = "Tr.đ/USD",
@@ -3383,9 +3431,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.4",
                 Id = "III.1.4",
                 Parent = "III.1",
-                Name = "1.4. Thuê sửa chữa PTVT",
+                Name = "Thuê sửa chữa PTVT",
                 NameExcel = "Thuê sửa chữa PTVT",
 
                 Unit = "Tr.đ/USD",
@@ -3396,9 +3445,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.5",
                 Id = "III.1.5",
                 Parent = "III.1",
-                Name = "1.5. Thuê sửa chữa thiết bị quản lý",
+                Name = "Thuê sửa chữa thiết bị quản lý",
                 NameExcel = "Thuê sửa chữa thiết bị quản lý",
 
                 Unit = "Tr.đ/USD",
@@ -3409,9 +3459,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.6",
                 Id = "III.1.6",
                 Parent = "III.1",
-                Name = "1.6. Thuê sửa chữa kho bể",
+                Name = "Thuê sửa chữa kho bể",
                 NameExcel = "Thuê sửa chữa kho bể",
 
                 Unit = "Tr.đ/USD",
@@ -3422,9 +3473,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.7",
                 Id = "III.1.7",
                 Parent = "III.1",
-                Name = "1.7. Thuê sửa chữa TSCĐ khác",
+                Name = "Thuê sửa chữa TSCĐ khác",
                 NameExcel = "Thuê sửa chữa TSCĐ khác",
 
                 Unit = "Tr.đ/USD",
@@ -3435,9 +3487,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.8",
                 Id = "III.1.8",
                 Parent = "III.1",
-                Name = "1.8. Thuê cửa hàng kho bãi",
+                Name = "Thuê cửa hàng kho bãi",
                 NameExcel = "Thuê cửa hàng kho bãi",
 
                 Unit = "Tr.đ/USD",
@@ -3448,9 +3501,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.9",
                 Id = "III.1.9",
                 Parent = "III.1",
-                Name = "1.9. Thuê vận chuyển",
+                Name = "Thuê vận chuyển",
                 NameExcel = "Thuê vận chuyển",
 
                 Unit = "Tr.đ/USD",
@@ -3461,9 +3515,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.10",
                 Id = "III.1.10",
                 Parent = "III.1",
-                Name = "1.10. Tiền điện mua ngoài",
+                Name = "Tiền điện mua ngoài",
                 NameExcel = "Tiền điện mua ngoài",
 
                 Unit = "Tr.đ/USD",
@@ -3474,9 +3529,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.11",
                 Id = "III.1.11",
                 Parent = "III.1",
-                Name = "1.11. Tiền nước mua ngoài",
+                Name = "Tiền nước mua ngoài",
                 NameExcel = "Tiền nước mua ngoài",
 
                 Unit = "Tr.đ/USD",
@@ -3487,9 +3543,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.12",
                 Id = "III.1.12",
                 Parent = "III.1",
-                Name = "1.12. Cước thông tin liên lạc",
+                Name = "Cước thông tin liên lạc",
                 NameExcel = "Cước thông tin liên lạc",
 
                 Unit = "Tr.đ/USD",
@@ -3500,9 +3557,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "1.13",
                 Id = "III.1.13",
                 Parent = "III.1",
-                Name = "1.13. Chi phí dịch vụ mua ngoài khác",
+                Name = "Chi phí dịch vụ mua ngoài khác",
                 NameExcel = "Chi phí dịch vụ mua ngoài khác",
 
                 Unit = "Tr.đ/USD",
@@ -3513,18 +3571,20 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2",
                 Id = "III.2",
                 Parent = "III",
-                Name = "2. Chi khác bằng tiền",
+                Name = "Chi khác bằng tiền",
                 NameExcel = "Chi khác bằng tiền",
 
                 Unit = "Tr.đ/USD",
             },
             new ReportModel()
             {
+                Stt = "2.1",
                 Id = "III.2.1",
                 Parent = "III.2",
-                Name = "2.1. Chi ANAT, PCBT, PCCC",
+                Name = "Chi ANAT, PCBT, PCCC",
                 NameExcel = "Chi ANAT, PCBT, PCCC",
 
                 Unit = "Tr.đ/USD",
@@ -3535,9 +3595,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.2",
                 Id = "III.2.2",
                 Parent = "III.2",
-                Name = "2.2. Chi phí trang phục ngành",
+                Name = "Chi phí trang phục ngành",
                 NameExcel = "Chi phí trang phục ngành",
 
                 Unit = "Tr.đ/USD",
@@ -3548,9 +3609,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.3",
                 Id = "III.2.3",
                 Parent = "III.2",
-                Name = "2.3. Chi giao dịch tiếp khách",
+                Name = "Chi giao dịch tiếp khách",
                 NameExcel = "Chi giao dịch tiếp khách",
 
                 Unit = "Tr.đ/USD",
@@ -3561,9 +3623,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.4",
                 Id = "III.2.4",
                 Parent = "III.2",
-                Name = "2.4. Chi quảng cáo, marketing",
+                Name = "Chi quảng cáo, marketing",
                 NameExcel = "Chi quảng cáo, marketing",
 
                 Unit = "Tr.đ/USD",
@@ -3574,9 +3637,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.5",
                 Id = "III.2.5",
                 Parent = "III.2",
-                Name = "2.5. Chi hoa hồng môi giới",
+                Name = "Chi hoa hồng môi giới",
                 NameExcel = "Chi hoa hồng môi giới",
 
                 Unit = "Tr.đ/USD",
@@ -3587,9 +3651,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.6",
                 Id = "III.2.6",
                 Parent = "III.2",
-                Name = "2.6. Chi đào tạo",
+                Name = "Chi đào tạo",
                 NameExcel = "Chi đào tạo",
 
                 Unit = "Tr.đ/USD",
@@ -3601,9 +3666,10 @@ namespace SMO.Service.BP
 
             new ReportModel()
             {
+                Stt = "2.7",
                 Id = "II.2.7",
                 Parent = "III.2",
-                Name = "2.7. Công tác phí, phép",
+                Name = "Công tác phí, phép",
                 NameExcel = "Công tác phí, phép",
 
                 Unit = "Tr.đ/USD",
@@ -3614,9 +3680,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.8",
                 Id = "III.2.8",
                 Parent = "III.2",
-                Name = "2.8. Lệ phí cầu đường",
+                Name = "Lệ phí cầu đường",
                 NameExcel = "Lệ phí cầu đường",
 
                 Unit = "Tr.đ/USD",
@@ -3628,9 +3695,10 @@ namespace SMO.Service.BP
 
             new ReportModel()
             {
+                Stt = "2.9",
                 Id = "III.2.9",
                 Parent = "III.2",
-                Name = "2.9. Chi bồi dưỡng độc hại",
+                Name = "Chi bồi dưỡng độc hại",
                 NameExcel = "Chi bồi dưỡng độc hại",
 
                 Unit = "Tr.đ/USD",
@@ -3641,9 +3709,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.10",
                 Id = "III.2.10",
                 Parent = "III.2",
-                Name = "2.10. Phí nhượng quyền khai thác",
+                Name = "Phí nhượng quyền khai thác",
                 NameExcel = "Phí nhượng quyền khai thác",
 
                 Unit = "Tr.đ/USD",
@@ -3654,9 +3723,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.11",
                 Id = "III.2.11",
                 Parent = "III.2",
-                Name = "2.11. Chi VSCN, y tế, môi trường",
+                Name = "Chi VSCN, y tế, môi trường",
                 NameExcel = "Chi VSCN, y tế, môi trường",
 
                 Unit = "Tr.đ/USD",
@@ -3667,9 +3737,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.12",
                 Id = "III.2.12",
                 Parent = "III.2",
-                Name = "2.12. Phí ngân hàng",
+                Name = "Phí ngân hàng",
                 NameExcel = "Phí ngân hàng",
 
                 Unit = "Tr.đ/USD",
@@ -3680,9 +3751,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.13",
                 Id = "III.2.13",
                 Parent = "III.2",
-                Name = "2.13. Khoản chi có tính chất phúc lợi",
+                Name = "Khoản chi có tính chất phúc lợi",
                 NameExcel = "Khoản chi có tính chất phúc lợi",
 
                 Unit = "Tr.đ/USD",
@@ -3693,9 +3765,10 @@ namespace SMO.Service.BP
             },
             new ReportModel()
             {
+                Stt = "2.14",
                 Id = "III.2.14",
                 Parent = "III.2",
-                Name = "1.14. Chi bằng tiền khác",
+                Name = "Chi bằng tiền khác",
                 NameExcel = "Chi bằng tiền khác",
 
                 Unit = "Tr.đ/USD",
@@ -3753,7 +3826,7 @@ namespace SMO.Service.BP
                 });
                 data.Add(new ReportModel
                 {
-                    Id= "I.2",
+                    Id = "I.2",
                     Parent = "I",
                     Name = "2. Chiết khấu/giảm giá "
                 });

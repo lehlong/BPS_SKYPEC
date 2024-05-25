@@ -7,31 +7,31 @@
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var gridTab = Guid.NewGuid().ToString("N");
 }
-<style>
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-</style>
-
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridTab"></div>
 <script type="text/javascript">
-    var rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
-    let columnsTab1 = [
-        { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2}], align: "center", minWidth: 100 },
-        { id: "name", header: [{ text: "Danh mục", align: "center", rowspan: 2 }] },
+    var data = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
+    Number.prototype.format = function (n, x, s, c) {
+        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+            num = this.toFixed(Math.max(0, ~~n));
 
-        { id: "valueGT", header: [{ text: "Kế hoạch", align: "center", colspan: 3 }, { text: "Giá trị", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-        { id: "valueQM", header: ["",{ text: "Quy mô", align: "center" }], minWidth: 160 },
-        { id: "valueHT", header: ["",{ text: "Ghi chú", align: "center" }], minWidth: 160 },
+        return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+    };
+    console.log(data)
+    let columnsTab1 = [
+        { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2}, ''], align: "center", minWidth: 100 },
+        { id: "name", header: [{ text: "Danh mục", align: "center" }, { content: 'inputFilter' }, { text: "TỔNG CỘNG" }], width: 500 },
+
+        { id: "valueGT", header: [{ text: "Kế hoạch", align: "center", colspan: 3 }, { text: "Giá trị", align: "center" }, { text: _.sumBy(data.filter(x => x.stt == null), "valueGT").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueQM", header: ["",{ text: "Quy mô", align: "center" },''], minWidth: 160 },
+        { id: "valueHT", header: ["",{ text: "Ghi chú", align: "center" },''], minWidth: 160 },
 
     ];
     const gridTab1 = new dhx.Grid("@gridTab", {
         columns: columnsTab1,
-        data: rawDataTab1,
+        data: data,
         resizable: true,
         selection: "row",
-        adjust: true,
-        topSplit: 2,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        rowHeight: 30
     });
 </script>

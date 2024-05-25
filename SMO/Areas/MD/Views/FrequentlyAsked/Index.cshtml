@@ -19,6 +19,7 @@
                 <div class="tab-content">
                     <div class="page-function">
                         <div class="page-function-button m-r-20">
+                            @Html.MyButton("cmdBack", "Quay lại", "window.location.reload()", "Alt+N", "arrow_back")
                             @Html.MyButton("cmdAdd", "Thêm mới", string.Format("Forms.LoadAjax('{0}');", @Url.Action("Create")), "Alt+N", "add")
                         </div>
                     </div>

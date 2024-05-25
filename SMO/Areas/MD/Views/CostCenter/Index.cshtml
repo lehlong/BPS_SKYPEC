@@ -20,6 +20,7 @@
             <div class="tab-content">
                 <div class="page-function" style="padding-bottom: 7px;">
                     <div class="page-function-button m-r-20" style="float:left">
+                        @Html.MyButton("cmdBack", "Quay lại", "window.location.reload()", "Alt+N", "arrow_back")
                         @Html.MyButton("cmdAdd", "Thêm mới", string.Format("Create();"), "Alt+N", "add")
                         @Html.MyButton("cmdUpdateTree", "Cập nhật thứ tự", "UpdateTree();", "Alt+N", "done_all")
                     </div>

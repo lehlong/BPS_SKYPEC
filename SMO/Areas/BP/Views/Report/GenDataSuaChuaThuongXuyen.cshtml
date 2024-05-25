@@ -19,46 +19,25 @@
         IsBold = x.IsBold
     });
 }
-<style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
 
 <div class="table-responsive" style="overflow: auto;width:100%; height: calc(100vh - 220px);" id="@grid"> 
 </div>
 <script type="text/javascript">
     var rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
     var columns = [
-        { id: "id", header: [{ text: "STT", align: "center" }], align: "center", width: 180 },
-        { id: "name", header: [{ text: "DANH MỤC", align: "center" }, { content: "inputFilter" }], width:800},
-        { id: "valueGT", header: [{ text: "KH NĂM 2024", align: "center", colspan: 3 }, { text: "GIÁ TRỊ", align: "center" }], align: "right", width: 180 },
+        { id: "id", header: [{ text: "STT", align: "center" }], align: "center", width: 100 },
+        { id: "name", header: [{ text: "DANH MỤC", align: "center" }, { content: "inputFilter" }], width:500},
+        { id: "valueGT", header: [{ text: "KH NĂM 2024", align: "center", colspan: 3 }, { text: "GIÁ TRỊ", align: "center" }], align: "right", width: 160 },
         { id: "valueQM", header: [{ text: "", align: "center"}, { text: "QUY MÔ", align: "center" }], align: "right", width: 180 },
         { id: "valueHT", header: [{ text: "", align: "center" }, { text: "GHI CHÚ", align: "center" }], align: "right", width: 180 },
     ];
-
-    rawData.forEach((item) => {
-        if (item.parent == null) {
-            delete item.parent
-        }
-    });
-
-    const treegrid = new dhx.TreeGrid("@grid", {
+   
+    const treegrid = new dhx.Grid("@grid", {
         columns,
-        leftSplit: 1,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         data: rawData,
+        rowHeight: 30,
     });
 </script>

@@ -25,6 +25,7 @@
 
                         <div class="tab-content">
                             <div class="page-function-button m-r-20">
+                                @Html.MyButton("cmdBack", "Quay lại", "window.location.reload()", "Alt+N", "arrow_back")
                                 @Html.MyButton("cmdSave", "Lưu lại", string.Format("Forms.SubmitForm('{0}');", editFormId), "Alt+N", "done_all", htmlAttributes: new { @class = "" })
                             </div>
                             @Html.LabelFor(x => x.ObjDetail.TIME_YEAR, "Chọn năm kế hoạch")

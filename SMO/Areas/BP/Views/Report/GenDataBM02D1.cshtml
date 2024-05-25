@@ -8,19 +8,6 @@
     var formIdExportExcel = Guid.NewGuid();
 
 }
-<style>
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 <div class="hidden">
@@ -31,28 +18,23 @@
     </form>
 </div>
 <script type="text/javascript">
-    var rawData = @Html.Raw(JsonConvert.SerializeObject(Model.BM02D, jsonSerializeSettings));
-rawData.forEach((item) => {
-    if (item.isBold) delete item.parent;
-});
-    let columns = [
-        { id: "name", header: [{ text: "NỘI DUNG", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
 
-        { id: "unit", header: [{ text: "ĐVT", align: "center" }], align: "center", minWidth: 180 },
-        { id: "col1", header: [{ text: "KH (KỊCH BẢN CAO)", align: "center" }], align: "right", minWidth: 300, type: "number", format: "#,#" },
-        { id: "col2", header: [{ text: "KH (KỊCH BẢN TRUNG BÌNH)", align: "center" }], align: "right", minWidth: 300, type: "number", format: "#,#" },
-        { id: "col4", header: [{ text: "KH (KỊCH BẢN THẤP)", align: "center" }], align: "right", minWidth: 300, type: "number", format: "#,#" },
-    ];
+    const treeGrid = new dhx.Grid("@gridId", {
+        columns: [
+            { id: "stt", header: [{ text: "STT", align: "center" }], width: 100, align: "center" },
+            { id: "name", header: [{ text: "NỘI DUNG", align: "center" }], adjust: true },
 
-    const treeGrid = new dhx.TreeGrid("@gridId", {
-        columns,
-        data: rawData,
-        leftSplit: 2,
+            { id: "unit", header: [{ text: "ĐVT", align: "center" }], align: "center", width: 120 },
+            { id: "col1", header: [{ text: "KH (KỊCH BẢN CAO)", align: "center" }], align: "right", width: 160, type: "number", format: "#,#" },
+            { id: "col2", header: [{ text: "KH (KỊCH BẢN TRUNG BÌNH)", align: "center" }], align: "right", width: 160, type: "number", format: "#,#" },
+            { id: "col4", header: [{ text: "KH (KỊCH BẢN THẤP)", align: "center" }], align: "right", width: 160, type: "number", format: "#,#" },
+        ],
+        data:  @Html.Raw(JsonConvert.SerializeObject(Model.BM02D, jsonSerializeSettings)),
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        selection: true,
-        autoHeight: true,
+        selection: 'row',
+        rowHeight: 30,
     });
 
     function ExportData() {

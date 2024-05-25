@@ -8,20 +8,6 @@
     var formIdExportExcel = Guid.NewGuid();
 
 }
-<style>
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
-
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 <div class="hidden">
     <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
@@ -36,31 +22,30 @@ rawData.forEach((item) => {
     if (item.isBold) delete item.parent;
 });
     let columns = [
-        { id: "name", header: [{ text: "LĨNH VỰC", align: "center" }, { content: "inputFilter" }], minWidth: 300 },
+        { id: "name", header: [{ text: "LĨNH VỰC", align: "center", rowspan: 2 }], width: 200 },
 
-        { id: "col1", header: [{ text: "KH (KỊCH BẢN CAO)", align: "center", colspan: 3 }, { text: "DOANH THU", align: "center" }], align: "right", minWidth: 180 , type: "number", format: "#,#"},
-        { id: "col2", header: ["", { text: "CHI PHÍ", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col3", header: ["", { text: "LNTT", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col1", header: [{ text: "KH (KỊCH BẢN CAO)", align: "center", colspan: 3 }, { text: "DOANH THU", align: "center" }], align: "right", width: 146 , type: "number", format: "#,#"},
+        { id: "col2", header: ["", { text: "CHI PHÍ", align: "center" }], align: "right", width: 146, type: "number", format: "#,#" },
+        { id: "col3", header: ["", { text: "LNTT", align: "center" }], align: "right", width: 146, type: "number", format: "#,#" },
 
-        { id: "col4", header: [{ text: "KH (KỊCH BẢN TRUNG BÌNH)", align: "center", colspan: 3 }, { text: "DOANH THU", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col5", header: ["", { text: "CHI PHÍ", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col6", header: ["", { text: "LNTT", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col4", header: [{ text: "KH (KỊCH BẢN TRUNG BÌNH)", align: "center", colspan: 3 }, { text: "DOANH THU", align: "center" }], align: "right", width: 146, type: "number", format: "#,#" },
+        { id: "col5", header: ["", { text: "CHI PHÍ", align: "center" }], align: "right", width: 146, type: "number", format: "#,#" },
+        { id: "col6", header: ["", { text: "LNTT", align: "center" }], align: "right", width: 146, type: "number", format: "#,#" },
 
-        { id: "col7", header: [{ text: "KH (KỊCH BẢN THẤP)", align: "center", colspan: 3 }, { text: "DOANH THU", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col8", header: ["", { text: "CHI PHÍ", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
-        { id: "col9", header: ["", { text: "LNTT", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#,#" },
+        { id: "col7", header: [{ text: "KH (KỊCH BẢN THẤP)", align: "center", colspan: 3 }, { text: "DOANH THU", align: "center" }], align: "right", width: 146, type: "number", format: "#,#" },
+        { id: "col8", header: ["", { text: "CHI PHÍ", align: "center" }], align: "right", width: 146, type: "number", format: "#,#" },
+        { id: "col9", header: ["", { text: "LNTT", align: "center" }], align: "right", width: 146, type: "number", format: "#,#" },
 
     ];
 
     const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
-        leftSplit: 1,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        selection: true,
-        autoHeight: true,
+        selection: 'row',
+        rowHeight: 30,
     });
       function ExportData() {
         var Treedata = JSON.stringify(treeGrid.data.serialize());
