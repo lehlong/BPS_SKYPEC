@@ -26,11 +26,11 @@
 
             { id: "unit", header: [{ text: "ĐVT", align: "center" }], align: "center", minWidth: 120 },
 
-            { id: "col1", header: [{ text: "TH 2019", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
-            { id: "col2", header: [{ text: "KH 2023", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
-            { id: "col3", header: [{ text: "UTH 2023", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
-            { id: "col4", header: [{ text: "KH 2024", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
-            { id: "col5", header: [{ text: "KH 2024 / UTH 2023", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#,#" },
+            { id: "col1", header: [{ text: "TH 2019", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#.#" },
+            { id: "col2", header: [{ text: "KH 2023", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#.#" },
+            { id: "col3", header: [{ text: "UTH 2023", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#.#" },
+            { id: "col4", header: [{ text: "KH 2024", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#.#" },
+            { id: "col5", header: [{ text: "KH 2024 / UTH 2023", align: "center" }], align: "right", minWidth: 160, type: "number", format: "#.#" },
 
         ],
         data: @Html.Raw(JsonConvert.SerializeObject(Model.BM02D, jsonSerializeSettings)),

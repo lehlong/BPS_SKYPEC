@@ -25,9 +25,9 @@
             { id: "name", header: [{ text: "NỘI DUNG", align: "center" }], adjust: true },
 
             { id: "unit", header: [{ text: "ĐVT", align: "center" }], align: "center", width: 120 },
-            { id: "col1", header: [{ text: "KH (KỊCH BẢN CAO)", align: "center" }], align: "right", width: 160, type: "number", format: "#,#" },
-            { id: "col2", header: [{ text: "KH (KỊCH BẢN TRUNG BÌNH)", align: "center" }], align: "right", width: 160, type: "number", format: "#,#" },
-            { id: "col4", header: [{ text: "KH (KỊCH BẢN THẤP)", align: "center" }], align: "right", width: 160, type: "number", format: "#,#" },
+            { id: "col1", header: [{ text: "KH (KỊCH BẢN CAO)", align: "center" }], align: "right", width: 160, type: "number", format: "#.#" },
+            { id: "col2", header: [{ text: "KH (KỊCH BẢN TRUNG BÌNH)", align: "center" }], align: "right", width: 160, type: "number", format: "#.#" },
+            { id: "col4", header: [{ text: "KH (KỊCH BẢN THẤP)", align: "center" }], align: "right", width: 160, type: "number", format: "#.#" },
         ],
         data:  @Html.Raw(JsonConvert.SerializeObject(Model.BM02D, jsonSerializeSettings)),
         resizable: true,

@@ -78,17 +78,17 @@
                 { text: "KẾ HOẠCH CHI TIẾT", colspan: rawData[0].lstCenter.length * 2 + 3, align: 'center' },
                 {id:"ID_HDSL", text: "SỐ LƯỢNG", colspan: rawData[0].lstCenter.length + 1, align: 'center' },
                 { text: idCol0, align: 'center', sortable: false, }
-            ], align: 'right', width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }]
+            ], align: 'right', width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }]
         },
     );
     for (var i = 1; i < rawData[0].lstCenter.length; i++) {
         var idCol = rawData[0].lstCenter[i].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[i].SAN_BAY_CODE : rawData[0].lstCenter[i]._implementation.SAN_BAY_CODE;
-        columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] });
+        columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] });
     };
 
     columns.push(
-        { id: "sumQuantity", header: ["", "", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
-        { id: "price", header: ["", { text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "sumQuantity", header: ["", "", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] },
+        { id: "price", header: ["", { text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] },
     );
 
     columns.push(
@@ -97,15 +97,15 @@
                 "",
                 { text: "THÀNH TIỀN", colspan: rawData[0].lstCenter.length + 1, align: 'center' },
                 { text: idCol0, align: 'center' }
-            ], align: 'right', width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }]
+            ], align: 'right', width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }]
         },
     );
     for (var i = 1; i < rawData[0].lstCenter.length; i++) {
         var idCol = rawData[0].lstCenter[i].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[i].SAN_BAY_CODE : rawData[0].lstCenter[i]._implementation.SAN_BAY_CODE;
-        columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] });
+        columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] });
     };
     columns.push(
-        { id: "sumTotal", header: ["","", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#,#", footer: [{ content: "sum" }] },
+        { id: "sumTotal", header: ["","", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] },
         { id: "notes", header: [{ text: "GHI CHÚ", align: "center", rowspan: 3 }], width: 150 }
     );
 
