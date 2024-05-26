@@ -20,6 +20,8 @@ namespace SMO.Core.Entities.BP.DAU_TU_XAY_DUNG
         public virtual decimal? VALUE_7 { get; set; }
         public virtual string VALUE_8 { get; set; }
 
+        public virtual decimal? MONTH { get; set; }
+
         public virtual decimal? MONTH1 { get; set; }
         public virtual decimal? MONTH2 { get; set; }
         public virtual decimal? MONTH3 { get; set; }

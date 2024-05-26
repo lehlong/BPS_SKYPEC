@@ -29,19 +29,7 @@ namespace SMO.Repository.Mapping.BP.DAU_TU_XAY_DUNG
             Map(x => x.VALUE_7);
             Map(x => x.VALUE_8);
 
-            Map(x => x.MONTH1);
-            Map(x => x.MONTH2);
-            Map(x => x.MONTH3);
-            Map(x => x.MONTH4);
-            Map(x => x.MONTH5);
-            Map(x => x.MONTH6);
-            Map(x => x.MONTH7);
-            Map(x => x.MONTH8);
-            Map(x => x.MONTH9);
-            Map(x => x.MONTH10);
-            Map(x => x.MONTH11);
-            Map(x => x.MONTH12);
-            Map(x => x.SumMonth);
+            Map(x => x.MONTH);
             Map(x => x.DESCRIPTION);
             Map(x => x.STATUS);
             References(x => x.KhoanMucDauTu).Columns("KHOAN_MUC_DAU_TU_CODE", "TIME_YEAR")

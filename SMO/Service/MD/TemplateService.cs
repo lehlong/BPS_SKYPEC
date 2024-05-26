@@ -298,7 +298,7 @@ namespace SMO.Service.MD
             else if (ObjDetail.ELEMENT_TYPE == ElementType.DauTuTrangThietBi)
             {
 
-                var lstDetail = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
+                var lstDetail = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TEMPLATE_CODE == this.TEMPLATE_REFERENCE && x.TIME_YEAR == this.TIME_YEAR).ToList();
 
                 if (lstDetail.Count() == 0 && this.TEMPLATE_REFERENCE != "-")
                 {
@@ -323,7 +323,7 @@ namespace SMO.Service.MD
                         UnitOfWork.BeginTransaction();
                         foreach (var item in lstDetail)
                         {
-                            UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Create(new T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI
+                            UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Create(new T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG
                             {
                                 PKID = Guid.NewGuid().ToString(),
                                 CENTER_CODE = item.CENTER_CODE,
@@ -341,6 +341,7 @@ namespace SMO.Service.MD
                     State = false;
                     Exception = ex;
                 }
+
 
             }
 
@@ -1870,15 +1871,31 @@ namespace SMO.Service.MD
             }
         }
 
-        public IList<T_MD_PROJECT> GetDataProject(string templateId, int year)
+        public IList<T_MD_PROJECT> GetDataProject(string templateId,string type, int year)
         {
-            var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.LOAI_HINH == "XDCB").ToList();
-            var selectedPjCode = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId).Select(x=>x.Center.PROJECT_CODE).Distinct().ToList();
-            foreach (var item in lstProject)
+            var lstProject = new List<T_MD_PROJECT>();
+            if (type == "XDCB")
             {
-                if (selectedPjCode.Contains(item.CODE))
+                lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.LOAI_HINH == "XDCB").ToList();
+                var selectedPjCode = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId).Select(x => x.Center.PROJECT_CODE).Distinct().ToList();
+                foreach (var item in lstProject)
                 {
-                    item.IsCheck = true;
+                    if (selectedPjCode.Contains(item.CODE))
+                    {
+                        item.IsCheck = true;
+                    }
+                }
+            }
+            else
+            {
+                lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.LOAI_HINH == "TTB").ToList();
+                var selectedPjCode = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId).Select(x => x.Center.PROJECT_CODE).Distinct().ToList();
+                foreach (var item in lstProject)
+                {
+                    if (selectedPjCode.Contains(item.CODE))
+                    {
+                        item.IsCheck = true;
+                    }
                 }
             }
             return lstProject;
@@ -1892,43 +1909,87 @@ namespace SMO.Service.MD
                 var template = ObjDetail.CODE;
                 var year = TIME_YEAR;
                 UnitOfWork.BeginTransaction();
-                var lstPjCode = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == template).Select(x => x.CENTER_CODE).Distinct().ToList();
-                UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => lstPjCode.Contains(x.CENTER_CODE) && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
-                foreach (var projectCode in selectedCodes)
+                if(ObjDetail.BUDGET_TYPE.Trim() == BudgetType.DauTuXayDung)
                 {
-                    var project = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x=>x.CODE == projectCode && x.YEAR == year);
-                    var loaiHinhDauTu = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == project.TYPE).Select(x=>x.CODE).ToList();
-                    var profitCenter = UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().Queryable().FirstOrDefault(x => x.ORG_CODE == companyCode && x.PROJECT_CODE == projectCode);
-                    var centerCode = profitCenter == null ? Guid.NewGuid().ToString() : profitCenter.CODE;
-                    if (profitCenter == null)
+                    var lstPjCode = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == template).Select(x => x.CENTER_CODE).Distinct().ToList();
+                    UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => lstPjCode.Contains(x.CENTER_CODE) && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                    foreach (var projectCode in selectedCodes)
                     {
-                        UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().Create(new T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER
+                        var project = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == projectCode && x.YEAR == year);
+                        var loaiHinhDauTu = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == project.TYPE).Select(x => x.CODE).ToList();
+                        var profitCenter = UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().Queryable().FirstOrDefault(x => x.ORG_CODE == companyCode && x.PROJECT_CODE == projectCode);
+                        var centerCode = profitCenter == null ? Guid.NewGuid().ToString() : profitCenter.CODE;
+                        if (profitCenter == null)
                         {
-                            CODE = centerCode,
-                            ORG_CODE = companyCode,
-                            PROJECT_CODE = projectCode,
-                        });
+                            UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().Create(new T_MD_DAU_TU_XAY_DUNG_PROFIT_CENTER
+                            {
+                                CODE = centerCode,
+                                ORG_CODE = companyCode,
+                                PROJECT_CODE = projectCode,
+                            });
+                        }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                        }
+
+                        switch (ObjDetail.BUDGET_TYPE.Trim())
+                        {
+                            case BudgetType.DauTuXayDung:
+                                var detailsCostPL = from d in loaiHinhDauTu
+                                                    select new T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG
+                                                    (Guid.NewGuid().ToString(), template, d, centerCode, year);
+
+                                UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Create(detailsCostPL.ToList());
+                                break;
+
+                            default:
+                                break;
+                        }
+
                     }
-                    else
-                    {
-                        UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
-                    }
-
-                    switch (ObjDetail.BUDGET_TYPE.Trim())
-                    {
-                        case BudgetType.DauTuXayDung:
-                            var detailsCostPL = from d in loaiHinhDauTu
-                                                select new T_MD_TEMPLATE_DETAIL_DAU_TU_XAY_DUNG
-                                                (Guid.NewGuid().ToString(), template, d, centerCode, year);
-
-                            UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Create(detailsCostPL.ToList());
-                            break;
-
-                        default:
-                            break;
-                    }
-
                 }
+                else
+                {
+                    var lstPjCode = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == template).Select(x => x.CENTER_CODE).Distinct().ToList();
+                    UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => lstPjCode.Contains(x.CENTER_CODE) && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                    foreach (var projectCode in selectedCodes)
+                    {
+                        var project = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == projectCode && x.YEAR == year);
+                        var loaiHinhDauTu = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == project.TYPE).Select(x => x.CODE).ToList();
+                        var profitCenter = UnitOfWork.Repository<DauTuTrangThietBiProfitCenterRepo>().Queryable().FirstOrDefault(x => x.ORG_CODE == companyCode && x.PROJECT_CODE == projectCode);
+                        var centerCode = profitCenter == null ? Guid.NewGuid().ToString() : profitCenter.CODE;
+                        if (profitCenter == null)
+                        {
+                            UnitOfWork.Repository<DauTuTrangThietBiProfitCenterRepo>().Create(new T_MD_DAU_TU_TRANG_THIET_BI_PROFIT_CENTER
+                            {
+                                CODE = centerCode,
+                                ORG_CODE = companyCode,
+                                PROJECT_CODE = projectCode,
+                            });
+                        }
+                        else
+                        {
+                            UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.CENTER_CODE == centerCode && x.TEMPLATE_CODE == template && x.TIME_YEAR == year).Delete();
+                        }
+
+                        switch (ObjDetail.BUDGET_TYPE.Trim())
+                        {
+                            case BudgetType.DauTuTrangThietBi:
+                                var detailsCostPL = from d in loaiHinhDauTu
+                                                    select new T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI
+                                                    (Guid.NewGuid().ToString(), template, d, centerCode, year);
+
+                                UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Create(detailsCostPL.ToList());
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    }
+                }
+                
                   UnitOfWork.Commit();
             }
             catch (Exception ex)

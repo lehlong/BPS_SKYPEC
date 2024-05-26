@@ -47,8 +47,7 @@ namespace SMO.Areas.BP.Controllers
         {
             if (!string.IsNullOrEmpty(templateId))
             {
-                var dataCost = _service.PreparePureListForTemplate(out IList<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI> detailOtherCostElements, templateId, year);
-                ViewBag.detailOtherCostElements = detailOtherCostElements;
+                var dataCost = _service.GetDataTemPlate(templateId, year);
                 return PartialView("ViewTemplateDauTuTrangThietBi", dataCost);
                 //var isBaseTemplate = _service.GetTemplate(templateId).IS_BASE;
                 //if (isBaseTemplate)
@@ -70,50 +69,12 @@ namespace SMO.Areas.BP.Controllers
         [ValidateAntiForgeryToken]
         public override ActionResult SummaryDataCenter(ViewDataCenterModel model)
         {
-            var dataCost = _service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI> detailCostElements,
-                out IList<T_BP_DAU_TU_TRANG_THIET_BI_DATA> detailCostData, out bool isDrillDownApply, model);
-            if (dataCost == null)
-            {
-                ViewBag.dataCenterModel = model;
-                return PartialView(dataCost);
-            }
-            dataCost = dataCost.Distinct().ToList();
-            // chuyển đơn vị tiền tệ 
-            if (model.EXCHANGE_RATE.HasValue && model.EXCHANGE_RATE != 1)
-            {
-                foreach (var data in dataCost)
-                {
-                    for (int i = 0; i < data.Values.Length; i++)
-                    {
-                        data.Values[i] = Math.Round(data.Values[i] / model.EXCHANGE_RATE.Value, 2);
-                    }
-                }
-                if (isDrillDownApply && detailCostData != null)
-                {
-                    foreach (var data in detailCostData)
-                    {
-                        data.VALUE = Math.Round((data.VALUE ?? 0) / model.EXCHANGE_RATE.Value, 2);
-                    }
-                }
-            }
-
-            if (detailCostData != null)
-            {
-                ViewBag.detailCostElements = detailCostData;
-            }
-            if (detailCostElements != null)
-            {
-                ViewBag.detailCostElements = detailCostElements;
-            }
+            var dataCost = _service.GetDataDauTu(model);
             ViewBag.costCFHeader = _service.GetHeader(model);
-            model.IS_DRILL_DOWN = isDrillDownApply;
+            model.IS_DRILL_DOWN = model.IS_DRILL_DOWN;
             model.EXCHANGE_RATE = 12;
-            ViewBag.lstProject = _service.GetProject(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
-            if (model.PHIEN_BAN == "PB3" || model.PHIEN_BAN == "PB5" || model.PHIEN_BAN == "PB4")
-            {
-                _service.GetDataProject(model);
-            }
             ViewBag.dataCenterModel = model;
+            ViewBag.lstProject = _service.GetProject(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
             return PartialView(dataCost);
         }
 
@@ -189,13 +150,13 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string value, int? month)
+        public ActionResult UpdateCellValue(string templateCode, int version, int year, string projectCode, string elementCode, string value, string column, int? month)
         {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
-            _service.UpdateCellValue(templateCode, version, year, type, projectCode, costCenter, elementCode, value, month);
+            _service.UpdateCellValue(templateCode, version, year, projectCode, elementCode, value, column, month);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

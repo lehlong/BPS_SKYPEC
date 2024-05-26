@@ -47,8 +47,7 @@
     }
 </style>
 
-@if (Model == null || Model.Count == 0 ||
-    detailCostElements == null || detailCostElements.Count == 0 || costCFHeader == null)
+@if (Model == null || Model.Count == 0)
 {
     Html.RenderPartial("_NothingData");
 }
@@ -78,14 +77,17 @@ else
                         <td class="pre-whitespace">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
                         <td class="pre-whitespace">KH NĂM</td>
                     </tr>
-                    @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB3" || dataCenterModel.PHIEN_BAN == "PB4")
-                    {
-                        foreach (var detail in lstProject.Where(x => x.CODE != null).Select(x => x.CODE).Distinct())
+                        @foreach (var detail in Model.OrderBy(x => x.ORDER))
                         {
-                            var item = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == detail).ToList();
+                            var space = new StringBuilder();
+                            for (int i = 0; i < detail.LEVEL; i++)
+                            {
+                                space.Append("\t");
+                            }
+
                             <tr>
                                 @{
-                                    var code = item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE;
+                                    var code = detail.PROJECT_CODE;
                                 }
                                 @if (!string.IsNullOrEmpty(code))
                                 {
@@ -96,85 +98,41 @@ else
                                     <td></td>
                                 }
                                 @{
-                                    var isEdit = item.FirstOrDefault().KhoanMucDauTu.IS_GROUP ? "disabled" : "";
-                                    var codePj = item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE;
+                                    var isEdit = detail.IS_GROUP ? "disabled" : "";
+                                    var codePj = detail.PROJECT_CODE;
                                 }
 
-                                <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE)</td>
-                                <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.NAME)</td>
-                                <td class="align-right"><input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4001', this.value)" value="@(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE)?.ToStringVN())" /></td>
-
-                                <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4010', this.value)" value="@(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE== "4010").Sum(x => x.VALUE)?.ToStringVN())" />
+                                <td class="pre-whitespace sticky-cell">@(detail.IS_GROUP? detail.PROJECT_CODE: string.Empty)</td>
+                                <td class="pre-whitespace sticky-cell">@($"{space.ToString()}{detail.PROJECT_NAME}")</td>
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_1', this.value)" value="@detail.VALUE_1.ToStringVN()" />
                                 </td>
-                                <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4011', this.value)" value="@(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE== "4011").Sum(x => x.VALUE)?.ToStringVN())" />
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_2', this.value)" value="@detail.VALUE_2" />
                                 </td>
-                                <td class="align-right">
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_3', this.value)" value="@detail.VALUE_3" />
                                 </td>
-                                <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4020', this.value)" value="@(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE== "4020").Sum(x => x.VALUE)?.ToStringVN())" />
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_4', this.value)" value="@detail.VALUE_4.ToStringVN()" />
                                 </td>
-                                <td class="align-right">
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_5', this.value)" value="@detail.VALUE_5.ToStringVN()" />
                                 </td>
-                                <td class="align-right">
-                                    <input class="input-edit" disabled @isEdit type="text" onchange="onEditCell('', '@codePj','', 'GC', this.value)" value="@(item.FirstOrDefault()?.DESCRIPTION)" />
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_6', this.value)" value="@detail.VALUE_6" />
+                                </td>
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_7', this.value)" value="@detail.VALUE_7.ToStringVN()" />
+                                </td>
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_8', this.value)" value="@detail.VALUE_8" />
+                                </td>
+                                <td>
+                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','DESCRIPTION', this.value)" value="@detail.DESCRIPTION" />
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        foreach (var detail in Model.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
-                        {
-                            var item = Model.Where(x => x.CENTER_CODE == detail).ToList();
-                            <tr>
-                                @{
-                                    var code = item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE;
-                                }
-                                @if (!string.IsNullOrEmpty(code))
-                                {
-                                    <td style="text-align:center;"><i class="material-icons icon-function" onclick="getCommentElement('@code')">comment</i></td>
-                                }
-                                else
-                                {
-                                    <td></td>
-                                }
-                                @{
-                                    var isEdit = item.FirstOrDefault().IS_GROUP ? "disabled" : "";
-                                    var codePj = item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE;
-                                }
-
-                                <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.CODE)</td>
-                                <td class="pre-whitespace sticky-cell">@(item.FirstOrDefault()?.DauTuXayDungProfitCenter.Project?.NAME)</td>
-                                <td class="align-right"><input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4001', this.value)" value="@(item.Where(x => x.CODE == "4001").Sum(x => x.Values[0]).ToStringVN())" /></td>
-                                <td class="align-left">
-                                    <input class="input-edit" style="text-align:left;" disabled @isEdit type="text" onchange="onEditCell('', '@codePj','', '4002', this.value)" value="@(item.FirstOrDefault()?.EQUITY_SOURCES)" />
-                                </td>
-                                <td class="align-left">
-                                    <input class="input-edit" style="text-align:left;" disabled @isEdit type="text" onchange="onEditCell('', '@codePj','', '4003', this.value)" value="@(item.FirstOrDefault()?.PROCESS)" />
-                                </td>
-                                <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4010', this.value)" value="@(item.Where(x => x.CODE == "4010").Sum(x => x.Values[0]).ToStringVN())" />
-                                </td>
-                                <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4011', this.value)" value="@(item.Where(x => x.CODE == "4011").Sum(x => x.Values[0]).ToStringVN())" />
-                                </td>
-                                <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4012', this.value)" value="@(item.FirstOrDefault()?.TDTK)" />
-                                </td>
-                                <td class="align-right">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4020', this.value)" value="@(item.Where(x => x.CODE == "4020").Sum(x => x.Values[0]).ToStringVN())" />
-                                </td>
-                                <td class="align-left">
-                                    <input class="input-edit" @isEdit type="text" onchange="onEditCell('', '@codePj','', '4021', this.value)" value="@(item.FirstOrDefault()?.QKH)" />
-                                </td>
-                                <td class="align-right">
-                                    <input class="input-edit" disabled @isEdit type="text" onchange="onEditCell('', '@codePj','', 'GC', this.value)" value="@(item.FirstOrDefault()?.DESCRIPTION)" />
-                                </td>
-                            </tr>
-                        }
-                    }
                 </tbody>
             </table>
         </div>
@@ -231,7 +189,7 @@ else
             }
         }
 
-        function onEditCell(type, projectCode, costCenter, elementCode, value) {
+        function onEditCell( projectCode, elementCode, column, value) {
             if (value == null || value == "") {
                 return;
             }
@@ -246,11 +204,10 @@ else
                     templateCode: templateCode,
                     version: version,
                     year: year,
-                    type: type,
                     projectCode: projectCode,
-                    costCenter: costCenter,
                     elementCode: elementCode,
                     value: value,
+                    column: column,
                     month: month 
                 },
                 dataType: 'json',

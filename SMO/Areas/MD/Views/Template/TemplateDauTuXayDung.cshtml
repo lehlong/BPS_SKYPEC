@@ -162,7 +162,7 @@
                                         @Html.MyDropDownListFor(m => m.TIME_YEAR, selectList,
                                         new
                                         {
-                                            @onchange = "ChangeYear();",
+                                            @onchange = "ChangeYear(this.value);",
                                             @data_live_search = "true",
                                             @class = "selectpicker show-tick",
                                             data_container = "body",
@@ -204,7 +204,7 @@
             $("#load-paging").empty();
             var ajaxParams = {
                 url: "@Url.Action("ViewDataDauTu")",
-                data: { templateId: '@Model.ObjDetail.CODE', type: '@TemplateType.CENTER.ToString()', year },
+                data: { templateId: '@Model.ObjDetail.CODE', type: 'XDCB', year },
                 htmlTarget: '#load-paging',
             };
             Forms.LoadAjax(ajaxParams);
@@ -226,9 +226,11 @@
             Forms.CompleteUI();
         });
         function ChangeYear(year) {
+            debugger;
             if (year) {
                 $("#TIME_YEAR").val(year);
                 $("#TIME_YEAR").selectpicker('refresh');
+                LoadPaging();
             } else {
                 BuildTree();
                 BuildTreeElement();

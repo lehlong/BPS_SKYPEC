@@ -2440,7 +2440,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
 
                     // Rẽ nhánh vào phiên bản bổ sung
-                    if(ObjDetail.PHIEN_BAN == "PB3")
+                    if(ObjDetail.PHIEN_BAN == "PB3" || ObjDetail.PHIEN_BAN == "PB4")
                     {
                         for(int month = 1; month <= 12; month++)
                         {
@@ -3470,6 +3470,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             }
                         }
                     }
+
                     else
                     {
                         //Rẽ nhánh cho các template khác nhau của 4 chi nhánh
@@ -6772,12 +6773,13 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             {
                 UnitOfWork.BeginTransaction();
                 string value = valueInput.Replace(".", "");
+                var lstCostCenter = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().Queryable().Where(x => x.SAN_BAY_CODE == sanBay && x.COST_CENTER_CODE == costCenter).Select(x => x.COST_CENTER_CODE).ToList();
                 #region Phiên bản bổ sung
-                if(month > 0)
+                if (month > 0)
                 {
                     if (type == "SL")
                     {
-                        var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.ChiPhiProfitCenter.COST_CENTER_CODE == costCenter && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode && x.MONTH == month).ToList();
+                        var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && lstCostCenter.Contains(costCenter) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode && x.MONTH == month).ToList();
                         if (rowsChange.Count() == 0)
                         {
                             this.State = false;
@@ -6948,7 +6950,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 {
                     if (type == "SL")
                     {
-                        var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.ChiPhiProfitCenter.COST_CENTER_CODE == costCenter && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
+                        var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && lstCostCenter.Contains(costCenter) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
                         if (rowsChange.Count() == 0)
                         {
                             this.State = false;

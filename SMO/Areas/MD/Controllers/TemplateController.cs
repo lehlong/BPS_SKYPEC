@@ -613,7 +613,7 @@ namespace SMO.Areas.MD.Controllers
         {
             _service.Get(templateId);
             _service.TIME_YEAR = year;
-            var data = _service.GetDataProject(templateId, year);
+            var data = _service.GetDataProject(templateId,type, year);
             _service.lstProject = data;
             return PartialView(_service);
         }

@@ -1891,6 +1891,8 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             if (DauTuTrangThietBiCurrent != null)
             {
                 versionNext = DauTuTrangThietBiCurrent.VERSION + 1;
+                ObjDetail.PHIEN_BAN = DauTuTrangThietBiCurrent.PHIEN_BAN;
+
             }
 
             // Lấy dữ liệu của version hiện tại
@@ -2021,33 +2023,140 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
 
                     if (ObjDetail.TYPE_UPLOAD == "01")
                     {
-                        var value4001 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? 0 : tableData.Rows[i][2]);
-                        var value4010 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? 0 : tableData.Rows[i][5]);
-                        var value4030 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
-                        var value4031 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
-                        var value4032 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
-                        var value4020 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? 0 : tableData.Rows[i][10]);
-                        foreach (var ele in lstElement.Where(x => x.CENTER_CODE == centerCode))
+                        var value_1 = tableData.Rows[i][3].ToString();
+                        var value_4 = tableData.Rows[i][6].ToString();
+                        var value_5 = tableData.Rows[i][7].ToString();
+                        var value_6 = tableData.Rows[i][8].ToString();
+                        var value_7 = tableData.Rows[i][9].ToString();
+                        var value_9 = tableData.Rows[i][11].ToString();
+                        if (!decimal.TryParse(value_1, out decimal valuestr) && !string.IsNullOrEmpty(value_1))
                         {
-                            costData = new T_BP_DAU_TU_TRANG_THIET_BI_DATA()
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng D{i}";
+                            return;
+                        }
+                        if (!decimal.TryParse(value_4, out decimal valuestr1) && !string.IsNullOrEmpty(value_4))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng G{i}";
+                            return;
+                        }
+                        if (!decimal.TryParse(value_5, out decimal valuestr2) && !string.IsNullOrEmpty(value_5))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng H{i}";
+                            return;
+                        }
+                        if (!decimal.TryParse(value_6, out decimal valuestr3) && !string.IsNullOrEmpty(value_6))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng I{i}";
+                            return;
+                        }
+                        if (!decimal.TryParse(value_7, out decimal valuestr4) && !string.IsNullOrEmpty(value_7))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng J{i}";
+                            return;
+                        }
+                        if (!decimal.TryParse(value_9, out decimal valuestr5) && !string.IsNullOrEmpty(value_9))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng L{i}";
+                            return;
+                        }
+                        if (ObjDetail.PHIEN_BAN == "PB1")
+                        {
+                            var value1 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
+                            var value2 = tableData.Rows[i][4].ToString();
+                            var value3 = tableData.Rows[i][5].ToString();
+                            var value4 = tableData.Rows[i][6].ToString();
+                            var value5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
+                            var value6 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
+                            var value7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
+                            var value8 = tableData.Rows[i][10].ToString();
+                            var value9 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? 0 : tableData.Rows[i][11]);
+                            var value10 = tableData.Rows[i][12].ToString();
+                            var description = tableData.Rows[i][13].ToString();
+                            var elementCode = tableData.Rows[i][1].ToString();
+                            if (!string.IsNullOrEmpty(elementCode))
                             {
-                                PKID = Guid.NewGuid().ToString(),
-                                ORG_CODE = orgCode,
-                                DAU_TU_PROFIT_CENTER_CODE = centerCode,
-                                TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                                TIME_YEAR = ObjDetail.TIME_YEAR,
-                                STATUS = Approve_Status.ChuaTrinhDuyet,
-                                VERSION = versionNext,
-                                KHOAN_MUC_DAU_TU_CODE = ele.ELEMENT_CODE,
-                                VALUE = ele.ELEMENT_CODE == "4001" ? value4001 : ele.ELEMENT_CODE == "4010" ? value4010 : ele.ELEMENT_CODE == "4030" ? value4030 : ele.ELEMENT_CODE == "4031" ? value4031 : ele.ELEMENT_CODE == "4032" ? value4032 : ele.ELEMENT_CODE == "4020" ? value4020 : 0,
-                                DESCRIPTION = tableData.Rows[i][12].ToString(),
-                                PROCESS = tableData.Rows[i][4].ToString(),
-                                EQUITY_SOURCES = tableData.Rows[i][3].ToString(),
-                                QKH = tableData.Rows[i][11].ToString(),
-                                TDTK = tableData.Rows[i][9].ToString(),
-                                CREATE_BY = currentUser
-                            };
-                            UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Create(costData);
+                                costData = new T_BP_DAU_TU_TRANG_THIET_BI_DATA()
+                                {
+                                    PKID = Guid.NewGuid().ToString(),
+                                    ORG_CODE = orgCode,
+                                    DAU_TU_PROFIT_CENTER_CODE = centerCode,
+                                    TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                                    TIME_YEAR = ObjDetail.TIME_YEAR,
+                                    STATUS = Approve_Status.ChuaTrinhDuyet,
+                                    VERSION = versionNext,
+                                    KHOAN_MUC_DAU_TU_CODE = elementCode,
+                                    VALUE_1 = value1,
+                                    VALUE_2 = value2,
+                                    VALUE_3 = value3,
+                                    VALUE_4 = value4,
+                                    VALUE_5 = value5,
+                                    VALUE_6 = value6,
+                                    VALUE_7 = value7,
+                                    VALUE_8 = value8,
+                                    VALUE_9 = value9,
+                                    VALUE_10 = value10,
+                                    DESCRIPTION = description,
+                                    CREATE_BY = currentUser
+                                };
+                                UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Create(costData);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            var value1 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
+                            var value2 = tableData.Rows[i][4].ToString();
+                            var value3 = tableData.Rows[i][5].ToString();
+                            var value4 = tableData.Rows[i][6].ToString();
+                            var value5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
+                            var value6 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
+                            var value7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
+                            var value8 = tableData.Rows[i][10].ToString();
+                            var value9 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? 0 : tableData.Rows[i][11]);
+                            var value10 = tableData.Rows[i][12].ToString();
+                            var description = tableData.Rows[i][13].ToString();
+                            var elementCode = tableData.Rows[i][1].ToString();
+                            if (!string.IsNullOrEmpty(elementCode))
+                            {
+                                for (int j = 1; j <= 12; j++)
+                                {
+                                    costData = new T_BP_DAU_TU_TRANG_THIET_BI_DATA()
+                                    {
+                                        PKID = Guid.NewGuid().ToString(),
+                                        ORG_CODE = orgCode,
+                                        DAU_TU_PROFIT_CENTER_CODE = centerCode,
+                                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                                        TIME_YEAR = ObjDetail.TIME_YEAR,
+                                        STATUS = Approve_Status.ChuaTrinhDuyet,
+                                        VERSION = versionNext,
+                                        KHOAN_MUC_DAU_TU_CODE = elementCode,
+                                        VALUE_1 = value1,
+                                        VALUE_2 = value2,
+                                        VALUE_3 = value3,
+                                        VALUE_4 = value4,
+                                        VALUE_5 = value5,
+                                        VALUE_6 = value6,
+                                        VALUE_7 = value7,
+                                        VALUE_8 = value8,
+                                        VALUE_9 = value9,
+                                        VALUE_10 = value10,
+                                        MONTH = j,
+                                        DESCRIPTION = description,
+                                        CREATE_BY = currentUser
+                                    };
+                                    UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Create(costData);
+                                }
+                            }
+
                         }
                     }
                     else
@@ -2063,7 +2172,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             VERSION = versionNext,
                             KHOAN_MUC_DAU_TU_CODE = (tableData.Rows[i][9].ToString().Trim() == "0") ? "10010" : "10020",
                             VALUE = tableData.Rows[i][11] as decimal? == null ? 0 : tableData.Rows[i][11] as decimal?,
-                          
+
                             DESCRIPTION = "",
                             CREATE_BY = currentUser
                         };
@@ -2089,6 +2198,139 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                 State = false;
                 Exception = ex;
             }
+        }
+
+        public IList<T_MD_KHOAN_MUC_DAU_TU> GetDataDauTu(ViewDataCenterModel model)
+        {
+            var lstKhoanMuc = new List<T_MD_KHOAN_MUC_DAU_TU>();
+            if (model.PHIEN_BAN == "PB1")
+            {
+                // Lấy danh sách dự án
+                var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
+                var lstProfit = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).Distinct().ToList();
+
+                var Order = 0;
+                foreach (var profit in lstProfit)
+                {
+                    var item = new T_MD_KHOAN_MUC_DAU_TU
+                    {
+                        PROJECT_CODE = profit.PROJECT_CODE,
+                        PROJECT_NAME = profit.Project.NAME,
+                        TYPE = string.Empty,
+                        VALUETTB_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
+                        VALUETTB_2 = string.Empty,
+                        VALUETTB_3 = string.Empty,
+                        VALUETTB_4 = string.Empty,
+                        VALUETTB_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
+                        VALUETTB_6 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6)),
+                        VALUETTB_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
+                        VALUETTB_8 = string.Empty,
+                        VALUETTB_9 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9)),
+                        VALUETTB_10 = string.Empty,
+                        ISEDIT = profit.Project.TYPE == "TTB-LON" ? false : true,
+                        DESCRIPTION = string.Empty,
+                        ORDER = Order,
+                        LEVEL = 0,
+                        IS_GROUP = true,
+                    };
+                    lstKhoanMuc.Add(item);
+                    var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
+                    if (lstgiaiDoan.Count > 1)
+                    {
+                        foreach (var gd in lstgiaiDoan)
+                        {
+                            var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE);
+                            var itemChild = new T_MD_KHOAN_MUC_DAU_TU
+                            {
+                                PROJECT_CODE = profit.PROJECT_CODE,
+                                PROJECT_NAME = gd?.TEXT,
+                                TYPE = gd.CODE,
+                                VALUETTB_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
+                                VALUETTB_2 = child.VALUE_2,
+                                VALUETTB_3 = child.VALUE_3,
+                                VALUETTB_4 = child.VALUE_4,
+                                VALUETTB_5 = child.VALUE_5 == null ? 0 : Convert.ToDecimal(child.VALUE_5),
+                                VALUETTB_6 = child.VALUE_6 == null ? 0 : Convert.ToDecimal(child.VALUE_6),
+                                VALUETTB_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
+                                VALUETTB_8 = child.VALUE_8,
+                                VALUETTB_9 = child.VALUE_9 == null ? 0 : Convert.ToDecimal(child.VALUE_9),
+                                VALUETTB_10 = child.VALUE_10,
+                                ISEDIT = profit.Project.TYPE == "TTB-LON" ? true : false,
+
+                                DESCRIPTION = child.DESCRIPTION,
+                                LEVEL = 1
+                            };
+                            lstKhoanMuc.Add(itemChild);
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+
+                // Lấy danh sách dự án
+                var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR && x.MONTH == model.MONTH).ToList();
+                var lstProfit = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).Distinct().ToList();
+                var Order = 0;
+                foreach (var profit in lstProfit)
+                {
+                    var item = new T_MD_KHOAN_MUC_DAU_TU
+                    {
+                        PROJECT_CODE = profit.PROJECT_CODE,
+                        PROJECT_NAME = profit.Project.NAME,
+                        TYPE = string.Empty,
+                        VALUETTB_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
+                        VALUETTB_2 = string.Empty,
+                        VALUETTB_3 = string.Empty,
+                        VALUETTB_4 = string.Empty,
+                        VALUETTB_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
+                        VALUETTB_6 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_6) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6)),
+                        VALUETTB_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
+                        VALUETTB_8 = string.Empty,
+                        VALUETTB_9 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_9) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9)),
+                        VALUETTB_10 = string.Empty,
+                        DESCRIPTION = string.Empty,
+                        ISEDIT = profit.Project.TYPE == "TTB-LON" ? false : true,
+
+                        ORDER = Order,
+                        LEVEL = 0,
+                        IS_GROUP = true,
+                    };
+                    lstKhoanMuc.Add(item);
+                    var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
+                    if (lstgiaiDoan.Count > 1)
+                    {
+                        foreach (var gd in lstgiaiDoan)
+                        {
+                            var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE && x.MONTH == model.MONTH);
+                            var itemChild = new T_MD_KHOAN_MUC_DAU_TU
+                            {
+                                PROJECT_CODE = profit.PROJECT_CODE,
+                                PROJECT_NAME = gd?.TEXT,
+                                TYPE = gd.CODE,
+                                VALUETTB_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
+                                VALUETTB_2 = child.VALUE_2,
+                                VALUETTB_3 = child.VALUE_3,
+                                VALUETTB_4 = child.VALUE_4,
+                                VALUETTB_5 = child.VALUE_5 == null ? 0 : Convert.ToDecimal(child.VALUE_5),
+                                VALUETTB_6 = child.VALUE_6 == null ? 0 : Convert.ToDecimal(child.VALUE_6),
+                                VALUETTB_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
+                                VALUETTB_8 = child.VALUE_8,
+                                VALUETTB_9 = child.VALUE_9 == null ? 0 : Convert.ToDecimal(child.VALUE_9),
+                                VALUETTB_10 = child.VALUE_10,
+                                ISEDIT = profit.Project.TYPE == "TTB-LON" ? true : false,
+
+                                DESCRIPTION = child.DESCRIPTION,
+                                LEVEL = 1
+                            };
+                            lstKhoanMuc.Add(itemChild);
+                        }
+                    }
+
+                }
+            }
+            return lstKhoanMuc;
         }
         /// <summary>
         /// Lấy entity khai báo ngân sách dự phòng
@@ -2589,9 +2831,9 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
         /// <param name="year"></param>
         public override void GenerateTemplate(ref MemoryStream outFileStream, string path, string templateId, int year)
         {
-            var dataOtherCost = PreparePureList(out IList<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI> detailOtherKhoanMucDauTus, templateId, year, ignoreAuth: true);
+            var dataOtherCost = GetDataTemPlate(templateId, year);
 
-            if (dataOtherCost.Count == 0 || detailOtherKhoanMucDauTus.Count == 0)
+            if (dataOtherCost.Count == 0)
             {
                 State = false;
                 ErrorMessage = "Không tìm thấy dữ liệu";
@@ -2610,7 +2852,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
 
                 //Số hàng và số cột hiện tại
                 int numRowCur = 0;
-                int NUM_CELL = 11;
+                int NUM_CELL = 14;
 
                 //Style cần dùng
                 ICellStyle styleCellHeader = templateWorkbook.CreateCellStyle();
@@ -2624,6 +2866,12 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                 ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
                 styleCellNumber.CloneStyleFrom(styleCellDetail);
                 styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
+
+                ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+                styleCellName.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+
+                ICellStyle styleCellName2 = templateWorkbook.CreateCellStyle();
+                styleCellName2.CloneStyleFrom(sheet.GetRow(8).Cells[1].CellStyle);
 
                 ICellStyle styleCellNumberColor = templateWorkbook.CreateCellStyle();
                 styleCellNumberColor.CloneStyleFrom(styleCellNumber);
@@ -2660,16 +2908,21 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                 #region Details
 
                 numRowCur = 8;
-                foreach (var detail in detailOtherKhoanMucDauTus.GroupBy(x => x.CENTER_CODE)
-                    .Select(x => x.First())
-                    .OrderBy(x => x.Center.Organize.CODE).ThenBy(x => x.Center.Organize.CODE))
+                foreach (var item in dataOtherCost)
                 {
-                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur, NUM_CELL);
-                    rowCur.Cells[0].SetCellValue(detail.Center.PROJECT_CODE);
-                    rowCur.Cells[0].CellStyle.SetFont(fontBold);
-                    rowCur.Cells[1].SetCellValue(detail.Center.Project.NAME);
-                    rowCur.Cells[1].CellStyle.SetFont(fontBold);
-                    numRowCur++;
+                    var space = new StringBuilder();
+                    for (int i = 0; i < item.LEVEL; i++)
+                    {
+                        space.Append("    ");
+                    }
+                    var rowCur = ReportUtilities.CreateRow(ref sheet, numRowCur++, NUM_CELL);
+                    rowCur.Cells[0].SetCellValue(item.PROJECT_CODE);
+                    rowCur.Cells[1].SetCellValue(item.TYPE);
+                    rowCur.Cells[2].SetCellValue(space.ToString() + item.PROJECT_NAME);
+                    for (int i = 0; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellName2;
+                    }
                 }
                 #endregion
 
@@ -2975,6 +3228,40 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             {
                 return sum;
             }
+        }
+
+        public IList<T_MD_KHOAN_MUC_DAU_TU> GetDataTemPlate(string templateId, int year)
+        {
+            var templateDetails = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year).ToList();
+            var lstProject = templateDetails.Select(x => x.Center.Project).Distinct().ToList();
+            var lstKhoanMuc = new List<T_MD_KHOAN_MUC_DAU_TU>();
+            foreach (var project in lstProject)
+            {
+                var item = new T_MD_KHOAN_MUC_DAU_TU
+                {
+                    PROJECT_CODE = project.CODE,
+                    PROJECT_NAME = project.NAME,
+                    TYPE = project.TYPE == "TTB-LON"? string.Empty: project.TYPE,
+                    LEVEL = 0
+                };
+                lstKhoanMuc.Add(item);
+                if(project.TYPE == "TTB-LON")
+                {
+                    var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == project.TYPE).ToList();
+                    foreach (var gd in lstgiaiDoan)
+                    {
+                        var itemChild = new T_MD_KHOAN_MUC_DAU_TU
+                        {
+                            PROJECT_CODE = project.CODE,
+                            PROJECT_NAME = gd?.TEXT,
+                            TYPE = gd.CODE,
+                            LEVEL = 1
+                        };
+                        lstKhoanMuc.Add(itemChild);
+                    }
+                }
+            }
+            return lstKhoanMuc;
         }
 
         public IList<T_MD_KHOAN_MUC_DAU_TU> PreparePureList(IList<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI> detailOtherKhoanMucDauTus, int year)
@@ -4087,13 +4374,21 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             }
         }
 
-        public void UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string valueInput, int? month)
+        public void UpdateCellValue(string templateCode, int version, int year, string projectCode, string elementCode, string valueInput, string column, int? month)
         {
             try
             {
                 UnitOfWork.BeginTransaction();
-                string value = valueInput.Replace(".", "");
-                var rowsChange = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
+                var value = valueInput.Replace(".", "");
+                var rowsChange = new List<T_BP_DAU_TU_TRANG_THIET_BI_DATA>();
+                if (month == null || month == 0)
+                {
+                    rowsChange = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
+                }
+                else
+                {
+                    rowsChange = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode && x.MONTH == month).ToList();
+                }
                 if (rowsChange.Count() == 0)
                 {
                     this.State = false;
@@ -4101,52 +4396,45 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     return;
                 }
                 var oldValue = rowsChange.FirstOrDefault().VALUE;
-                foreach (var item in rowsChange)
+                foreach (var row in rowsChange)
                 {
-                    switch (month)
+                    switch (column)
                     {
-                        case 1:
-                            item.MONTH1 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_1":
+                            row.VALUE_1 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
-                        case 2:
-                            item.MONTH2 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_2":
+                            row.VALUE_2 = value.ToString();
                             break;
-                        case 3:
-                            item.MONTH3 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_3":
+                            row.VALUE_3 = value;
                             break;
-                        case 4:
-                            item.MONTH4 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_4":
+                            row.VALUE_4 = value;
                             break;
-                        case 5:
-                            item.MONTH5 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_5":
+                            row.VALUE_5 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
-                        case 6:
-                            item.MONTH6 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_6":
+                            row.VALUE_6 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
-                        case 7:
-                            item.MONTH7 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_7":
+                            row.VALUE_7 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
-                        case 8:
-                            item.MONTH8 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_8":
+                            row.VALUE_8 = value;
                             break;
-                        case 9:
-                            item.MONTH9 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_9":
+                            row.VALUE_9 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
-                        case 10:
-                            item.MONTH10 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "VALUE_10":
+                            row.VALUE_10 = value;
                             break;
-                        case 11:
-                            item.MONTH11 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                            break;
-                        case 12:
-                            item.MONTH12 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                            break;
-                        default:
-                            item.VALUE = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
+                        case "DESCRIPTION":
+                            row.DESCRIPTION = value;
                             break;
                     }
-                    item.SumMonth = item.MONTH1 + item.MONTH2 + item.MONTH3 + item.MONTH4 + item.MONTH5 + item.MONTH6 + item.MONTH7 + item.MONTH8 + item.MONTH9 + item.MONTH10 + item.MONTH11 + item.MONTH12;
-                    UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Update(item);
+                    UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Update(row);
                 }
                 var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
                 // Lưu lịch sử
@@ -4157,11 +4445,9 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     VERSION = version,
                     YEAR = year,
                     TYPE = "Cập nhật " + typeName,
-                    COST_CENTER_CODE = costCenter,
                     PROJECT_CODE = projectCode,
                     ELEMENT_CODE = elementCode,
                     OLD_VALUE = oldValue,
-                    NEW_VALUE = Convert.ToDecimal(value),
                     CREATE_BY = ProfileUtilities.User.USER_NAME,
                     CREATE_DATE = DateTime.Now,
                 });

@@ -70,11 +70,42 @@ namespace SMO.Core.Entities.MD
         public virtual string TDTK { get; set; }
         public virtual string QKH { get; set; }
 
+        // Trung gian để view
 
         public virtual string PROJECT_CODE { get; set; }
         public virtual string PROJECT_NAME { get; set; }
+
+        public virtual decimal VALUE_1 { get; set; }
+        public virtual string VALUE_2 { get; set; }
+
+        public virtual string VALUE_3 { get; set; }
+
+        public virtual decimal VALUE_4 { get; set; }
+        public virtual decimal VALUE_5{ get; set; }
+        public virtual string VALUE_6 { get; set; }
+        public virtual decimal VALUE_7 { get; set; }
+        public virtual string VALUE_8 { get; set; }
+
+        // Value TTB
+        public virtual decimal VALUETTB_1 { get; set; }
+        public virtual string VALUETTB_2 { get; set; }
+
+        public virtual string VALUETTB_3 { get; set; }
+
+        public virtual string VALUETTB_4 { get; set; }
+        public virtual decimal VALUETTB_5 { get; set; }
+        public virtual decimal VALUETTB_6 { get; set; }
+        public virtual decimal VALUETTB_7 { get; set; }
+        public virtual string VALUETTB_8 { get; set; }
+        public virtual decimal VALUETTB_9 { get; set; }
+        public virtual string VALUETTB_10 { get; set; }
+        public virtual bool ISEDIT { get; set; }
+
         public virtual string TYPE { get; set; }
         public virtual int LEVEL { get; set; }
+        public virtual int ORDER { get; set; }
+        public virtual string PARENT_ORDER { get; set; }
+
 
         public virtual object Clone()
         {

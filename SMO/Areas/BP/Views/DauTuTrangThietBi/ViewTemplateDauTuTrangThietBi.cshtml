@@ -10,7 +10,7 @@
     <div class="card">
         <div class="body" style="padding-top: 0px">
 
-            @if (detailOtherCostElements == null || detailOtherCostElements.Count == 0)
+            @if (Model == null || Model.Count == 0)
             {
                 <div class="p-t-10">
                     @Html.MyButton("cmdBack", "Quay lại", $"Forms.Close('{viewId}');", "Alt+N", "arrow_back")
@@ -46,7 +46,7 @@
                                     <tr class="sticky-row">
                                         <th rowspan="2" class="align-center">Tổng mức <br> đầu tư</th>
                                         <th rowspan="2">Nguồn VCSH</th>
-                                        <th rowspan="2" class="align-center">Tiến độ <br/> thực hiện</th>
+                                        <th rowspan="2" class="align-center">Tiến độ <br /> thực hiện</th>
                                         <th rowspan="2" class="align-center">Luỹ kế đến <br /> đầu kỳ lập KH</th>
                                         <th colspan="3" class="align-center">KH năm</th>
                                         <th rowspan="2" class="align-center">Tiến độ triển khai <br /> thực hiện năm KH</th>
@@ -61,11 +61,16 @@
                                 </thead>
                                 <tbody>
 
-                                    @foreach (var detail in detailOtherCostElements.GroupBy(x => x.CENTER_CODE).Select(x => x.First()).OrderBy(x => x.Center.Organize.CODE).ThenBy(x => x.Center.Project.CODE))
+                                    @foreach (var detail in Model)
                                     {
+                                        var space = new StringBuilder();
+                                        for (int i = 0; i < detail.LEVEL; i++)
+                                        {
+                                            space.Append("\t");
+                                        }
                                         <tr>
-                                            <td>@detail.Center.PROJECT_CODE</td>
-                                            <td>@detail.Center.Project.NAME</td>
+                                            <td>@detail.PROJECT_CODE.ToString()</td>
+                                            <td>@($"{space.ToString()}{detail.PROJECT_NAME}")</td>
                                             <td></td>
                                             <td></td>
                                             <td></td>

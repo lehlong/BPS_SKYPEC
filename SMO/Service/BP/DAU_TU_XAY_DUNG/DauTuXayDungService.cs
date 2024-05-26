@@ -1,4 +1,6 @@
-﻿using NPOI.SS.UserModel;
+﻿using Humanizer;
+using Microsoft.CodeAnalysis;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 using SMO.AppCode.Utilities;
@@ -1507,6 +1509,124 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             }
         }
 
+
+        public IList<T_MD_KHOAN_MUC_DAU_TU> GetDataDauTu(ViewDataCenterModel model)
+        {
+            var lstKhoanMuc = new List<T_MD_KHOAN_MUC_DAU_TU>();
+            if (model.PHIEN_BAN == "PB1")
+            {
+                // Lấy danh sách dự án
+                var lstData = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
+                var lstProfit = lstData.Select(x => x.DauTuXayDungProfitCenter).Distinct().ToList();
+
+                var Order = 0;
+                foreach (var profit in lstProfit)
+                {
+                    var item = new T_MD_KHOAN_MUC_DAU_TU
+                    {
+                        PROJECT_CODE = profit.PROJECT_CODE,
+                        PROJECT_NAME = profit.Project.NAME,
+                        TYPE = string.Empty,
+                        VALUE_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
+                        VALUE_2 = string.Empty,
+                        VALUE_3 = string.Empty,
+                        VALUE_4 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_4) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_4)),
+                        VALUE_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
+                        VALUE_6 = string.Empty,
+                        VALUE_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
+                        VALUE_8 = string.Empty,
+                        DESCRIPTION = string.Empty,
+                        ORDER = Order,
+                        LEVEL = 0,
+                        IS_GROUP = true,
+                    };
+                    lstKhoanMuc.Add(item);
+                    var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
+                    if (lstgiaiDoan.Count > 1)
+                    {
+                        foreach (var gd in lstgiaiDoan)
+                        {
+                            var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE);
+                            var itemChild = new T_MD_KHOAN_MUC_DAU_TU
+                            {
+                                PROJECT_CODE = profit.PROJECT_CODE,
+                                PROJECT_NAME = gd?.TEXT,
+                                TYPE = gd.CODE,
+                                VALUE_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
+                                VALUE_2 = child.VALUE_2,
+                                VALUE_3 = child.VALUE_3,
+                                VALUE_4 = child.VALUE_4 == null ? 0 : Convert.ToDecimal(child.VALUE_4),
+                                VALUE_5 = child.VALUE_5 == null ? 0 : Convert.ToDecimal(child.VALUE_5),
+                                VALUE_6 = child.VALUE_6,
+                                VALUE_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
+                                VALUE_8 = child.VALUE_8,
+                                DESCRIPTION = child.DESCRIPTION,
+                                LEVEL = 1
+                            };
+                            lstKhoanMuc.Add(itemChild);
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+
+                // Lấy danh sách dự án
+                var lstData = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR && x.MONTH == model.MONTH).ToList();
+                var lstProfit = lstData.Select(x => x.DauTuXayDungProfitCenter).Distinct().ToList();
+                var Order = 0;
+                foreach (var profit in lstProfit)
+                {
+                    var item = new T_MD_KHOAN_MUC_DAU_TU
+                    {
+                        PROJECT_CODE = profit.PROJECT_CODE,
+                        PROJECT_NAME = profit.Project.NAME,
+                        TYPE = string.Empty,
+                        VALUE_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
+                        VALUE_2 = string.Empty,
+                        VALUE_3 = string.Empty,
+                        VALUE_4 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_4) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_4)),
+                        VALUE_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
+                        VALUE_6 = string.Empty,
+                        VALUE_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
+                        VALUE_8 = string.Empty,
+                        DESCRIPTION = string.Empty,
+                        ORDER = Order,
+                        LEVEL = 0,
+                        IS_GROUP = true,
+                    };
+                    lstKhoanMuc.Add(item);
+                    var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
+                    if (lstgiaiDoan.Count > 1)
+                    {
+                        foreach (var gd in lstgiaiDoan)
+                        {
+                            var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE && x.MONTH == model.MONTH);
+                            var itemChild = new T_MD_KHOAN_MUC_DAU_TU
+                            {
+                                PROJECT_CODE = profit.PROJECT_CODE,
+                                PROJECT_NAME = gd?.TEXT,
+                                TYPE = gd.CODE,
+                                VALUE_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
+                                VALUE_2 = child.VALUE_2,
+                                VALUE_3 = child.VALUE_3,
+                                VALUE_4 = child.VALUE_4 == null ? 0 : Convert.ToDecimal(child.VALUE_4),
+                                VALUE_5 = child.VALUE_5 == null ? 0 : Convert.ToDecimal(child.VALUE_5),
+                                VALUE_6 = child.VALUE_6,
+                                VALUE_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
+                                VALUE_8 = child.VALUE_8,
+                                DESCRIPTION = child.DESCRIPTION,
+                                LEVEL = 1
+                            };
+                            lstKhoanMuc.Add(itemChild);
+                        }
+                    }
+
+                }
+            }
+            return lstKhoanMuc;
+        }
         public IList<T_MD_KHOAN_MUC_DAU_TU> SummaryDauTu(out IList<T_BP_DAU_TU_XAY_DUNG_DATA> plDataOtherKhoanMucDauTus,string orgCode, int year, int? version)
         {
             plDataOtherKhoanMucDauTus = UnitOfWork.Repository<DauTuXayDungDataRepo>()
@@ -1895,6 +2015,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             if (DauTuXayDungCurrent != null)
             {
                 versionNext = DauTuXayDungCurrent.VERSION + 1;
+                ObjDetail.PHIEN_BAN = DauTuXayDungCurrent.PHIEN_BAN;
             }
 
             // Lấy dữ liệu của version hiện tại
@@ -2031,44 +2152,118 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                         var valueStr3 = tableData.Rows[i][9].ToString();
 
 
-                        var value_1 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
-                        var value_2 = tableData.Rows[i][4].ToString();
-                        var value_3 = tableData.Rows[i][5].ToString();
-                        var value_4 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
-                        var value_5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
-                        var value_6 = tableData.Rows[i][8].ToString();
-                        var value_7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
-                        var value_8 = tableData.Rows[i][10].ToString();
-                        var description = tableData.Rows[i][11].ToString();
-                        var elementCode = tableData.Rows[i][1].ToString();
-                        if (!string.IsNullOrEmpty(elementCode))
+                        if (!decimal.TryParse(valueStr, out decimal value) && !string.IsNullOrEmpty(valueStr))
                         {
-                            costData = new T_BP_DAU_TU_XAY_DUNG_DATA()
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng D{i}";
+                            return;
+                        }
+                        if (!decimal.TryParse(valueStr1, out decimal value1) && !string.IsNullOrEmpty(valueStr1))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng G{i}";
+                            return;
+                        }
+                        if (!decimal.TryParse(valueStr2, out decimal value2) && !string.IsNullOrEmpty(valueStr2))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng H{i}";
+                            return;
+                        }
+                        if (!decimal.TryParse(valueStr3, out decimal value3) && !string.IsNullOrEmpty(valueStr3))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng K{i}";
+                            return;
+                        }
+
+                        if(ObjDetail.PHIEN_BAN == "PB1")
+                        {
+                            var value_1 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
+                            var value_2 = tableData.Rows[i][4].ToString();
+                            var value_3 = tableData.Rows[i][5].ToString();
+                            var value_4 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
+                            var value_5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
+                            var value_6 = tableData.Rows[i][8].ToString();
+                            var value_7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
+                            var value_8 = tableData.Rows[i][10].ToString();
+                            var description = tableData.Rows[i][11].ToString();
+                            var elementCode = tableData.Rows[i][1].ToString();
+                            if (!string.IsNullOrEmpty(elementCode))
                             {
-                                PKID = Guid.NewGuid().ToString(),
-                                ORG_CODE = orgCode,
-                                DAU_TU_PROFIT_CENTER_CODE = centerCode,
-                                TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                                TIME_YEAR = ObjDetail.TIME_YEAR,
-                                STATUS = Approve_Status.ChuaTrinhDuyet,
-                                VERSION = versionNext,
-                                KHOAN_MUC_DAU_TU_CODE = elementCode,
-                                VALUE_1 = value_1,
-                                VALUE_2 = value_2,
-                                VALUE_3 = value_3,
-                                VALUE_4 = value_4,
-                                VALUE_5 = value_5,
-                                VALUE_6 = value_6,
-                                VALUE_7 = value_7,
-                                VALUE_8 = value_8,
-                                DESCRIPTION = description,
-                                CREATE_BY = currentUser
-                            };
-                            UnitOfWork.Repository<DauTuXayDungDataRepo>().Create(costData);
+                                costData = new T_BP_DAU_TU_XAY_DUNG_DATA()
+                                {
+                                    PKID = Guid.NewGuid().ToString(),
+                                    ORG_CODE = orgCode,
+                                    DAU_TU_PROFIT_CENTER_CODE = centerCode,
+                                    TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                                    TIME_YEAR = ObjDetail.TIME_YEAR,
+                                    STATUS = Approve_Status.ChuaTrinhDuyet,
+                                    VERSION = versionNext,
+                                    KHOAN_MUC_DAU_TU_CODE = elementCode,
+                                    VALUE_1 = value_1,
+                                    VALUE_2 = value_2,
+                                    VALUE_3 = value_3,
+                                    VALUE_4 = value_4,
+                                    VALUE_5 = value_5,
+                                    VALUE_6 = value_6,
+                                    VALUE_7 = value_7,
+                                    VALUE_8 = value_8,
+                                    DESCRIPTION = description,
+                                    CREATE_BY = currentUser
+                                };
+                                UnitOfWork.Repository<DauTuXayDungDataRepo>().Create(costData);
+                            }
+                            else
+                            {
+                                continue;
+                            }
                         }
                         else
                         {
-                            continue;
+                            var value_1 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
+                            var value_2 = tableData.Rows[i][4].ToString();
+                            var value_3 = tableData.Rows[i][5].ToString();
+                            var value_4 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
+                            var value_5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
+                            var value_6 = tableData.Rows[i][8].ToString();
+                            var value_7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
+                            var value_8 = tableData.Rows[i][10].ToString();
+                            var description = tableData.Rows[i][11].ToString();
+                            var elementCode = tableData.Rows[i][1].ToString();
+                            if (!string.IsNullOrEmpty(elementCode))
+                            {
+                                for(int j = 1; j <= 12; j++)
+                                {
+                                    costData = new T_BP_DAU_TU_XAY_DUNG_DATA()
+                                    {
+                                        PKID = Guid.NewGuid().ToString(),
+                                        ORG_CODE = orgCode,
+                                        DAU_TU_PROFIT_CENTER_CODE = centerCode,
+                                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                                        TIME_YEAR = ObjDetail.TIME_YEAR,
+                                        STATUS = Approve_Status.ChuaTrinhDuyet,
+                                        VERSION = versionNext,
+                                        KHOAN_MUC_DAU_TU_CODE = elementCode,
+                                        VALUE_1 = value_1,
+                                        VALUE_2 = value_2,
+                                        VALUE_3 = value_3,
+                                        VALUE_4 = value_4,
+                                        VALUE_5 = value_5,
+                                        VALUE_6 = value_6,
+                                        VALUE_7 = value_7,
+                                        VALUE_8 = value_8,
+                                        MONTH = j,
+                                        DESCRIPTION = description,
+                                        CREATE_BY = currentUser
+                                    };
+                                    UnitOfWork.Repository<DauTuXayDungDataRepo>().Create(costData);
+                                }
+                            }
+                            else
+                            {
+                                continue;
+                            }
                         }
 
                     }
@@ -4156,185 +4351,77 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             }
         }
 
-        public void UpdateCellValue(string templateCode, int version, int year, string type, string projectCode, string costCenter, string elementCode, string valueInput, int?month)
+        public void UpdateCellValue(string templateCode, int version, int year, string projectCode, string elementCode, string valueInput, string column, int?month)
         {
             try
             {
                 UnitOfWork.BeginTransaction();
                 var value = valueInput.Replace(".", "");
-                if (elementCode == "4001" || elementCode == "4010" || elementCode== "4011" || elementCode== "4012" || elementCode== "4020" || elementCode== "4021")
+                var rowsChange = new List<T_BP_DAU_TU_XAY_DUNG_DATA>();
+                if(month == null || month == 0)
                 {
-                    var rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
-                    if (rowsChange.Count() == 0)
-                    {
-                        this.State = false;
-                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
-                        return;
-                    }
-                    var oldValue = rowsChange.FirstOrDefault().VALUE;
-                    foreach (var item in rowsChange)
-                    {
-                        switch (month)
-                        {
-                            case 1:
-                                item.MONTH1 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 2:
-                                item.MONTH2 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 3:
-                                item.MONTH3 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 4:
-                                item.MONTH4 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 5:
-                                item.MONTH5 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 6:
-                                item.MONTH6 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 7:
-                                item.MONTH7 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 8:
-                                item.MONTH8 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 9:
-                                item.MONTH9 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 10:
-                                item.MONTH10 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 11:
-                                item.MONTH11 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            case 12:
-                                item.MONTH12 = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                            default:
-                                item.VALUE = Convert.ToDecimal(string.IsNullOrEmpty(value) ? "0" : value);
-                                break;
-                        }
-                        item.SumMonth = item.MONTH1 + item.MONTH2 + item.MONTH3 + item.MONTH4 + item.MONTH5 + item.MONTH6 + item.MONTH7 + item.MONTH8 + item.MONTH9 + item.MONTH10 + item.MONTH11 + item.MONTH12;
-                        UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
-                    }
-                    var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
-                    // Lưu lịch sử
-                    UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
-                    {
-                        ID = Guid.NewGuid(),
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = version,
-                        YEAR = year,
-                        TYPE = "Cập nhật " + typeName,
-                        COST_CENTER_CODE = costCenter,
-                        PROJECT_CODE = projectCode,
-                        ELEMENT_CODE = elementCode,
-                        OLD_VALUE = oldValue,
-                        NEW_VALUE = Convert.ToDecimal(value),
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now,
-                    });
-                }else if(elementCode == "4002")
-                {
-                    var rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
-                    if (rowsChange.Count() == 0)
-                    {
-                        this.State = false;
-                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
-                        return;
-                    }
-                    var oldValue = rowsChange.FirstOrDefault().EQUITY_SOURCES;
-                    foreach (var item in rowsChange)
-                    {
-                        item.EQUITY_SOURCES = value;
-                        UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
-                    }
-                    var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
-                    // Lưu lịch sử
-                    UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
-                    {
-                        ID = Guid.NewGuid(),
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = version,
-                        YEAR = year,
-                        TYPE = "Cập nhật " + typeName,
-                        COST_CENTER_CODE = costCenter,
-                        PROJECT_CODE = projectCode,
-                        EQUITY_SOURCE = oldValue,
-                        EQUITY_SOURCE_NEW = value,
-                        ELEMENT_CODE = elementCode,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now,
-                    });
-                }
-                else if(elementCode == "4003")
-                {
-                    var rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
-                    if (rowsChange.Count() == 0)
-                    {
-                        this.State = false;
-                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
-                        return;
-                    }
-                    var oldValue = rowsChange.FirstOrDefault().PROCESS;
-                    foreach (var item in rowsChange)
-                    {
-                        item.PROCESS = value;
-                        UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
-                    }
-                    var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
-                    // Lưu lịch sử
-                    UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
-                    {
-                        ID = Guid.NewGuid(),
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = version,
-                        YEAR = year,
-                        TYPE = "Cập nhật " + typeName,
-                        COST_CENTER_CODE = costCenter,
-                        PROJECT_CODE = projectCode,
-                        PROCESS_OLD = oldValue,
-                        PROCESS_NEW = value,
-                        ELEMENT_CODE = elementCode,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now,
-                    });
+                    rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
                 }
                 else
                 {
-                    var rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode).ToList();
-                    if (rowsChange.Count() == 0)
-                    {
-                        this.State = false;
-                        this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
-                        return;
-                    }
-                    var oldValue = rowsChange.FirstOrDefault().DESCRIPTION;
-                    foreach (var item in rowsChange)
-                    {
-                        item.DESCRIPTION = value;
-                        UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(item);
-                    }
-                    // Lưu lịch sử
-                    UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
-                    {
-                        ID = Guid.NewGuid(),
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = version,
-                        YEAR = year,
-                        TYPE = "Cập nhật ghi chú",
-                        COST_CENTER_CODE = costCenter,
-                        OLD_DESCRIPTION = oldValue,
-                        NEW_DESCRIPTION = value,
-                        PROJECT_CODE = projectCode,
-                        ELEMENT_CODE = elementCode,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now,
-                    });
+                    rowsChange = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.DauTuXayDungProfitCenter.PROJECT_CODE == projectCode && x.KHOAN_MUC_DAU_TU_CODE == elementCode && x.MONTH == month).ToList();
                 }
-                
+                if (rowsChange.Count() == 0)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                    return;
+                }
+                var oldValue = rowsChange.FirstOrDefault().VALUE;
+                foreach(var row in rowsChange)
+                {
+                    switch (column)
+                    {
+                        case "VALUE_1":
+                            row.VALUE_1 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
+                            break;
+                        case "VALUE_2":
+                            row.VALUE_2 = value.ToString();
+                            break;
+                        case "VALUE_3":
+                            row.VALUE_3 = value;
+                            break;
+                        case "VALUE_4":
+                            row.VALUE_4 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
+                            break;
+                        case "VALUE_5":
+                            row.VALUE_5 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
+                            break;
+                        case "VALUE_6":
+                            row.VALUE_6 = value;
+                            break;
+                        case "VALUE_7":
+                            row.VALUE_7 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
+                            break;
+                        case "VALUE_8":
+                            row.VALUE_8 = value;
+                            break;
+                        case "DESCRIPTION":
+                            row.DESCRIPTION = value;
+                            break;
+                    }
+                    UnitOfWork.Repository<DauTuXayDungDataRepo>().Update(row);
+                }
+                var typeName = UnitOfWork.Repository<KhoanMucDauTuRepo>().Queryable().FirstOrDefault(x => x.CODE == elementCode).NAME;
+                // Lưu lịch sử
+                UnitOfWork.Repository<DauTuXayDungEditHistoryRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_EDIT_HISTORY
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    TYPE = "Cập nhật " + typeName,
+                    PROJECT_CODE = projectCode,
+                    ELEMENT_CODE = elementCode,
+                    OLD_VALUE = oldValue,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
                 UnitOfWork.Commit();
             }
             catch (Exception ex)

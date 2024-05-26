@@ -11,6 +11,21 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
         public virtual string KHOAN_MUC_DAU_TU_CODE { get; set; }
         public virtual int VERSION { get; set; }
         public virtual int TIME_YEAR { get; set; }
+
+        public virtual decimal? VALUE_1 { get; set; }
+        public virtual string VALUE_2 { get; set; }
+        public virtual string VALUE_3 { get; set; }
+        public virtual string VALUE_4 { get; set; }
+        public virtual decimal? VALUE_5 { get; set; }
+        public virtual decimal? VALUE_6 { get; set; }
+        public virtual decimal? VALUE_7 { get; set; }
+        public virtual string VALUE_8 { get; set; }
+        public virtual decimal? VALUE_9 { get; set; }
+        public virtual string VALUE_10 { get; set; }
+
+        public virtual int MONTH { get; set; }
+
+
         public virtual decimal? MONTH1 { get; set; }
         public virtual decimal? MONTH2 { get; set; }
         public virtual decimal? MONTH3 { get; set; }

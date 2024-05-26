@@ -8,6 +8,7 @@
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR)
+
         <div class="card border-grey">
             <div class="body" style="padding-top: 0px;">
                 <ul class="nav nav-tabs" role="tablist">
@@ -88,7 +89,7 @@
             </div>
         </div>
     }
-<script type="text/javascript">
+    <script type="text/javascript">
         $(function () {
             Forms.CompleteUI();
         });
@@ -140,6 +141,6 @@
         });
     }
     onChangeTemplate($("#@Model.ViewId #ObjDetail_TEMPLATE_CODE").val());
-</script>
+    </script>
 </div>
 
