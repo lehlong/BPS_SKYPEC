@@ -133,19 +133,11 @@
         <div class="container-fluid d-flex">
 
             <a href="javascript:void(0);" class="bars"></a>
-            @*<i class="material-icons navbar-icons" style="position: absolute; left: 10px; cursor: pointer;" onclick="$('body').addClass('ls-closed'); $(this).remove();">apps</i>*@
-            <a class="navbar-brand" href="/" style="margin-top: 0">
-                @*<img src="~/Content/Images/icon-budget.png" style="height: 40px; margin-top:3px; " />*@
+           <a class="navbar-brand" href="/" style="margin-top: 0">
                 <b onclick="window.location.reload()" style="margin-top: 10px; display: block; width: 140px; margin-left: 12px;">SKYPEC</b>
             </a>
-
-            @*<div class="center-elements">
-                    <strong>Lưu ý: các đơn vị không tự lập ngân sách chi lương thưởng và chi hành chính, Ban Tổ chức nhân sự và Ban Hành chính sẽ phụ trách các khoản mục này</strong>
-                </div>*@
             <div class="right-elements">
-
-
-                <div style="float: right; margin-top: 9px; margin-right: 10px;">
+                @*<div style="float: right; margin-top: 9px; margin-right: 10px;">
                     @if (ProfileUtilities.User != null && ProfileUtilities.User.LANGUAGE == "vi")
                     {
                         <img style="width: 25px; cursor: pointer;" src="~/Content/Images/icon_flag_vn.png" onclick="ChangeLanguage('en')" />
@@ -195,7 +187,7 @@
                             </a>
                         </li>
                     </ul>
-                </div>
+                </div>*@
                 <div>
                     <a href="javascript:void(0);" class="dropdown-toggle navbar-icons" data-toggle="dropdown" role="button" style="float:right;" data-target="ulProfile">
                         @*<i class="material-icons navbar-icons" >person_outline</i>*@

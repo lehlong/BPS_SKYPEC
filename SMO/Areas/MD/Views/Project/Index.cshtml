@@ -5,6 +5,7 @@
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
     var loaiHinh = SelectListUtilities.SelectLoaiHinhDauTu();
+    var lstArea = SelectListUtilities.GetAllArea();
 }
 <div id='@Model.ViewId' class="container-fluid child-content">
     @using (Ajax.BeginForm("List", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId }))
@@ -53,7 +54,16 @@
                                 <select class="form-control selectpicker show-tick" name="@Html.NameFor(x => x.ObjDetail.LOAI_HINH)" id="@Html.NameFor(x => x.ObjDetail.LOAI_HINH)" onchange="SubmitIndex();">
                                     @foreach (var temp in loaiHinh)
                                     {
-                                      <option value="@temp.Value">@temp.Text</option>
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-4" style="margin-bottom: 0">
+                                <select class="form-control selectpicker show-tick" name="@Html.NameFor(x => x.ObjDetail.AREA_CODE)" id="@Html.NameFor(x => x.ObjDetail.AREA_CODE)" onchange="SubmitIndex();">
+                                    @foreach (var temp in lstArea)
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
                                     }
                                 </select>
                             </div>
