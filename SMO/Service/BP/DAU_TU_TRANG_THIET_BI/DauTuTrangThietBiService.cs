@@ -2145,7 +2145,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                                         VALUE_4 = value4,
                                         VALUE_5 = value5,
                                         VALUE_6 = value6,
-                                        VALUE_7 = value7,
+                                        VALUE_7 = value5 * value6,
                                         VALUE_8 = value8,
                                         VALUE_9 = value9,
                                         VALUE_10 = value10,
@@ -4414,12 +4414,11 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             break;
                         case "VALUE_5":
                             row.VALUE_5 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
+                            row.VALUE_7 = row.VALUE_5 * row.VALUE_6;
                             break;
                         case "VALUE_6":
                             row.VALUE_6 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
-                            break;
-                        case "VALUE_7":
-                            row.VALUE_7 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
+                            row.VALUE_7 = row.VALUE_5 * row.VALUE_6;
                             break;
                         case "VALUE_8":
                             row.VALUE_8 = value;
