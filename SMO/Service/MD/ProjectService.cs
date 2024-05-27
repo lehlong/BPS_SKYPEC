@@ -19,6 +19,12 @@ namespace SMO.Service.MD
         {
             try
             {
+                if (this.ObjDetail.YEAR == 0)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Vui lòng nhập năm dự án";
+                    return;
+                }
                 var lstProjects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == this.ObjDetail.YEAR).Select(x => x.CODE).ToList();
                 List<int> lstValue = new List<int>();
                 foreach(var i in lstProjects)
