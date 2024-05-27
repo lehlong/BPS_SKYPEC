@@ -31,6 +31,11 @@ namespace SMO.Repository.Implement.MD
                 query = query.Where(x => x.LOAI_HINH == objFilter.LOAI_HINH);
             }
 
+            if (!string.IsNullOrWhiteSpace(objFilter.AREA_CODE))
+            {
+                query = query.Where(x => x.AREA_CODE == objFilter.AREA_CODE);
+            }
+
             total = 0;
             query = query.OrderByDescending(x => x.CODE);
             return query.ToList();

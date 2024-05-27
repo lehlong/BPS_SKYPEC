@@ -1,7 +1,10 @@
-﻿using SMO.Core.Entities;
+﻿using iTextSharp.text;
+using SMO.Core.Entities;
 using SMO.Repository.Implement.MD;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SMO.Service.MD
 {
@@ -16,15 +19,15 @@ namespace SMO.Service.MD
         {
             try
             {
-                if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                var lstProjects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == this.ObjDetail.YEAR).Select(x => x.CODE).ToList();
+                List<int> lstValue = new List<int>();
+                foreach(var i in lstProjects)
                 {
-                    base.Create();
+                    var endCode = Convert.ToInt32(i.Replace("DA-", "").Replace($"{this.ObjDetail.YEAR}-", ""));
+                    lstValue.Add(endCode);
                 }
-                else
-                {
-                    State = false;
-                    MesseageCode = "1101";
-                }
+                this.ObjDetail.CODE = lstValue.Count() == 0 ? $"DA-{this.ObjDetail.YEAR}-1" : $"DA-{this.ObjDetail.YEAR}-{lstValue.Max() + 1}";
+                base.Create();
             }
             catch (Exception ex)
             {
