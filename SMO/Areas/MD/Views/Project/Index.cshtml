@@ -29,12 +29,12 @@
                        
 
                         <div class="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px">
-                            <div class="col-md-4" style="margin-bottom: 0">
+                            <div class="col-md-3" style="margin-bottom: 0">
                                 <div class="form-line">
                                     @Html.MyTextBoxFor(m => m.ObjDetail.CODE, new { placeholder = "Tìm kiếm theo mã hoặc tên", @class = "align-center", @data_val = false })
                                 </div>
                             </div>
-                            <div class="col-md-2" style="margin-bottom: 0">
+                            <div class="col-md-3" style="margin-bottom: 0">
                                 <select class="form-control selectpicker show-tick" name="@Html.NameFor(x => x.ObjDetail.YEAR)" id="@Html.NameFor(x => x.ObjDetail.YEAR)" onchange="SubmitIndex();">
                                     @foreach (var temp in lstTimeYear)
                                     {
@@ -50,7 +50,7 @@
                                     }
                                 </select>
                             </div>
-                            <div class="col-md-4" style="margin-bottom: 0">
+                            <div class="col-md-3" style="margin-bottom: 0">
                                 <select class="form-control selectpicker show-tick" name="@Html.NameFor(x => x.ObjDetail.LOAI_HINH)" id="@Html.NameFor(x => x.ObjDetail.LOAI_HINH)" onchange="SubmitIndex();">
                                     @foreach (var temp in loaiHinh)
                                     {
@@ -59,7 +59,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-4" style="margin-bottom: 0">
+                            <div class="col-md-3" style="margin-bottom: 0">
                                 <select class="form-control selectpicker show-tick" name="@Html.NameFor(x => x.ObjDetail.AREA_CODE)" id="@Html.NameFor(x => x.ObjDetail.AREA_CODE)" onchange="SubmitIndex();">
                                     @foreach (var temp in lstArea)
                                     {
