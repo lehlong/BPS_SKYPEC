@@ -2216,7 +2216,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     {
                         PROJECT_CODE = profit.PROJECT_CODE,
                         PROJECT_NAME = profit.Project.NAME,
-                        TYPE = string.Empty,
+                        TYPE = profit.Project.TYPE == "TTB-LON" ? string.Empty: profit.Project.TYPE,
                         VALUETTB_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
                         VALUETTB_2 = profit.Project.TYPE == "TTB-LON" ? string.Empty: lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_2,
                         VALUETTB_3 = profit.Project.TYPE == "TTB-LON" ? string.Empty: lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_3,
