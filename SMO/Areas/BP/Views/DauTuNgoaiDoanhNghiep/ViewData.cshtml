@@ -25,7 +25,7 @@
             <div style="position: absolute; right: 15px; top: 15px;"><b>KẾ HOẠCH ĐẦU TƯ NGOÀI DOANH NGHIỆP</b></div>
         </div>
         <div class="export-data" id="divExport_@viewId">
-            <div class="export-left" id="divExportLeft_@viewId" style="resize:horizontal; overflow:hidden">
+            <div class="export-left" id="divExportLeft_@viewId" style="resize:horizontal; overflow:hidden; display: none">
                 <div class="export-left-header" id="divExportHeader_@viewId">
                     @using (Ajax.BeginForm("SummaryDataCenter", null, FormDataUtils.GetAjaxOptions(viewId, $"#divExportRight_{viewId}"), new { @id = formId }))
                     {

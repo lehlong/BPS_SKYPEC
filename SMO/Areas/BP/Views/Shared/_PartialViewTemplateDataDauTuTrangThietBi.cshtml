@@ -86,11 +86,11 @@ else
     <script type="text/javascript">
         const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
         let columns = [
-            { id: "code", header: [{ text: "MÃ DỰ ÁN", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], align: "left", minWidth: 180 },
+            { id: "code", header: [{ text: "MÃ DỰ ÁN", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], align: "left", minWidth: 140 },
             {
-                id: "comment", header: [{ text: "COMMENT", align: 'center', rowspan: 3 }, { text: "", align: "center" }],
+                id: "comment", header: [{ text: "", align: 'center', rowspan: 3 }, { text: "", align: "center" }],
                 adjust: false,
-                width: 150,
+                width: 40,
                 align: 'center',
                 template: (value, row, col) => {
                     return `<i class="material-icons icon-function" onclick="getCommentElement('${row.code}')">comment</i>`
@@ -120,20 +120,17 @@ else
         });
 
         const treeGrid = new dhx.TreeGrid("@grid", {
-        columns,
-        data: rawData,
-        leftSplit: 2,
-        resizable: true,
-        keyNavigation: true,
-        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        selection: true,
-        rowHeight: 30,
+            columns,
+            data: rawData,
+            leftSplit: 3,
+            resizable: true,
+            keyNavigation: true,
+            rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+            selection: 'row',
+            rowHeight: 30,
         });
 
-        treeGrid.collapseAll();
-
         let oldValue;
-
         treeGrid.events.on("cellClick", function (row, column) {
             let cellValue = treeGrid.data.getItem(row.id)[column.id];
             oldValue = cellValue;
