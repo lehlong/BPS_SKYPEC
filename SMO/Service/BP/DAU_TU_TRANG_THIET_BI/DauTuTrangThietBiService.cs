@@ -2214,8 +2214,11 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                 {
                     var item = new T_MD_KHOAN_MUC_DAU_TU
                     {
+                        PKID = profit.PROJECT_CODE,
                         PROJECT_CODE = profit.PROJECT_CODE,
                         PROJECT_NAME = profit.Project.NAME,
+                        CODE = profit.PROJECT_CODE,
+                        PARENT_CODE = string.Empty,
                         TYPE = profit.Project.TYPE == "TTB-LON" ? string.Empty: profit.Project.TYPE,
                         VALUETTB_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
                         VALUETTB_2 = profit.Project.TYPE == "TTB-LON" ? string.Empty: lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_2,
@@ -2231,7 +2234,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                         DESCRIPTION = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).DESCRIPTION,
                         ORDER = Order,
                         LEVEL = 0,
-                        IS_GROUP = true,
+                        IS_GROUP = profit.Project.TYPE == "TTB-LON"? true : false,
                     };
                     lstKhoanMuc.Add(item);
                     var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
@@ -2242,8 +2245,11 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE);
                             var itemChild = new T_MD_KHOAN_MUC_DAU_TU
                             {
+                                PKID = profit.PROJECT_CODE+ gd.CODE,
                                 PROJECT_CODE = profit.PROJECT_CODE,
                                 PROJECT_NAME = gd?.TEXT,
+                                PARENT_CODE = profit.PROJECT_CODE,
+                                CODE = string.Empty,
                                 TYPE = gd.CODE,
                                 VALUETTB_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
                                 VALUETTB_2 = child.VALUE_2,
@@ -2256,14 +2262,15 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                                 VALUETTB_9 = child.VALUE_9 == null ? 0 : Convert.ToDecimal(child.VALUE_9),
                                 VALUETTB_10 = child.VALUE_10,
                                 ISEDIT = profit.Project.TYPE == "TTB-LON" ? true : false,
-
+                                ORDER = Order++,
                                 DESCRIPTION = child.DESCRIPTION,
                                 LEVEL = 1
                             };
                             lstKhoanMuc.Add(itemChild);
+                            Order++;
                         }
                     }
-
+                    Order++;
                 }
             }
             else

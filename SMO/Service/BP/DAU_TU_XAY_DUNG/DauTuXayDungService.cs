@@ -1524,8 +1524,11 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 {
                     var item = new T_MD_KHOAN_MUC_DAU_TU
                     {
+                        PKID = profit.PROJECT_CODE,
                         PROJECT_CODE = profit.PROJECT_CODE,
                         PROJECT_NAME = profit.Project.NAME,
+                        PARENT_CODE = string.Empty,
+                        CODE = profit.PROJECT_CODE,
                         TYPE = string.Empty,
                         VALUE_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
                         VALUE_2 = string.Empty,
@@ -1549,8 +1552,11 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                             var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE);
                             var itemChild = new T_MD_KHOAN_MUC_DAU_TU
                             {
+                                PKID = profit.PROJECT_CODE + gd.CODE,
                                 PROJECT_CODE = profit.PROJECT_CODE,
                                 PROJECT_NAME = gd?.TEXT,
+                                PARENT_CODE = profit.PROJECT_CODE,
+                                CODE = string.Empty,
                                 TYPE = gd.CODE,
                                 VALUE_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
                                 VALUE_2 = child.VALUE_2,
@@ -1561,12 +1567,14 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 VALUE_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
                                 VALUE_8 = child.VALUE_8,
                                 DESCRIPTION = child.DESCRIPTION,
-                                LEVEL = 1
+                                LEVEL = 1,
+                                ORDER = Order++,
                             };
                             lstKhoanMuc.Add(itemChild);
+                            Order++;
                         }
                     }
-
+                    Order++;
                 }
             }
             else

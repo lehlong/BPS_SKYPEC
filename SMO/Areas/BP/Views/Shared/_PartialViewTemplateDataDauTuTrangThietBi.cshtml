@@ -3,16 +3,40 @@
 @using SMO.Core.Entities.MD;
 @using System.Text;
 @using SMO.Service.Class;
-
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
     var detailCostElements = ViewBag.detailCostElements as IList<T_MD_TEMPLATE_DETAIL_DAU_TU_TRANG_THIET_BI>;
     var costCFHeader = ViewBag.costCFHeader as T_BP_DAU_TU_TRANG_THIET_BI_VERSION;
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
     var lstData = ViewBag.lstProject as List<T_BP_DAU_TU_TRANG_THIET_BI_DATA>;
     var lstProject = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).ToList();
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var grid = Guid.NewGuid().ToString();
 
     var lstSanBay = SelectListUtilities.GetListSanBay();
+    var jsonData = Model.OrderBy(x => x.PROJECT_CODE).Select(x => new
+    {
+        id = x.PKID,
+        projectCode = x.PROJECT_CODE,
+        code = x.CODE,
+        type = x.TYPE,
+        isBold = x.IS_GROUP,
+        name = x.PROJECT_NAME,
+        parent = x.PARENT_CODE,
+        value1 = x.VALUETTB_1.ToStringVN(),
+        value2 = x.VALUETTB_2,
+        value3 = x.VALUETTB_3,
+        value4 = x.VALUETTB_4,
+        value5 = x.VALUETTB_5.ToStringVN(),
+        value6 = x.VALUETTB_6.ToStringVN(),
+        value7 = x.VALUETTB_7.ToStringVN(),
+        value8 = x.VALUETTB_8,
+        value9 = x.VALUETTB_9.ToStringVN(),
+        value10 = x.VALUETTB_10,
 
+        description = x.DESCRIPTION,
+    });
 }
 
 <style>
@@ -57,103 +81,112 @@
 else
 {
     Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
-    <div class="export-left-tab">
-        <div class="sticky-table sticky-headers sticky-ltr-cells table-screen table">
-            <table class="table-condensed table-bordered table-striped font-13 table-zoom" id="table_month">
-                <tbody>
-                    <tr class="sticky-row strong" data-xls-row="header" style="text-align: center;">
-                        <td class="sticky-cell pre-whitespace" style="z-index:11" rowspan="3">COMMENT</td>
-                        <td class="sticky-cell pre-whitespace" style="z-index:11" rowspan="3">MÃ DỰ ÁN</td>
-                        <td class="sticky-cell pre-whitespace" style="z-index:11" rowspan="3">TÊN DỰ ÁN</td>
-                        <td class="pre-whitespace" colspan="3">THÔNG TIN VỀ DANH MỤC ĐẦU TƯ</td>
-                        <td class="pre-whitespace" colspan="5">GIÁ TRỊ KL CÔNG VIỆC HOÀN THÀNH</td>
-                        <td class="pre-whitespace" colspan="2">GIÁ TRỊ GIẢI NGÂN</td>
-                        <td class="pre-whitespace" rowspan="3">GHI CHÚ</td>
-                    </tr>
-                    <tr class="sticky-row strong" data-xls-row="header">
-                        <td class="pre-whitespace" rowspan="2">TỔNG MỨC ĐẦU TƯ</td>
-                        <td class="pre-whitespace align-center" rowspan="2">NGUỒN VỐN</td>
-                        <td class="pre-whitespace" rowspan="2">TIẾN ĐỘ THỰC HIỆN</td>
-                        <td class="pre-whitespace" rowspan="2">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
-                        <td class="pre-whitespace align-center" colspan="3">KH NĂM</td>
-                        <td class="pre-whitespace" rowspan="2">TIẾN ĐỘ TRIỂN KHAI TH NĂM KH</td>
-                        <td class="pre-whitespace" rowspan="2">LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH</td>
-                        <td class="pre-whitespace" rowspan="2">KH NĂM</td>
-                    </tr>
-                    <tr class="sticky-row strong" data-xls-row="header">
-                        <td class="pre-whitespace">SỐ LƯỢNG</td>
-                        <td class="pre-whitespace">ĐƠN GIÁ</td>
-                        <td class="pre-whitespace">THÀNH TIỀN</td>
-                    </tr>
+    <div style="height: calc(100vh - 180px);" id="@grid"></div>
 
-                 @foreach (var detail in Model.OrderBy(x => x.ORDER))
-                 {
+    <script type="text/javascript">
+        const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+        let columns = [
+            { id: "code", header: [{ text: "MÃ DỰ ÁN", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], align: "left", minWidth: 180 },
+            {
+                id: "comment", header: [{ text: "COMMENT", align: 'center', rowspan: 3 }, { text: "", align: "center" }],
+                adjust: false,
+                width: 150,
+                align: 'center',
+                template: (value, row, col) => {
+                    return `<i class="material-icons icon-function" onclick="getCommentElement('${row.code}')">comment</i>`
+                },
+                htmlEnable: true,
+            },
+            { id: "name", header: [{ text: "TÊN DỰ ÁN", align: "center", rowspan:2 }, { text: "", align: "center" }, { content: "inputFilter" }], align: "left", minWidth: 300 },
+            { id: "value1", header: [{ text: "THÔNG TIN VỀ DANH MỤC ĐẦU TƯ", align: "center", colspan: 3 }, { text: "TỔNG MỨC ĐẦU TƯ", align: "center", rowspan: 2 }], align: "right", minWidth: 200 },
+            { id: "value2", header: [{ text: "", align: "center" }, { text: "NGUỒN VỐN", align: "center", rowspan: 2 }], align: "right", minWidth: 200 },
+            { id: "value3", header: [{ text: "", align: "center" }, { text: "TIẾN ĐỘ THỰC HIỆN", align: "center", rowspan: 2 }], align: "right", minWidth: 200 },
+            { id: "value4", header: [{ text: "GIÁ TRỊ KL CÔNG VIỆC HOÀN THÀNH", align: "center", colspan: 3 }, { text: "LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH", align: "center", rowspan: 2 }], align: "right", minWidth: 200 },
+            { id: "value5", header: [{ text: "", align: "center" }, { text: "KH NĂM", align: "center", colspan:3 }, { text: "SỐ LƯỢNG", align: "center" }], align: "right", minWidth: 200 },
+            { id: "value6", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "ĐƠN GIÁ", align: "center" }], align: "right", minWidth: 200 },
+            { id: "value7", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "THÀNH TIỀN", align: "center" }], align: "right", minWidth: 200 },
 
-                     var space = new StringBuilder();
-                     for (int i = 0; i < detail.LEVEL; i++)
-                     {
-                         space.Append("\t");
-                     }
+            { id: "value8", header: [{ text: "", align: "center" }, { text: "TIẾN ĐỘ TRIỂN KHAI TH NĂM KH", align: "center", rowspan:2 }], align: "right", minWidth: 200 },
+            { id: "value9", header: [{ text: "GIÁ TRỊ GIẢI NGÂN", align: "center", colspan: 2 }, { text: "LUỸ KẾ ĐẾN ĐẦU KỲ LẬP KH", align: "center", rowspan: 2 }], align: "right", minWidth: 200 },
+            { id: "value10", header: [{ text: "", align: "center" }, { text: "KH NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 200 },
+            { id: "description", header: [{ text: "GHI CHÚ", align: "center", rowspan: 3 }], align: "left", minWidth: 200 },
 
-                <tr>
-                    @{
-                        var code = detail.PROJECT_CODE;
-                    }
-                    @if (!string.IsNullOrEmpty(code))
-                    {
-                        <td style="text-align:center;"><i class="material-icons icon-function" onclick="getCommentElement('@code')">comment</i></td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    @{
-                        var isEdit = detail.ISEDIT ? "" : "disabled";
-                        var codePj = detail.PROJECT_CODE;
-                    }
+        ];
 
-                    <td class="pre-whitespace sticky-cell">@(detail.IS_GROUP? detail.PROJECT_CODE: string.Empty)</td>
-                    <td class="pre-whitespace sticky-cell">@($"{space.ToString()}{detail.PROJECT_NAME}")</td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_1', this.value)" value="@detail.VALUETTB_1.ToStringVN()" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_2', this.value)" value="@detail.VALUETTB_2" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_3', this.value)" value="@detail.VALUETTB_3" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_4', this.value)" value="@detail.VALUETTB_4" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_5', this.value)" value="@detail.VALUETTB_5.ToStringVN()" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_6', this.value)" value="@detail.VALUETTB_6.ToStringVN()" />
-                    </td>
-                    <td>
-                        <input class="input-edit" type="text" value="@detail.VALUETTB_7.ToStringVN()" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_8', this.value)" value="@detail.VALUETTB_8" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_9', this.value)" value="@detail.VALUETTB_9.ToStringVN()" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','VALUE_10', this.value)" value="@detail.VALUETTB_10" />
-                    </td>
-                    <td>
-                        <input class="input-edit" @isEdit type="text" onchange="onEditCell('@codePj', '@detail.TYPE','DESCRIPTION', this.value)" value="@detail.DESCRIPTION" />
-                    </td>
-                </tr>
-                        }
+        rawData.forEach((item) => {
+            if (item.parent == "") {
+                delete item.parent;
+            };
+        });
 
-                </tbody>
-            </table>
-        </div>
-    </div>
+        const treeGrid = new dhx.TreeGrid("@grid", {
+        columns,
+        data: rawData,
+        leftSplit: 2,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        selection: true,
+        rowHeight: 30,
+        });
+
+        treeGrid.collapseAll();
+
+        let oldValue;
+
+        treeGrid.events.on("cellClick", function (row, column) {
+            let cellValue = treeGrid.data.getItem(row.id)[column.id];
+            oldValue = cellValue;
+            if (row.isBold) return;
+            if (column.id == "code" || column.id == "name" || column.id == "comment" || column.id == "value7"){
+                return;
+            } 
+            treeGrid.editCell(row.id, column.id);
+        });
+        treeGrid.events.on("afterEditEnd", function (value, row, column) {
+            if (value == oldValue) {
+                return;
+            }
+            switch (column.id) {
+                case "value1":
+                    onEditCell(row.projectCode, row.type, "VALUE_1", value);
+                    break;
+                case "value2":
+                    onEditCell(row.projectCode, row.type, "VALUE_2", value);
+                    break;
+                case "value3":
+                    onEditCell(row.projectCode, row.type, "VALUE_3", value);
+                    break;
+                case "value4":
+                    onEditCell(row.projectCode, row.type, "VALUE_4", value);
+                    break;
+                case "value5":
+                    onEditCell(row.projectCode, row.type, "VALUE_5", value);
+                    break;
+                case "value6":
+                    onEditCell(row.projectCode, row.type, "VALUE_6", value);
+                    break;
+                case "value7":
+                    onEditCell(row.projectCode, row.type, "VALUE_7", value);
+                    break;
+                case "value8":
+                    onEditCell(row.projectCode, row.type, "VALUE_8", value);
+                    break;
+                case "value9":
+                    onEditCell(row.projectCode, row.type, "VALUE_9", value);
+                    break;
+                case "value10":
+                    onEditCell(row.projectCode, row.type, "VALUE_10", value);
+                    break;
+                case "description":
+                    onEditCell(row.projectCode, row.type, "DESCRIPTION", value);
+                    break;
+                default:
+                    return;
+            }
+        });
+
+    </script>
 
     <script>
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
@@ -208,7 +241,7 @@ else
             Forms.LoadAjaxModal(ajaxParams);
         }
         function onEditCell(projectCode, elementCode, column, value) {
-            if (value == null || value == "") {
+            if (value == null) {
                 return;
             }
             var templateCode = $("#TEMPLATE_CODE").val();
