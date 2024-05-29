@@ -204,7 +204,7 @@
             $("#load-paging").empty();
             var ajaxParams = {
                 url: "@Url.Action("ViewDataDauTu")",
-                data: { templateId: '@Model.ObjDetail.CODE', type: 'XDTTB', year },
+                data: { templateId: '@Model.ObjDetail.CODE', type: 'TTB', year },
                 htmlTarget: '#load-paging',
             };
             Forms.LoadAjax(ajaxParams);

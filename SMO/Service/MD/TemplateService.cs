@@ -1873,10 +1873,15 @@ namespace SMO.Service.MD
 
         public IList<T_MD_PROJECT> GetDataProject(string templateId,string type, int year)
         {
-            var lstProject = new List<T_MD_PROJECT>();
+            var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.LOAI_HINH == type).ToList();
+            var orgUser = ProfileUtilities.User.ORGANIZE_CODE;
+            var area = orgUser.Contains("100001") ? "CQ" : orgUser.Contains("100002") ? "MB" : orgUser.Contains("100003") ? "MT" : orgUser.Contains("100004") ? "MN" : orgUser.Contains("100005") ? "VT" : "";
+            if (!string.IsNullOrEmpty(area))
+            {
+                lstProject = lstProject.Where(x => x.AREA_CODE == area).ToList();
+            }
             if (type == "XDCB")
             {
-                lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.LOAI_HINH == "XDCB").ToList();
                 var selectedPjCode = UnitOfWork.Repository<TemplateDetailDauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId).Select(x => x.Center.PROJECT_CODE).Distinct().ToList();
                 foreach (var item in lstProject)
                 {
@@ -1888,7 +1893,6 @@ namespace SMO.Service.MD
             }
             else
             {
-                lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.LOAI_HINH == "TTB").ToList();
                 var selectedPjCode = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId).Select(x => x.Center.PROJECT_CODE).Distinct().ToList();
                 foreach (var item in lstProject)
                 {

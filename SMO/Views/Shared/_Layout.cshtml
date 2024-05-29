@@ -194,7 +194,7 @@
                         <i class="material-icons" style="margin-right: -7px;">person</i>
                         <i class="material-icons">arrow_drop_down</i>
                     </a>
-                    <ul class="dropdown-menu" style="right: 0;top: 80px !important; left: auto; width: 250px;" id="ulProfile">
+                    <ul class="dropdown-menu" style="right: 0;top: 80px !important; left: auto; width: 346px;" id="ulProfile">
                         <li><a href="javascript:void(0);"><i class="material-icons col-fecon">person_outline</i> @ProfileUtilities.User.FULL_NAME</a></li>
                         @*@if (!string.IsNullOrWhiteSpace(ProfileUtilities.User.CONTRACTOR_ID))
                             {
@@ -234,13 +234,13 @@
                                 if (item.ORG_CODE == ProfileUtilities.User?.ORGANIZE_CODE)
                                 {
                                     <li>
-                                        <a><b class="col-deep-orange">@item.Organize.NAME</b></a>
+                                        <a><b class="col-deep-orange">@item.Organize.SAP_CODE - @item.Organize.NAME</b></a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li>
-                                        <a href="/Admin/ChangeOrg?orgCode=@item.ORG_CODE"><span>@item.Organize.NAME</span></a>
+                                        <a href="/Admin/ChangeOrg?orgCode=@item.ORG_CODE"><span>@item.Organize.SAP_CODE - @item.Organize.NAME</span></a>
                                     </li>
                                 }
                             }
