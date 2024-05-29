@@ -19,7 +19,6 @@
                     @Html.MyButton("cmdBack", "Download", $"DownloadData();", "Alt+N", "file_download")
                     <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(Model)})" target="_blank" hidden></a>
                 }
-                @Html.MyButton("cmdBack", "Lọc", "ShowLeft();", "Alt+N", "sort")
             </div>
             @if (Model.PHIEN_BAN == "PB3" || Model.PHIEN_BAN == "PB5" || Model.PHIEN_BAN == "PB4")
             {
@@ -120,9 +119,9 @@
 
             // submit form after filter select options
             OnChangeOrg(null, null, null, true)
-            setTimeout(function () {
-                $("#divExportLeft_@viewId").toggle();
-            }, 2000)
+
+            $("#divExportLeft_@viewId").hide();
+
 
             var monthValue = $("#month_bs").val(); // Đây là giá trị bạn muốn thiết lập
             $("#hiddenMonth").val(monthValue);
