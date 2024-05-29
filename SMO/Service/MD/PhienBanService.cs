@@ -1092,6 +1092,19 @@ namespace SMO.Service.MD
                 }
                 #endregion
 
+                #region KẾ HOẠCH ĐẦU TƯ XDCB, TTB
+                var dataHeaerDauTuXDCB = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDauTuXDCB = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaerDauTuXDCB.Contains(x.TEMPLATE_CODE)).ToList();
+                var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x=>x.LOAI_HINH == "XDCB" && x.YEAR == year).ToList();
+                var ItemSum = new DauTu
+                {
+                    Code = "SUM",
+                    Name = "Tổng kinh phí đầu tư"
+                };
+                foreach(var project in lstProject)
+                {
+                }
+
                 #region KẾ HOẠCH CHI PHÍ
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
                 var dataHeaderCP = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
@@ -4315,3 +4328,4 @@ namespace SMO.Service.MD
         }
     }
 }
+#endregion
