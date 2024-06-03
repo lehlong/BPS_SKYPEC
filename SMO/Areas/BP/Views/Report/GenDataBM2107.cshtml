@@ -17,13 +17,9 @@
 </div>
 <script type="text/javascript">
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
-    rawData.forEach((item) => {
-        if (item.id == "A" || item.id == "B") delete item.parent;
-        item.col7 = Number(item.col5) == 0 || Number(item.col3) == 0 ? 0 : Number(item.col5) / Number(item.col3) * 100
-    });
-
-    const treeGrid = new dhx.TreeGrid("@gridId", {
+    const treeGrid = new dhx.Grid("@gridId", {
         columns: [
+            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], width: 100, align: "center" },
             { id: "name", header: [{ text: "Danh mục dự án đầu tư xây dựng cơ bản", align: "center", rowspan: 2 }], adjust: true },
 
             { id: "col1", header: [{ text: "Tổng vốn đầu tư giai đoạn", align: "center", rowspan: 2 }], align: "right", width: 160, type: "number", format: "#.#" },
@@ -39,7 +35,7 @@
             { id: "des", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], align: "right", adjust: true },
         ],
         data: rawData,
-        leftSplit: 1,
+        leftSplit: 2,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },

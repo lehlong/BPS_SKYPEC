@@ -1093,17 +1093,102 @@ namespace SMO.Service.MD
                 #endregion
 
                 #region KẾ HOẠCH ĐẦU TƯ XDCB, TTB
-                var dataHeaerDauTuXDCB = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var dataDauTuXDCB = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaerDauTuXDCB.Contains(x.TEMPLATE_CODE)).ToList();
-                var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x=>x.LOAI_HINH == "XDCB" && x.YEAR == year).ToList();
-                var ItemSum = new DauTu
+
+                var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year).ToList();
+                lstProject = string.IsNullOrEmpty(area) ? lstProject.ToList() : lstProject.Where(x => x.AREA_CODE == area).ToList();
+
+                data.DauTu.Add(new DauTu
                 {
-                    Code = "SUM",
-                    Name = "Tổng kinh phí đầu tư"
-                };
-                foreach(var project in lstProject)
+                    Stt = "I",
+                    Name = "Đầu tư XDCB",
+                    IsBold = true
+                });
+                var orderXDCB = 1;
+                var headerXDCB = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataXDCB = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => headerXDCB.Contains(x.TEMPLATE_CODE)).ToList();
+                foreach (var project in lstProject.Where(x => x.LOAI_HINH == "XDCB"))
                 {
+                    data.DauTu.Add(new DauTu
+                    {
+                        Stt = orderXDCB.ToString(),
+                        Name = project.NAME,
+                        Value1 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_2,
+                        Value2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0,
+                        Value4 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_3,
+                        Des = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.DESCRIPTION,
+                        IsBold = project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE) ? true : false,
+                    });
+                    if (project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE))
+                    {
+                        data.DauTu.Add(new DauTu
+                        {
+                            Stt = "a",
+                            Name = "Chuẩn bị đầu tư và chuẩn bị thực hiện dự án",
+                            Value1 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_2,
+                            Value2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
+                            Value4 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_3,
+                            Des = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.DESCRIPTION,
+                        });
+                        data.DauTu.Add(new DauTu
+                        {
+                            Stt = "b",
+                            Name = "Thực hiện dự án",
+                            Value1 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_2,
+                            Value2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
+                            Value4 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_3,
+                            Des = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.DESCRIPTION,
+                        });
+
+                    }
+                    orderXDCB += 1;
                 }
+
+                data.DauTu.Add(new DauTu
+                {
+                    Stt = "II",
+                    Name = "Đầu tư trang thiết bị",
+                    IsBold = true
+                });
+                var orderTTB = 1;
+                var headerTTB = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => headerTTB.Contains(x.TEMPLATE_CODE)).ToList();
+                foreach (var project in lstProject.Where(x => x.LOAI_HINH == "TTB"))
+                {
+                    data.DauTu.Add(new DauTu
+                    {
+                        Stt = orderTTB.ToString(),
+                        Name = project.NAME,
+                        Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_2,
+                        Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5) ?? 0,
+                        Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_3,
+                        Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.DESCRIPTION,
+                        IsBold = project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE) ? true : false,
+                    });
+                    if (project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE))
+                    {
+                        data.DauTu.Add(new DauTu
+                        {
+                            Stt = "a",
+                            Name = "Chuẩn bị đầu tư và chuẩn bị thực hiện dự án",
+                            Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_2,
+                            Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
+                            Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_3,
+                            Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.DESCRIPTION,
+                        });
+                        data.DauTu.Add(new DauTu
+                        {
+                            Stt = "b",
+                            Name = "Thực hiện dự án",
+                            Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_2,
+                            Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
+                            Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_3,
+                            Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.DESCRIPTION,
+                        });
+
+                    }
+                    orderTTB += 1;
+                }
+                #endregion
 
                 #region KẾ HOẠCH CHI PHÍ
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
@@ -4328,4 +4413,3 @@ namespace SMO.Service.MD
         }
     }
 }
-#endregion

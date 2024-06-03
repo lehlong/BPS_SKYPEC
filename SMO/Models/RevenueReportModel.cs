@@ -271,6 +271,7 @@ namespace SMO.Models
 
     public class DauTu
     {
+        public string Stt { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public string Value1 { get; set; }
@@ -291,7 +292,7 @@ namespace SMO.Models
         public decimal valueDLTH10 { get; set; }
         public decimal valueDLTH11 { get; set; }
         public decimal valueDLTH12 { get; set; }
-
+        public string Des { get; set; }
 
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }

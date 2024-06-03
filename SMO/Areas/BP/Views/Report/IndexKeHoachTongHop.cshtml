@@ -6,12 +6,7 @@
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
     var selectedValue = "TB";
 }
-<style>
-    .tab-content {
-        position: relative;
-        z-index: 1001;
-    }
-</style>
+
 <div class="container-fluid child-content">
     <div class="card border-grey">
         <div class="body" style="padding-top: 0px;">
@@ -20,7 +15,7 @@
                     <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> BÁO CÁO TỔNG HỢP KẾ HOẠCH</a>
                 </li>
             </ul>
-            <div class="tab-content" style="padding-bottom: 0">
+            <div class="tab-content" style="padding-bottom: 0; position: relative; z-index: 1005">
                 <div class="page-function" style="width:100%">
                     <div class="page-function-button m-r-20" style="float:left">
                         @Html.MyButton("cmdBack", "Quay lại", "window.location.reload()", "Alt+N", "arrow_back")
