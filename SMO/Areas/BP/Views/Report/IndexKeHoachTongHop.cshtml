@@ -5,6 +5,7 @@
     var lstArea = SelectListUtilities.GetAllArea();
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
     var selectedValue = "TB";
+    var formIdExportExcel = Guid.NewGuid();
 }
 
 <div class="container-fluid child-content">
@@ -77,6 +78,14 @@
         </div>
     </div>
 </div>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelTHKHCN")">
+        @Html.Hidden("year")
+        @Html.Hidden("phienBan")
+        @Html.Hidden("kichBan")
+        @Html.Hidden("area")
+    </form>
+</div>
 <script>
     $(function () {
         Forms.CompleteUI();
@@ -104,13 +113,13 @@
         setTimeout(function () { ViewData() }, 500)
     });
 
-    function ExportData() {
-        var year = $("#time-year").val()
-        var phienBan = $("#phien-ban").val()
-        var kichBan = $("#kich-ban").val()
-        var area = $("#area").val()
-        window.open(`/BP/Report/ExportExcelDataTongHop?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&area=${area}`, '_blank');
-    }
+         function ExportData() {
+     $('#@formIdExportExcel #year').val($("#time-year").val());
+     $('#@formIdExportExcel #phienBan').val($("#phien-ban").val());
+     $('#@formIdExportExcel #kichBan').val($("#kich-ban").val());
+     $('#@formIdExportExcel #area').val($("#area").val());
+     $('#@formIdExportExcel').submit();
+    };
 </script>
 
 

@@ -6,32 +6,41 @@
     var year = ViewBag.Year as int?;
     var grid = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var formIdExportExcel = Guid.NewGuid();
 }
-@{ 
+@{
     var jsonData = Model.OrderBy(x => x.Order).Select(x => new
     {
-        Id = x.Order.ToString(),
+        Stt = x.Stt,
         Parent = x.Parent,
         Name = x.Name,
-        ValueGT = x.valueGT.ToStringVN(),
+        ValueGT = x.valueGT,
         ValueQM = x.valueQM,
         ValueHT = x.valueHT,
         IsBold = x.IsBold
     });
 }
 
-<div class="table-responsive" style="overflow: auto;width:100%; height: calc(100vh - 220px);" id="@grid"> 
+<div class="table-responsive" style="overflow: auto;width:100%; height: calc(100vh - 220px);" id="@grid">
+</div>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelTHKHSCTX")">
+        @Html.Hidden("year")
+        @Html.Hidden("phienBan")
+        @Html.Hidden("kichBan")
+        @Html.Hidden("area")
+    </form>
 </div>
 <script type="text/javascript">
     var rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
     var columns = [
-        { id: "id", header: [{ text: "STT", align: "center" }], align: "center", width: 100 },
+        { id: "stt", header: [{ text: "STT", align: "center" }], align: "center", width: 100 },
         { id: "name", header: [{ text: "DANH MỤC", align: "center" }, { content: "inputFilter" }], width:500},
-        { id: "valueGT", header: [{ text: "KH NĂM 2024", align: "center", colspan: 3 }, { text: "GIÁ TRỊ", align: "center" }], align: "right", width: 160 },
+        { id: "valueGT", header: [{ text: "KH NĂM 2024", align: "center", colspan: 3 }, { text: "GIÁ TRỊ", align: "center" }], align: "right", width: 160, type: "number", format: "#.#" },
         { id: "valueQM", header: [{ text: "", align: "center"}, { text: "QUY MÔ", align: "center" }], align: "right", width: 180 },
-        { id: "valueHT", header: [{ text: "", align: "center" }, { text: "GHI CHÚ", align: "center" }], align: "right", width: 180 },
+        { id: "des", header: [{ text: "", align: "center" }, { text: "GHI CHÚ", align: "center" }], align: "right", width: 180 },
     ];
-   
+
     const treegrid = new dhx.Grid("@grid", {
         columns,
         resizable: true,
@@ -40,4 +49,11 @@
         data: rawData,
         rowHeight: 30,
     });
+     function ExportData() {
+     $('#@formIdExportExcel #year').val($("#time-year").val());
+     $('#@formIdExportExcel #phienBan').val($("#phien-ban").val());
+     $('#@formIdExportExcel #kichBan').val($("#kich-ban").val());
+     $('#@formIdExportExcel #area').val($("#area").val());
+     $('#@formIdExportExcel').submit();
+};
 </script>

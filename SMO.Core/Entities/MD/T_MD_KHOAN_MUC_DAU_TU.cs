@@ -84,7 +84,7 @@ namespace SMO.Core.Entities.MD
         public virtual decimal VALUE_5{ get; set; }
         public virtual string VALUE_6 { get; set; }
         public virtual decimal VALUE_7 { get; set; }
-        public virtual string VALUE_8 { get; set; }
+        public virtual decimal VALUE_8 { get; set; }
 
         // Value TTB
         public virtual decimal VALUETTB_1 { get; set; }
@@ -98,7 +98,7 @@ namespace SMO.Core.Entities.MD
         public virtual decimal VALUETTB_7 { get; set; }
         public virtual string VALUETTB_8 { get; set; }
         public virtual decimal VALUETTB_9 { get; set; }
-        public virtual string VALUETTB_10 { get; set; }
+        public virtual decimal VALUETTB_10 { get; set; }
         public virtual bool ISEDIT { get; set; }
 
         public virtual string TYPE { get; set; }

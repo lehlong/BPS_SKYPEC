@@ -75,7 +75,9 @@
 
         $(function () {
             Forms.CompleteUI();
-            onChangeTimeYear($("#TIME_YEAR").val())
+            setTimeout(function () {
+                onChangeTimeYear($("#TIME_YEAR").val())
+            }, 200)
         });
 
         $(function () {

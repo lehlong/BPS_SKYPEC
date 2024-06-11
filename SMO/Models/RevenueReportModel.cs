@@ -109,7 +109,7 @@ namespace SMO.Models
     {
         public IList<SanLuong> SanLuong { get; set; } = new List<SanLuong> { };
         public IList<DauTu> DauTu { get; set; } = new List<DauTu> { };
-        public IList<SuaChuaLon> SuaChuaLon { get; set; } = new List<SuaChuaLon> { };
+        public List<SuaChuaLon> SuaChuaLon { get; set; } = new List<SuaChuaLon> { };
         public IList<ChiPhi> ChiPhi { get; set; } = new List<ChiPhi> { };
 
     }
@@ -234,6 +234,8 @@ namespace SMO.Models
         public string valueHT { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
+        public string Stt { get; set; }
+        public string Des { get; set; }
         public int Level { get; set; }
     }
 
@@ -302,12 +304,13 @@ namespace SMO.Models
 
     public class SuaChuaLon
     {
+        public string stt { get; set; }
         public string code { get; set; }
         public string parentCode { get; set; }
         public string name { get; set; }
         public decimal valueKP { get; set; }
         public string valueQM { get; set; }
-        public string description { get; set; }
+        public string des { get; set; }
         public decimal valueDLTH { get; set; }
         public decimal valueDLTH1 { get; set; }
         public decimal valueDLTH2 { get; set; }
@@ -392,6 +395,7 @@ namespace SMO.Models
     // Bác cái TH Đầu tư
     public class ReportDauTuModel
     {
+        public string Stt { get; set; }
         public string code { get; set; }
         public string name { get; set; }
         public string equity_sources { get; set; }
@@ -402,6 +406,11 @@ namespace SMO.Models
         public string description { get; set; }
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
+        public string Col1 { get; set; }
+        public decimal Col2 { get; set; }
+        public decimal Col3 { get; set; }
+        public string Col4 { get; set; }
+        public string Des { get; set; }
     }
 
     public class ReportCompaseDTModel

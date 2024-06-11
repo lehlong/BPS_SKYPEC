@@ -6,6 +6,7 @@
     var year = ViewBag.Year as int?;
     var gridTab1 = Guid.NewGuid().ToString("N");
     var gridTab2 = Guid.NewGuid().ToString("N");
+    var gridTab3 = Guid.NewGuid().ToString("N");
     var gridTab4 = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
@@ -33,7 +34,7 @@
     </div>
 
     <div role="tabpanel" class="tab-pane fade" id="tab3">
-
+        <div style="height: calc(100vh - 262px); width: 100%" id="@gridTab3"></div>
     </div>
 
     <div role="tabpanel" class="tab-pane fade" id="tab4">
@@ -80,13 +81,38 @@
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
 
+    const gridTab3 = new dhx.Grid("@gridTab3", {
+        columns: [
+            { id: "stt", header: [{ text: "STT", align: "center" }], align: "center", width: 100 },
+            { id: "name", header: [{ text: "Danh mục sửa chữa lớn", align: "center" }], width: 500 },
+            { id: "valueKP", header: [{ text: "Kế hoạch kinh phí sửa chữa", align: "center" }] , width: 160, type: "number", format: "#.#" },
+            { id: "valueQM", header: [{ text: "Quy mô s/c", align: "center" }], adjust: true },
+            { id: "des", header: [{ text: "Ghi chú", align: "center" }], adjust: true },
+        ],
+        data: @Html.Raw(JsonConvert.SerializeObject(Model.SuaChuaLon, jsonSerializeSettings)),
+        resizable: true,
+        selection: "row",
+        rowHeight: 30,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    });
+
+    var dataCP = @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi, jsonSerializeSettings));
+    var parentData = dataCP.filter(x => x.isBold == true);
+
+    Number.prototype.format = function (n, x, s, c) {
+        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+            num = this.toFixed(Math.max(0, ~~n));
+
+        return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+    };
+
     const gridTab4 = new dhx.Grid("@gridTab4", {
         columns: [
-            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
-            { id: "name", header: [{ text: "Danh mục chi phí", align: "center", rowspan: 2 }] },
-            { id: "valueCP", header: [{ text: "Kế hoạch", align: "center", colspan: 2 }, { text: "Chi phí", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "notes", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], minWidth: 160 },
+            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }, { text: "" }], align: "center", minWidth: 100 },
+            { id: "name", header: [{ text: "Danh mục chi phí", align: "center", rowspan: 2 }, "", { text: "TỔNG CỘNG" }] },
+            { id: "valueCP", header: [{ text: "Kế hoạch", align: "center", colspan: 2 }, { text: "Chi phí", align: "center" }, { text: _.sumBy(parentData, "valueCP").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }, ""], minWidth: 160, align: "right", type: "number", format: "#.#" },
+            { id: "notes", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }, ""], minWidth: 160 },
         ],
         data: @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi, jsonSerializeSettings)),
         resizable: true,
@@ -97,141 +123,3 @@
     });
 
 </script>
-
-
-@*<h4>II. KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ</h4>
-<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td>STT</td>
-                <td>Danh mục đầu tư mua sắm</td>
-                <td>Nguồn vốn</td>
-                <td>Tổng vốn đầu tư giai đoạn</td>
-                <td>Kế hoạch kinh phí đầu tư năm</td>
-                <td>Tiến độ triển khai giai đoạn đầu tư</td>
-                <td>Dữ liệu thực hiện</td>
-                <td>Ghi chú</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.DauTu.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.Level; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="align-center">@item.Order</td>
-                    <td class="pre-whitespace">@($"{space.ToString()}{item.Name}")</td>
-                    <td class="align-right">@item.Value1</td>
-                    <td class="align-right">@item.Value2.ToStringVN()</td>
-                    <td class="align-right">@item.Value3.ToStringVN()</td>
-                    <td class="align-right">@item.Value4</td>
-                    <td class="align-right">@item.ValueDLTH</td>
-                    <td class="align-right">@item.Value5</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-<h4>III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH</h4>
-<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td>STT</td>
-                <td>Danh mục sửa chữa lớn</td>
-                <td>Kế hoạch kinh phí sửa chữa năm 2024</td>
-                <td>Quy mô sửa chữa</td>
-                <td>Dữ liệu thực hiện</td>
-                <td>Ghi chú</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.SuaChuaLon.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.Level; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="align-center">@item.Order</td>
-                    <td class="">@($"{space.ToString()}{item.name}")</td>
-                    <td class="align-right">@item.valueKP.ToStringVN()</td>
-                    <td class="align-right">@item.valueQM</td>
-                    <td class="align-right">@item.valueDLTH</td>
-                    <td class="align-right">@item.description</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-<h4>IV. KẾ HOẠCH CHI PHÍ</h4>
-<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td rowspan="2">STT</td>
-                <td rowspan="2">Danh mục chi phí</td>
-                <td colspan="2">Kế hoạch năm 2024</td>
-                <td rowspan="2">Tháng 1</td>
-                <td rowspan="2">Tháng 2</td>
-                <td rowspan="2">Tháng 3</td>
-                <td rowspan="2">Tháng 4</td>
-                <td rowspan="2">Tháng 5</td>
-                <td rowspan="2">Tháng 6</td>
-                <td rowspan="2">Tháng 7</td>
-                <td rowspan="2">Tháng 8</td>
-                <td rowspan="2">Tháng 9</td>
-                <td rowspan="2">Tháng 10</td>
-                <td rowspan="2">Tháng 11</td>
-                <td rowspan="2">Tháng 12</td>
-                <td rowspan="2">Ghi chú</td>
-            </tr>
-            <tr class="header-table">
-                <td>Chi phí</td>
-                <td>Đơn giá chi phí trên 1 tấn nhiên liệu</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.ChiPhi.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.Level; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="align-center">@item.Order</td>
-                    <td><div>@($"{space.ToString()}{item.name}")</div></td>
-                    <td class="align-right">@item.price.ToStringVN()</td>
-                    <td class="align-right">@item.valueCP</td>
-                    <td class="align-right">@item.Value1.ToStringVN()</td>
-                    <td class="align-right">@item.Value2.ToStringVN()</td>
-                    <td class="align-right">@item.Value3.ToStringVN()</td>
-                    <td class="align-right">@item.Value4.ToStringVN()</td>
-                    <td class="align-right">@item.Value5.ToStringVN()</td>
-                    <td class="align-right">@item.Value6.ToStringVN()</td>
-                    <td class="align-right">@item.Value7.ToStringVN()</td>
-                    <td class="align-right">@item.Value8.ToStringVN()</td>
-                    <td class="align-right">@item.Value9.ToStringVN()</td>
-                    <td class="align-right">@item.Value10.ToStringVN()</td>
-                    <td class="align-right">@item.Value11.ToStringVN()</td>
-                    <td class="align-right">@item.Value12.ToStringVN()</td>
-                    <td class="align-right">@item.description</td>
-
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>*@
-
-

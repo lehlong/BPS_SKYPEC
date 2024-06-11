@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
+using NHibernate.SqlCommand;
 using SMO.Service.BP;
 using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.MD;
@@ -584,6 +585,36 @@ namespace SMO.Areas.BP.Controllers
                     break;
             }
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
+        }
+
+        [HttpPost]
+        public FileContentResult ExportExcelTHKHDT(int year, string phienBan, string kichBan, string area)
+         {
+            MemoryStream outFileStream = new MemoryStream();
+            var data = _servicePhienBan.GetDataReportDauTu(year, phienBan, kichBan, area);
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_DAU_TU.xlsx");
+            _service.ExportExcelTHKHDT(ref outFileStream, data, path);
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_DAU_TU.xlsx");
+        }
+
+        [HttpPost]
+        public FileContentResult ExportExcelTHKHSCTX(int year, string phienBan, string kichBan, string area)
+        {
+            MemoryStream outFileStream = new MemoryStream();
+            var data = _servicePhienBan.GetReportDataSuaChuaThuongXuyen(year, phienBan, kichBan, area);
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_SUA_CHUA_THUONG_XUYEN.xlsx");
+            _service.ExportExcelTHKHSCTX(ref outFileStream, data, path);
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_SUA_CHUA_THUONG_XUYEN.xlsx");
+        }
+
+        [HttpPost]
+        public FileContentResult ExportExcelTHKHCN(int year, string phienBan, string kichBan, string area)
+        {
+            MemoryStream outFileStream = new MemoryStream();
+            var data = _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_CHI_NHANH.xlsx");
+            _service.ExportExcelTHKHCN(ref outFileStream, data, path);
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_CHI_NHANH.xlsx");
         }
         #endregion
     }

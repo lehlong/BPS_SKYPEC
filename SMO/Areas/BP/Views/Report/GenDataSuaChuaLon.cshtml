@@ -1,4 +1,4 @@
-﻿@model  List<SMO.Models.SuaChuaLonReportModel>
+﻿@model  List<SMO.Models.SuaChuaLon>
 @using System.Text;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
@@ -16,14 +16,13 @@
 
         return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
     };
-    console.log(data)
     let columnsTab1 = [
         { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2}, ''], align: "center", minWidth: 100 },
         { id: "name", header: [{ text: "Danh mục", align: "center" }, { content: 'inputFilter' }, { text: "TỔNG CỘNG" }], width: 500 },
 
-        { id: "valueGT", header: [{ text: "Kế hoạch", align: "center", colspan: 3 }, { text: "Giá trị", align: "center" }, { text: _.sumBy(data.filter(x => x.stt == null), "valueGT").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueKP", header: [{ text: "Kế hoạch", align: "center", colspan: 3 }, { text: "Giá trị", align: "center" }, { text: _.sumBy(data.filter(x => x.stt == null), "valueKP").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
         { id: "valueQM", header: ["",{ text: "Quy mô", align: "center" },''], minWidth: 160 },
-        { id: "valueHT", header: ["",{ text: "Ghi chú", align: "center" },''], minWidth: 160 },
+        { id: "des", header: ["",{ text: "Ghi chú", align: "center" },''], minWidth: 160 },
 
     ];
     const gridTab1 = new dhx.Grid("@gridTab", {

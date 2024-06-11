@@ -2076,7 +2076,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             var value7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
                             var value8 = tableData.Rows[i][10].ToString();
                             var value9 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? 0 : tableData.Rows[i][11]);
-                            var value10 = tableData.Rows[i][12].ToString();
+                            var value10 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][12].ToString()) ? 0 : tableData.Rows[i][12]);
                             var description = tableData.Rows[i][13].ToString();
                             var elementCode = tableData.Rows[i][1].ToString();
                             if (!string.IsNullOrEmpty(elementCode))
@@ -2122,7 +2122,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             var value7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
                             var value8 = tableData.Rows[i][10].ToString();
                             var value9 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? 0 : tableData.Rows[i][11]);
-                            var value10 = tableData.Rows[i][12].ToString();
+                            var value10 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][12].ToString()) ? 0 : tableData.Rows[i][12]);
                             var description = tableData.Rows[i][13].ToString();
                             var elementCode = tableData.Rows[i][1].ToString();
                             if (!string.IsNullOrEmpty(elementCode))
@@ -2206,7 +2206,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             if (model.PHIEN_BAN == "PB1")
             {
                 // Lấy danh sách dự án
-                var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
+                var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).OrderByDescending(x => x.DauTuTrangThietBiProfitCenter.Project.TYPE).ToList();
                 var lstProfit = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).Distinct().ToList();
 
                 var Order = 0;
@@ -2229,7 +2229,8 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                         VALUETTB_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
                         VALUETTB_8 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_8,
                         VALUETTB_9 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9)),
-                        VALUETTB_10 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_10,
+                        VALUETTB_10 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_10) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_10)),
+
                         ISEDIT = profit.Project.TYPE == "TTB-LON" ? false : true,
                         DESCRIPTION = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).DESCRIPTION,
                         ORDER = Order,
@@ -2260,7 +2261,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                                 VALUETTB_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
                                 VALUETTB_8 = child.VALUE_8,
                                 VALUETTB_9 = child.VALUE_9 == null ? 0 : Convert.ToDecimal(child.VALUE_9),
-                                VALUETTB_10 = child.VALUE_10,
+                                VALUETTB_10 = child.VALUE_10 == null ? 0 : Convert.ToDecimal(child.VALUE_10),
                                 ISEDIT = profit.Project.TYPE == "TTB-LON" ? true : false,
                                 ORDER = Order++,
                                 DESCRIPTION = child.DESCRIPTION,
@@ -2277,7 +2278,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             {
 
                 // Lấy danh sách dự án
-                var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR && x.MONTH == model.MONTH).ToList();
+                var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR && x.MONTH == model.MONTH).OrderByDescending(x => x.DauTuTrangThietBiProfitCenter.Project.TYPE).ToList();
                 var lstProfit = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).Distinct().ToList();
                 var Order = 0;
                 foreach (var profit in lstProfit)
@@ -2296,7 +2297,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                         VALUETTB_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
                         VALUETTB_8 = string.Empty,
                         VALUETTB_9 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_9) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9)),
-                        VALUETTB_10 = string.Empty,
+                        VALUETTB_10 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_10) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_10)),
                         DESCRIPTION = string.Empty,
                         ISEDIT = profit.Project.TYPE == "TTB-LON" ? false : true,
 
@@ -2325,7 +2326,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                                 VALUETTB_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
                                 VALUETTB_8 = child.VALUE_8,
                                 VALUETTB_9 = child.VALUE_9 == null ? 0 : Convert.ToDecimal(child.VALUE_9),
-                                VALUETTB_10 = child.VALUE_10,
+                                VALUETTB_10 = child.VALUE_10 == null ? 0 : Convert.ToDecimal(child.VALUE_10),
                                 ISEDIT = profit.Project.TYPE == "TTB-LON" ? true : false,
 
                                 DESCRIPTION = child.DESCRIPTION,
@@ -3239,7 +3240,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
 
         public IList<T_MD_KHOAN_MUC_DAU_TU> GetDataTemPlate(string templateId, int year)
         {
-            var templateDetails = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year).ToList();
+            var templateDetails = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year).OrderByDescending(x => x.Center.Project.TYPE).ToList();
             var lstProject = templateDetails.Select(x => x.Center.Project).Distinct().ToList();
             var lstKhoanMuc = new List<T_MD_KHOAN_MUC_DAU_TU>();
             foreach (var project in lstProject)
@@ -4434,7 +4435,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             row.VALUE_9 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
                         case "VALUE_10":
-                            row.VALUE_10 = value;
+                            row.VALUE_10 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
                         case "DESCRIPTION":
                             row.DESCRIPTION = value;

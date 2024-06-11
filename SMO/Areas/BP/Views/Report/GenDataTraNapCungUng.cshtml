@@ -17,7 +17,7 @@
         Value4 = Math.Round(x.ValueTNK).ToStringVN(),
         Value5 = Math.Round(x.ValueD).ToStringVN(),
         Value6 = Math.Round(x.ValueFH).ToStringVN(),
-        Value7 = Math.Round(x.ValueThue).ToStringVN(),
+        Value7 = Math.Round(x.ValueThue, 2).ToStringVN(),
         Value8 = Math.Round(x.ValueDT).ToStringVN(),
         Value9 = Math.Round(x.ValueDTMOPS).ToStringVN(),
         Value10 = Math.Round(x.ValueDTTNK).ToStringVN(),
@@ -40,12 +40,12 @@
             id: "value2", header: [
                 { text: "ĐƠN GIÁ (VND/TẤN)", colspan: 5, align: 'center' },
                 { text: 'ĐƠN GIÁ (VND/TẤN)', align: 'center' }
-            ], align: "right", width: 130
+            ], align: "right", width: 150
         },
-        { id: "value3", header: ["", { text: "MOPS (VND/TẤN)", align: "center" }], align: "right", width: 130 },
-        { id: "value4", header: ["", { text: "TNK (VND/TẤN)", align: "center" }], align: "right", width: 130 },
-        { id: "value5", header: ["", { text: "D (VND/TẤN)", align: "center" }], align: "right", width: 130 },
-        { id: "value6", header: ["", { text: "FH (VND/TẤN)", align: "center" }], align: "right", width: 130 },
+        { id: "value3", header: ["", { text: "MOPS (VND/TẤN)", align: "center" }], align: "right", width: 150 },
+        { id: "value4", header: ["", { text: "TNK (VND/TẤN)", align: "center" }], align: "right", width: 150 },
+        { id: "value5", header: ["", { text: "D (VND/TẤN)", align: "center" }], align: "right", width: 150 },
+        { id: "value6", header: ["", { text: "FH (VND/TẤN)", align: "center" }], align: "right", width: 150 },
 
         { id: "value7", header: [{ text: "THUẾ BVMT (TR. VNĐ) ", align: "center", rowspan: 2 }], align: "right", width: 180 },
         { id: "value8", header: [{ text: "DOANH THU (TR. VNĐ)", align: "center", rowspan: 2 }], align: "right", width: 180 },

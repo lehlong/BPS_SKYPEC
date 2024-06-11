@@ -67,7 +67,9 @@
         }
         $(function () {
             Forms.CompleteUI();
-            ExportDataGrid();
+            setTimeout(function () {
+                ExportDataGrid();
+            }, 200)
         });
         function CalculateKeHoachDoanhThu() {
             Swal.fire({

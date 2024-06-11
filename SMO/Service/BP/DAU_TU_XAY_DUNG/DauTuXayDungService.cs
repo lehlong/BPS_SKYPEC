@@ -1537,7 +1537,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                         VALUE_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
                         VALUE_6 = string.Empty,
                         VALUE_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
-                        VALUE_8 = string.Empty,
+                        VALUE_8 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_8) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_8)),
                         DESCRIPTION = string.Empty,
                         ORDER = Order,
                         LEVEL = 0,
@@ -1565,7 +1565,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                                 VALUE_5 = child.VALUE_5 == null ? 0 : Convert.ToDecimal(child.VALUE_5),
                                 VALUE_6 = child.VALUE_6,
                                 VALUE_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
-                                VALUE_8 = child.VALUE_8,
+                                VALUE_8 = child.VALUE_8 == null ? 0 : Convert.ToDecimal(child.VALUE_8),
                                 DESCRIPTION = child.DESCRIPTION,
                                 LEVEL = 1,
                                 ORDER = Order++,
@@ -1598,7 +1598,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                         VALUE_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
                         VALUE_6 = string.Empty,
                         VALUE_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
-                        VALUE_8 = string.Empty,
+                        VALUE_8 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_8) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_8)),
                         DESCRIPTION = string.Empty,
                         ORDER = Order,
                         LEVEL = 0,
@@ -2194,7 +2194,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                             var value_5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
                             var value_6 = tableData.Rows[i][8].ToString();
                             var value_7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
-                            var value_8 = tableData.Rows[i][10].ToString();
+                            var value_8 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? 0 : tableData.Rows[i][9]);
                             var description = tableData.Rows[i][11].ToString();
                             var elementCode = tableData.Rows[i][1].ToString();
                             if (!string.IsNullOrEmpty(elementCode))
@@ -2236,7 +2236,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                             var value_5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
                             var value_6 = tableData.Rows[i][8].ToString();
                             var value_7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
-                            var value_8 = tableData.Rows[i][10].ToString();
+                            var value_8 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? 0 : tableData.Rows[i][9]);
                             var description = tableData.Rows[i][11].ToString();
                             var elementCode = tableData.Rows[i][1].ToString();
                             if (!string.IsNullOrEmpty(elementCode))
@@ -4407,7 +4407,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                             row.VALUE_7 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
                         case "VALUE_8":
-                            row.VALUE_8 = value;
+                            row.VALUE_8 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
                         case "DESCRIPTION":
                             row.DESCRIPTION = value;

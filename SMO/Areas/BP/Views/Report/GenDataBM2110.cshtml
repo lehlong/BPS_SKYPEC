@@ -7,19 +7,6 @@
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var formIdExportExcel = Guid.NewGuid();
 }
-<style>
-    .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
-        font-weight: bold
-    }
-
-    .grid .dhx_grid-cell {
-        word-break: break-word
-    }
-
-    .dhx_header-wrapper {
-        z-index: 1;
-    }
-</style>
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 <div class="hidden">

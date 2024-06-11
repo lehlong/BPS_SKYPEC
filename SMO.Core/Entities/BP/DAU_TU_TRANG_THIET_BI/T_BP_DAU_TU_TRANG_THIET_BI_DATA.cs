@@ -21,7 +21,7 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
         public virtual decimal? VALUE_7 { get; set; }
         public virtual string VALUE_8 { get; set; }
         public virtual decimal? VALUE_9 { get; set; }
-        public virtual string VALUE_10 { get; set; }
+        public virtual decimal VALUE_10 { get; set; }
 
         public virtual int MONTH { get; set; }
 

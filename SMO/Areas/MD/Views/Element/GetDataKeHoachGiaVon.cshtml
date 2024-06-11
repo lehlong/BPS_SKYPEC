@@ -5,6 +5,7 @@
 @using Newtonsoft.Json.Serialization;
 
 @{
+    var lstSharedData = ViewBag.LstSharedData as List<SMO.Core.Entities.T_MD_SHARED_DATA>;
     var gridId = Guid.NewGuid().ToString("N");
     var gridId2 = Guid.NewGuid().ToString("N");
     var gridId3 = Guid.NewGuid().ToString("N");
@@ -86,6 +87,8 @@
         Value12 = Math.Round(x.Value12).ToStringVN(),
         Value13 = Math.Round(x.SumGV).ToStringVN()
     });
+
+    var pre_bh = Model.KeHoachGiaThanhData.Sum(x => x.S0002 * x.U0008) / Model.KeHoachGiaThanhData.Sum(x => x.S0002);
 }
 
 <style>
@@ -122,6 +125,8 @@
 
     <div class="tab-content" style="padding-bottom:0">
         <div role="tabpanel" class="tab-pane fade in active" id="tab-1">
+            <div style="padding: 0px 0px 0px 12px;">- Thuế suất thuế nhập khẩu bình quân: <strong>@((lstSharedData.FirstOrDefault(x => x.CODE == "TNK-VN").VALUE * 100).ToString("0.000")) % </strong></div>
+            <div style="padding: 0px 0px 6px 12px;">- Pre+BH bình quân: <strong>@pre_bh.ToString("0.00")</strong></div>
             <div style="height: calc(100vh - 262px); width: 100%" id="@gridId"></div>
         </div>
         <div role="tabpanel" class="tab-pane fade in" id="tab-2">

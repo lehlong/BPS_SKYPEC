@@ -105,14 +105,6 @@
         Forms.CompleteUI();
         setTimeout(function () { ViewData() }, 100)
     });
-
-    function ExportData() {
-        var year = $("#time-year").val()
-        var phienBan = $("#phien-ban").val()
-        var kichBan = $("#kich-ban").val()
-        var area = $("#area").val()
-        window.open(`/BP/Report/ExportExcelSuaChuaThuongXuyen?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&area=${area}`, '_blank');
-    }
 </script>
 
 

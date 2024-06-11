@@ -15,7 +15,7 @@
     var grid = Guid.NewGuid().ToString();
 
     var lstSanBay = SelectListUtilities.GetListSanBay();
-    var jsonData = Model.OrderBy(x => x.PROJECT_CODE).Select(x => new
+    var jsonData = Model.Select(x => new
     {
         id = x.PKID,
         projectCode = x.PROJECT_CODE,

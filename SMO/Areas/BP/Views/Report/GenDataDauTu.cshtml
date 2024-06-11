@@ -1,51 +1,50 @@
 ﻿@model  List<SMO.Models.ReportDauTuModel>
 @using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
 @{
-    var year = ViewBag.Year as int?;
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var formIdExportExcel = Guid.NewGuid();
 }
-<style>
-    .header-table {
-        text-align: center;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-</style>
 
-<div class="table-responsive" style="overflow: auto; height: calc(100vh - 220px);">
-    <table class="table table-condensed table-bordered table-striped">
-        <thead style="position: sticky; top: 0; z-index: 1; background: #eee;">
-            <tr class="header-table">
-                <td rowspan="2">STT</td>
-                <td rowspan="2">Danh mục đầu tư mua sắm</td>
-                <td colspan="5">KH năm 2024</td>
-            </tr>
-            <tr class="header-table">
-                <td>Nguồn vốn</td>
-                <td>Tổng vốn đầu tư</td>
-                <td>Kế hoạch kinh phí đầu tư năm 2024</td>
-                <td>Tiến độ triển khai giai đoạn đầu tư</td>
-                <td>Ghi chú</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.OrderBy(x => x.Order))
-            {
-                var space = new StringBuilder();
-                for (int i = 0; i < item.lever; i++)
-                {
-                    space.Append("\t");
-                }
-                var bold = item.IsBold == true ? "bold" : "";
-                <tr style="font-weight:@bold">
-                    <td class="align-center">@item.Order</td>
-                    <td class="pre-whitespace">@($"{space.ToString()}{item.name}")</td>
-                    <td class="align-left">@item.equity_sources</td>
-                    <td class="align-right">@item.valueVDT.ToStringVN()</td>
-                    <td class="align-right">@item.valueKHKP.ToStringVN()</td>
-                    <td class="align-left">@item.tdtk</td>
-                    <td class="align-left">@item.description</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelTHKHDT")">
+        @Html.Hidden("year")
+        @Html.Hidden("phienBan")
+        @Html.Hidden("kichBan")
+        @Html.Hidden("area")
+    </form>
 </div>
+<script type="text/javascript">
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
+    let columns = [
+        { id: "stt", header: [{ text: "STT", align: "center", rowspan:2 }], width: 100, align: "center" },
+        { id: "name", header: [{ text: "Danh mục đầu tư mua sắm", align: "center" }, { content: "inputFilter" }], width: 500 },
+        { id: "col1", header: [{ text: "Kế hoạch năm", align: "center", colspan: 5 }, { text: "Nguồn vốn", align: "center", }], width: 140 },
+
+        { id: "col2", header: ['', { text: "Tổng vốn đầu tư", align: "center" }], width: 140, type:"number", format: "#.#" },
+        { id: "col3", header: ['', { text: "KH kinh phí đầu tư", align: "center" }], width: 140, type: "number", format: "#.#" },
+        { id: "col4", header: ['', { text: "Tiến độ triển khai giai đoạn đầu tư", align: "center" }], width: 140 },
+        { id: "des", header: ['', { text: "Ghi chú", align: "center" }], adjust: true },
+    ];
+    const treeGrid = new dhx.Grid("@gridId", {
+        columns,
+        data: rawData,
+        leftSplit: 2,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        selection: true,
+        rowHeight: 30,
+    });
+
+     function ExportData() {
+         $('#@formIdExportExcel #year').val($("#time-year").val());
+         $('#@formIdExportExcel #phienBan').val($("#phien-ban").val());
+         $('#@formIdExportExcel #kichBan').val($("#kich-ban").val());
+         $('#@formIdExportExcel #area').val($("#area").val());
+         $('#@formIdExportExcel').submit();
+    };
+</script>

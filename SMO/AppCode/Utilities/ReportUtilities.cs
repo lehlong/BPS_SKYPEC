@@ -25,6 +25,22 @@ namespace SMO
             return row;
         }
 
+        public static IRow CreateAndShiftRow(ref ISheet worksheet, int numRow, int numCell = 500)
+        {
+            var row = worksheet.GetRow(numRow);
+            if (row == null)
+            {
+                worksheet.CreateRow(numRow);
+                row = worksheet.GetRow(numRow);
+            }
+
+            for (int i = 0; i < numCell; i++)
+            {
+                CreateCell(ref row, i);
+            }
+            return row;
+        }
+
         /// <summary>
         /// Kiểm tra cell đã tồn tại chưa, nếu chưa thì create cell
         /// </summary>
