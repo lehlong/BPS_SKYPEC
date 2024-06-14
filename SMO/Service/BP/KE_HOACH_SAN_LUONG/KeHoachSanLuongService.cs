@@ -5032,15 +5032,15 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             }        
         }
 
-        public void SynchronizeData()
+        public void SynchronizeData(int year, string templateCode, string phienBan, string kichBan)
         {
-            var MaPhienBanDB = UnitOfWork.Repository<PhienBanRepo>().Queryable().FirstOrDefault(x => x.CODE == ObjDetail.PHIEN_BAN)?.MA_PB_DB;
+            var MaPhienBanDB = UnitOfWork.Repository<PhienBanRepo>().Queryable().FirstOrDefault(x => x.CODE == phienBan)?.MA_PB_DB;
             string connection = ConfigurationManager.ConnectionStrings["SKYPEC"].ConnectionString;
             DataTable tableData = new DataTable();
             DataTable tableDataVoucher = new DataTable();
             using (SqlConnection con = new SqlConnection(connection))
             {
-                SqlCommand cmd = new SqlCommand($"SELECT * FROM SKYPECLGS_KHBAY WHERE TranYear = '{ObjDetail.TIME_YEAR}' AND VoucherTypeID = '{MaPhienBanDB}'", con);
+                SqlCommand cmd = new SqlCommand($"SELECT * FROM SKYPECLGS_KHBAY WHERE TranYear = '{year}' AND VoucherTypeID = '{MaPhienBanDB}'", con);
                 cmd.CommandType = CommandType.Text;
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 try
@@ -5057,7 +5057,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
             try
             {
                 var orgCode = ProfileUtilities.User.ORGANIZE_CODE;
-                var KeHoachSanLuongCurrent = CurrentRepository.Queryable().FirstOrDefault(x => x.ORG_CODE == orgCode && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE);
+                var KeHoachSanLuongCurrent = CurrentRepository.Queryable().FirstOrDefault(x => x.ORG_CODE == orgCode && x.TIME_YEAR == year && x.TEMPLATE_CODE == templateCode);
                 if (KeHoachSanLuongCurrent != null && !(KeHoachSanLuongCurrent.STATUS == Approve_Status.TuChoi || KeHoachSanLuongCurrent.STATUS == Approve_Status.ChuaTrinhDuyet))
                 {
                     this.State = false;
@@ -5065,11 +5065,11 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     return;
                 }
 
-                var template = UnitOfWork.Repository<TemplateRepo>().Get(ObjDetail.TEMPLATE_CODE);
-                if (template.DetailKeHoachSanLuong.Where(x => x.TIME_YEAR == ObjDetail.TIME_YEAR).Count() == 0)
+                var template = UnitOfWork.Repository<TemplateRepo>().Get(templateCode);
+                if (template.DetailKeHoachSanLuong.Where(x => x.TIME_YEAR == year).Count() == 0)
                 {
                     this.State = false;
-                    this.ErrorMessage = $"Mẫu khai báo này chưa được định nghĩa tại năm {ObjDetail.TIME_YEAR}!";
+                    this.ErrorMessage = $"Mẫu khai báo này chưa được định nghĩa tại năm {year}!";
                     return;
                 }
                 var versionNext = 1;
@@ -5081,7 +5081,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 if (KeHoachSanLuongCurrent != null)
                 {
                     dataCurrent = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode
-                        && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).ToList();
+                        && x.TIME_YEAR == year && x.TEMPLATE_CODE == templateCode).ToList();
                 }
 
                 var currentUser = ProfileUtilities.User?.USER_NAME;
@@ -5090,7 +5090,7 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 if(actualRows == 0)
                 {
                     this.State = false;
-                    this.ErrorMessage = $"Dữ liệu năm {ObjDetail.TIME_YEAR} từ hệ thống khác không có dữ liệu! Vui lòng kiểm tra lại!";
+                    this.ErrorMessage = $"Dữ liệu năm {year} từ hệ thống khác không có dữ liệu! Vui lòng kiểm tra lại!";
                     return;
                 }
                 UnitOfWork.BeginTransaction();
@@ -5120,10 +5120,10 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     {
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = orgCode,
-                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                        KICH_BAN = ObjDetail.KICH_BAN,
-                        PHIEN_BAN = ObjDetail.PHIEN_BAN,
-                        TIME_YEAR = ObjDetail.TIME_YEAR,
+                        TEMPLATE_CODE = templateCode,
+                        KICH_BAN = kichBan,
+                        PHIEN_BAN = phienBan,
+                        TIME_YEAR = year,
                         VERSION = versionNext,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
                         IS_DELETED = false,
@@ -5137,11 +5137,11 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 {
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = orgCode,
-                    TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
+                    TEMPLATE_CODE = templateCode,
                     VERSION = versionNext,
-                    KICH_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.KICH_BAN : KeHoachSanLuongCurrent.KICH_BAN,
-                    PHIEN_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachSanLuongCurrent.PHIEN_BAN,
-                    TIME_YEAR = ObjDetail.TIME_YEAR,
+                    KICH_BAN = KeHoachSanLuongCurrent == null ? kichBan : KeHoachSanLuongCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachSanLuongCurrent == null ? kichBan : KeHoachSanLuongCurrent.PHIEN_BAN,
+                    TIME_YEAR = year,
                     CREATE_BY = currentUser
                 });
 
@@ -5150,11 +5150,11 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                 {
                     PKID = Guid.NewGuid().ToString(),
                     ORG_CODE = orgCode,
-                    TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                    KICH_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.KICH_BAN : KeHoachSanLuongCurrent.KICH_BAN,
-                    PHIEN_BAN = KeHoachSanLuongCurrent == null ? ObjDetail.PHIEN_BAN : KeHoachSanLuongCurrent.PHIEN_BAN,
+                    TEMPLATE_CODE = templateCode,
+                    KICH_BAN = KeHoachSanLuongCurrent == null ? kichBan : KeHoachSanLuongCurrent.KICH_BAN,
+                    PHIEN_BAN = KeHoachSanLuongCurrent == null ? phienBan : KeHoachSanLuongCurrent.PHIEN_BAN,
                     VERSION = versionNext,
-                    TIME_YEAR = ObjDetail.TIME_YEAR,
+                    TIME_YEAR = year,
                     ACTION = Approve_Action.NhapDuLieu,
                     ACTION_DATE = DateTime.Now,
                     ACTION_USER = currentUser,
@@ -5170,12 +5170,12 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Delete(item);
                 }
 
-                var allSanLuongProfitCenters = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x=>x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).Select(x=> x.Center);
+                var allSanLuongProfitCenters = UnitOfWork.Repository<TemplateDetailKeHoachSanLuongRepo>().Queryable().Where(x=>x.TEMPLATE_CODE == templateCode).Select(x=> x.Center);
                 List<T_BP_KE_HOACH_SAN_LUONG_DATA> lstData = new List<T_BP_KE_HOACH_SAN_LUONG_DATA>();
                 // Insert dữ liệu vào bảng data
                 for (int i = 0; i < actualRows; i++)
                 {
-                    var percentagePreventive = GetPreventive(orgCode, year: ObjDetail.TIME_YEAR)?.PERCENTAGE;
+                    var percentagePreventive = GetPreventive(orgCode, year: year)?.PERCENTAGE;
                     if (percentagePreventive == null)
                     {
                         percentagePreventive = 1;
@@ -5205,8 +5205,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = orgCode,
                         SAN_LUONG_PROFIT_CENTER_CODE = centerCode,
-                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                        TIME_YEAR = ObjDetail.TIME_YEAR,
+                        TEMPLATE_CODE = templateCode,
+                        TIME_YEAR = year,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
                         VERSION = versionNext,
                         KHOAN_MUC_SAN_LUONG_CODE = (tableData.Rows[i][17].ToString().Trim() == "0") ? "10010" : "10020",
@@ -5248,8 +5248,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                         PKID = Guid.NewGuid().ToString(),
                         ORG_CODE = orgCode,
                         SAN_LUONG_PROFIT_CENTER_CODE = group.Key.Item1,
-                        TEMPLATE_CODE = ObjDetail.TEMPLATE_CODE,
-                        TIME_YEAR = ObjDetail.TIME_YEAR,
+                        TEMPLATE_CODE = templateCode,
+                        TIME_YEAR = year,
                         STATUS = Approve_Status.ChuaTrinhDuyet,
                         VERSION = versionNext,
                         KHOAN_MUC_SAN_LUONG_CODE = group.Key.Item2,
@@ -5282,8 +5282,8 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
                     {
                         Activity = Activity.AC_NHAP_DU_LIEU,
                         OrgCode = orgCode,
-                        TemplateCode = ObjDetail.TEMPLATE_CODE,
-                        TimeYear = ObjDetail.TIME_YEAR,
+                        TemplateCode = templateCode,
+                        TimeYear = year,
                         ModulType = ModulType.KeHoachSanLuong,
                         UserSent = currentUser
                     });

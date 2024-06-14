@@ -258,6 +258,7 @@ namespace SMO.Models
 
     public class SanLuong
     {
+        public string Stt { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public decimal Value1 { get; set; }

@@ -44,7 +44,7 @@
 <script type="text/javascript">
     const gridTab1 = new dhx.Grid("@gridTab1", {
         columns: [
-            { id: "order", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
 
             { id: "code", header: [{ text: "Sản lượng theo sân bay", align: "center", colspan: 2 }, { text: "Mã sân bay", align: "center" }] },
             { id: "name", header: ["", { text: "Tên sân bay", align: "center" }], footer: [{ text: "TỔNG CỘNG" }] },
@@ -57,11 +57,12 @@
             { id: "value5", header: [{ text: "TỔNG", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
 
         ],
-        data: @Html.Raw(JsonConvert.SerializeObject(Model.SanLuong.OrderBy(x => x.Order), jsonSerializeSettings)),
+        data: @Html.Raw(JsonConvert.SerializeObject(Model.SanLuong, jsonSerializeSettings)),
         resizable: true,
         selection: "row",
         rowHeight: 30,
-        adjust: true
+        adjust: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
 
     const gridTab2 = new dhx.Grid("@gridTab2", {

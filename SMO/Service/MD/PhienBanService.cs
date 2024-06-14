@@ -74,7 +74,7 @@ namespace SMO.Service.MD
             try
             {
                 var data = new List<RevenueReportModel>();
-                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).ToList();
+                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)).ToList();
                 var sanBayGroup = UnitOfWork.Repository<NhomSanBayRepo>().GetAll().ToList();
                 lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
 
@@ -87,6 +87,7 @@ namespace SMO.Service.MD
                 var dataInHeader = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
 
                 var dataDetails = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002").ToList();
+                dataDetails = dataDetails.Where(x => !string.IsNullOrEmpty(x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM)).ToList();
 
                 int countGroup = sanBayGroup.Count();
                 int order = 0;
@@ -1109,26 +1110,48 @@ namespace SMO.Service.MD
                 var lstSanBay = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != null && x.OTHER_PM_CODE != "").ToList();
                 lstSanBay = !string.IsNullOrEmpty(area) ? lstSanBay.Where(x => x.AREA_CODE == area).ToList() : lstSanBay;
 
+                var lstAreas = UnitOfWork.Repository<AreaRepo>().GetAll().ToList();
+                lstAreas = string.IsNullOrEmpty(area) ? lstAreas : lstAreas.Where(x => x.CODE == area).ToList();
+
+
                 #region KẾ HOẠCH SẢN LƯỢNG
                 var dataHeaderSanLuong = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSanLuong.Contains(x.TEMPLATE_CODE)).ToList();
-                var orderSL = 1;
-                foreach (var sb in lstSanBay)
+
+                var orderArea = 1;
+                foreach(var a in lstAreas)
                 {
-                    var dataSb = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE);
-                    var item = new SanLuong
+                    var dataArea = dataInHeader.Where(x => x.SanLuongProfitCenter.SanBay.AREA_CODE == a.CODE);
+                    data.SanLuong.Add(new SanLuong
                     {
-                        Code = sb.CODE,
-                        Name = sb.NAME,
-                        Value1 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                        Value2 = dataSb.Where(x => !x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                        Value3 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                        Value4 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                        Value5 = dataSb.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                        Order = orderSL,
-                    };
-                    data.SanLuong.Add(item);
-                    orderSL += 1;
+                        Code = a.TEXT,
+                        IsBold = true,
+                        Stt = ConvertNumberOrder(orderArea),
+                        Value1 = dataArea.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value2 = dataArea.Where(x => !x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value3 = dataArea.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value4 = dataArea.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value5 = dataArea.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    });
+                    var orderSL = 1;
+                    foreach (var sb in lstSanBay.Where(x => x.AREA_CODE == a.CODE))
+                    {
+                        var dataSb = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE);
+                        var item = new SanLuong
+                        {
+                            Code = sb.CODE,
+                            Name = sb.NAME,
+                            Value1 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                            Value2 = dataSb.Where(x => !x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                            Value3 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                            Value4 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                            Value5 = dataSb.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                            Stt = orderSL.ToString(),
+                        };
+                        data.SanLuong.Add(item);
+                        orderSL += 1;
+                    }
+                    orderArea += 1;
                 }
                 #endregion
 
@@ -1747,10 +1770,10 @@ namespace SMO.Service.MD
                     return new RevenueByFeeReportModel();
                 }
 
-                var dataInHeader = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
+                var dataInHeader = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM != null && x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM != "" && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
 
                 var headerSL = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var dataSL = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => headerSL.Contains(x.TEMPLATE_CODE)).ToList();
+                var dataSL = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM != null && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM != "" && headerSL.Contains(x.TEMPLATE_CODE)).ToList();
 
 
                 var dataDetailsTab1 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002").ToList();
@@ -3819,11 +3842,11 @@ namespace SMO.Service.MD
                 };
             Dictionary<string, string> TenChiNhanh = new Dictionary<string, string>()
             {
-                {"MB", "Chi nhánh miền bắc" },
-                {"MT", "Chi nhánh miền trung" },
-                {"MN", "Chi nhánh miền nam" },
-                {"VT", "Chi nhánh vận tải" },
-                {"CQ", "Chi nhánh cơ quan công ty" },
+                {"MB", "Chi nhánh Miền Bắc" },
+                {"MT", "Chi nhánh Miền Trung" },
+                {"MN", "Chi nhánh Miền Nam" },
+                {"VT", "Chi nhánh Vận Tải" },
+                {"CQ", "Chi nhánh Cơ quan Công ty" },
 
             };
             var sapCodeDT = ChiNhanh[area];
@@ -3937,7 +3960,7 @@ namespace SMO.Service.MD
             try
             {
                 var data = new ReportCompaseDTModel();
-                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).ToList();
+                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).Where(x => x.GROUP_ITEM != null && x.GROUP_ITEM != "").ToList();
                 var sanBayGroup = UnitOfWork.Repository<NhomSanBayRepo>().GetAll().ToList();
                 lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
 

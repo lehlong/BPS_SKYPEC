@@ -242,24 +242,24 @@ namespace SMO.Areas.BP.Controllers
             return result.ToJsonResult();
         }
 
-        public ActionResult SynchronizeData(KeHoachSanLuongService service)
+        public ActionResult SynchronizeData(int year, string templateCode, string phienBan, string kichBan)
         {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
 
-            service.SynchronizeData();
+            _service.SynchronizeData(year, templateCode, phienBan,kichBan);
 
-            if (service.State)
+            if (_service.State)
             {
-                SMOUtilities.GetMessage("1002", service, result);
+                SMOUtilities.GetMessage("1002", _service, result);
                 result.ExtData = "try{RefreshData();}catch(e){};";
             }
             else
             {
                 result.Type = TransferType.AlertDanger;
-                SMOUtilities.GetMessage("1005", service, result);
+                SMOUtilities.GetMessage("1005", _service, result);
             }
             return result.ToJsonResult();
         }

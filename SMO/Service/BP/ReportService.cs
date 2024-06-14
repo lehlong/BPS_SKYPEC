@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Microsoft.Ajax.Utilities;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NHibernate.Criterion;
 using NPOI.HSSF.Record.Chart;
@@ -6,6 +7,7 @@ using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
+using SMO.Core.Entities.BP.SUA_CHUA_LON;
 using SMO.Models;
 using SMO.Repository.Common;
 using SMO.Repository.Implement.BP.DAU_TU_NGOAI_DOANH_NGHIEP;
@@ -3335,107 +3337,33 @@ namespace SMO.Service.BP
                 return new List<ReportModel>();
             }
         }
-        public List<ReportModel> GenDataBM2109(int year, int month, string phienBan, string kichBan)
+        public List<ReportModel> GenDataBM2109(int year, int month, string phienBan, string kichBan, string area)
         {
             try
             {
                 var data = new List<ReportModel>();
 
+                var headerSCL = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSCL = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => headerSCL.Contains(x.TEMPLATE_CODE)).ToList();
 
-                var header1_1 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var details1_1 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header1_1.Contains(x.TEMPLATE_CODE)).ToList();
-
-                var header3 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var details3 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
-
-                var header5 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var details5 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
-
-
-
-                var elements = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
-                foreach (var e in elements)
+                if (string.IsNullOrEmpty(area))
                 {
-                    decimal col2 = 0;
-                    decimal col4 = 0;
-                    var dataCol2 = details3.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == e.CODE);
-                    var dataCol4 = details5.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == e.CODE);
-                    switch (month)
-                    {
-                        case 1:
-                            col2 = dataCol2.Sum(x => x.MONTH1) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1) ?? 0;
-                            break;
-                        case 2:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2) ?? 0;
-                            break;
-                        case 3:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3) ?? 0;
-                            break;
-                        case 4:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4) ?? 0;
-                            break;
-                        case 5:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5) ?? 0;
-                            break;
-                        case 6:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6) ?? 0;
-                            break;
-                        case 7:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7) ?? 0;
-                            break;
-                        case 8:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8) ?? 0;
-                            break;
-                        case 9:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9) ?? 0;
-                            break;
-                        case 10:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10) ?? 0;
-                            break;
-                        case 11:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11) ?? 0;
-                            break;
-                        case 12:
-                            col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
-                            col4 = dataCol4.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0;
-                            break;
-                    }
-                    var i = new ReportModel
-                    {
-                        Id = e.CODE,
-                        Parent = e.PARENT_CODE,
-                        Name = e.NAME,
-                        IsBold = e.CODE.Length <= 4 ? true : false,
-                        Col1 = details1_1.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == e.CODE).Sum(x => x.VALUE),
-                        Col2 = col2,
-                        Col4 = col4,
-                        Order = e.C_ORDER,
-                    };
-                    i.Col3 = i.Col1 + i.Col2;
-                    i.Col5 = i.Col4 == 0 || i.Col3 == 0 ? 0 : i.Col4 / i.Col3;
-                    data.Add(i);
+                    data.AddRange(GetDataSCLByArea("MB", year, dataSCL));
+                    data.AddRange(GetDataSCLByArea("MT", year, dataSCL));
+                    data.AddRange(GetDataSCLByArea("MN", year, dataSCL));
+                    data.AddRange(GetDataSCLByArea("CQ", year, dataSCL));
+                    data.AddRange(GetDataSCLByArea("VT", year, dataSCL));
                 }
-
-                foreach (var d in data.OrderByDescending(x => x.Order))
+                else
                 {
-                    var child = data.Where(x => x.Parent == d.Id).ToList();
-                    d.Col1 = child.Count() == 0 ? d.Col1 : child.Sum(x => x.Col1);
-                    d.Col2 = child.Count() == 0 ? d.Col2 : child.Sum(x => x.Col2);
-                    d.Col3 = child.Count() == 0 ? d.Col3 : child.Sum(x => x.Col3);
-                    d.Col4 = child.Count() == 0 ? d.Col4 : child.Sum(x => x.Col4);
-                    d.Col5 = child.Count() == 0 ? d.Col5 : child.Sum(x => x.Col5);
+                    data.AddRange(GetDataSCLByArea(area, year, dataSCL));
                 }
+                data.Insert(0, new ReportModel
+                {
+                    IsBold = true,
+                    Name = "TỔNG KINH PHÍ SỬA CHỮA",
+                    Col1 = data.Where(x => string.IsNullOrEmpty(x.Stt)).Sum(x => x.Col1),
+                });
                 return data;
 
             }
@@ -3443,6 +3371,98 @@ namespace SMO.Service.BP
             {
                 UnitOfWork.Rollback();
                 return new List<ReportModel>();
+            }
+        }
+
+        public List<ReportModel> GetDataSCLByArea(string area, int year, List<T_BP_SUA_CHUA_LON_DATA> data)
+        {
+            try
+            {
+                var dataR = new List<ReportModel>();
+                if (area == "CQ") data = data.Where(x => x.ORG_CODE.Contains("100001")).ToList();
+                if (area == "MB") data = data.Where(x => x.ORG_CODE.Contains("100002")).ToList();
+                if (area == "MT") data = data.Where(x => x.ORG_CODE.Contains("100003")).ToList();
+                if (area == "MN") data = data.Where(x => x.ORG_CODE.Contains("100004")).ToList();
+                if (area == "VT") data = data.Where(x => x.ORG_CODE.Contains("100005")).ToList();
+                var elementCodes = data.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
+                var elementChild = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).ToList();
+                foreach (var i in elementChild.Select(x => x.PARENT_CODE).Distinct().ToList())
+                {
+                    var p = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.TIME_YEAR == year && x.CODE == i);
+                    if (p != null) elementChild.Add(p);
+                }
+                elementChild = elementChild.DistinctBy(x => x.CODE).ToList();
+
+                var orderChild = 0;
+                var orderParent = 0;
+                dataR.Add(new ReportModel
+                {
+                    IsBold = true,
+                    Name = area == "CQ" ? " CƠ QUAN CÔNG TY" : area == "MB" ? "CHI NHÁNH MIỀN BẮC" : area == "MT" ? "CHI NHÁNH MIỀN TRUNG" : area == "MN" ? "CHI NHÁNH MIỀN NAM" : "CHI NHÁNH VẬN TẢI",
+                    Col1 = data.Sum(x => x.VALUE) ?? 0,
+                });
+                foreach (var i in elementChild.OrderBy(x => x.C_ORDER))
+                {
+                    if (i.IS_GROUP)
+                    {
+                        orderChild = 0;
+                        orderParent += 1;
+                    }
+                    var d = new ReportModel
+                    {
+                        Stt = i.IS_GROUP ? ConvertNumberOrder(orderParent) : orderChild.ToString(),
+                        Code = i.CODE,
+                        Parent = i.PARENT_CODE,
+                        IsBold = i.IS_GROUP ? true : false,
+                        Name = i.NAME,
+                        Col1 = data.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.VALUE) ?? 0,
+                        Des = data.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE && !string.IsNullOrEmpty(x.DESCRIPTION)).FirstOrDefault()?.DESCRIPTION,
+                    };
+                    orderChild += 1;
+                    dataR.Add(d);
+                }
+                foreach (var i in dataR)
+                {
+                    var childs = dataR.Where(x => x.Parent == i.Code);
+                    if (childs.Count() != 0 || i.Col1 == 0)
+                    {
+                        i.Col1 = childs.Sum(x => x.Col1);
+                    }
+                }
+                return dataR;
+            }
+            catch (Exception ex)
+            {
+                return new List<ReportModel>();
+            }
+        }
+
+        public string ConvertNumberOrder(decimal number)
+        {
+            try
+            {
+                string strRet = string.Empty;
+                decimal _Number = number;
+                Boolean _Flag = true;
+                string[] ArrLama = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+                int[] ArrNumber = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+                int i = 0;
+                while (_Flag)
+                {
+                    while (_Number >= ArrNumber[i])
+                    {
+                        _Number -= ArrNumber[i];
+                        strRet += ArrLama[i];
+                        if (_Number < 1)
+                            _Flag = false;
+                    }
+                    i++;
+                }
+                return strRet;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
         public List<ReportModel> GenDataBM2110(int year, int month, string phienBan, string kichBan)
@@ -4256,6 +4276,7 @@ namespace SMO.Service.BP
     }
     public class ReportModel
     {
+        public string Code { get; set; }
         public string ElementCode { get; set; }
         public string Unit { get; set; }
         public string Stt { get; set; }

@@ -510,7 +510,8 @@ namespace SMO.Service.MD
                 var value2 = lstSharedData.FirstOrDefault(x => x.CODE == "1").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "3").VALUE;
                 var value3 = data.KeHoachGiaThanhData.Sum(x => x.U0008 * x.S0002) / data.KeHoachGiaThanhData.Sum(x => x.S0002);
                 var value4 = value2 + value3;
-                var value5 = data.KeHoachGiaThanhData.Sum(x => x.U0004 * x.S0002) / data.KeHoachGiaThanhData.Sum(x => x.S0002);
+                //var value5 = data.KeHoachGiaThanhData.Sum(x => x.ThueSuat * x.S0002) / data.KeHoachGiaThanhData.Where(x => x.S0008 != 0).Sum(x => x.S0002);
+                var value5 = lstSharedData.FirstOrDefault(x => x.CODE == "1").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "3").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "TNK-VN").VALUE;
                 var value6 = lstSharedData.FirstOrDefault(x => x.CODE == "22").VALUE;
                 var value7 = (value2 + value3 + value5) * lstSharedData.FirstOrDefault(x => x.CODE == "19").VALUE + (value2 + value3 + value5) * lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE;
                 var value8 = (value2 + value3 + value5) * lstSharedData.FirstOrDefault(x => x.CODE == "19").VALUE;

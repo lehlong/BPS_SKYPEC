@@ -130,20 +130,22 @@
     }
 
     function SynchronizeData() {
-        var formData = new FormData($('#@Model.FormId')[0]);
-        Forms.ShowLoading();
-        $.ajax({
-            type: "POST",
+
+        var ajaxParams = {
             url: '@Url.Action("SynchronizeData")',
-            data: formData,
-            contentType: false,
-            processData: false,
+            type: "POST",
+            data: {
+                year: $('#dllTimeYear').val(),
+                templateCode: $('#ObjDetail_TEMPLATE_CODE').val(),
+                phienBan: $('#ObjDetail_PHIEN_BAN').val(),
+                kichBan: $('#ObjDetail_KICH_BAN').val()
+            },
+            dataType: 'json',
             success: function (response) {
                 Message.execute(response);
-                Forms.HideLoading();
-            },
-            error: Forms.AjaxErrorHandler
-        });
+            }
+        };
+        Forms.Ajax(ajaxParams);
     }
     function onChangeTemplate(value) {
         $.ajax({

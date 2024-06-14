@@ -5388,29 +5388,61 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 {
                     var itemNoiDiaSL = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10010");
                     var itemQuocTeSL = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10020");
-                    
+
                     var itemNoiDiaDT = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2001");
                     var itemQuocTeDT = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2002");
                     var itemNoiDiaDT_Pump = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2003");
                     var itemQuocTeDT_Pump = data.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2004");
 
-                    /*var itemNoiDiaHistorySL = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10010");
-                    var itemQuocTeHistorySL = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "10020");
-
-                    var itemNoiDiaHistoryDT = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2001");
-                    var itemQuocTeHistoryDT = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2002");
-                    var itemNoiDiaHistoryDT_Pump = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2003");
-                    var itemQuocTeHistoryDT_Pump = dataHistory.FirstOrDefault(x => x.DOANH_THU_PROFIT_CENTER_CODE == key && x.KHOAN_MUC_DOANH_THU_CODE == "2004");*/
-
                     var currencyUSD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
 
-                    decimal price = 0;
+                    decimal priceND = 0;
+                    decimal priceQT = 0;
                     var unitPrice = lstUnitPrice.FirstOrDefault(x => x.SAN_BAY_CODE == itemNoiDiaSL.DoanhThuProfitCenter.SAN_BAY_CODE);
 
                     if (unitPrice != null)
                     {
                         var groupSb = itemNoiDiaSL.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM;
-                        price = groupSb == "VN" ? unitPrice.VN : groupSb == "0V" ? unitPrice.OV : groupSb == "BL" ? unitPrice.BL : groupSb == "VJ" ? unitPrice.VJ : groupSb == "QH" ? unitPrice.QH : groupSb == "VU" ? unitPrice.VU : groupSb == "HKTN#" ? unitPrice.HKTN_OTHER : (groupSb == "HKQT" && itemNoiDiaSL.DoanhThuProfitCenter.HangHangKhong.TYPE == "ND") ? unitPrice.HKNN_ND : unitPrice.HKNN_QT;
+                        if (groupSb == "VN")
+                        {
+                            priceND = unitPrice.VN;
+                            priceQT = unitPrice.VN;
+                        }
+                        if (groupSb == "0V")
+                        {
+                            priceND = unitPrice.OV;
+                            priceQT = unitPrice.OV;
+                        }
+                        if (groupSb == "BL")
+                        {
+                            priceND = unitPrice.BL;
+                            priceQT = unitPrice.BL;
+                        }
+                        if (groupSb == "VJ")
+                        {
+                            priceND = unitPrice.VJ;
+                            priceQT = unitPrice.VJ;
+                        }
+                        if (groupSb == "QH")
+                        {
+                            priceND = unitPrice.QH;
+                            priceQT = unitPrice.QH;
+                        }
+                        if (groupSb == "VU")
+                        {
+                            priceND = unitPrice.VU;
+                            priceQT = unitPrice.VU;
+                        }
+                        if (groupSb == "HKTN#")
+                        {
+                            priceND = unitPrice.HKTN_OTHER;
+                            priceQT = unitPrice.HKTN_OTHER;
+                        }
+                        if (groupSb == "HKQT")
+                        {
+                            priceND = unitPrice.HKNN_ND;
+                            priceQT = unitPrice.HKNN_QT;
+                        }
                     }
                     decimal pricePump = 0;
                     var sanBayCode = itemNoiDiaDT.DoanhThuProfitCenter.SAN_BAY_CODE;
@@ -5426,20 +5458,20 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                         pricePump = phiNgam.VALUE * currencyUSD;
                     }
                     //Tính toán doanh thu nội địa
-                    itemNoiDiaDT.VALUE_JAN = itemNoiDiaSL.VALUE_JAN * price;
-                    itemNoiDiaDT.VALUE_FEB = itemNoiDiaSL.VALUE_FEB * price;
-                    itemNoiDiaDT.VALUE_MAR = itemNoiDiaSL.VALUE_MAR * price;
-                    itemNoiDiaDT.VALUE_APR = itemNoiDiaSL.VALUE_APR * price;
-                    itemNoiDiaDT.VALUE_MAY = itemNoiDiaSL.VALUE_MAY * price;
-                    itemNoiDiaDT.VALUE_JUN = itemNoiDiaSL.VALUE_JUN * price;
-                    itemNoiDiaDT.VALUE_JUL = itemNoiDiaSL.VALUE_JUL * price;
-                    itemNoiDiaDT.VALUE_AUG = itemNoiDiaSL.VALUE_AUG * price;
-                    itemNoiDiaDT.VALUE_SEP = itemNoiDiaSL.VALUE_SEP * price;
-                    itemNoiDiaDT.VALUE_OCT = itemNoiDiaSL.VALUE_OCT * price;
-                    itemNoiDiaDT.VALUE_NOV = itemNoiDiaSL.VALUE_NOV * price;
-                    itemNoiDiaDT.VALUE_DEC = itemNoiDiaSL.VALUE_DEC * price;
-                    itemNoiDiaDT.VALUE_SUM_YEAR = itemNoiDiaSL.VALUE_SUM_YEAR * price;
-                    itemNoiDiaDT.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaSL.VALUE_SUM_YEAR_PREVENTIVE * price;
+                    itemNoiDiaDT.VALUE_JAN = itemNoiDiaSL.VALUE_JAN * priceND;
+                    itemNoiDiaDT.VALUE_FEB = itemNoiDiaSL.VALUE_FEB * priceND;
+                    itemNoiDiaDT.VALUE_MAR = itemNoiDiaSL.VALUE_MAR * priceND;
+                    itemNoiDiaDT.VALUE_APR = itemNoiDiaSL.VALUE_APR * priceND;
+                    itemNoiDiaDT.VALUE_MAY = itemNoiDiaSL.VALUE_MAY * priceND;
+                    itemNoiDiaDT.VALUE_JUN = itemNoiDiaSL.VALUE_JUN * priceND;
+                    itemNoiDiaDT.VALUE_JUL = itemNoiDiaSL.VALUE_JUL * priceND;
+                    itemNoiDiaDT.VALUE_AUG = itemNoiDiaSL.VALUE_AUG * priceND;
+                    itemNoiDiaDT.VALUE_SEP = itemNoiDiaSL.VALUE_SEP * priceND;
+                    itemNoiDiaDT.VALUE_OCT = itemNoiDiaSL.VALUE_OCT * priceND;
+                    itemNoiDiaDT.VALUE_NOV = itemNoiDiaSL.VALUE_NOV * priceND;
+                    itemNoiDiaDT.VALUE_DEC = itemNoiDiaSL.VALUE_DEC * priceND;
+                    itemNoiDiaDT.VALUE_SUM_YEAR = itemNoiDiaSL.VALUE_SUM_YEAR * priceND;
+                    itemNoiDiaDT.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaSL.VALUE_SUM_YEAR_PREVENTIVE * priceND;
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemNoiDiaDT);
 
                     #region Tính toán doanh thu nội địa Pump
@@ -5460,20 +5492,20 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemNoiDiaDT_Pump);
                     #endregion
                     //Tính toán doanh thu quốc tế
-                    itemQuocTeDT.VALUE_JAN = itemQuocTeSL.VALUE_JAN * price;
-                    itemQuocTeDT.VALUE_FEB = itemQuocTeSL.VALUE_FEB * price;
-                    itemQuocTeDT.VALUE_MAR = itemQuocTeSL.VALUE_MAR * price;
-                    itemQuocTeDT.VALUE_APR = itemQuocTeSL.VALUE_APR * price;
-                    itemQuocTeDT.VALUE_MAY = itemQuocTeSL.VALUE_MAY * price;
-                    itemQuocTeDT.VALUE_JUN = itemQuocTeSL.VALUE_JUN * price;
-                    itemQuocTeDT.VALUE_JUL = itemQuocTeSL.VALUE_JUL * price;
-                    itemQuocTeDT.VALUE_AUG = itemQuocTeSL.VALUE_AUG * price;
-                    itemQuocTeDT.VALUE_SEP = itemQuocTeSL.VALUE_SEP * price;
-                    itemQuocTeDT.VALUE_OCT = itemQuocTeSL.VALUE_OCT * price;
-                    itemQuocTeDT.VALUE_NOV = itemQuocTeSL.VALUE_NOV * price;
-                    itemQuocTeDT.VALUE_DEC = itemQuocTeSL.VALUE_DEC * price;
-                    itemQuocTeDT.VALUE_SUM_YEAR = itemQuocTeSL.VALUE_SUM_YEAR * price;
-                    itemQuocTeDT.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeSL.VALUE_SUM_YEAR_PREVENTIVE * price;
+                    itemQuocTeDT.VALUE_JAN = itemQuocTeSL.VALUE_JAN * priceQT;
+                    itemQuocTeDT.VALUE_FEB = itemQuocTeSL.VALUE_FEB * priceQT;
+                    itemQuocTeDT.VALUE_MAR = itemQuocTeSL.VALUE_MAR * priceQT;
+                    itemQuocTeDT.VALUE_APR = itemQuocTeSL.VALUE_APR * priceQT;
+                    itemQuocTeDT.VALUE_MAY = itemQuocTeSL.VALUE_MAY * priceQT;
+                    itemQuocTeDT.VALUE_JUN = itemQuocTeSL.VALUE_JUN * priceQT;
+                    itemQuocTeDT.VALUE_JUL = itemQuocTeSL.VALUE_JUL * priceQT;
+                    itemQuocTeDT.VALUE_AUG = itemQuocTeSL.VALUE_AUG * priceQT;
+                    itemQuocTeDT.VALUE_SEP = itemQuocTeSL.VALUE_SEP * priceQT;
+                    itemQuocTeDT.VALUE_OCT = itemQuocTeSL.VALUE_OCT * priceQT;
+                    itemQuocTeDT.VALUE_NOV = itemQuocTeSL.VALUE_NOV * priceQT;
+                    itemQuocTeDT.VALUE_DEC = itemQuocTeSL.VALUE_DEC * priceQT;
+                    itemQuocTeDT.VALUE_SUM_YEAR = itemQuocTeSL.VALUE_SUM_YEAR * priceQT;
+                    itemQuocTeDT.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeSL.VALUE_SUM_YEAR_PREVENTIVE * priceQT;
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemQuocTeDT);
 
                     #region Tính toán doanh thu quốc tế Pump
@@ -5493,75 +5525,6 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                     itemQuocTeDT_Pump.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeSL.VALUE_SUM_YEAR_PREVENTIVE * pricePump;
                     UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Update(itemQuocTeDT_Pump);
                     #endregion
-                    /*//Tính toán doanh thu nội địa history
-                    itemNoiDiaHistoryDT.VALUE_JAN = itemNoiDiaHistorySL.VALUE_JAN * price;
-                    itemNoiDiaHistoryDT.VALUE_FEB = itemNoiDiaHistorySL.VALUE_FEB * price;
-                    itemNoiDiaHistoryDT.VALUE_MAR = itemNoiDiaHistorySL.VALUE_MAR * price;
-                    itemNoiDiaHistoryDT.VALUE_APR = itemNoiDiaHistorySL.VALUE_APR * price;
-                    itemNoiDiaHistoryDT.VALUE_MAY = itemNoiDiaHistorySL.VALUE_MAY * price;
-                    itemNoiDiaHistoryDT.VALUE_JUN = itemNoiDiaHistorySL.VALUE_JUN * price;
-                    itemNoiDiaHistoryDT.VALUE_JUL = itemNoiDiaHistorySL.VALUE_JUL * price;
-                    itemNoiDiaHistoryDT.VALUE_AUG = itemNoiDiaHistorySL.VALUE_AUG * price;
-                    itemNoiDiaHistoryDT.VALUE_SEP = itemNoiDiaHistorySL.VALUE_SEP * price;
-                    itemNoiDiaHistoryDT.VALUE_OCT = itemNoiDiaHistorySL.VALUE_OCT * price;
-                    itemNoiDiaHistoryDT.VALUE_NOV = itemNoiDiaHistorySL.VALUE_NOV * price;
-                    itemNoiDiaHistoryDT.VALUE_DEC = itemNoiDiaHistorySL.VALUE_DEC * price;
-                    itemNoiDiaHistoryDT.VALUE_SUM_YEAR = itemNoiDiaHistorySL.VALUE_SUM_YEAR * price;
-                    itemNoiDiaHistoryDT.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaHistorySL.VALUE_SUM_YEAR_PREVENTIVE * price;
-                    UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemNoiDiaHistoryDT);
-
-                    #region Tính toán doanh thu nội địa history Pump
-                    itemNoiDiaHistoryDT_Pump.VALUE_JAN = itemNoiDiaHistorySL.VALUE_JAN * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_FEB = itemNoiDiaHistorySL.VALUE_FEB * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_MAR = itemNoiDiaHistorySL.VALUE_MAR * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_APR = itemNoiDiaHistorySL.VALUE_APR * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_MAY = itemNoiDiaHistorySL.VALUE_MAY * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_JUN = itemNoiDiaHistorySL.VALUE_JUN * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_JUL = itemNoiDiaHistorySL.VALUE_JUL * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_AUG = itemNoiDiaHistorySL.VALUE_AUG * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_SEP = itemNoiDiaHistorySL.VALUE_SEP * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_OCT = itemNoiDiaHistorySL.VALUE_OCT * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_NOV = itemNoiDiaHistorySL.VALUE_NOV * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_DEC = itemNoiDiaHistorySL.VALUE_DEC * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_SUM_YEAR = itemNoiDiaHistorySL.VALUE_SUM_YEAR * pricePump;
-                    itemNoiDiaHistoryDT_Pump.VALUE_SUM_YEAR_PREVENTIVE = itemNoiDiaHistorySL.VALUE_SUM_YEAR_PREVENTIVE * pricePump;
-                    UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemNoiDiaHistoryDT_Pump);
-
-                    //Tính toán doanh thu quốc tế history
-                    itemQuocTeHistoryDT_Pump.VALUE_JAN = itemQuocTeHistorySL.VALUE_JAN * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_FEB = itemQuocTeHistorySL.VALUE_FEB * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_MAR = itemQuocTeHistorySL.VALUE_MAR * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_APR = itemQuocTeHistorySL.VALUE_APR * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_MAY = itemQuocTeHistorySL.VALUE_MAY * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_JUN = itemQuocTeHistorySL.VALUE_JUN * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_JUL = itemQuocTeHistorySL.VALUE_JUL * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_AUG = itemQuocTeHistorySL.VALUE_AUG * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_SEP = itemQuocTeHistorySL.VALUE_SEP * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_OCT = itemQuocTeHistorySL.VALUE_OCT * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_NOV = itemQuocTeHistorySL.VALUE_NOV * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_DEC = itemQuocTeHistorySL.VALUE_DEC * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_SUM_YEAR = itemQuocTeHistorySL.VALUE_SUM_YEAR * pricePump;
-                    itemQuocTeHistoryDT_Pump.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeHistorySL.VALUE_SUM_YEAR_PREVENTIVE * pricePump;
-                    UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemQuocTeHistoryDT_Pump);
-                    #endregion
-                    //Tính toán doanh thu quốc tế history
-                    itemQuocTeHistoryDT.VALUE_JAN = itemQuocTeHistorySL.VALUE_JAN * price;
-                    itemQuocTeHistoryDT.VALUE_FEB = itemQuocTeHistorySL.VALUE_FEB * price;
-                    itemQuocTeHistoryDT.VALUE_MAR = itemQuocTeHistorySL.VALUE_MAR * price;
-                    itemQuocTeHistoryDT.VALUE_APR = itemQuocTeHistorySL.VALUE_APR * price;
-                    itemQuocTeHistoryDT.VALUE_MAY = itemQuocTeHistorySL.VALUE_MAY * price;
-                    itemQuocTeHistoryDT.VALUE_JUN = itemQuocTeHistorySL.VALUE_JUN * price;
-                    itemQuocTeHistoryDT.VALUE_JUL = itemQuocTeHistorySL.VALUE_JUL * price;
-                    itemQuocTeHistoryDT.VALUE_AUG = itemQuocTeHistorySL.VALUE_AUG * price;
-                    itemQuocTeHistoryDT.VALUE_SEP = itemQuocTeHistorySL.VALUE_SEP * price;
-                    itemQuocTeHistoryDT.VALUE_OCT = itemQuocTeHistorySL.VALUE_OCT * price;
-                    itemQuocTeHistoryDT.VALUE_NOV = itemQuocTeHistorySL.VALUE_NOV * price;
-                    itemQuocTeHistoryDT.VALUE_DEC = itemQuocTeHistorySL.VALUE_DEC * price;
-                    itemQuocTeHistoryDT.VALUE_SUM_YEAR = itemQuocTeHistorySL.VALUE_SUM_YEAR * price;
-                    itemQuocTeHistoryDT.VALUE_SUM_YEAR_PREVENTIVE = itemQuocTeHistorySL.VALUE_SUM_YEAR_PREVENTIVE * price;
-                    UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Update(itemQuocTeHistoryDT);
-*/
-
                 }
                 UnitOfWork.Commit();
             }

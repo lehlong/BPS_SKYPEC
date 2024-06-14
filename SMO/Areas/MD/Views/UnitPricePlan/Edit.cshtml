@@ -30,12 +30,12 @@
                         <div class="col-lg-7 col-xs-10">
                             <label>Năm</label>
                             <div class="form-group">
-                                @Html.MyDropDownListFor(m => m.ObjDetail.YEAR, SelectListUtilities.GetTimeYear(), new { @disabled = "disabled", @class = "selectpicker show-tick", @data_val = false })
+                                @Html.MyDropDownListFor(m => m.ObjDetail.YEAR, SelectListUtilities.GetTimeYear(), new { @class = "selectpicker show-tick", @data_val = false })
                             </div>
 
                             <label>Sân bay</label>
                             <div class="form-group">
-                                @Html.MyDropDownListFor(m => m.ObjDetail.SAN_BAY_CODE, SelectListUtilities.GetAllSanBay(), new { @disabled = "disabled", @class = "selectpicker show-tick", @data_val = false })
+                                @Html.MyDropDownListFor(m => m.ObjDetail.SAN_BAY_CODE, SelectListUtilities.GetAllSanBay(), new { @class = "selectpicker show-tick", @data_val = false })
                             </div>
 
                             <label>VN</label>
