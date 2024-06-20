@@ -7,12 +7,20 @@
     var lstHeader = ViewBag.Header as List<string>;
     var gridTab = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var formIdExportExcel = Guid.NewGuid();
 }
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridTab"></div>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelTHKHCP")">
+        @Html.Hidden("year")
+        @Html.Hidden("kichBan")
+        @Html.Hidden("phienBan")
+    </form>
+</div>
 <script type="text/javascript">
     var rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model.chiPhiInReports, jsonSerializeSettings));
     var parentData = rawDataTab1.filter(x => x.isBold == true);
-    
+
     Number.prototype.format = function (n, x, s, c) {
         var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
             num = this.toFixed(Math.max(0, ~~n));
@@ -40,4 +48,11 @@
         resizable: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
+
+         function ExportData() {
+             $('#@formIdExportExcel #year').val($("#time-year").val());
+             $('#@formIdExportExcel #phienBan').val($("#phien-ban").val());
+              $('#@formIdExportExcel #kichBan').val($("#kich-ban").val());
+    $('#@formIdExportExcel').submit();
+    };
 </script>

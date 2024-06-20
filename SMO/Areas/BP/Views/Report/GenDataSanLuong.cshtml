@@ -10,9 +10,9 @@
     var gridTab3 = Guid.NewGuid().ToString("N");
     var gridTab4 = Guid.NewGuid().ToString("N");
 
-    var jsonData = Model.Tab1.OrderBy(x => x.Order).Select(x => new
+    var jsonData = Model.Tab1.Select(x => new
     {
-        Id = x.Order.ToString(),
+        Id = x.Id,
         Parent = x.Parent,
         Name = x.Name,
         ValueSumYear = x.ValueSumYear.ToStringVN(),
@@ -31,9 +31,9 @@
         IsBold = x.IsBold
     });
 
-    var jsonDataTab2 = Model.Tab2.OrderBy(x => x.Order).Select(x => new
+    var jsonDataTab2 = Model.Tab2.Select(x => new
     {
-        Id = x.Order.ToString(),
+        Id = x.Id.ToString(),
         Parent = x.Parent,
         Name = x.Name,
         ValueSumYear = x.ValueSumYear.ToStringVN(),

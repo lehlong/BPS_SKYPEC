@@ -513,9 +513,8 @@ namespace SMO.Service.MD
                 //var value5 = data.KeHoachGiaThanhData.Sum(x => x.ThueSuat * x.S0002) / data.KeHoachGiaThanhData.Where(x => x.S0008 != 0).Sum(x => x.S0002);
                 var value5 = lstSharedData.FirstOrDefault(x => x.CODE == "1").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "3").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "TNK-VN").VALUE;
                 var value6 = lstSharedData.FirstOrDefault(x => x.CODE == "22").VALUE;
-                var value7 = (value2 + value3 + value5) * lstSharedData.FirstOrDefault(x => x.CODE == "19").VALUE + (value2 + value3 + value5) * lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE;
                 var value8 = (value2 + value3 + value5) * lstSharedData.FirstOrDefault(x => x.CODE == "19").VALUE;
-                var value9 = (value2 + value3 + value5) * lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE;
+                var value9 = (value2 + value3 + value5);
                 var value11 = lstSharedData.FirstOrDefault(x => x.CODE == "2").VALUE;
 
                 var dataHeaderSanLuong = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == "TB" && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
@@ -577,9 +576,8 @@ namespace SMO.Service.MD
                             Value4 = value4,
                             Value5 = value5,
                             Value6 = value6,
-                            Value7 = value7,
                             Value8 = value8,
-                            Value9 = value9,
+                            Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE,
                             Value11 = value11,
                             Order = order + 2,
                             IsBold = true,
@@ -610,9 +608,8 @@ namespace SMO.Service.MD
                             Value4 = value4,
                             Value5 = value5,
                             Value6 = value6,
-                            Value7 = value7,
                             Value8 = value8,
-                            Value9 = value9,
+                            Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
                             Value10 = FHS_NBA ?? 0,
                             Value11 = value11,
                             Order = order + 4,
@@ -630,9 +627,8 @@ namespace SMO.Service.MD
                             Value4 = value4,
                             Value5 = value5,
                             Value6 = value6,
-                            Value7 = value7,
                             Value8 = value8,
-                            Value9 = value9,
+                            Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
                             Value10 = FHS_TNS ?? 0,
                             Value11 = value11,
                             Order = order + 5,
@@ -664,9 +660,8 @@ namespace SMO.Service.MD
                             Value4 = value4,
                             Value5 = value5,
                             Value6 = value6,
-                            Value7 = value7,
                             Value8 = value8,
-                            Value9 = value9,
+                            Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE,
                             Value11 = value11,
                             Parent = (order + 6).ToString(),
                             Order = order + 7,
@@ -696,9 +691,8 @@ namespace SMO.Service.MD
                             Value4 = value4,
                             Value5 = value5,
                             Value6 = value6,
-                            Value7 = value7,
                             Value8 = value8,
-                            Value9 = value9,
+                            Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
                             Value10 = FHS_NBA ?? 0,
                             Value11 = value11,
                             Order = order + 9,
@@ -716,9 +710,8 @@ namespace SMO.Service.MD
                             Value4 = value4,
                             Value5 = value5,
                             Value6 = value6,
-                            Value7 = value7,
                             Value8 = value8,
-                            Value9 = value9,
+                            Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
                             Value10 = FHS_TNS ?? 0,
                             Value11 = value11,
                             Parent = (order + 8).ToString(),
@@ -741,6 +734,7 @@ namespace SMO.Service.MD
                         item.Value19 = item.Value1 * item.Value11 * item.Value9;
                         item.Value20 = item.Value1 * item.Value11 * item.Value10;
                         item.Value13 = item.Value14 + item.Value15 + item.Value16 + item.Value17 + item.Value18 + item.Value19 + item.Value20;
+                        item.Value7 = item.Value9 + item.Value8;
                     }
 
                     foreach (var item in data.KeHoachGiaVonData.OrderByDescending(x => x.Order))

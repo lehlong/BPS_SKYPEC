@@ -616,6 +616,16 @@ namespace SMO.Areas.BP.Controllers
             _service.ExportExcelTHKHCN(ref outFileStream, data, path);
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_CHI_NHANH.xlsx");
         }
+
+        [HttpPost]
+        public FileContentResult ExportExcelTHKHCP(int year, string phienBan, string kichBan)
+        {
+            MemoryStream outFileStream = new MemoryStream();
+            var data = _servicePhienBan.GetReportDataChiPhi(year, phienBan, kichBan);
+            var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_CHI_PHI.xlsx");
+            _service.ExportExcelTHKHCP(ref outFileStream, data, path);
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_CHI_PHI.xlsx");
+        }
         #endregion
     }
 }

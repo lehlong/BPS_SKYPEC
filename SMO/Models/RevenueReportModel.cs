@@ -81,6 +81,7 @@ namespace SMO.Models
     }
     public class RevenueReportModel
     {
+        public string Id { get; set; }
         public string Stt { get; set; }
         public string Parent { get; set; }
         public string Code { get; set; }
@@ -258,6 +259,7 @@ namespace SMO.Models
 
     public class SanLuong
     {
+        public string Id { get; set; }  
         public string Stt { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }

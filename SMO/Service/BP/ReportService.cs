@@ -499,6 +499,130 @@ namespace SMO.Service.BP
             templateWorkbook.Write(outFileStream);
 
         }
+
+        public void ExportExcelTHKHCP(ref MemoryStream outFileStream, ReportChiPhiModel datas, string path)
+        {
+
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook templateWorkbook;
+            templateWorkbook = new XSSFWorkbook(fs);
+            fs.Close();
+            ISheet sheet = templateWorkbook.GetSheetAt(0);
+            var styleCellNumber = GetCellStyleNumber(templateWorkbook);
+
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellBold.CloneStyleFrom(sheet.GetRow(1).Cells[0].CellStyle);
+            styleCellBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 12;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellNormal = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellNormal.CloneStyleFrom(sheet.GetRow(0).Cells[0].CellStyle);
+            styleCellNormal.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
+            var fontNormal = templateWorkbook.CreateFont();
+            fontNormal.FontHeightInPoints = 12;
+            fontNormal.FontName = "Times New Roman";
+
+            var data = datas.chiPhiInReports;
+            var startRow1 = 8;
+
+          
+            for (int i = 0; i < data.Count(); i++)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow1++, 8);
+                rowCur.Cells[0].SetCellValue(data[i]?.Stt.ToString());
+                rowCur.Cells[1].SetCellValue(data[i]?.name);
+                if (data[i].valueCQCT == 0 || data[i].valueCQCT == null)
+                {
+                    rowCur.Cells[2].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[2].CellStyle = styleCellNumber;
+                    rowCur.Cells[2].CellStyle.Alignment = HorizontalAlignment.Right;
+                    rowCur.Cells[2].SetCellValue((double)Math.Round(data[i].valueCQCT));
+                }
+
+                if (data[i].valueCNMB == 0 || data[i].valueCNMB == null)
+                {
+                    rowCur.Cells[3].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[3].CellStyle = styleCellNumber;
+                    rowCur.Cells[3].CellStyle.Alignment = HorizontalAlignment.Right;
+                    rowCur.Cells[3].SetCellValue((double)Math.Round(data[i].valueCNMB));
+                }
+
+                if (data[i].valueCNMT == 0 || data[i].valueCNMT == null)
+                {
+                    rowCur.Cells[4].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[4].CellStyle = styleCellNumber;
+                    rowCur.Cells[4].CellStyle.Alignment = HorizontalAlignment.Right;
+                    rowCur.Cells[4].SetCellValue((double)Math.Round(data[i].valueCNMT));
+                }
+
+                if (data[i].valueCNMN == 0 || data[i].valueCNMN == null)
+                {
+                    rowCur.Cells[5].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[5].CellStyle = styleCellNumber;
+                    rowCur.Cells[5].CellStyle.Alignment = HorizontalAlignment.Right;
+                    rowCur.Cells[5].SetCellValue((double)Math.Round(data[i].valueCNMN));
+                }
+
+                if (data[i].valueCNVT == 0 || data[i].valueCNVT == null)
+                {
+                    rowCur.Cells[6].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[6].CellStyle = styleCellNumber;
+                    rowCur.Cells[6].CellStyle.Alignment = HorizontalAlignment.Right;
+                    rowCur.Cells[6].SetCellValue((double)Math.Round(data[i].valueCNVT));
+                }
+
+                if (data[i].valueTcty == 0 || data[i].valueTcty == null)
+                {
+                    rowCur.Cells[7].SetCellValue("");
+                }
+                else
+                {
+                    rowCur.Cells[7].CellStyle = styleCellNumber;
+                    rowCur.Cells[7].CellStyle.Alignment = HorizontalAlignment.Right;
+                    rowCur.Cells[7].SetCellValue((double)Math.Round(data[i].valueTcty));
+                }
+
+                for (var j = 0; j < 8; j++)
+                {
+                    if (data[i].IsBold)
+                    {
+                        rowCur.Cells[j].CellStyle = styleCellBold;
+                        rowCur.Cells[j].CellStyle.SetFont(fontBold);
+                    }
+                    else
+                    {
+                        rowCur.Cells[j].CellStyle = styleCellNormal;
+                        rowCur.Cells[j].CellStyle.SetFont(fontNormal);
+                    }
+                    rowCur.Cells[j].CellStyle.BorderBottom = BorderStyle.Thin;
+                    rowCur.Cells[j].CellStyle.BorderTop = BorderStyle.Thin;
+                    rowCur.Cells[j].CellStyle.BorderLeft = BorderStyle.Thin;
+                    rowCur.Cells[j].CellStyle.BorderRight = BorderStyle.Thin;
+                    rowCur.Cells[j].CellStyle.WrapText = true;
+                }
+            }
+           
+            templateWorkbook.Write(outFileStream);
+
+        }
         public void InsertDataToTableBM_02A(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
