@@ -108,10 +108,10 @@ namespace SMO.Models
 
     public class SynthesizeThePlanReportModel
     {
-        public IList<SanLuong> SanLuong { get; set; } = new List<SanLuong> { };
-        public IList<DauTu> DauTu { get; set; } = new List<DauTu> { };
+        public List<SanLuong> SanLuong { get; set; } = new List<SanLuong> { };
+        public List<DauTu> DauTu { get; set; } = new List<DauTu> { };
         public List<SuaChuaLon> SuaChuaLon { get; set; } = new List<SuaChuaLon> { };
-        public IList<ChiPhi> ChiPhi { get; set; } = new List<ChiPhi> { };
+        public List<ChiPhi> ChiPhi { get; set; } = new List<ChiPhi> { };
 
     }
 

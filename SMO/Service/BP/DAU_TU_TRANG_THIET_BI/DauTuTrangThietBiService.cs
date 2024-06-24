@@ -2203,141 +2203,76 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
         public IList<T_MD_KHOAN_MUC_DAU_TU> GetDataDauTu(ViewDataCenterModel model)
         {
             var lstKhoanMuc = new List<T_MD_KHOAN_MUC_DAU_TU>();
-            if (model.PHIEN_BAN == "PB1")
+            // Lấy danh sách dự án
+            var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).OrderByDescending(x => x.DauTuTrangThietBiProfitCenter.Project.TYPE).ThenBy(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE).ToList();
+            lstData = model.PHIEN_BAN != "PB1" ? lstData.Where(x => x.MONTH == model.MONTH).ToList() : lstData;
+            var lstProfit = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).Distinct().ToList();
+
+            var Order = 0;
+            foreach (var profit in lstProfit)
             {
-                // Lấy danh sách dự án
-                var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).OrderByDescending(x => x.DauTuTrangThietBiProfitCenter.Project.TYPE).ToList();
-                var lstProfit = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).Distinct().ToList();
-
-                var Order = 0;
-                foreach (var profit in lstProfit)
+                var item = new T_MD_KHOAN_MUC_DAU_TU
                 {
-                    var item = new T_MD_KHOAN_MUC_DAU_TU
-                    {
-                        PKID = profit.PROJECT_CODE,
-                        PROJECT_CODE = profit.PROJECT_CODE,
-                        PROJECT_NAME = profit.Project.NAME,
-                        CODE = profit.PROJECT_CODE,
-                        PARENT_CODE = string.Empty,
-                        TYPE = profit.Project.TYPE == "TTB-LON" ? string.Empty: profit.Project.TYPE,
-                        VALUETTB_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
-                        VALUETTB_2 = profit.Project.TYPE == "TTB-LON" ? string.Empty: lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_2,
-                        VALUETTB_3 = profit.Project.TYPE == "TTB-LON" ? string.Empty: lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_3,
-                        VALUETTB_4 = profit.Project.TYPE == "TTB-LON" ? string.Empty: lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_4,
-                        VALUETTB_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
-                        VALUETTB_6 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6)),
-                        VALUETTB_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
-                        VALUETTB_8 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_8,
-                        VALUETTB_9 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9)),
-                        VALUETTB_10 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_10) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_10)),
+                    PKID = profit.PROJECT_CODE,
+                    PROJECT_CODE = profit.PROJECT_CODE,
+                    PROJECT_NAME = profit.Project.NAME,
+                    CODE = profit.PROJECT_CODE,
+                    PARENT_CODE = string.Empty,
+                    TYPE = profit.Project.TYPE == "TTB-LON" ? string.Empty : profit.Project.TYPE,
+                    VALUETTB_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
+                    VALUETTB_2 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_2,
+                    VALUETTB_3 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_3,
+                    VALUETTB_4 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_4,
+                    VALUETTB_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
+                    VALUETTB_6 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6)),
+                    VALUETTB_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
+                    VALUETTB_8 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_8,
+                    VALUETTB_9 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9)),
+                    VALUETTB_10 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_10) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_10)),
 
-                        ISEDIT = profit.Project.TYPE == "TTB-LON" ? false : true,
-                        DESCRIPTION = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).DESCRIPTION,
-                        ORDER = Order,
-                        LEVEL = 0,
-                        IS_GROUP = profit.Project.TYPE == "TTB-LON"? true : false,
-                    };
-                    lstKhoanMuc.Add(item);
-                    var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
-                    if (lstgiaiDoan.Count > 1)
-                    {
-                        foreach (var gd in lstgiaiDoan)
-                        {
-                            var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE);
-                            var itemChild = new T_MD_KHOAN_MUC_DAU_TU
-                            {
-                                PKID = profit.PROJECT_CODE+ gd.CODE,
-                                PROJECT_CODE = profit.PROJECT_CODE,
-                                PROJECT_NAME = gd?.TEXT,
-                                PARENT_CODE = profit.PROJECT_CODE,
-                                CODE = string.Empty,
-                                TYPE = gd.CODE,
-                                VALUETTB_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
-                                VALUETTB_2 = child.VALUE_2,
-                                VALUETTB_3 = child.VALUE_3,
-                                VALUETTB_4 = child.VALUE_4,
-                                VALUETTB_5 = child.VALUE_5 == null ? 0 : Convert.ToDecimal(child.VALUE_5),
-                                VALUETTB_6 = child.VALUE_6 == null ? 0 : Convert.ToDecimal(child.VALUE_6),
-                                VALUETTB_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
-                                VALUETTB_8 = child.VALUE_8,
-                                VALUETTB_9 = child.VALUE_9 == null ? 0 : Convert.ToDecimal(child.VALUE_9),
-                                VALUETTB_10 = child.VALUE_10 == null ? 0 : Convert.ToDecimal(child.VALUE_10),
-                                ISEDIT = profit.Project.TYPE == "TTB-LON" ? true : false,
-                                ORDER = Order++,
-                                DESCRIPTION = child.DESCRIPTION,
-                                LEVEL = 1
-                            };
-                            lstKhoanMuc.Add(itemChild);
-                            Order++;
-                        }
-                    }
-                    Order++;
-                }
-            }
-            else
-            {
-
-                // Lấy danh sách dự án
-                var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR && x.MONTH == model.MONTH).OrderByDescending(x => x.DauTuTrangThietBiProfitCenter.Project.TYPE).ToList();
-                var lstProfit = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).Distinct().ToList();
-                var Order = 0;
-                foreach (var profit in lstProfit)
+                    ISEDIT = profit.Project.TYPE == "TTB-LON" ? false : true,
+                    DESCRIPTION = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).DESCRIPTION,
+                    ORDER = Order,
+                    LEVEL = 0,
+                    IS_GROUP = profit.Project.TYPE == "TTB-LON" ? true : false,
+                };
+                lstKhoanMuc.Add(item);
+                var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
+                if (lstgiaiDoan.Count > 1)
                 {
-                    var item = new T_MD_KHOAN_MUC_DAU_TU
+                    foreach (var gd in lstgiaiDoan)
                     {
-                        PROJECT_CODE = profit.PROJECT_CODE,
-                        PROJECT_NAME = profit.Project.NAME,
-                        TYPE = string.Empty,
-                        VALUETTB_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
-                        VALUETTB_2 = string.Empty,
-                        VALUETTB_3 = string.Empty,
-                        VALUETTB_4 = string.Empty,
-                        VALUETTB_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
-                        VALUETTB_6 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_6) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6)),
-                        VALUETTB_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
-                        VALUETTB_8 = string.Empty,
-                        VALUETTB_9 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_9) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_9)),
-                        VALUETTB_10 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.MONTH == model.MONTH).Sum(x => x.VALUE_10) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_10)),
-                        DESCRIPTION = string.Empty,
-                        ISEDIT = profit.Project.TYPE == "TTB-LON" ? false : true,
-
-                        ORDER = Order,
-                        LEVEL = 0,
-                        IS_GROUP = true,
-                    };
-                    lstKhoanMuc.Add(item);
-                    var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
-                    if (lstgiaiDoan.Count > 1)
-                    {
-                        foreach (var gd in lstgiaiDoan)
+                        var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE);
+                        var itemChild = new T_MD_KHOAN_MUC_DAU_TU
                         {
-                            var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE && x.MONTH == model.MONTH);
-                            var itemChild = new T_MD_KHOAN_MUC_DAU_TU
-                            {
-                                PROJECT_CODE = profit.PROJECT_CODE,
-                                PROJECT_NAME = gd?.TEXT,
-                                TYPE = gd.CODE,
-                                VALUETTB_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
-                                VALUETTB_2 = child.VALUE_2,
-                                VALUETTB_3 = child.VALUE_3,
-                                VALUETTB_4 = child.VALUE_4,
-                                VALUETTB_5 = child.VALUE_5 == null ? 0 : Convert.ToDecimal(child.VALUE_5),
-                                VALUETTB_6 = child.VALUE_6 == null ? 0 : Convert.ToDecimal(child.VALUE_6),
-                                VALUETTB_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
-                                VALUETTB_8 = child.VALUE_8,
-                                VALUETTB_9 = child.VALUE_9 == null ? 0 : Convert.ToDecimal(child.VALUE_9),
-                                VALUETTB_10 = child.VALUE_10 == null ? 0 : Convert.ToDecimal(child.VALUE_10),
-                                ISEDIT = profit.Project.TYPE == "TTB-LON" ? true : false,
-
-                                DESCRIPTION = child.DESCRIPTION,
-                                LEVEL = 1
-                            };
-                            lstKhoanMuc.Add(itemChild);
-                        }
+                            PKID = profit.PROJECT_CODE + gd.CODE,
+                            PROJECT_CODE = profit.PROJECT_CODE,
+                            PROJECT_NAME = gd?.TEXT,
+                            PARENT_CODE = profit.PROJECT_CODE,
+                            CODE = string.Empty,
+                            TYPE = gd.CODE,
+                            VALUETTB_1 = child.VALUE_1 == null ? 0 : Convert.ToDecimal(child.VALUE_1),
+                            VALUETTB_2 = child.VALUE_2,
+                            VALUETTB_3 = child.VALUE_3,
+                            VALUETTB_4 = child.VALUE_4,
+                            VALUETTB_5 = child.VALUE_5 == null ? 0 : Convert.ToDecimal(child.VALUE_5),
+                            VALUETTB_6 = child.VALUE_6 == null ? 0 : Convert.ToDecimal(child.VALUE_6),
+                            VALUETTB_7 = child.VALUE_7 == null ? 0 : Convert.ToDecimal(child.VALUE_7),
+                            VALUETTB_8 = child.VALUE_8,
+                            VALUETTB_9 = child.VALUE_9 == null ? 0 : Convert.ToDecimal(child.VALUE_9),
+                            VALUETTB_10 = child.VALUE_10 == null ? 0 : Convert.ToDecimal(child.VALUE_10),
+                            ISEDIT = profit.Project.TYPE == "TTB-LON" ? true : false,
+                            ORDER = Order++,
+                            DESCRIPTION = child.DESCRIPTION,
+                            LEVEL = 1
+                        };
+                        lstKhoanMuc.Add(itemChild);
+                        Order++;
                     }
-
                 }
+                Order++;
             }
+
             return lstKhoanMuc;
         }
         /// <summary>

@@ -9,12 +9,17 @@
     }
 
 </script>
-
+<style>
+    .dropup, .dropdown {
+        position: relative;
+        z-index: 100000000000;
+    }
+</style>
 @if (ProfileUtilities.UserOrg.Count > 0)
 {
     <div class="user-org m-l-15 m-t-5 m-r-10">
         <label class="col-fecon">Chọn đơn vị</label>
-        <select class="form-control selectpicker show-tick" data-container="body" data-live-search="true" data-val="False" onchange="OnChangeUserOrg(this);" tabindex="-98">
+        <select id="select-org-menu" class="form-control selectpicker show-tick" data-container="body" data-live-search="true" data-val="False" onchange="OnChangeUserOrg(this);" tabindex="-98">
             @foreach (var item in ProfileUtilities.UserOrg)
             {
                 if (item.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE)

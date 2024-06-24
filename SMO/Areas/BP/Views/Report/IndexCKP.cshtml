@@ -53,7 +53,7 @@
                                 }
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <select class="form-control selectpicker show-tick" id="phien-ban">
                                 @foreach (var item in lstPhienBan)
                                 {
@@ -62,11 +62,19 @@
                             </select>
                         </div>
 
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <select class="form-control selectpicker show-tick" id="area">
                                 @foreach (var item in lstArea)
                                 {
                                     <option value="@item.Value">@(item.Text)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control selectpicker show-tick" id="month">
+                                @for(var i = 1; i <= 12; i++)
+                                {
+                                    <option value="@i">Tháng @i</option>
                                 }
                             </select>
                         </div>

@@ -68,7 +68,7 @@
                         @Html.MyButton("cmdDownload", "Hiện chi tiết", "ShowAllColumns();", "Alt+N", "visibility")
                         <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank" hidden></a>
                     </div>
-                    @if (dataCenterModel.PHIEN_BAN == "PB3" || dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB4")
+                    @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB4")
                     {
                         <div class="col-md-1" style="margin-bottom: 12px">
                             <select class="form-control selectpicker show-tick" id="month_bs" style="display:block !important;">
