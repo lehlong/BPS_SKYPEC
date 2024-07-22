@@ -3752,7 +3752,7 @@ namespace SMO.Service.BP
                 return null;
             }
         }
-        public List<ReportModel> GenDataBM2110(int year, int month, string phienBan, string kichBan)
+        public List<ReportModel> GenDataBM2110(int year, int month, string phienBan, string kichBan, string area)
         {
             try
             {
@@ -3770,6 +3770,45 @@ namespace SMO.Service.BP
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
 
                 var dataTH = UnitOfWork.Repository<SyncCostRepo>().Queryable().Where(x => x.YEAR == year && x.MONTH <= month).ToList();
+
+                if (!string.IsNullOrEmpty(area))
+                {
+                    if(area == "MB")
+                    {
+                        details1_1 = details1_1.Where(x => x.ORG_CODE.Contains("100002")).ToList();
+                        details3 = details3.Where(x => x.ORG_CODE.Contains("100002")).ToList();
+                        details5 = details5.Where(x => x.ORG_CODE.Contains("100002")).ToList();
+                        dataTH = dataTH.Where(x => x.CHI_NHANH == "CNMB").ToList();
+                    }
+                    if (area == "MT")
+                    {
+                        details1_1 = details1_1.Where(x => x.ORG_CODE.Contains("100003")).ToList();
+                        details3 = details3.Where(x => x.ORG_CODE.Contains("100003")).ToList();
+                        details5 = details5.Where(x => x.ORG_CODE.Contains("100003")).ToList();
+                        dataTH = dataTH.Where(x => x.CHI_NHANH == "CNMT").ToList();
+                    }
+                    if (area == "MN")
+                    {
+                        details1_1 = details1_1.Where(x => x.ORG_CODE.Contains("100004")).ToList();
+                        details3 = details3.Where(x => x.ORG_CODE.Contains("100004")).ToList();
+                        details5 = details5.Where(x => x.ORG_CODE.Contains("100004")).ToList();
+                        dataTH = dataTH.Where(x => x.CHI_NHANH == "CNMN").ToList();
+                    }
+                    if (area == "CQ")
+                    {
+                        details1_1 = details1_1.Where(x => x.ORG_CODE.Contains("100001")).ToList();
+                        details3 = details3.Where(x => x.ORG_CODE.Contains("100001")).ToList();
+                        details5 = details5.Where(x => x.ORG_CODE.Contains("100001")).ToList();
+                    }
+                    if (area == "VT")
+                    {
+                        details1_1 = details1_1.Where(x => x.ORG_CODE.Contains("100005")).ToList();
+                        details3 = details3.Where(x => x.ORG_CODE.Contains("100005")).ToList();
+                        details5 = details5.Where(x => x.ORG_CODE.Contains("100005")).ToList();
+                        dataTH = dataTH.Where(x => x.CHI_NHANH == "CNVT").ToList();
+                    }
+                }
+
 
                 foreach (var e in elements)
                 {

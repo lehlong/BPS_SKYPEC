@@ -4704,7 +4704,7 @@ namespace SMO.Service.MD
             var data = GetReportDataSuaChuaLon(year, phienBan, kichBan, area);
             ISheet sheet = templateWorkbook.GetSheetAt(0);
             var dataSL = data.OrderBy(x => x.Order).ToList();
-            var startRow = 6;
+            var startRow = 9;
             var NUM_CELL = 5;
             InsertDataToTableSuaChuaLon(templateWorkbook, sheet, dataSL, startRow, NUM_CELL);
             templateWorkbook.Write(outFileStream);
@@ -4713,7 +4713,7 @@ namespace SMO.Service.MD
         internal void InsertDataToTableSuaChuaLon(IWorkbook templateWorkbook, ISheet sheet, List<SuaChuaLon> dataDetails, int startRow, int NUM_CELL)
         {
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
-            styleCellBold.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);
+            styleCellBold.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
             styleCellBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
 
             var fontBold = templateWorkbook.CreateFont();
@@ -4722,14 +4722,14 @@ namespace SMO.Service.MD
             fontBold.FontName = "Times New Roman";
 
             ICellStyle styleNumber = templateWorkbook.CreateCellStyle();
-            styleNumber.CloneStyleFrom(sheet.GetRow(6).Cells[1].CellStyle);
+            styleNumber.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
 
             ICellStyle styleNumberBold = templateWorkbook.CreateCellStyle();
-            styleNumberBold.CloneStyleFrom(sheet.GetRow(6).Cells[2].CellStyle);
+            styleNumberBold.CloneStyleFrom(sheet.GetRow(9).Cells[2].CellStyle);
             styleNumberBold.Alignment = HorizontalAlignment.Right;
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
-            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
+            styleBody.CloneStyleFrom(sheet.GetRow(10).Cells[0].CellStyle);
             styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
             styleBody.WrapText = true;
             styleCellBold.WrapText = true;
