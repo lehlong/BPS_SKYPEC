@@ -141,7 +141,8 @@
                 costCenter: costCenter,
                 elementCode: elementCode,
                 value: value,
-                month: month
+                month: month,
+                org: '@dataCenterModel.ORG_CODE'
             },
             dataType: 'json',
             success: function (response) {
@@ -179,7 +180,8 @@
                     costCenter: costCenter,
                     elementCode: elementCode,
                     value: value,
-                    month: 0
+                    month: 0,
+                    org: '@dataCenterModel.ORG_CODE'
                 },
                 dataType: 'json',
                 success: function (response) {

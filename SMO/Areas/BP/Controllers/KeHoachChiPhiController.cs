@@ -237,13 +237,13 @@ namespace SMO.Areas.BP.Controllers
         #region Update and History cell value
         [HttpPost]
         [MyValidateAntiForgeryToken]
-        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value, int month)
+        public ActionResult UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value, int month, string org)
         {
             var result = new TransferObject
             {
                 Type = TransferType.AlertSuccessAndJsCommand
             };
-            _service.UpdateCellValue(templateCode,version, year, type, sanBay, costCenter, elementCode, value, month);
+            _service.UpdateCellValue(templateCode,version, year, type, sanBay, costCenter, elementCode, value, month, org);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

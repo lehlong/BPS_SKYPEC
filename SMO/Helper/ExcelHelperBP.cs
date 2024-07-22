@@ -819,7 +819,7 @@ namespace SMO.Helper
                 int startRow = 7;
                 ICellStyle styleCellNumber = workbook.CreateCellStyle();
                 styleCellNumber.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
-                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,##0.00");
                 styleCellNumber.WrapText = true;
 
                 ICellStyle styleCellName = workbook.CreateCellStyle();
@@ -874,7 +874,7 @@ namespace SMO.Helper
             {
                 ICellStyle styleCellNumber = workbook.CreateCellStyle();
                 styleCellNumber.CloneStyleFrom(sheet.GetRow(9).Cells[0].CellStyle);
-                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,##0.00");
                 styleCellNumber.WrapText = true;
 
                 ICellStyle styleCellName = workbook.CreateCellStyle();
@@ -884,7 +884,7 @@ namespace SMO.Helper
 
                 ICellStyle styleCellBold = workbook.CreateCellStyle();
                 styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
-                styleCellBold.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+                styleCellBold.DataFormat = workbook.CreateDataFormat().GetFormat("#,##0.00");
 
                 ICellStyle styleCellHeader = workbook.CreateCellStyle();
                 styleCellHeader.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
@@ -931,7 +931,7 @@ namespace SMO.Helper
             {
                 ICellStyle styleCellNumber = workbook.CreateCellStyle();
                 styleCellNumber.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
-                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+                styleCellNumber.DataFormat = workbook.CreateDataFormat().GetFormat("#,##0.00");
                 styleCellNumber.WrapText = true;
 
                 ICellStyle styleCellName = workbook.CreateCellStyle();
@@ -941,7 +941,7 @@ namespace SMO.Helper
 
                 ICellStyle styleCellBold = workbook.CreateCellStyle();
                 styleCellBold.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
-                styleCellBold.DataFormat = workbook.CreateDataFormat().GetFormat("#,###");
+                styleCellBold.DataFormat = workbook.CreateDataFormat().GetFormat("#,##0.00");
 
                 ICellStyle styleCellHeader = workbook.CreateCellStyle();
                 styleCellHeader.CloneStyleFrom(sheet.GetRow(6).Cells[0].CellStyle);

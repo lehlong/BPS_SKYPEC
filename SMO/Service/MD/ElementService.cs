@@ -508,7 +508,7 @@ namespace SMO.Service.MD
                 }
 
                 var value2 = lstSharedData.FirstOrDefault(x => x.CODE == "1").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "3").VALUE;
-                var value3 = data.KeHoachGiaThanhData.Sum(x => x.U0008 * x.S0002) / data.KeHoachGiaThanhData.Sum(x => x.S0002);
+                var value3 = lstSharedData.FirstOrDefault(x => x.CODE == "12").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "3").VALUE;
                 var value4 = value2 + value3;
                 //var value5 = data.KeHoachGiaThanhData.Sum(x => x.ThueSuat * x.S0002) / data.KeHoachGiaThanhData.Where(x => x.S0008 != 0).Sum(x => x.S0002);
                 var value5 = lstSharedData.FirstOrDefault(x => x.CODE == "1").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "3").VALUE * lstSharedData.FirstOrDefault(x => x.CODE == "TNK-VN").VALUE;
@@ -537,7 +537,7 @@ namespace SMO.Service.MD
                         Level = 0
                     });
 
-                    foreach (var hhk in lstHangHangKhong)
+                    foreach (var hhk in lstHangHangKhong.Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)))
                     {
                         var FHS_NBA = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-NBA-" + hhk.GROUP_ITEM)?.VALUE;
                         var FHS_TNS = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-TNS-" + hhk.GROUP_ITEM)?.VALUE;
@@ -721,19 +721,41 @@ namespace SMO.Service.MD
 
                         order += 11;
                     }
-
+                    data.KeHoachGiaVonData.Add(new KeHoachGiaVonData
+                    {
+                        Code = "HQ",
+                        ParentCode = "TC",
+                        Name = "BÁN VNA TẠI HQ",
+                        Value1 = dataInHeader.Where(x =>string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                        Value2 = value2,
+                        Value3 = value3,
+                        Value4 = value4,
+                        Value5 = value5,
+                        Value6 = value6,
+                        Value8 = value8,
+                        Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
+                        Value10 = 45,
+                        Value11 = value11,
+                        IsBold = true,
+                        Order = order,
+                        Parent = "-1",
+                        Level = 0
+                    });
                     foreach (var item in data.KeHoachGiaVonData)
                     {
                         var value12 = (item.Value2 + item.Value3 + item.Value5 + item.Value7 + item.Value10) * item.Value11 + item.Value6;
                         item.Value12 = value12;
                         item.Value14 = item.Value1 * item.Value11 * item.Value2;
                         item.Value15 = item.Value1 * item.Value11 * item.Value3;
-                        item.Value16 = item.Value1 * item.Value11 * item.Value5;
+                        if (item.Code.Contains("-02") || item.Code.Contains("-03") || item.Code.Contains("-04") || item.Code.Contains("-05") || item.Code.Contains("-06"))
+                        {
+                            item.Value16 = item.Value1 * item.Value11 * item.Value5;
+                        }
                         item.Value17 = item.Value1 * item.Value6;
                         item.Value18 = item.Value1 * item.Value11 * item.Value8;
                         item.Value19 = item.Value1 * item.Value11 * item.Value9;
                         item.Value20 = item.Value1 * item.Value11 * item.Value10;
-                        item.Value13 = item.Value14 + item.Value15 + item.Value16 + item.Value17 + item.Value18 + item.Value19 + item.Value20;
+                        item.Value13 = item.Value1 * item.Value12;
                         item.Value7 = item.Value9 + item.Value8;
                     }
 
@@ -1211,7 +1233,6 @@ namespace SMO.Service.MD
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook workbook;
             workbook = new XSSFWorkbook(fs);
-            workbook.SetSheetName(0, ModulType.GetTextSheetName("Kế-hoạch-giá-vốn"));
             fs.Close();
 
             ISheet sheetYear = workbook.GetSheetAt(0);
@@ -1219,7 +1240,6 @@ namespace SMO.Service.MD
             var module = "KeHoachGiaVon";
             ExcelHelperBP.InsertHeaderKeHoachGiaVon(ref workbook, year, module, ref sheetYear, NUM_CELL);
             ExcelHelperBP.insertBodyKeHoachGiaVon(ref workbook, data, module, ref sheetYear, NUM_CELL);
-            workbook.SetSheetName(1, ModulType.GetTextSheetName("Kế-hoạch-giá-vốn-2"));
             ISheet sheetKHTC2 = workbook.GetSheetAt(1);
             var NUM_CELL2 = 21;
             var module2 = "KeHoachGiaVon2";

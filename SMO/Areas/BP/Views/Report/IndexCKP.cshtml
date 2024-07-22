@@ -74,7 +74,12 @@
                             <select class="form-control selectpicker show-tick" id="month">
                                 @for(var i = 1; i <= 12; i++)
                                 {
-                                    <option value="@i">Tháng @i</option>
+                                    var selected = "";
+                                    if(i == 12)
+                                    {
+                                        selected = "selected";
+                                    }
+                                    <option value="@i" @selected>Tháng @i</option>
                                 }
                             </select>
                         </div>
@@ -106,6 +111,7 @@
                 phienBan: $("#phien-ban").val(),
                 kichBan: $("#kich-ban").val(),
                 area: $("#area").val(),
+                month: $("#month").val(),
             },
             htmlTarget:'#divReport',
         };

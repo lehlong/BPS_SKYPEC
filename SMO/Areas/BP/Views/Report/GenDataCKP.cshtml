@@ -47,78 +47,89 @@
     </form>
 </div>
 <script type="text/javascript">
-    const rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model.DauTu.OrderBy(x=>x.Order), jsonSerializeSettings));
-    const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(Model.SuaChuaLon.OrderBy(x=>x.Order), jsonSerializeSettings));
-    debugger;
-    const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi.OrderBy(x=>x.Order), jsonSerializeSettings));
+    Number.prototype.format = function (n, x, s, c) {
+        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+            num = this.toFixed(Math.max(0, ~~n));
+
+        return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+    };
+    const rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(Model.DauTu, jsonSerializeSettings));
+    const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(Model.SuaChuaLon, jsonSerializeSettings));
+    const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi, jsonSerializeSettings));
+    var parentData = rawDataTab3.filter(x => x.isBold == true);
+    var parentDataTab1 = rawDataTab1.filter(x => x.isBold == true);
+    var parentDataTab2 = rawDataTab2.filter(x => x.order == '' || x.order == null);
     let columns = [
-        { id: "name", header: [{ text: "Danh mục đầu tư mua sắm", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
+        { id: "order", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+        { id: "name", header: [{ text: "Danh mục đầu tư mua sắm", align: "center" }, { content: "inputFilter" }, { text: "TỔNG CỘNG" }], minWidth: 500 },
         { id: "col1", header: [{ text: "Nguồn vốn", align: "center", rowspan: 2 }], minWidth: 160 },
-        { id: "col2", header: [{ text: "Tổng vốn đầu tư giai đoạn", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
+        { id: "col2", header: [{ text: "Tổng vốn đầu tư giai đoạn", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col2").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
         { id: "col3", header: [{ text: "Tiến độ triển khai giai đoạn đầu tư", align: "center", rowspan: 2 }], minWidth: 160 },
-        { id: "col4", header: [{ text: "Cấp kinh phí T1", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col5", header: [{ text: "Cấp kinh phí T2", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col6", header: [{ text: "Cấp kinh phí T3", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col7", header: [{ text: "Cấp kinh phí T4", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col8", header: [{ text: "Cấp kinh phí T5", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col9", header: [{ text: "Cấp kinh phí T6", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col10", header: [{ text: "Cấp kinh phí T7", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col11", header: [{ text: "Cấp kinh phí T8", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col12", header: [{ text: "Cấp kinh phí T9", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col13", header: [{ text: "Cấp kinh phí T10", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col14", header: [{ text: "Cấp kinh phí T11", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col15", header: [{ text: "Cấp kinh phí T12", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col16", header: [{ text: "Lũy kế đến tháng BC", align: "center", rowspan: 2 }], minWidth: 160 },
+        { id: "col4", header: [{ text: "Cấp kinh phí T1", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col4").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col5", header: [{ text: "Cấp kinh phí T2", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col5").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col6", header: [{ text: "Cấp kinh phí T3", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col6").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col7", header: [{ text: "Cấp kinh phí T4", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col7").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col8", header: [{ text: "Cấp kinh phí T5", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col8").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col9", header: [{ text: "Cấp kinh phí T6", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col9").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col10", header: [{ text: "Cấp kinh phí T7", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col10").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col11", header: [{ text: "Cấp kinh phí T8", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col11").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col12", header: [{ text: "Cấp kinh phí T9", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col12").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col13", header: [{ text: "Cấp kinh phí T10", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col13").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col14", header: [{ text: "Cấp kinh phí T11", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col14").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col15", header: [{ text: "Cấp kinh phí T12", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col15").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col16", header: [{ text: "Lũy kế đến tháng BC", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab1, "col16").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
         { id: "col17", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], minWidth: 160 },
     ];
 
     let columnsTab2 = [
-        { id: "name", header: [{ text: "Danh mục sửa chữa lớn", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
-        { id: "col1", header: [{ text: "Kế hoạch kinh phí sửa chữa năm 2023", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col2", header: [{ text: "Bổ sung theo CV được phê duyệt", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col3", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col4", header: [{ text: "Cấp kinh phí T1", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col5", header: [{ text: "Cấp kinh phí T2", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col6", header: [{ text: "Cấp kinh phí T3", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col7", header: [{ text: "Cấp kinh phí T4", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col8", header: [{ text: "Cấp kinh phí T5", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col9", header: [{ text: "Cấp kinh phí T6", align: "center", rowspan: 2 }], minWidth: 160,format: "#.#" },
-        { id: "col9_2", header: [{ text: "Cấp kinh phí T6 lần 2", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col10", header: [{ text: "Cấp kinh phí T7", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col11", header: [{ text: "Cấp kinh phí T8", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col12", header: [{ text: "Cấp kinh phí T9", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col13", header: [{ text: "Cấp kinh phí T10", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col14", header: [{ text: "Cấp kinh phí T11", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col15", header: [{ text: "Cấp kinh phí T12", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col16", header: [{ text: "Lũy kế đến tháng BC", align: "center", rowspan: 2 }], minWidth: 160 },
+        { id: "order", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+        { id: "name", header: [{ text: "Danh mục sửa chữa lớn", align: "center" }, { content: "inputFilter" }, { text: "TỔNG CỘNG" }], minWidth: 500 },
+        { id: "col1", header: [{ text: "Kế hoạch kinh phí sửa chữa năm 2023", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col1").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col2", header: [{ text: "Bổ sung theo CV được phê duyệt", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col2").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col3", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col3").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col4", header: [{ text: "Cấp kinh phí T1", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col4").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col5", header: [{ text: "Cấp kinh phí T2", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col5").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col6", header: [{ text: "Cấp kinh phí T3", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col6").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col7", header: [{ text: "Cấp kinh phí T4", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col7").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col8", header: [{ text: "Cấp kinh phí T5", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col8").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col9", header: [{ text: "Cấp kinh phí T6", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col9").format(0, 3, '.', ','), align: "right" }], minWidth: 160,format: "#.#" },
+        { id: "col9_2", header: [{ text: "Cấp kinh phí T6 lần 2", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col9_2").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col10", header: [{ text: "Cấp kinh phí T7", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col10").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col11", header: [{ text: "Cấp kinh phí T8", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col11").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col12", header: [{ text: "Cấp kinh phí T9", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col12").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col13", header: [{ text: "Cấp kinh phí T10", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col13").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col14", header: [{ text: "Cấp kinh phí T11", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col14").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col15", header: [{ text: "Cấp kinh phí T12", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col15").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col16", header: [{ text: "Lũy kế đến tháng BC", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentDataTab2, "col16").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
         { id: "col17", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], minWidth: 160 },
     ];
 
     let columnsTab3 = [
-        { id: "name", header: [{ text: "Danh mục chi phí", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
-        { id: "col1", header: [{ text: "Kế hoạch năm 2023", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col2", header: [{ text: "Kế hoạch bổ sung, điều chỉnh", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col3", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col4", header: [{ text: "Cấp kinh phí T1", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col5", header: [{ text: "Cấp kinh phí T2", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col6", header: [{ text: "Cấp kinh phí T3", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col7", header: [{ text: "Cấp kinh phí T4", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col8", header: [{ text: "Cấp kinh phí T5", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col9", header: [{ text: "Cấp kinh phí T6", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
+        { id: "order", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+        { id: "name", header: [{ text: "Danh mục chi phí", align: "center" }, { content: "inputFilter" }, { text:"TỔNG CỘNG"}], minWidth: 500 },
+        { id: "col1", header: [{ text: "Kế hoạch năm", align: "center", rowspan: 2 },"", { text: _.sumBy(parentData, "col1").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col2", header: [{ text: "Kế hoạch bổ sung, điều chỉnh", align: "center", rowspan: 2 },"", { text: _.sumBy(parentData, "col2").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col3", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col3").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col4", header: [{ text: "Cấp kinh phí T1", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col4").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col5", header: [{ text: "Cấp kinh phí T2", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col5").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col6", header: [{ text: "Cấp kinh phí T3", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col6").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col7", header: [{ text: "Cấp kinh phí T4", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col7").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col8", header: [{ text: "Cấp kinh phí T5", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col8").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col9", header: [{ text: "Cấp kinh phí T6", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col9").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
         { id: "col9_2", header: [{ text: "Cấp kinh phí T6 lần 2", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col10", header: [{ text: "Cấp kinh phí T7", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col11", header: [{ text: "Cấp kinh phí T8", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col12", header: [{ text: "Cấp kinh phí T9", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col13", header: [{ text: "Cấp kinh phí T10", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col14", header: [{ text: "Cấp kinh phí T11", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col15", header: [{ text: "Cấp kinh phí T12", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
-        { id: "col16", header: [{ text: "Lũy kế đến tháng BC", align: "center", rowspan: 2 }], minWidth: 160, format: "#.#" },
+        { id: "col10", header: [{ text: "Cấp kinh phí T7", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col10").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col11", header: [{ text: "Cấp kinh phí T8", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col11").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col12", header: [{ text: "Cấp kinh phí T9", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col12").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col13", header: [{ text: "Cấp kinh phí T10", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col13").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col14", header: [{ text: "Cấp kinh phí T11", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col14").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col15", header: [{ text: "Cấp kinh phí T12", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col15").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
+        { id: "col16", header: [{ text: "Lũy kế đến tháng BC", align: "center", rowspan: 2 }, "", { text: _.sumBy(parentData, "col16").format(0, 3, '.', ','), align: "right" }], minWidth: 160, format: "#.#" },
         { id: "col17", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], minWidth: 160 },
     ];
     const treeGrid = new dhx.Grid("@gridIdTab1", {
         columns,
         data: rawDataTab1,
-        leftSplit: 1,
+        leftSplit: 2,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
@@ -129,7 +140,7 @@
     const treeGridTab2 = new dhx.Grid("@gridIdTab2", {
     columns: columnsTab2,
     data: rawDataTab2,
-    leftSplit: 1,
+    leftSplit: 2,
     resizable: true,
     keyNavigation: true,
     rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
@@ -140,7 +151,7 @@
     const treeGridTab3 = new dhx.Grid("@gridIdTab3", {
     columns: columnsTab3,
     data: rawDataTab3,
-    leftSplit: 1,
+    leftSplit: 2,
     resizable: true,
     keyNavigation: true,
     rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },

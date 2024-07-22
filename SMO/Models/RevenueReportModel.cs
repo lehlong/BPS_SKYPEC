@@ -118,14 +118,14 @@ namespace SMO.Models
     public class ReportCKPModel
     {
         public IList<DauTuCKP> DauTu { get; set; } = new List<DauTuCKP> { };
-        public IList<SuaChuaCKP> SuaChuaLon { get; set; } = new List<SuaChuaCKP> { };
+        public List<SuaChuaCKP> SuaChuaLon { get; set; } = new List<SuaChuaCKP> { };
         public IList<ChiPhiCKP> ChiPhi { get; set; } = new List<ChiPhiCKP> { };
     }
 
 
     public class DauTuCKP
     {
-        public int Order { get; set; }
+        public string Order { get; set; }
         public string Name { get; set; }
         public string Col1 {  get; set; }
 
@@ -143,7 +143,7 @@ namespace SMO.Models
         public decimal Col13 { get; set; }
         public decimal Col14 { get; set; }
         public decimal Col15 { get; set; }
-        public string Col16 { get; set; }
+        public decimal Col16 { get; set; }
         public string Col17 { get; set; }
         public bool IsBold { get; set; } = false;
         public int Level { get; set; }
@@ -155,7 +155,7 @@ namespace SMO.Models
         public string code { get; set; }
         public string parentCode { get; set; }
 
-        public int Order { get; set; }
+        public string Order { get; set; }
         public string Name { get; set; }
         public decimal Col1 { get; set; }
 
@@ -176,7 +176,7 @@ namespace SMO.Models
         public decimal Col13 { get; set; }
         public decimal Col14 { get; set; }
         public decimal Col15 { get; set; }
-        public string Col16 { get; set; }
+        public decimal Col16 { get; set; }
         public string Col17 { get; set; }
         public bool IsBold { get; set; } = false;
         public int Level { get; set; }
@@ -184,7 +184,7 @@ namespace SMO.Models
 
     public class ChiPhiCKP
     {
-        public int Order { get; set; }
+        public string Order { get; set; }
         public string Name { get; set; }
         public decimal? Col1 { get; set; }
 
@@ -204,7 +204,7 @@ namespace SMO.Models
         public decimal Col13 { get; set; }
         public decimal Col14 { get; set; }
         public decimal Col15 { get; set; }
-        public string Col16 { get; set; }
+        public decimal Col16 { get; set; }
         public string Col17 { get; set; }
         public bool IsBold { get; set; } = false;
         public int Level { get; set; }

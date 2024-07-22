@@ -43,6 +43,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
         private readonly List<string> ListColumnName;
         private readonly List<string> ListColumnNameDataBase;
         private int StartRowData;
+        private readonly List<string> ListElement = new List<string> { "6273", "B6277G002B3", "B6277G003AB3", "B6277G004AB3", "B6277EA2", "B6277G006AB3", "B6277G007AB3" };
         public List<T_BP_KE_HOACH_CHI_PHI_HISTORY> ObjListHistory { get; set; }
         public List<T_BP_KE_HOACH_CHI_PHI_VERSION> ObjListVersion { get; set; }
         public List<T_BP_KE_HOACH_CHI_PHI_SUM_UP_DETAIL> ObjListSumUpHistory { get; set; }
@@ -2519,7 +2520,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][15].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVPCT.AMOUNT = costDataVPCT.QUANTITY * (costDataVPCT.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCT.PRICE / 2 : costDataVPCT.PRICE);
+                                costDataVPCT.AMOUNT = costDataVPCT.QUANTITY * (costDataVPCT.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCT.PRICE / 2 : costDataVPCT.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCT);
 
                                 //MB
@@ -2541,7 +2542,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][15].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataMB.AMOUNT = costDataMB.QUANTITY * (costDataMB.PRICE > 10000000 && elementCode.Contains("6273") ? costDataMB.PRICE / 2 : costDataMB.PRICE);
+                                costDataMB.AMOUNT = costDataMB.QUANTITY * (costDataMB.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataMB.PRICE / 2 : costDataMB.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataMB);
 
                                 //MT
@@ -2563,7 +2564,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][15].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataMT.AMOUNT = costDataMT.QUANTITY * (costDataMT.PRICE > 10000000 && elementCode.Contains("6273") ? costDataMT.PRICE / 2 : costDataMT.PRICE);
+                                costDataMT.AMOUNT = costDataMT.QUANTITY * (costDataMT.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataMT.PRICE / 2 : costDataMT.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataMT);
 
                                 //CR
@@ -2585,7 +2586,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][15].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataCR.AMOUNT = costDataCR.QUANTITY * (costDataCR.PRICE > 10000000 && elementCode.Contains("6273") ? costDataCR.PRICE / 2 : costDataCR.PRICE);
+                                costDataCR.AMOUNT = costDataCR.QUANTITY * (costDataCR.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataCR.PRICE / 2 : costDataCR.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataCR);
 
                                 //MN
@@ -2607,7 +2608,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][15].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataMN.AMOUNT = costDataMN.QUANTITY * (costDataMN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataMN.PRICE / 2 : costDataMN.PRICE);
+                                costDataMN.AMOUNT = costDataMN.QUANTITY * (costDataMN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataMN.PRICE / 2 : costDataMN.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataMN);
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
@@ -2703,7 +2704,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
+                                costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                                 //HAN
@@ -2725,7 +2726,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataHAN.AMOUNT = costDataHAN.QUANTITY * (costDataHAN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataHAN.PRICE / 2 : costDataHAN.PRICE);
+                                costDataHAN.AMOUNT = costDataHAN.QUANTITY * (costDataHAN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataHAN.PRICE / 2 : costDataHAN.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHAN);
 
                                 //VDO
@@ -2747,7 +2748,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataHPH.AMOUNT = costDataHPH.QUANTITY * (costDataHPH.PRICE > 10000000 && elementCode.Contains("6273") ? costDataHPH.PRICE / 2 : costDataHPH.PRICE);
+                                costDataHPH.AMOUNT = costDataHPH.QUANTITY * (costDataHPH.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataHPH.PRICE / 2 : costDataHPH.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHPH);
 
                                 //HPH
@@ -2769,7 +2770,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataTHD.AMOUNT = costDataTHD.QUANTITY * (costDataTHD.PRICE > 10000000 && elementCode.Contains("6273") ? costDataTHD.PRICE / 2 : costDataTHD.PRICE);
+                                costDataTHD.AMOUNT = costDataTHD.QUANTITY * (costDataTHD.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataTHD.PRICE / 2 : costDataTHD.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataTHD);
 
                                 //DIN
@@ -2791,7 +2792,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVII.AMOUNT = costDataVII.QUANTITY * (costDataVII.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVII.PRICE / 2 : costDataVII.PRICE);
+                                costDataVII.AMOUNT = costDataVII.QUANTITY * (costDataVII.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVII.PRICE / 2 : costDataVII.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVII);
 
                                 //THD
@@ -2813,7 +2814,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVDH.AMOUNT = costDataVDH.QUANTITY * (costDataVDH.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVDH.PRICE / 2 : costDataVDH.PRICE);
+                                costDataVDH.AMOUNT = costDataVDH.QUANTITY * (costDataVDH.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVDH.PRICE / 2 : costDataVDH.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVDH);
 
                                 //NAF
@@ -2835,7 +2836,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVDO.AMOUNT = costDataVDO.QUANTITY * (costDataVDO.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVDO.PRICE / 2 : costDataVDO.PRICE);
+                                costDataVDO.AMOUNT = costDataVDO.QUANTITY * (costDataVDO.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVDO.PRICE / 2 : costDataVDO.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVDO);
 
                             }
@@ -2938,7 +2939,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][21].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
+                                costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                                 //DAD
@@ -2960,7 +2961,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][21].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataDAD.AMOUNT = costDataDAD.QUANTITY * (costDataDAD.PRICE > 10000000 && elementCode.Contains("6273") ? costDataDAD.PRICE / 2 : costDataDAD.PRICE);
+                                costDataDAD.AMOUNT = costDataDAD.QUANTITY * (costDataDAD.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataDAD.PRICE / 2 : costDataDAD.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataDAD);
 
                                 //CXR
@@ -2982,7 +2983,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][21].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataCXR.AMOUNT = costDataCXR.QUANTITY * (costDataCXR.PRICE > 10000000 && elementCode.Contains("6273") ? costDataCXR.PRICE / 2 : costDataCXR.PRICE);
+                                costDataCXR.AMOUNT = costDataCXR.QUANTITY * (costDataCXR.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataCXR.PRICE / 2 : costDataCXR.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataCXR);
 
                                 //HUI
@@ -3004,7 +3005,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][21].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataHUI.AMOUNT = costDataHUI.QUANTITY * (costDataHUI.PRICE > 10000000 && elementCode.Contains("6273") ? costDataHUI.PRICE / 2 : costDataHUI.PRICE);
+                                costDataHUI.AMOUNT = costDataHUI.QUANTITY * (costDataHUI.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataHUI.PRICE / 2 : costDataHUI.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHUI);
 
                                 //UIH
@@ -3026,7 +3027,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][21].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataUIH.AMOUNT = costDataUIH.QUANTITY * (costDataUIH.PRICE > 10000000 && elementCode.Contains("6273") ? costDataUIH.PRICE / 2 : costDataUIH.PRICE);
+                                costDataUIH.AMOUNT = costDataUIH.QUANTITY * (costDataUIH.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataUIH.PRICE / 2 : costDataUIH.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataUIH);
 
                                 //VCL
@@ -3048,7 +3049,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][21].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVCL.AMOUNT = costDataVCL.QUANTITY * (costDataVCL.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVCL.PRICE / 2 : costDataVCL.PRICE);
+                                costDataVCL.AMOUNT = costDataVCL.QUANTITY * (costDataVCL.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVCL.PRICE / 2 : costDataVCL.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCL);
 
 
@@ -3072,7 +3073,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][21].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataPXU.AMOUNT = costDataPXU.QUANTITY * (costDataPXU.PRICE > 10000000 && elementCode.Contains("6273") ? costDataPXU.PRICE / 2 : costDataPXU.PRICE);
+                                costDataPXU.AMOUNT = costDataPXU.QUANTITY * (costDataPXU.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataPXU.PRICE / 2 : costDataPXU.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataPXU);
 
 
@@ -3098,7 +3099,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][21].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataTBB.AMOUNT = costDataTBB.QUANTITY * (costDataTBB.PRICE > 10000000 && elementCode.Contains("6273") ? costDataTBB.PRICE / 2 : costDataTBB.PRICE);
+                                costDataTBB.AMOUNT = costDataTBB.QUANTITY * (costDataTBB.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataTBB.PRICE / 2 : costDataTBB.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataTBB);
 
                             }
@@ -3193,7 +3194,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
+                                costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                                 //SGN
@@ -3215,7 +3216,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataSGN.AMOUNT = costDataSGN.QUANTITY * (costDataSGN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataSGN.PRICE / 2 : costDataSGN.PRICE);
+                                costDataSGN.AMOUNT = costDataSGN.QUANTITY * (costDataSGN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataSGN.PRICE / 2 : costDataSGN.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataSGN);
 
                                 //PQC
@@ -3237,7 +3238,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataPQC.AMOUNT = costDataPQC.QUANTITY * (costDataPQC.PRICE > 10000000 && elementCode.Contains("6273") ? costDataPQC.PRICE / 2 : costDataPQC.PRICE);
+                                costDataPQC.AMOUNT = costDataPQC.QUANTITY * (costDataPQC.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataPQC.PRICE / 2 : costDataPQC.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataPQC);
 
                                 //DLI
@@ -3259,7 +3260,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataDLI.AMOUNT = costDataDLI.QUANTITY * (costDataDLI.PRICE > 10000000 && elementCode.Contains("6273") ? costDataDLI.PRICE / 2 : costDataDLI.PRICE);
+                                costDataDLI.AMOUNT = costDataDLI.QUANTITY * (costDataDLI.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataDLI.PRICE / 2 : costDataDLI.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataDLI);
 
                                 //VCA
@@ -3281,7 +3282,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVCA.AMOUNT = costDataVCA.QUANTITY * (costDataVCA.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVCA.PRICE / 2 : costDataVCA.PRICE);
+                                costDataVCA.AMOUNT = costDataVCA.QUANTITY * (costDataVCA.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVCA.PRICE / 2 : costDataVCA.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCA);
 
                                 //BMV
@@ -3303,7 +3304,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataBMV.AMOUNT = costDataBMV.QUANTITY * (costDataBMV.PRICE > 10000000 && elementCode.Contains("6273") ? costDataBMV.PRICE / 2 : costDataBMV.PRICE);
+                                costDataBMV.AMOUNT = costDataBMV.QUANTITY * (costDataBMV.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataBMV.PRICE / 2 : costDataBMV.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataBMV);
 
                                 //VCS
@@ -3325,7 +3326,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][19].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVCS.AMOUNT = costDataVCS.QUANTITY * (costDataVCS.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVCS.PRICE / 2 : costDataVCS.PRICE);
+                                costDataVCS.AMOUNT = costDataVCS.QUANTITY * (costDataVCS.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVCS.PRICE / 2 : costDataVCS.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCS);
 
                             }
@@ -3395,7 +3396,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][13].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
+                                costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                                 //VTMB
@@ -3417,7 +3418,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][13].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVTMB.AMOUNT = costDataVTMB.QUANTITY * (costDataVTMB.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVTMB.PRICE / 2 : costDataVTMB.PRICE);
+                                costDataVTMB.AMOUNT = costDataVTMB.QUANTITY * (costDataVTMB.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVTMB.PRICE / 2 : costDataVTMB.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMB);
 
                                 //VTMT
@@ -3439,7 +3440,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][13].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVTMT.AMOUNT = costDataVTMT.QUANTITY * (costDataVTMT.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVTMT.PRICE / 2 : costDataVTMT.PRICE);
+                                costDataVTMT.AMOUNT = costDataVTMT.QUANTITY * (costDataVTMT.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVTMT.PRICE / 2 : costDataVTMT.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMT);
 
                                 //VTMN
@@ -3461,7 +3462,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     DESCRIPTION = tableData.Rows[i][13].ToString(),
                                     CREATE_BY = currentUser
                                 };
-                                costDataVTMN.AMOUNT = costDataVTMN.QUANTITY * (costDataVTMN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVTMN.PRICE / 2 : costDataVTMN.PRICE);
+                                costDataVTMN.AMOUNT = costDataVTMN.QUANTITY * (costDataVTMN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVTMN.PRICE / 2 : costDataVTMN.PRICE);
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMN);
                             }
                             else
@@ -3549,7 +3550,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][15].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVPCT.AMOUNT = costDataVPCT.QUANTITY * (costDataVPCT.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCT.PRICE / 2 : costDataVPCT.PRICE);
+                            costDataVPCT.AMOUNT = costDataVPCT.QUANTITY * (costDataVPCT.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCT.PRICE / 2 : costDataVPCT.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCT);
 
                             //MB
@@ -3569,7 +3570,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][15].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataMB.AMOUNT = costDataMB.QUANTITY * (costDataMB.PRICE > 10000000 && elementCode.Contains("6273") ? costDataMB.PRICE / 2 : costDataMB.PRICE);
+                            costDataMB.AMOUNT = costDataMB.QUANTITY * (costDataMB.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataMB.PRICE / 2 : costDataMB.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataMB);
 
                             //MT
@@ -3589,7 +3590,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][15].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataMT.AMOUNT = costDataMT.QUANTITY * (costDataMT.PRICE > 10000000 && elementCode.Contains("6273") ? costDataMT.PRICE / 2 : costDataMT.PRICE);
+                            costDataMT.AMOUNT = costDataMT.QUANTITY * (costDataMT.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataMT.PRICE / 2 : costDataMT.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataMT);
 
                             //CR
@@ -3609,7 +3610,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][15].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataCR.AMOUNT = costDataCR.QUANTITY * (costDataCR.PRICE > 10000000 && elementCode.Contains("6273") ? costDataCR.PRICE / 2 : costDataCR.PRICE);
+                            costDataCR.AMOUNT = costDataCR.QUANTITY * (costDataCR.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataCR.PRICE / 2 : costDataCR.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataCR);
 
                             //MN
@@ -3629,7 +3630,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][15].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataMN.AMOUNT = costDataMN.QUANTITY * (costDataMN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataMN.PRICE / 2 : costDataMN.PRICE);
+                            costDataMN.AMOUNT = costDataMN.QUANTITY * (costDataMN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataMN.PRICE / 2 : costDataMN.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataMN);
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
@@ -3722,7 +3723,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
+                            costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                             //HAN
@@ -3742,7 +3743,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataHAN.AMOUNT = costDataHAN.QUANTITY * (costDataHAN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataHAN.PRICE / 2 : costDataHAN.PRICE);
+                            costDataHAN.AMOUNT = costDataHAN.QUANTITY * (costDataHAN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataHAN.PRICE / 2 : costDataHAN.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHAN);
 
                             //VDO
@@ -3762,7 +3763,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataHPH.AMOUNT = costDataHPH.QUANTITY * (costDataHPH.PRICE > 10000000 && elementCode.Contains("6273") ? costDataHPH.PRICE / 2 : costDataHPH.PRICE);
+                            costDataHPH.AMOUNT = costDataHPH.QUANTITY * (costDataHPH.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataHPH.PRICE / 2 : costDataHPH.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHPH);
 
                             //HPH
@@ -3782,7 +3783,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataTHD.AMOUNT = costDataTHD.QUANTITY * (costDataTHD.PRICE > 10000000 && elementCode.Contains("6273") ? costDataTHD.PRICE / 2 : costDataTHD.PRICE);
+                            costDataTHD.AMOUNT = costDataTHD.QUANTITY * (costDataTHD.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataTHD.PRICE / 2 : costDataTHD.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataTHD);
 
                             //DIN
@@ -3802,7 +3803,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVII.AMOUNT = costDataVII.QUANTITY * (costDataVII.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVII.PRICE / 2 : costDataVII.PRICE);
+                            costDataVII.AMOUNT = costDataVII.QUANTITY * (costDataVII.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVII.PRICE / 2 : costDataVII.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVII);
 
                             //THD
@@ -3822,7 +3823,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVDH.AMOUNT = costDataVDH.QUANTITY * (costDataVDH.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVDH.PRICE / 2 : costDataVDH.PRICE);
+                            costDataVDH.AMOUNT = costDataVDH.QUANTITY * (costDataVDH.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVDH.PRICE / 2 : costDataVDH.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVDH);
 
                             //NAF
@@ -3842,7 +3843,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVDO.AMOUNT = costDataVDO.QUANTITY * (costDataVDO.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVDO.PRICE / 2 : costDataVDO.PRICE);
+                            costDataVDO.AMOUNT = costDataVDO.QUANTITY * (costDataVDO.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVDO.PRICE / 2 : costDataVDO.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVDO);
 
                         }
@@ -3943,7 +3944,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][21].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
+                            costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                             //DAD
@@ -3963,7 +3964,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][21].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataDAD.AMOUNT = costDataDAD.QUANTITY * (costDataDAD.PRICE > 10000000 && elementCode.Contains("6273") ? costDataDAD.PRICE / 2 : costDataDAD.PRICE);
+                            costDataDAD.AMOUNT = costDataDAD.QUANTITY * (costDataDAD.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataDAD.PRICE / 2 : costDataDAD.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataDAD);
 
                             //CXR
@@ -3983,7 +3984,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][21].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataCXR.AMOUNT = costDataCXR.QUANTITY * (costDataCXR.PRICE > 10000000 && elementCode.Contains("6273") ? costDataCXR.PRICE / 2 : costDataCXR.PRICE);
+                            costDataCXR.AMOUNT = costDataCXR.QUANTITY * (costDataCXR.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataCXR.PRICE / 2 : costDataCXR.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataCXR);
 
                             //HUI
@@ -4003,7 +4004,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][21].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataHUI.AMOUNT = costDataHUI.QUANTITY * (costDataHUI.PRICE > 10000000 && elementCode.Contains("6273") ? costDataHUI.PRICE / 2 : costDataHUI.PRICE);
+                            costDataHUI.AMOUNT = costDataHUI.QUANTITY * (costDataHUI.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataHUI.PRICE / 2 : costDataHUI.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataHUI);
 
                             //UIH
@@ -4023,7 +4024,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][21].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataUIH.AMOUNT = costDataUIH.QUANTITY * (costDataUIH.PRICE > 10000000 && elementCode.Contains("6273") ? costDataUIH.PRICE / 2 : costDataUIH.PRICE);
+                            costDataUIH.AMOUNT = costDataUIH.QUANTITY * (costDataUIH.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataUIH.PRICE / 2 : costDataUIH.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataUIH);
 
                             //VCL
@@ -4043,7 +4044,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][21].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVCL.AMOUNT = costDataVCL.QUANTITY * (costDataVCL.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVCL.PRICE / 2 : costDataVCL.PRICE);
+                            costDataVCL.AMOUNT = costDataVCL.QUANTITY * (costDataVCL.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVCL.PRICE / 2 : costDataVCL.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCL);
 
 
@@ -4065,7 +4066,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][21].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataPXU.AMOUNT = costDataPXU.QUANTITY * (costDataPXU.PRICE > 10000000 && elementCode.Contains("6273") ? costDataPXU.PRICE / 2 : costDataPXU.PRICE);
+                            costDataPXU.AMOUNT = costDataPXU.QUANTITY * (costDataPXU.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataPXU.PRICE / 2 : costDataPXU.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataPXU);
 
 
@@ -4089,7 +4090,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][21].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataTBB.AMOUNT = costDataTBB.QUANTITY * (costDataTBB.PRICE > 10000000 && elementCode.Contains("6273") ? costDataTBB.PRICE / 2 : costDataTBB.PRICE);
+                            costDataTBB.AMOUNT = costDataTBB.QUANTITY * (costDataTBB.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataTBB.PRICE / 2 : costDataTBB.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataTBB);
 
                         }
@@ -4183,7 +4184,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
+                            costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                             //SGN
@@ -4203,7 +4204,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataSGN.AMOUNT = costDataSGN.QUANTITY * (costDataSGN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataSGN.PRICE / 2 : costDataSGN.PRICE);
+                            costDataSGN.AMOUNT = costDataSGN.QUANTITY * (costDataSGN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataSGN.PRICE / 2 : costDataSGN.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataSGN);
 
                             //PQC
@@ -4223,7 +4224,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataPQC.AMOUNT = costDataPQC.QUANTITY * (costDataPQC.PRICE > 10000000 && elementCode.Contains("6273") ? costDataPQC.PRICE / 2 : costDataPQC.PRICE);
+                            costDataPQC.AMOUNT = costDataPQC.QUANTITY * (costDataPQC.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataPQC.PRICE / 2 : costDataPQC.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataPQC);
 
                             //DLI
@@ -4243,7 +4244,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataDLI.AMOUNT = costDataDLI.QUANTITY * (costDataDLI.PRICE > 10000000 && elementCode.Contains("6273") ? costDataDLI.PRICE / 2 : costDataDLI.PRICE);
+                            costDataDLI.AMOUNT = costDataDLI.QUANTITY * (costDataDLI.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataDLI.PRICE / 2 : costDataDLI.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataDLI);
 
                             //VCA
@@ -4263,7 +4264,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVCA.AMOUNT = costDataVCA.QUANTITY * (costDataVCA.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVCA.PRICE / 2 : costDataVCA.PRICE);
+                            costDataVCA.AMOUNT = costDataVCA.QUANTITY * (costDataVCA.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVCA.PRICE / 2 : costDataVCA.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCA);
 
                             //BMV
@@ -4283,7 +4284,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataBMV.AMOUNT = costDataBMV.QUANTITY * (costDataBMV.PRICE > 10000000 && elementCode.Contains("6273") ? costDataBMV.PRICE / 2 : costDataBMV.PRICE);
+                            costDataBMV.AMOUNT = costDataBMV.QUANTITY * (costDataBMV.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataBMV.PRICE / 2 : costDataBMV.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataBMV);
 
                             //VCS
@@ -4303,7 +4304,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][19].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVCS.AMOUNT = costDataVCS.QUANTITY * (costDataVCS.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVCS.PRICE / 2 : costDataVCS.PRICE);
+                            costDataVCS.AMOUNT = costDataVCS.QUANTITY * (costDataVCS.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVCS.PRICE / 2 : costDataVCS.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVCS);
 
                         }
@@ -4373,7 +4374,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][13].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
+                            costDataVPCN.AMOUNT = costDataVPCN.QUANTITY * (costDataVPCN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVPCN.PRICE / 2 : costDataVPCN.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCN);
 
                             //VTMB
@@ -4393,7 +4394,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][13].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVTMB.AMOUNT = costDataVTMB.QUANTITY * (costDataVTMB.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVTMB.PRICE / 2 : costDataVTMB.PRICE);
+                            costDataVTMB.AMOUNT = costDataVTMB.QUANTITY * (costDataVTMB.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVTMB.PRICE / 2 : costDataVTMB.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMB);
 
                             //VTMT
@@ -4413,7 +4414,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][13].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVTMT.AMOUNT = costDataVTMT.QUANTITY * (costDataVTMT.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVTMT.PRICE / 2 : costDataVTMT.PRICE);
+                            costDataVTMT.AMOUNT = costDataVTMT.QUANTITY * (costDataVTMT.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVTMT.PRICE / 2 : costDataVTMT.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMT);
 
                             //VTMN
@@ -4433,7 +4434,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 DESCRIPTION = tableData.Rows[i][13].ToString(),
                                 CREATE_BY = currentUser
                             };
-                            costDataVTMN.AMOUNT = costDataVTMN.QUANTITY * (costDataVTMN.PRICE > 10000000 && elementCode.Contains("6273") ? costDataVTMN.PRICE / 2 : costDataVTMN.PRICE);
+                            costDataVTMN.AMOUNT = costDataVTMN.QUANTITY * (costDataVTMN.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? costDataVTMN.PRICE / 2 : costDataVTMN.PRICE);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVTMN);
                         }
                         else
@@ -6767,13 +6768,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
         }
 
 
-        public void UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string valueInput, int month)
+        public void UpdateCellValue(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string valueInput, int month, string org)
         {
             try
             {
                 UnitOfWork.BeginTransaction();
                 string value = valueInput.Replace(".", "");
                 var lstCostCenter = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().Queryable().Where(x => x.SAN_BAY_CODE == sanBay && x.COST_CENTER_CODE == costCenter).Select(x => x.COST_CENTER_CODE).ToList();
+                var prc = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().Queryable().FirstOrDefault(x => x.SAN_BAY_CODE == sanBay && x.COST_CENTER_CODE == costCenter)?.CODE;
                 #region Phiên bản bổ sung
                 if (month > 0)
                 {
@@ -6782,15 +6784,26 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && lstCostCenter.Contains(costCenter) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode && x.MONTH == month).ToList();
                         if (rowsChange.Count() == 0)
                         {
-                            this.State = false;
-                            this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                            UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DATA
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                ORG_CODE = org,
+                                TEMPLATE_CODE = templateCode,
+                                CHI_PHI_PROFIT_CENTER_CODE = prc,
+                                KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                                VERSION = version,
+                                TIME_YEAR = year,
+                                QUANTITY = Convert.ToDecimal(value),
+                                MONTH = month,
+                            }) ;
+                            UnitOfWork.Commit();
                             return;
                         }
                         var oldValue = rowsChange.FirstOrDefault().QUANTITY;
                         foreach (var item in rowsChange)
                         {
                             item.QUANTITY = Convert.ToDecimal(value);
-                            item.AMOUNT = (item.PRICE > 10000000 && elementCode.Contains("6273") ? item.PRICE / 2 : item.PRICE) * Convert.ToDecimal(value);
+                            item.AMOUNT = (item.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? item.PRICE / 2 : item.PRICE) * Convert.ToDecimal(value);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
                         }
                         // Lưu lịch sử
@@ -6815,15 +6828,26 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode && x.MONTH == month).ToList();
                         if (rowsChange.Count() == 0)
                         {
-                            this.State = false;
-                            this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                            UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DATA
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                ORG_CODE = org,
+                                TEMPLATE_CODE = templateCode,
+                                CHI_PHI_PROFIT_CENTER_CODE = prc,
+                                KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                                VERSION = version,
+                                TIME_YEAR = year,
+                                PRICE = Convert.ToDecimal(value),
+                                MONTH = month,
+                            });
+                            UnitOfWork.Commit();
                             return;
                         }
                         var oldValue = rowsChange.FirstOrDefault().PRICE;
                         foreach (var item in rowsChange)
                         {
                             item.PRICE = Convert.ToDecimal(value);
-                            item.AMOUNT = item.QUANTITY * (item.PRICE > 10000000 && elementCode.Contains("6273") ? item.PRICE / 2 : item.PRICE) ;
+                            item.AMOUNT = item.QUANTITY * (item.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? item.PRICE / 2 : item.PRICE) ;
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
                         }
                         // Lưu lịch sử
@@ -6848,15 +6872,26 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode && x.MONTH == month).ToList();
                         if (rowsChange.Count() == 0)
                         {
-                            this.State = false;
-                            this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                            UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DATA
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                ORG_CODE = org,
+                                TEMPLATE_CODE = templateCode,
+                                CHI_PHI_PROFIT_CENTER_CODE = prc,
+                                KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                                VERSION = version,
+                                TIME_YEAR = year,
+                                QUANTITY_TD = Convert.ToDecimal(value),
+                                MONTH = month,
+                            });
+                            UnitOfWork.Commit();
                             return;
                         }
                         var oldValue = rowsChange.FirstOrDefault().QUANTITY_TD;
                         foreach (var item in rowsChange)
                         {
                             item.QUANTITY_TD = Convert.ToDecimal(value);
-                            item.AMOUNT_TD = (item.PRICE_TD > 10000000 && elementCode.Contains("6273") ? item.PRICE_TD / 2 : item.PRICE_TD) * Convert.ToDecimal(value);
+                            item.AMOUNT_TD = (item.PRICE_TD >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? item.PRICE_TD / 2 : item.PRICE_TD) * Convert.ToDecimal(value);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
                         }
                         // Lưu lịch sử
@@ -6881,15 +6916,26 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode && x.MONTH == month).ToList();
                         if (rowsChange.Count() == 0)
                         {
-                            this.State = false;
-                            this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                            UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DATA
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                ORG_CODE = org,
+                                TEMPLATE_CODE = templateCode,
+                                CHI_PHI_PROFIT_CENTER_CODE = prc,
+                                KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                                VERSION = version,
+                                TIME_YEAR = year,
+                                PRICE_TD = Convert.ToDecimal(value),
+                                MONTH = month,
+                            });
+                            UnitOfWork.Commit();
                             return;
                         }
                         var oldValue = rowsChange.FirstOrDefault().PRICE_TD;
                         foreach (var item in rowsChange)
                         {
                             item.PRICE_TD = Convert.ToDecimal(value);
-                            item.AMOUNT_TD = item.QUANTITY_TD * (item.PRICE_TD > 10000000 && elementCode.Contains("6273") ? item.PRICE_TD / 2 : item.PRICE_TD);
+                            item.AMOUNT_TD = item.QUANTITY_TD * (item.PRICE_TD >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? item.PRICE_TD / 2 : item.PRICE_TD);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
                         }
                         // Lưu lịch sử
@@ -6953,15 +6999,25 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && lstCostCenter.Contains(costCenter) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sanBay && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
                         if (rowsChange.Count() == 0)
                         {
-                            this.State = false;
-                            this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                            UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DATA
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                ORG_CODE = org,
+                                TEMPLATE_CODE = templateCode,
+                                CHI_PHI_PROFIT_CENTER_CODE = prc,
+                                KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                                VERSION = version,
+                                TIME_YEAR = year,
+                                QUANTITY = Convert.ToDecimal(value),
+                            });
+                            UnitOfWork.Commit();
                             return;
                         }
                         var oldValue = rowsChange.FirstOrDefault().QUANTITY;
                         foreach (var item in rowsChange)
                         {
                             item.QUANTITY = Convert.ToDecimal(value);
-                            item.AMOUNT = (item.PRICE > 10000000 && elementCode.Contains("6273") ? item.PRICE / 2 : item.PRICE) * Convert.ToDecimal(value);
+                            item.AMOUNT = (item.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? item.PRICE / 2 : item.PRICE) * Convert.ToDecimal(value);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
                         }
                         // Lưu lịch sử
@@ -6986,15 +7042,25 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
                         if (rowsChange.Count() == 0)
                         {
-                            this.State = false;
-                            this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                            UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DATA
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                ORG_CODE = org,
+                                TEMPLATE_CODE = templateCode,
+                                CHI_PHI_PROFIT_CENTER_CODE = prc,
+                                KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                                VERSION = version,
+                                TIME_YEAR = year,
+                                PRICE = Convert.ToDecimal(value),
+                            });
+                            UnitOfWork.Commit();
                             return;
                         }
                         var oldValue = rowsChange.FirstOrDefault().PRICE;
                         foreach (var item in rowsChange)
                         {
                             item.PRICE = Convert.ToDecimal(value);
-                            item.AMOUNT = item.QUANTITY * (item.PRICE > 10000000 && elementCode.Contains("6273") ? item.PRICE / 2 : item.PRICE) ;
+                            item.AMOUNT = item.QUANTITY * (item.PRICE >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? item.PRICE / 2 : item.PRICE) ;
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
                         }
                         // Lưu lịch sử
@@ -7019,15 +7085,25 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
                         if (rowsChange.Count() == 0)
                         {
-                            this.State = false;
-                            this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                            UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DATA
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                ORG_CODE = org,
+                                TEMPLATE_CODE = templateCode,
+                                CHI_PHI_PROFIT_CENTER_CODE = prc,
+                                KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                                VERSION = version,
+                                TIME_YEAR = year,
+                                QUANTITY_TD = Convert.ToDecimal(value),
+                            });
+                            UnitOfWork.Commit();
                             return;
                         }
                         var oldValue = rowsChange.FirstOrDefault().QUANTITY_TD;
                         foreach (var item in rowsChange)
                         {
                             item.QUANTITY_TD = Convert.ToDecimal(value);
-                            item.AMOUNT_TD = (item.PRICE_TD > 10000000 && elementCode.Contains("6273") ? item.PRICE_TD / 2 : item.PRICE_TD) * Convert.ToDecimal(value);
+                            item.AMOUNT_TD = (item.PRICE_TD >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? item.PRICE_TD / 2 : item.PRICE_TD) * Convert.ToDecimal(value);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
                         }
                         // Lưu lịch sử
@@ -7052,15 +7128,26 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         var rowsChange = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.KHOAN_MUC_HANG_HOA_CODE == elementCode).ToList();
                         if (rowsChange.Count() == 0)
                         {
-                            this.State = false;
-                            this.ErrorMessage = "Có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!";
+                            UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_DATA
+                            {
+                                PKID = Guid.NewGuid().ToString(),
+                                ORG_CODE = org,
+                                TEMPLATE_CODE = templateCode,
+                                CHI_PHI_PROFIT_CENTER_CODE = prc,
+                                KHOAN_MUC_HANG_HOA_CODE = elementCode,
+                                VERSION = version,
+                                TIME_YEAR = year,
+                                PRICE_TD = Convert.ToDecimal(value),
+                                MONTH = month,
+                            });
+                            UnitOfWork.Commit();
                             return;
                         }
                         var oldValue = rowsChange.FirstOrDefault().PRICE_TD;
                         foreach (var item in rowsChange)
                         {
                             item.PRICE_TD = Convert.ToDecimal(value);
-                            item.AMOUNT_TD = item.QUANTITY_TD * (item.PRICE_TD > 10000000 && elementCode.Contains("6273") ? item.PRICE_TD / 2 : item.PRICE_TD);
+                            item.AMOUNT_TD = item.QUANTITY_TD * (item.PRICE_TD >= 10000000 && ListElement.Any(x => x.Contains(elementCode)) ? item.PRICE_TD / 2 : item.PRICE_TD);
                             UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Update(item);
                         }
                         // Lưu lịch sử

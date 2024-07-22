@@ -496,9 +496,9 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public async Task<ActionResult> GenDataCKP(int year, string phienBan, string kichBan, string area)
+        public ActionResult GenDataCKP(int year, string phienBan, string kichBan, string area, int month)
         {
-            var data = await _servicePhienBan.GetDataCKP(year, phienBan, kichBan, area);
+            var data = _servicePhienBan.GetDataCKP(year, phienBan, kichBan, area, month);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
             return PartialView(data);

@@ -684,6 +684,28 @@ namespace SMO.Service.MD
                     });
                     order += 3 + countGroup * 2;
                 }
+                data.Tab1.Add(new RevenueReportModel
+                {
+                    Name = "BÁN TẠI HQ",
+                    Value1 = dataDetails.Where(x => string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JAN) ?? 0,
+                    Value2 = dataDetails.Where(x => string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_FEB) ?? 0,
+                    Value3 = dataDetails.Where(x =>  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_MAR) ?? 0,
+                    Value4 = dataDetails.Where(x =>  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_APR) ?? 0,
+                    Value5 = dataDetails.Where(x =>  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_MAY) ?? 0,
+                    Value6 = dataDetails.Where(x =>  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JUN) ?? 0,
+                    Value7 = dataDetails.Where(x =>  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JUL) ?? 0,
+                    Value8 = dataDetails.Where(x =>  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_AUG) ?? 0,
+                    Value9 = dataDetails.Where(x =>  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) ?? 0,
+                    Value10 = dataDetails.Where(x =>  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_OCT) ?? 0,
+                    Value11 = dataDetails.Where(x => string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_NOV) ?? 0,
+                    Value12 = dataDetails.Where(x => string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) ?? 0,
+                    ValueSumYear = dataDetails.Where(x => string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    IsBold = true,
+                    Order = order,
+                    Id = "HQ",
+                    Parent = "SUM",
+                    Level = 1
+                });
                 #endregion
 
                 #region Tab2
@@ -942,6 +964,16 @@ namespace SMO.Service.MD
                         Id = hhk.GROUP_ITEM + "QT" + "FHS" + "TNS",
                     });
                 }
+                data.Tab2.Add(new RevenueReportModel
+                {
+                    Name = "BÁN TẠI HQ",
+                    ValueSumYear = dataDetails.Where(x => string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    IsBold = true,
+                    Order = orderTab2,
+                    Parent = "SUM",
+                    Level = 1,
+                    Id = "HQ",
+                });
                 #endregion
 
                 #region Tab3
@@ -1110,6 +1142,43 @@ namespace SMO.Service.MD
                     }
                     order_TN++;
                 }
+                var hq = new RevenueReportModelSL_Tra_Nap
+                {
+                    Code = "HQ",
+                    Name = "BÁN TẠI HQ",
+                    Value1ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JAN) ?? 0,
+                    Value2ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_FEB) ?? 0,
+                    Value3ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_MAR) ?? 0,
+                    Value4ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_APR) ?? 0,
+                    Value5ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_MAY) ?? 0,
+                    Value6ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JUN) ?? 0,
+                    Value7ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JUL) ?? 0,
+                    Value8ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_AUG) ?? 0,
+                    Value9ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) ?? 0,
+                    Value10ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_OCT) ?? 0,
+                    Value11ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_NOV) ?? 0,
+                    Value12ND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) ?? 0,
+                    ValueSumYearND = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    Value1QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JAN) ?? 0,
+                    Value2QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_FEB) ?? 0,
+                    Value3QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_MAR) ?? 0,
+                    Value4QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_APR) ?? 0,
+                    Value5QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_MAY) ?? 0,
+                    Value6QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JUN) ?? 0,
+                    Value7QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JUL) ?? 0,
+                    Value8QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_AUG) ?? 0,
+                    Value9QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) ?? 0,
+                    Value10QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_OCT) ?? 0,
+                    Value11QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_NOV) ?? 0,
+                    Value12QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) ?? 0,
+                    ValueSumYearQT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    ValueSumYearAll_ND_QT = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SUM_YEAR) + dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10020" &&  string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                    IsBold = true,
+                    Parent = "-1",
+                    Order = order_TN,
+                    Level = 1
+                };
+                data.TabSL_TN.Add(hq);
                 #endregion
                 return data;
             }
@@ -1572,6 +1641,7 @@ namespace SMO.Service.MD
                     {
                         Id = Guid.NewGuid().ToString(),
                         Code = a.TEXT,
+                        Name = a.TEXT,
                         IsBold = true,
                         Stt = ConvertNumberOrder(orderArea),
                         Value1 = dataArea.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
@@ -1674,6 +1744,7 @@ namespace SMO.Service.MD
             try
             {
                 var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.AREA_CODE == area).OrderByDescending(x => x.TYPE).ToList();
+                lstProject = lstProject.Where(x => x.CODE != "DA-2024-5").ToList();
                 var data = new List<DauTu>();
                 data.Add(new DauTu
                 {
@@ -1842,6 +1913,328 @@ namespace SMO.Service.MD
                 return new List<SuaChuaLon>();
             }
         }
+        public List<SuaChuaCKP> GetDataSCLByAreaCKP(string area, int year, 
+            List<T_BP_SUA_CHUA_LON_DATA> dataPB1, 
+            List<T_BP_SUA_CHUA_LON_DATA> dataCKP,
+            List<T_BP_SUA_CHUA_LON_DATA> dataBS,
+            int month)
+        {
+            try
+            {
+                var dataR = new List<SuaChuaCKP>();
+                if (area == "CQ")
+                {
+                    dataPB1 = dataPB1.Where(x => x.ORG_CODE.Contains("100001")).ToList();
+                    dataCKP = dataCKP.Where(x => x.ORG_CODE.Contains("100001")).ToList();
+                    dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100001")).ToList();
+                }
+                if (area == "MB")
+                {
+                    dataPB1 = dataPB1.Where(x => x.ORG_CODE.Contains("100002")).ToList();
+                    dataCKP = dataCKP.Where(x => x.ORG_CODE.Contains("100002")).ToList();
+                    dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100002")).ToList();
+                }
+                if (area == "MT")
+                {
+                    dataPB1 = dataPB1.Where(x => x.ORG_CODE.Contains("100003")).ToList();
+                    dataCKP = dataCKP.Where(x => x.ORG_CODE.Contains("100003")).ToList();
+                    dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100003")).ToList();
+                }
+                if (area == "MN")
+                {
+                    dataPB1 = dataPB1.Where(x => x.ORG_CODE.Contains("100004")).ToList();
+                    dataCKP = dataCKP.Where(x => x.ORG_CODE.Contains("100004")).ToList();
+                    dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100004")).ToList();
+                }
+                if (area == "VT")
+                {
+                    dataPB1 = dataPB1.Where(x => x.ORG_CODE.Contains("100005")).ToList();
+                    dataCKP = dataCKP.Where(x => x.ORG_CODE.Contains("100005")).ToList();
+                    dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100005")).ToList();
+                }
+                var e = dataPB1.Union(dataCKP).Union(dataBS);
+                var elementCodes = e.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
+                var elementChild = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).ToList();
+                foreach (var i in elementChild.Select(x => x.PARENT_CODE).Distinct().ToList())
+                {
+                    var p = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.TIME_YEAR == year && x.CODE == i);
+                    if (p != null) elementChild.Add(p);
+                }
+                elementChild = elementChild.DistinctBy(x => x.CODE).ToList();
+
+                var orderChild = 0;
+                var orderParent = 0;
+                
+                var cn = new SuaChuaCKP
+                {
+                    IsBold = true,
+                    Name = area == "CQ" ? " CƠ QUAN CÔNG TY" : area == "MB" ? "CHI NHÁNH MIỀN BẮC" : area == "MT" ? "CHI NHÁNH MIỀN TRUNG" : area == "MN" ? "CHI NHÁNH MIỀN NAM" : "CHI NHÁNH VẬN TẢI",
+                    Col1 = dataPB1.Sum(x => x.VALUE) ?? 0,
+                    Col2 = dataBS.Sum(x => Convert.ToDecimal(x.MONTH1 == null ? 0 : x.MONTH1) + Convert.ToDecimal(x.MONTH2 == null ? 0 : x.MONTH2) + Convert.ToDecimal(x.MONTH3 == null ? 0 : x.MONTH3) + Convert.ToDecimal(x.MONTH4 == null ? 0 : x.MONTH4) + Convert.ToDecimal(x.MONTH5 == null ? 0 : x.MONTH5) + Convert.ToDecimal(x.MONTH6 == null ? 0 : x.MONTH6) + Convert.ToDecimal(x.MONTH7 == null ? 0 : x.MONTH7) + Convert.ToDecimal(x.MONTH8 == null ? 0 : x.MONTH8) + Convert.ToDecimal(x.MONTH9 == null ? 0 : x.MONTH9) + Convert.ToDecimal(x.MONTH10 == null ? 0 : x.MONTH10) + Convert.ToDecimal(x.MONTH11 == null ? 0 : x.MONTH11) + Convert.ToDecimal(x.MONTH12 == null ? 0 : x.MONTH12)),
+                };
+                cn.Col3 = cn.Col1 + cn.Col2;
+                switch (month)
+                {
+                    case 1:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        break;
+                    case 2:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        break;
+                    case 3:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        break;
+                    case 4:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        break;
+                    case 5:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        cn.Col8 = dataCKP.Sum(x => x.MONTH5) ?? 0;
+                        break;
+                    case 6:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        cn.Col8 = dataCKP.Sum(x => x.MONTH5) ?? 0;
+                        cn.Col9 = dataCKP.Sum(x => x.MONTH6) ?? 0;
+                        break;
+                    case 7:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        cn.Col8 = dataCKP.Sum(x => x.MONTH5) ?? 0;
+                        cn.Col9 = dataCKP.Sum(x => x.MONTH6) ?? 0;
+                        cn.Col10 = dataCKP.Sum(x => x.MONTH7) ?? 0;
+                        break;
+                    case 8:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        cn.Col8 = dataCKP.Sum(x => x.MONTH5) ?? 0;
+                        cn.Col9 = dataCKP.Sum(x => x.MONTH6) ?? 0;
+                        cn.Col10 = dataCKP.Sum(x => x.MONTH7) ?? 0;
+                        cn.Col11 = dataCKP.Sum(x => x.MONTH8) ?? 0;
+                        break;
+                    case 9:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        cn.Col8 = dataCKP.Sum(x => x.MONTH5) ?? 0;
+                        cn.Col9 = dataCKP.Sum(x => x.MONTH6) ?? 0;
+                        cn.Col10 = dataCKP.Sum(x => x.MONTH7) ?? 0;
+                        cn.Col11 = dataCKP.Sum(x => x.MONTH8) ?? 0;
+                        cn.Col12 = dataCKP.Sum(x => x.MONTH9) ?? 0;
+                        break;
+                    case 10:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        cn.Col8 = dataCKP.Sum(x => x.MONTH5) ?? 0;
+                        cn.Col9 = dataCKP.Sum(x => x.MONTH6) ?? 0;
+                        cn.Col10 = dataCKP.Sum(x => x.MONTH7) ?? 0;
+                        cn.Col11 = dataCKP.Sum(x => x.MONTH8) ?? 0;
+                        cn.Col12 = dataCKP.Sum(x => x.MONTH9) ?? 0;
+                        cn.Col13 = dataCKP.Sum(x => x.MONTH10) ?? 0;
+                        break;
+                    case 11:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        cn.Col8 = dataCKP.Sum(x => x.MONTH5) ?? 0;
+                        cn.Col9 = dataCKP.Sum(x => x.MONTH6) ?? 0;
+                        cn.Col10 = dataCKP.Sum(x => x.MONTH7) ?? 0;
+                        cn.Col11 = dataCKP.Sum(x => x.MONTH8) ?? 0;
+                        cn.Col12 = dataCKP.Sum(x => x.MONTH9) ?? 0;
+                        cn.Col13 = dataCKP.Sum(x => x.MONTH10) ?? 0;
+                        cn.Col14 = dataCKP.Sum(x => x.MONTH11) ?? 0;
+                        break;
+                    case 12:
+                        cn.Col4 = dataCKP.Sum(x => x.MONTH1) ?? 0;
+                        cn.Col5 = dataCKP.Sum(x => x.MONTH2) ?? 0;
+                        cn.Col6 = dataCKP.Sum(x => x.MONTH3) ?? 0;
+                        cn.Col7 = dataCKP.Sum(x => x.MONTH4) ?? 0;
+                        cn.Col8 = dataCKP.Sum(x => x.MONTH5) ?? 0;
+                        cn.Col9 = dataCKP.Sum(x => x.MONTH6) ?? 0;
+                        cn.Col10 = dataCKP.Sum(x => x.MONTH7) ?? 0;
+                        cn.Col11 = dataCKP.Sum(x => x.MONTH8) ?? 0;
+                        cn.Col12 = dataCKP.Sum(x => x.MONTH9) ?? 0;
+                        cn.Col13 = dataCKP.Sum(x => x.MONTH10) ?? 0;
+                        cn.Col14 = dataCKP.Sum(x => x.MONTH11) ?? 0;
+                        cn.Col15 = dataCKP.Sum(x => x.MONTH12) ?? 0;
+                        break;
+                }
+                cn.Col16 = cn.Col4 + cn.Col5 + cn.Col6 + cn.Col7 + cn.Col8 + cn.Col9 + cn.Col10 + cn.Col11 + cn.Col12 + cn.Col13 + cn.Col14 + cn.Col15;
+
+                dataR.Add(cn);
+
+                foreach (var i in elementChild.OrderBy(x => x.C_ORDER))
+                {
+                    if (i.IS_GROUP)
+                    {
+                        orderChild = 0;
+                        orderParent += 1;
+                    }
+                    var d = new SuaChuaCKP
+                    {
+                        Order = i.IS_GROUP ? ConvertNumberOrder(orderParent) : orderChild.ToString(),
+                        code = i.CODE,
+                        parentCode = i.PARENT_CODE,
+                        IsBold = i.IS_GROUP ? true : false,
+                        Name = i.NAME,
+                        Col1 = dataPB1.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.VALUE) ?? 0,
+                        Col2 = dataBS.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => Convert.ToDecimal(x.MONTH1 == null ? 0 : x.MONTH1) + Convert.ToDecimal(x.MONTH2 == null ? 0 : x.MONTH2) + Convert.ToDecimal(x.MONTH3 == null ? 0 : x.MONTH3) + Convert.ToDecimal(x.MONTH4 == null ? 0 : x.MONTH4) + Convert.ToDecimal(x.MONTH5 == null ? 0 : x.MONTH5) + Convert.ToDecimal(x.MONTH6 == null ? 0 : x.MONTH6) + Convert.ToDecimal(x.MONTH7 == null ? 0 : x.MONTH7) + Convert.ToDecimal(x.MONTH8 == null ? 0 : x.MONTH8) + Convert.ToDecimal(x.MONTH9 == null ? 0 : x.MONTH9) + Convert.ToDecimal(x.MONTH10 == null ? 0 : x.MONTH10) + Convert.ToDecimal(x.MONTH11 == null ? 0 : x.MONTH11) + Convert.ToDecimal(x.MONTH12 == null ? 0 : x.MONTH12)),
+                    };
+                    d.Col3 = d.Col1 + d.Col2;
+                    
+                    switch (month)
+                    {
+                        case 1:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            break;
+                        case 2:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            break;
+                        case 3:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            break;
+                        case 4:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            break;
+                        case 5:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            d.Col8 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH5) ?? 0;
+                            break;
+                        case 6:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            d.Col8 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH5) ?? 0;
+                            d.Col9 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH6) ?? 0;
+                            break;
+                        case 7:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            d.Col8 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH5) ?? 0;
+                            d.Col9 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH6) ?? 0;
+                            d.Col10 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH7) ?? 0;
+                            break;
+                        case 8:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            d.Col8 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH5) ?? 0;
+                            d.Col9 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH6) ?? 0;
+                            d.Col10 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH7) ?? 0;
+                            d.Col11 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH8) ?? 0;
+                            break;
+                        case 9:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            d.Col8 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH5) ?? 0;
+                            d.Col9 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH6) ?? 0;
+                            d.Col10 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH7) ?? 0;
+                            d.Col11 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH8) ?? 0;
+                            d.Col12 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH9) ?? 0;
+                            break;
+                        case 10:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            d.Col8 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH5) ?? 0;
+                            d.Col9 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH6) ?? 0;
+                            d.Col10 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH7) ?? 0;
+                            d.Col11 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH8) ?? 0;
+                            d.Col12 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH9) ?? 0;
+                            d.Col13 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH10) ?? 0;
+                            break;
+                        case 11:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            d.Col8 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH5) ?? 0;
+                            d.Col9 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH6) ?? 0;
+                            d.Col10 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH7) ?? 0;
+                            d.Col11 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH8) ?? 0;
+                            d.Col12 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH9) ?? 0;
+                            d.Col13 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH10) ?? 0;
+                            d.Col14 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH11) ?? 0;
+                            break;
+                        case 12:
+                            d.Col4 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH1) ?? 0;
+                            d.Col5 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH2) ?? 0;
+                            d.Col6 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH3) ?? 0;
+                            d.Col7 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH4) ?? 0;
+                            d.Col8 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH5) ?? 0;
+                            d.Col9 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH6) ?? 0;
+                            d.Col10 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH7) ?? 0;
+                            d.Col11 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH8) ?? 0;
+                            d.Col12 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH9) ?? 0;
+                            d.Col13 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH10) ?? 0;
+                            d.Col14 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH11) ?? 0;
+                            d.Col15 = dataCKP.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == i.CODE).Sum(x => x.MONTH12) ?? 0;
+                            break;
+                    }
+                    d.Col16 = d.Col4 + d.Col5 + d.Col6 + d.Col7 + d.Col8 + d.Col9 + d.Col10 + d.Col11 + d.Col12 + d.Col13 + d.Col14 + d.Col15;
+
+
+                    orderChild += 1;
+                    dataR.Add(d);
+                }
+                foreach (var i in dataR)
+                {
+                    var childs = dataR.Where(x => x.parentCode == i.code);
+                    if (childs.Count() != 0 || i.Col1 == 0)
+                    {
+                        i.Col1 = childs.Sum(x => x.Col1);
+                    }
+                    if (childs.Count() != 0 || i.Col2 == 0)
+                    {
+                        i.Col2 = childs.Sum(x => x.Col2);
+                    }
+                    if (childs.Count() != 0 || i.Col3 == 0)
+                    {
+                        i.Col3 = childs.Sum(x => x.Col3);
+                    }
+                }
+                return dataR;
+            }
+            catch (Exception ex)
+            {
+                return new List<SuaChuaCKP>();
+            }
+        }
         public List<SuaChuaThuongXuyenReportModel> GetDataSCTXByArea(string area, int year, List<T_BP_SUA_CHUA_THUONG_XUYEN_DATA> data)
         {
             try
@@ -1933,295 +2326,658 @@ namespace SMO.Service.MD
                 return null;
             }
         }
-        public async Task<ReportCKPModel> GetDataCKP(int year, string phienBan, string kichBan, string area)
+        public ReportCKPModel GetDataCKP(int year, string phienBan, string kichBan, string area, int month)
         {
             try
             {
                 var data = new ReportCKPModel();
-                var lstSanBay = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != null && x.OTHER_PM_CODE != "").ToList();
-                lstSanBay = !string.IsNullOrEmpty(area) ? lstSanBay.Where(x => x.AREA_CODE == area).ToList() : lstSanBay;
-                Dictionary<string, string> ChiNhanh = new Dictionary<string, string>()
+                #region KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ
+                var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year).OrderByDescending(x => x.TYPE).ToList();
+                projects = !string.IsNullOrEmpty(area) ? projects.Where(x => x.AREA_CODE == area).ToList() : projects;
+                projects = projects.Where(x => x.CODE != "DA-2024-5").ToList();
+                var headerDT_PB1 = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03" && x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDT_PB1 = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => headerDT_PB1.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerDT_CKP = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03" && x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB4").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDT_CKP = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => headerDT_CKP.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var headerDTL_PB1 = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03" && x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDTL_PB1 = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => headerDTL_PB1.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerDTL_CKP = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03" && x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB4").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataDTL_CKP = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => headerDTL_CKP.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var orderDT = 1;
+                var orderDTL = 1;
+                var ttb = new DauTuCKP
                 {
-                    {"", "" },
-                    {"MB", "CNMB" },
-                    {"MN", "CNMN" },
-                    {"MT", "CNMT" },
-                    {"VT", "CNVT" },
-                    {"CQ", "CQCT" }
+                    Order = "I",
+                    Name = "Đầu tư trang thiết bị",
+                    IsBold = true,
+                    Col2 = dataDT_PB1.Sum(x => x.VALUE_1),
                 };
-                var sapCode = ChiNhanh[area];
-                var costCenter = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCode).CODE;
-                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-                CancellationToken cancellationToken = cancellationTokenSource.Token;
-
-                Task task2 = Task.Run(() =>
+                switch (month)
                 {
-                    lock (lockObject)
-                    {
-                        #region KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ
-                        var sapCodeDT = ChiNhanh[area];
-                        var costCenterDT = UnitOfWork.Repository<CostCenterRepo>().Queryable().FirstOrDefault(x => x.SAP_CODE == sapCodeDT).CODE;
-
-                        var dataHeaderDTXD = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
-                                                                         UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
-                        var dataHeaderDTTTB = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
-                                                                         UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
-                        if (dataHeaderDTXD.Count() + dataHeaderDTTTB.Count() == 0)
-                        {
-                            cancellationTokenSource.Cancel();
-                        }
-
-                        var dataInHeaderDTXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD.Contains(x.TEMPLATE_CODE)).ToList();
-                        var dataInHeaderDTTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTTTB.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var lstPjInDTXD = dataInHeaderDTXD.Select(x => x.DauTuXayDungProfitCenter.PROJECT_CODE).Distinct().ToList();
-                        var lstPjInDTTTB = dataInHeaderDTTTB.Select(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE).Distinct().ToList();
-                        var lstProject = new List<string>();
-                        lstProject.AddRange(lstPjInDTXD);
-                        lstProject.AddRange(lstPjInDTTTB);
-                        lstProject = lstProject.Distinct().ToList();
-                        var dataHeaderDTXD_DLCKP = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
-                                                                        UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
-                        var dataHeaderTTB_DLCKP = !string.IsNullOrEmpty(area) ? UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty && x.ORG_CODE.StartsWith(costCenterDT)).Select(x => x.TEMPLATE_CODE).ToList() :
-                                                                        UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TEMPLATE_CODE != string.Empty).Select(x => x.TEMPLATE_CODE).ToList();
-
-                        var dataInHeaderXD_DLCKP = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDTXD_DLCKP.Contains(x.TEMPLATE_CODE)).ToList();
-                        var dataInHeaderTTB_DLCKP = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderTTB_DLCKP.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var orderDT = 1;
-                        foreach (var pj in lstProject)
-                        {
-                            var item = new DauTuCKP
-                            {
-                                Name = UnitOfWork.Repository<ProjectRepo>().Queryable().FirstOrDefault(x => x.CODE == pj).NAME,
-                                Col2 = dataInHeaderDTXD.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
-                                Col4 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH1) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH1) ?? 0,
-                                Col5 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH2) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH2) ?? 0,
-                                Col6 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH3) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH3) ?? 0,
-                                Col7 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH4) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH4) ?? 0,
-                                Col8 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH5) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH5) ?? 0,
-                                Col9 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH6) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH6) ?? 0,
-                                Col10 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH7) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH7) ?? 0,
-                                Col11 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH8) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH8) ?? 0,
-                                Col12 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH9) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH9) ?? 0,
-                                Col13 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH10) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH10) ?? 0,
-                                Col14 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH11) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH11) ?? 0,
-                                Col15 = dataInHeaderXD_DLCKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH12) + dataInHeaderTTB_DLCKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == pj && x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH12) ?? 0,
-                                Order = orderDT,
-                            };
-                            data.DauTu.Add(item);
-                            orderDT += 1;
-                        }
-
-                        data.DauTu.Add(new DauTuCKP
-                        {
-                            Name = "TỔNG CỘNG",
-                            Col2 = dataInHeaderDTXD.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) + dataInHeaderDTTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE) ?? 0,
-                            Col4 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH1) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH1) ?? 0,
-                            Col5 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH2) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH2) ?? 0,
-                            Col6 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH3) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH3) ?? 0,
-                            Col7 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH4) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH4) ?? 0,
-                            Col8 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH5) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH5) ?? 0,
-                            Col9 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH6) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH6) ?? 0,
-                            Col10 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH7) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH7) ?? 0,
-                            Col11 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH8) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH8) ?? 0,
-                            Col12 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH9) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH9) ?? 0,
-                            Col13 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH10) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH10) ?? 0,
-                            Col14 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH11) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH11) ?? 0,
-                            Col15 = dataInHeaderXD_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH12) + dataInHeaderTTB_DLCKP.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.MONTH12) ?? 0,
-                            Order = 0,
-                            IsBold = true,
-                        });
-
-                        #endregion
-
-                    }
-                });
-
-                Task task3 = Task.Run(() =>
+                    case 1:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 2:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 3:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 4:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 5:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col8 = dataDT_CKP.Where(x =>  x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 6:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col8 = dataDT_CKP.Where(x =>  x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col9 = dataDT_CKP.Where(x =>  x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 7:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col8 = dataDT_CKP.Where(x =>  x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col9 = dataDT_CKP.Where(x =>  x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col10 = dataDT_CKP.Where(x =>  x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 8:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col8 = dataDT_CKP.Where(x =>  x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col9 = dataDT_CKP.Where(x =>  x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col10 = dataDT_CKP.Where(x =>  x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col11 = dataDT_CKP.Where(x =>  x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 9:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col8 = dataDT_CKP.Where(x =>  x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col9 = dataDT_CKP.Where(x =>  x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col10 = dataDT_CKP.Where(x =>  x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col11 = dataDT_CKP.Where(x =>  x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col12 = dataDT_CKP.Where(x =>  x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 10:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col8 = dataDT_CKP.Where(x =>  x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col9 = dataDT_CKP.Where(x =>  x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col10 = dataDT_CKP.Where(x =>  x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col11 = dataDT_CKP.Where(x =>  x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col12 = dataDT_CKP.Where(x =>  x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col13 = dataDT_CKP.Where(x =>  x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 11:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col8 = dataDT_CKP.Where(x =>  x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col9 = dataDT_CKP.Where(x =>  x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col10 = dataDT_CKP.Where(x =>  x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col11 = dataDT_CKP.Where(x =>  x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col12 = dataDT_CKP.Where(x =>  x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col13 = dataDT_CKP.Where(x =>  x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col14 = dataDT_CKP.Where(x =>  x.MONTH == 11).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 12:
+                        ttb.Col4 = dataDT_CKP.Where(x =>  x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col5 = dataDT_CKP.Where(x =>  x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col6 = dataDT_CKP.Where(x =>  x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col7 = dataDT_CKP.Where(x =>  x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col8 = dataDT_CKP.Where(x =>  x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col9 = dataDT_CKP.Where(x =>  x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col10 = dataDT_CKP.Where(x =>  x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col11 = dataDT_CKP.Where(x =>  x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col12 = dataDT_CKP.Where(x =>  x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col13 = dataDT_CKP.Where(x =>  x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col14 = dataDT_CKP.Where(x =>  x.MONTH == 11).Sum(x => x.VALUE_7) ?? 0;
+                        ttb.Col15 = dataDT_CKP.Where(x =>  x.MONTH == 12).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                }
+                ttb.Col16 = ttb.Col4 + ttb.Col5 + ttb.Col6 + ttb.Col7 + ttb.Col8 + ttb.Col9 + ttb.Col10 + ttb.Col11 + ttb.Col12 + ttb.Col13 + ttb.Col14 + ttb.Col15;
+               
+                data.DauTu.Add(ttb);
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB"))
                 {
-                    lock (lockObject)
+                    var i = new DauTuCKP
                     {
-
-                        var header1_1 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        var details1_1 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header1_1.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var header3 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        var details3 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var header4 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB4" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        var details4 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header4.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var header5 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        var details5 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        string orgCost = ChiNhanh[area];
-
-                        #region KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH
-                        var dataHeaderSuaChuaLon = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        /*if (dataHeaderSuaChuaLon.Count() == 0)
-                        {
-                            cancellationTokenSource.Cancel();
-
-                        }*/
-                        var dataHeaderDLTHSCL = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-
-                        var dataInHeaderSCL = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderSuaChuaLon.Contains(x.TEMPLATE_CODE)).ToList();
-                        var dataInHeaderDLTHSCL = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderDLTHSCL.Contains(x.TEMPLATE_CODE)).ToList();
-                        var sumSCL = new SuaChuaCKP
-                        {
-                            Name = "TỔNG CỘNG",
-                            Order = 0,
-                            IsBold = true
-                        };
-                        var lstData = !string.IsNullOrEmpty(area) ? dataInHeaderSCL.Where(x => x.ORG_CODE.StartsWith(costCenter)).ToList() : dataInHeaderSCL;
-                        var lstDataDLTH = !string.IsNullOrEmpty(area) ? dataInHeaderDLTHSCL.Where(x => x.ORG_CODE.StartsWith(costCenter)).ToList() : dataInHeaderDLTHSCL;
-
-                        var lstKhoanMuc = lstData.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
-                        var lstKhoanMucDLTH = lstDataDLTH.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
-                        var orderSCL = 1;
-
-                        List<SuaChuaCKP> lstElementSCL = new List<SuaChuaCKP>();
-                        foreach (var kmCode in lstKhoanMuc)
-                        {
-                            var name = lstData.FirstOrDefault(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).KhoanMucSuaChua.NAME;
-                            // Lấy mã cha
-                            var parentCodeItem = lstData.FirstOrDefault(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).KhoanMucSuaChua.PARENT_CODE;
-                            var dataCol2 = details3.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode);
-                            var dataCol4 = details4.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.StartsWith(kmCode)).ToList();
-                            var item = new SuaChuaCKP
-                            {
-                                code = kmCode,
-                                parentCode = parentCodeItem,
-                                Col1 = lstData.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE == kmCode).Sum(x => x.VALUE) ?? 0,
-                                Col2 = dataCol2.Sum(x => x.MONTH1 + x.MONTH2 + x.MONTH3 + x.MONTH4 + x.MONTH5 + x.MONTH6 + x.MONTH7 + x.MONTH8 + x.MONTH9 + x.MONTH10 + x.MONTH11 + x.MONTH12) ?? 0,
-                                Col4 = dataCol4.Sum(x => x.MONTH1) ?? 0,
-                                Col5 = dataCol4.Sum(x => x.MONTH2) ?? 0,
-                                Col6 = dataCol4.Sum(x => x.MONTH3) ?? 0,
-                                Col7 = dataCol4.Sum(x => x.MONTH4) ?? 0,
-                                Col8 = dataCol4.Sum(x => x.MONTH5) ?? 0,
-                                Col9 = dataCol4.Sum(x => x.MONTH6) ?? 0,
-                                Col10 = dataCol4.Sum(x => x.MONTH7) ?? 0,
-                                Col11 = dataCol4.Sum(x => x.MONTH8) ?? 0,
-                                Col12 = dataCol4.Sum(x => x.MONTH9) ?? 0,
-                                Col13 = dataCol4.Sum(x => x.MONTH10) ?? 0,
-                                Col14 = dataCol4.Sum(x => x.MONTH11) ?? 0,
-                                Col15 = dataCol4.Sum(x => x.MONTH12) ?? 0,
-
-                                Name = name,
-                                IsBold = false
-                            };
-                            item.Col3 = item.Col1 + item.Col2;
-                            lstElementSCL.Add(item);
-
-
-
-                        }
-
-                        var lstParentCode = lstElementSCL.Select(x => x.parentCode).Distinct().ToList();
-                        foreach (var code in lstParentCode)
-                        {
-                            if (string.IsNullOrEmpty(code))
-                            {
-                                continue;
-                            }
-                            var name = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.CODE == code)?.NAME;
-                            var countSCL = lstElementSCL.Where(x => x.parentCode == code).Count();
-                            var parent = new SuaChuaCKP
-                            {
-                                Name = name,
-                                Col1 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col1),
-                                Col2 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col2),
-                                Col3 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col3),
-                                Col4 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col4),
-                                Col5 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col5),
-                                Col6 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col6),
-                                Col7 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col7),
-                                Col8 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col8),
-                                Col9 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col9),
-                                Col10 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col10),
-                                Col11 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col11),
-                                Col12 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col12),
-                                Col13 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col13),
-                                Col14 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col14),
-                                Col15 = lstElementSCL.Where(x => x.parentCode == code).Sum(x => x.Col15),
-
-                                Order = orderSCL,
-                                IsBold = true
-                            };
-                            data.SuaChuaLon.Add(parent);
-                            var lstChild = lstElementSCL.Where(x => x.parentCode == code).ToList();
-                            lstChild = lstChild.Distinct().ToList();
-                            foreach (var item in lstChild)
-                            {
-                                item.Order = orderSCL + 1;
-                                orderSCL++;
-                                data.SuaChuaLon.Add(item);
-                            }
-                            orderSCL++;
-                            sumSCL.Col1 = sumSCL.Col1 + parent.Col1;
-                            sumSCL.Col2 = sumSCL.Col2 + parent.Col2;
-                            sumSCL.Col3 = sumSCL.Col3 + parent.Col3;
-                            sumSCL.Col4 = sumSCL.Col4 + parent.Col4;
-                            sumSCL.Col5 = sumSCL.Col5 + parent.Col5;
-                            sumSCL.Col6 = sumSCL.Col6 + parent.Col6;
-                            sumSCL.Col7 = sumSCL.Col7 + parent.Col7;
-                            sumSCL.Col8 = sumSCL.Col8 + parent.Col8;
-                            sumSCL.Col9 = sumSCL.Col9 + parent.Col9;
-                            sumSCL.Col10 = sumSCL.Col10 + parent.Col10;
-                            sumSCL.Col11 = sumSCL.Col11 + parent.Col11;
-                            sumSCL.Col12 = sumSCL.Col12 + parent.Col12;
-                            sumSCL.Col13 = sumSCL.Col13 + parent.Col13;
-                            sumSCL.Col14 = sumSCL.Col14 + parent.Col14;
-                            sumSCL.Col15 = sumSCL.Col15 + parent.Col15;
-
-                        }
-
-                        data.SuaChuaLon.Add(sumSCL);
-                        #endregion
-
+                        Order = orderDT.ToString(),
+                        Name = p.NAME,
+                        Col1 = dataDT_PB1.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col2 = dataDT_PB1.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE).Sum(x => x.VALUE_1),
+                        Col3 = dataDT_PB1.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col17 = dataDT_PB1.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    };
+                    switch (month)
+                    {
+                        case 1:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 2:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 3:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 4:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 5:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 6:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 7:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 8:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 9:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col12 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 10:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col12 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col13 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 11:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col12 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col13 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col14 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 11).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 12:
+                            i.Col4 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col12 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col13 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col14 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 11).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col15 = dataDT_CKP.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 12).Sum(x => x.VALUE_7) ?? 0;
+                            break;
                     }
-                });
-
-                Task task4 = Task.Run(() =>
+                    i.Col16 = i.Col4 + i.Col5 + i.Col6 + i.Col7 + i.Col8 + i.Col9 + i.Col10 + i.Col11 + i.Col12 + i.Col13 + i.Col14 + i.Col15 ;
+                    orderDT += 1;
+                    data.DauTu.Add(i);
+                }
+                var xd = new DauTuCKP
                 {
-                    lock (lockObject)
+                    Order = "I",
+                    Name = "Đầu tư XDCB",
+                    IsBold = true,
+                    Col2 = dataDTL_PB1.Sum(x => x.VALUE_1),
+                };
+                switch (month)
+                {
+                    case 1:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 2:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 3:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 4:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 5:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col8 = dataDTL_CKP.Where(x => x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 6:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col8 = dataDTL_CKP.Where(x => x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col9 = dataDTL_CKP.Where(x => x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 7:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col8 = dataDTL_CKP.Where(x => x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col9 = dataDTL_CKP.Where(x => x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col10 = dataDTL_CKP.Where(x => x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 8:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col8 = dataDTL_CKP.Where(x => x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col9 = dataDTL_CKP.Where(x => x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col10 = dataDTL_CKP.Where(x => x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col11 = dataDTL_CKP.Where(x => x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 9:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col8 = dataDTL_CKP.Where(x => x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col9 = dataDTL_CKP.Where(x => x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col10 = dataDTL_CKP.Where(x => x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col11 = dataDTL_CKP.Where(x => x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col12 = dataDTL_CKP.Where(x => x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 10:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col8 = dataDTL_CKP.Where(x => x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col9 = dataDTL_CKP.Where(x => x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col10 = dataDTL_CKP.Where(x => x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col11 = dataDTL_CKP.Where(x => x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col12 = dataDTL_CKP.Where(x => x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col13 = dataDTL_CKP.Where(x => x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 11:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col8 = dataDTL_CKP.Where(x => x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col9 = dataDTL_CKP.Where(x => x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col10 = dataDTL_CKP.Where(x => x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col11 = dataDTL_CKP.Where(x => x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col12 = dataDTL_CKP.Where(x => x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col13 = dataDTL_CKP.Where(x => x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col14 = dataDTL_CKP.Where(x => x.MONTH == 11).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                    case 12:
+                        xd.Col4 = dataDTL_CKP.Where(x => x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col5 = dataDTL_CKP.Where(x => x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col6 = dataDTL_CKP.Where(x => x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col7 = dataDTL_CKP.Where(x => x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col8 = dataDTL_CKP.Where(x => x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col9 = dataDTL_CKP.Where(x => x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col10 = dataDTL_CKP.Where(x => x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col11 = dataDTL_CKP.Where(x => x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col12 = dataDTL_CKP.Where(x => x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col13 = dataDTL_CKP.Where(x => x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col14 = dataDTL_CKP.Where(x => x.MONTH == 11).Sum(x => x.VALUE_7) ?? 0;
+                        xd.Col15 = dataDTL_CKP.Where(x => x.MONTH == 12).Sum(x => x.VALUE_7) ?? 0;
+                        break;
+                }
+                xd.Col16 = xd.Col4 + xd.Col5 + xd.Col6 + xd.Col7 + xd.Col8 + xd.Col9 + xd.Col10 + xd.Col11 + xd.Col12 + xd.Col13 + xd.Col14 + xd.Col15;
+
+                data.DauTu.Add(xd);
+
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "XDCB"))
+                {
+                    var i = new DauTuCKP
                     {
-
-                        var header1_1 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        var details1_1 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => header1_1.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var header3 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        var details3 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var header5 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == "PB5" && x.KICH_BAN == kichBan && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                        var details5 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => header3.Contains(x.TEMPLATE_CODE)).ToList();
-
-                        var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().ToList();
-
-                        foreach (var e in elements)
-                        {
-                            var i = new ChiPhiCKP
-                            {
-                                Name = e.GROUP_NAME,
-                                IsBold = string.IsNullOrEmpty(e.GROUP_2_ID) ? true : false,
-                                Col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
-                                Col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
-
-                            };
-                            i.Col3 = i.Col1 + i.Col2;
-                            data.ChiPhi.Add(i);
-                        }
+                        Order = orderDTL.ToString(),
+                        Name = p.NAME,
+                        Col1 = dataDTL_PB1.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col2 = dataDTL_PB1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE).Sum(x => x.VALUE_1),
+                        Col3 = dataDTL_PB1.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col17 = dataDTL_PB1.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    };
+                    switch (month)
+                    {
+                        case 1:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 2:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 3:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 4:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 5:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 6:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 7:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 8:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 9:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col12 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 10:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col12 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col13 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 11:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col12 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col13 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col14 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 11).Sum(x => x.VALUE_7) ?? 0;
+                            break;
+                        case 12:
+                            i.Col4 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 1).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col5 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 2).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col6 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 3).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col7 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 4).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col8 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 5).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col9 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 6).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col10 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 7).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col11 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 8).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col12 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 9).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col13 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 10).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col14 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 11).Sum(x => x.VALUE_7) ?? 0;
+                            i.Col15 = dataDTL_CKP.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == p.CODE && x.MONTH == 12).Sum(x => x.VALUE_7) ?? 0;
+                            break;
                     }
-                });
+                    i.Col16 = i.Col4 + i.Col5 + i.Col6 + i.Col7 + i.Col8 + i.Col9 + i.Col10 + i.Col11 + i.Col12 + i.Col13 + i.Col14 + i.Col15;
+                    orderDTL += 1;
+                    data.DauTu.Add(i);
+                }
+                #endregion
 
-                await Task.WhenAll(task2, task3, task4);
+                #region KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH
+
+                var headerSCL_PB1 = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSCL_PB1 = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => headerSCL_PB1.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerSCL_CKP = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB4" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSCL_CKP = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => headerSCL_CKP.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerSCL_BS = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSCL_BS = UnitOfWork.Repository<SuaChuaLonDataRepo>().Queryable().Where(x => headerSCL_BS.Contains(x.TEMPLATE_CODE)).ToList();
+
+                if (string.IsNullOrEmpty(area))
+                {
+                    data.SuaChuaLon.AddRange(GetDataSCLByAreaCKP("MB", year, dataSCL_PB1, dataSCL_CKP, dataSCL_BS, month));
+                    data.SuaChuaLon.AddRange(GetDataSCLByAreaCKP("MT", year, dataSCL_PB1, dataSCL_CKP, dataSCL_BS, month));
+                    data.SuaChuaLon.AddRange(GetDataSCLByAreaCKP("MN", year, dataSCL_PB1, dataSCL_CKP, dataSCL_BS, month));
+                    data.SuaChuaLon.AddRange(GetDataSCLByAreaCKP("CQ", year, dataSCL_PB1, dataSCL_CKP, dataSCL_BS, month));
+                    data.SuaChuaLon.AddRange(GetDataSCLByAreaCKP("VT", year, dataSCL_PB1, dataSCL_CKP, dataSCL_BS, month));
+                }
+                else
+                {
+                    data.SuaChuaLon.AddRange(GetDataSCLByAreaCKP(area, year, dataSCL_PB1, dataSCL_CKP, dataSCL_BS, month));
+                }
+                #endregion
+
+                #region KẾ HOẠCH CHI PHÍ
+                var headerCP_PB1 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_PB1 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_PB1.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerCP_CKP = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB4" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_CKP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_CKP.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerCP_BS = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_BS = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_BS.Contains(x.TEMPLATE_CODE)).ToList();
+                var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+                foreach(var e in elements)
+                {
+                    var i = new ChiPhiCKP
+                    {
+                        Order = e.STT,
+                        IsBold = e.IS_BOLD,
+                        Name = e.GROUP_NAME,
+                        Col1 = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.AMOUNT),
+                        Col2 = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.AMOUNT)
+                    };
+                    i.Col3 = i.Col1 + i.Col2;
+                    switch (month)
+                    {
+                        case 1:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 2:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 3:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 4:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 5:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 6:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 7:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 8:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 9:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col12 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 10:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col12 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col13 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 10).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 11:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col12 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col13 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 10).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col14 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 11).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                        case 12:
+                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col12 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col13 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 10).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col14 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 11).Sum(x => x.AMOUNT) ?? 0;
+                            i.Col15 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 12).Sum(x => x.AMOUNT) ?? 0;
+                            break;
+                    }
+                    i.Col16 = i.Col4 + i.Col5 + i.Col6 + i.Col7 + i.Col8 + i.Col9 + i.Col10 + i.Col11 + i.Col12 + i.Col13 + i.Col14 + i.Col15;
+
+                    data.ChiPhi.Add(i);
+                }
+                #endregion
 
                 return data;
-            }
-            catch (Exception ex)
+            }catch(Exception ex)
             {
-                throw ex;
+                UnitOfWork.Rollback();
+                return new ReportCKPModel();
             }
         }
         public RevenueByFeeReportModel GetDataDoanhThuTheoPhi(int year, string phienBan, string kichBan, string hangHangKhong)
@@ -2277,43 +3033,23 @@ namespace SMO.Service.MD
                     IsBold = true,
                 };
                 data.Tab1.Add(sumTab1);
-                var sumTab2 = new RevenueReportModel
-                {
-                    Name = "TỔNG CỘNG",
-                    Value1 = dataDetailsTab2.Sum(x => x.VALUE_JAN) * s2 * 45 ?? 0,
-                    Value2 = dataDetailsTab2.Sum(x => x.VALUE_FEB) * s2 * 45 ?? 0,
-                    Value3 = dataDetailsTab2.Sum(x => x.VALUE_MAR) * s2 * 45 ?? 0,
-                    Value4 = dataDetailsTab2.Sum(x => x.VALUE_APR) * s2 * 45 ?? 0,
-                    Value5 = dataDetailsTab2.Sum(x => x.VALUE_MAY) * s2 * 45 ?? 0,
-                    Value6 = dataDetailsTab2.Sum(x => x.VALUE_JUN) * s2 * 45 ?? 0,
-                    Value7 = dataDetailsTab2.Sum(x => x.VALUE_JUL) * s2 * 45 ?? 0,
-                    Value8 = dataDetailsTab2.Sum(x => x.VALUE_AUG) * s2 * 45 ?? 0,
-                    Value9 = dataDetailsTab2.Sum(x => x.VALUE_SEP) * s2 * 45 ?? 0,
-                    Value10 = dataDetailsTab2.Sum(x => x.VALUE_OCT) * s2 * 45 ?? 0,
-                    Value11 = dataDetailsTab2.Sum(x => x.VALUE_NOV) * s2 * 45 ?? 0,
-                    Value12 = dataDetailsTab2.Sum(x => x.VALUE_SEP) * s2 * 45 ?? 0,
-                    ValueSumYear = dataDetailsTab2.Sum(x => x.VALUE_SUM_YEAR) * s2 * 45 ?? 0,
-                    Order = -1,
-                    IsBold = true,
-                };
-
-                data.Tab2.Add(sumTab2);
+                
                 var sumTab3 = new RevenueReportModel
                 {
                     Name = "TỔNG CỘNG",
-                    Value1 = dataDetailsTab3.Sum(x => x.VALUE_JAN) * shareData ?? 0,
-                    Value2 = dataDetailsTab3.Sum(x => x.VALUE_FEB) * shareData ?? 0,
-                    Value3 = dataDetailsTab3.Sum(x => x.VALUE_MAR) * shareData ?? 0,
-                    Value4 = dataDetailsTab3.Sum(x => x.VALUE_APR) * shareData ?? 0,
-                    Value5 = dataDetailsTab3.Sum(x => x.VALUE_MAY) * shareData ?? 0,
-                    Value6 = dataDetailsTab3.Sum(x => x.VALUE_JUN) * shareData ?? 0,
-                    Value7 = dataDetailsTab3.Sum(x => x.VALUE_JUL) * shareData ?? 0,
-                    Value8 = dataDetailsTab3.Sum(x => x.VALUE_AUG) * shareData ?? 0,
-                    Value9 = dataDetailsTab3.Sum(x => x.VALUE_SEP) * shareData ?? 0,
-                    Value10 = dataDetailsTab3.Sum(x => x.VALUE_OCT) * shareData ?? 0,
-                    Value11 = dataDetailsTab3.Sum(x => x.VALUE_NOV) * shareData ?? 0,
-                    Value12 = dataDetailsTab3.Sum(x => x.VALUE_SEP) * shareData ?? 0,
-                    ValueSumYear = dataDetailsTab3.Sum(x => x.VALUE_SUM_YEAR) * shareData ?? 0,
+                    Value1 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JAN) * shareData ?? 0,
+                    Value2 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_FEB) * shareData ?? 0,
+                    Value3 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_MAR) * shareData ?? 0,
+                    Value4 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_APR) * shareData ?? 0,
+                    Value5 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_MAY) * shareData ?? 0,
+                    Value6 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JUN) * shareData ?? 0,
+                    Value7 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_JUL) * shareData ?? 0,
+                    Value8 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_AUG) * shareData ?? 0,
+                    Value9 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) * shareData ?? 0,
+                    Value10 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_OCT) * shareData ?? 0,
+                    Value11 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_NOV) * shareData ?? 0,
+                    Value12 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) * shareData ?? 0,
+                    ValueSumYear = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SUM_YEAR) * shareData ?? 0,
                     Order = -1,
                     IsBold = true,
                 };
@@ -2322,6 +3058,13 @@ namespace SMO.Service.MD
                 var order = 0;
                 foreach (var hhk in lstHangHangKhong)
                 {
+                    var shareDataCode = "TNK" + "-" + hhk.GROUP_ITEM;
+                    var shareDataCodeNBA = "FHS-NBA-" + hhk.GROUP_ITEM;
+                    var shareDataCodeTNS = "FHS-TNS-" + hhk.GROUP_ITEM;
+                    var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Get(shareDataCode).VALUE;
+                    var priceNBA = UnitOfWork.Repository<SharedDataRepo>().Get(shareDataCodeNBA).VALUE;
+                    var priceTNS = UnitOfWork.Repository<SharedDataRepo>().Get(shareDataCodeTNS).VALUE;
+
                     var tab1 = new RevenueReportModel
                     {
                         Name = hhk.GROUP_ITEM,
@@ -2343,23 +3086,23 @@ namespace SMO.Service.MD
                     data.Tab1.Add(tab1);
 
 
-                    var d2 = dataDetailsTab2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").ToList();
+                    var d2 = dataDetailsTab2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).ToList();
                     var tab2 = new RevenueReportModel
                     {
                         Name = hhk.GROUP_ITEM,
-                        Value1 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JAN) * s2 * 45 ?? 0,
-                        Value2 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_FEB) * s2 * 45 ?? 0,
-                        Value3 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAR) * s2 * 45 ?? 0,
-                        Value4 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_APR) * s2 * 45 ?? 0,
-                        Value5 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAY) * s2 * 45 ?? 0,
-                        Value6 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUN) * s2 * 45 ?? 0,
-                        Value7 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUL) * s2 * 45 ?? 0,
-                        Value8 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_AUG) * s2 * 45 ?? 0,
-                        Value9 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * s2 * 45 ?? 0,
-                        Value10 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_OCT) * s2 * 45 ?? 0,
-                        Value11 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_NOV) * s2 * 45 ?? 0,
-                        Value12 = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * s2 * 45 ?? 0,
-                        ValueSumYear = d2.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SUM_YEAR) * s2 * 45 ?? 0,
+                        Value1 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JAN) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JAN) * s2 * priceTNS ?? 0,
+                        Value2 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_FEB) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_FEB) * s2 * priceTNS ?? 0,
+                        Value3 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_MAR) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_MAR) * s2 * priceTNS ?? 0,
+                        Value4 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_APR) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_APR) * s2 * priceTNS ?? 0,
+                        Value5 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_MAY) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_MAY) * s2 * priceTNS ?? 0,
+                        Value6 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JUN) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JUN) * s2 * priceTNS ?? 0,
+                        Value7 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JUL) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JUL) * s2 * priceTNS ?? 0,
+                        Value8 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_AUG) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_AUG) * s2 * priceTNS ?? 0,
+                        Value9 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_SEP) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SEP) * s2 * priceTNS ?? 0,
+                        Value10 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_OCT) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_OCT) * s2 * priceTNS ?? 0,
+                        Value11 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_NOV) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_NOV) * s2 * priceTNS ?? 0,
+                        Value12 = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_DEC) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_DEC) * s2 * priceTNS ?? 0,
+                        ValueSumYear = d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_SUM_YEAR) * s2 * priceNBA + d2.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SUM_YEAR) * s2 * priceTNS ?? 0,
                         Order = order,
                     };
                     data.Tab2.Add(tab2);
@@ -2385,8 +3128,6 @@ namespace SMO.Service.MD
                     data.Tab3.Add(tab3);
 
                     //tab5
-                    var shareDataCode = "TNK" + "-" + hhk.GROUP_ITEM;
-                    var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Get(shareDataCode).VALUE;
                     var tab5 = new RevenueReportModel
                     {
                         Name = hhk.GROUP_ITEM,
@@ -2469,6 +3210,27 @@ namespace SMO.Service.MD
                     Order = -1,
                     IsBold = true
                 });
+
+                var sumTab2 = new RevenueReportModel
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = data.Tab2.Sum(x => x.Value1),
+                    Value2 = data.Tab2.Sum(x => x.Value2),
+                    Value3 = data.Tab2.Sum(x => x.Value3),
+                    Value4 = data.Tab2.Sum(x => x.Value4),
+                    Value5 = data.Tab2.Sum(x => x.Value5),
+                    Value6 = data.Tab2.Sum(x => x.Value6),
+                    Value7 = data.Tab2.Sum(x => x.Value7),
+                    Value8 = data.Tab2.Sum(x => x.Value8),
+                    Value9 = data.Tab2.Sum(x => x.Value9),
+                    Value10 = data.Tab2.Sum(x => x.Value10),
+                    Value11 = data.Tab2.Sum(x => x.Value11),
+                    Value12 = data.Tab2.Sum(x => x.Value12),
+                    ValueSumYear = data.Tab2.Sum(x => x.ValueSumYear),
+                    Order = -1,
+                    IsBold = true
+                };
+                data.Tab2.Insert(0, sumTab2);
 
                 var discount = UnitOfWork.Repository<SharedDataRepo>().Get("24").VALUE;
                 data.Tab1.Add(new RevenueReportModel
@@ -3977,7 +4739,7 @@ namespace SMO.Service.MD
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                 rowCur.Cells[0].SetCellValue(item.stt);
                 rowCur.Cells[1].SetCellValue(item.name);
-                rowCur.Cells[2].SetCellValue((double)item.valueKP);
+                rowCur.Cells[2].SetCellValue(item.valueKP.ToStringVN());
                 rowCur.Cells[3].SetCellValue(item.valueQM);
                 rowCur.Cells[4].SetCellValue(item.des);
                 if (item.IsBold)
