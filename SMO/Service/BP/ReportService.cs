@@ -248,22 +248,19 @@ namespace SMO.Service.BP
             var styleCellNumber = GetCellStyleNumber(templateWorkbook);
 
             ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
-            styleCellBold.CloneStyleFrom(sheet.GetRow(1).Cells[0].CellStyle);
             styleCellBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
-            
+
             var fontBold = templateWorkbook.CreateFont();
             fontBold.Boldweight = (short)FontBoldWeight.Bold;
             fontBold.FontHeightInPoints = 12;
             fontBold.FontName = "Times New Roman";
 
             ICellStyle styleCellNormal = templateWorkbook.CreateCellStyle(); // chữ in đậm
-            styleCellNormal.CloneStyleFrom(sheet.GetRow(1).Cells[0].CellStyle);
             styleCellNormal.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
-            
+
             var fontNormal = templateWorkbook.CreateFont();
             fontNormal.FontHeightInPoints = 12;
             fontNormal.FontName = "Times New Roman";
-
 
             var startRow1 = 12;
             var startRow2 = 18 + data.SanLuong.Count();
@@ -271,28 +268,42 @@ namespace SMO.Service.BP
             var startRow4 = 31 + data.SanLuong.Count() + data.DauTu.Count() + data.SuaChuaLon.Count();
 
 
-            if (data.SanLuong.Count() != 0) sheet.ShiftRows(startRow1 + 1, startRow1 + data.SanLuong.Count() + 1, data.SanLuong.Count());
-            if (data.DauTu.Count() != 0) sheet.ShiftRows(startRow2 + 1, startRow2 + data.DauTu.Count() + 1, data.DauTu.Count());
-            if (data.SuaChuaLon.Count() != 0) sheet.ShiftRows(startRow3 + 1, startRow3 + data.SuaChuaLon.Count() + 1, data.SuaChuaLon.Count());
-            if (data.ChiPhi.Count() != 0) sheet.ShiftRows(startRow4 + 1, startRow4 + data.ChiPhi.Count() + 1, data.ChiPhi.Count());
+            sheet.ShiftRows(startRow1 + 1, startRow1 + data.SanLuong.Count() + 1, data.SanLuong.Count(), true, false);
+            sheet.ShiftRows(startRow2 + 1, startRow2 + data.DauTu.Count() + 1, data.DauTu.Count(), true, false);
+            sheet.ShiftRows(startRow3 + 1, startRow3 + data.SuaChuaLon.Count() + 1, data.SuaChuaLon.Count(), true, false);
+            sheet.ShiftRows(startRow4 + 1, startRow4 + data.ChiPhi.Count() + 1, data.ChiPhi.Count(), true, false);
+
+
+            for (int i = 0; i < data.SuaChuaLon.Count(); i++)
+            {
+                var cra = new NPOI.SS.Util.CellRangeAddress(startRow3 + i, startRow3 + i, 1, 2);
+                var cra1 = new NPOI.SS.Util.CellRangeAddress(startRow3 + i, startRow3 + i, 5, 6);
+                sheet.AddMergedRegion(cra);
+                sheet.AddMergedRegion(cra1);
+            }
+            for (int i = 0; i < data.ChiPhi.Count(); i++)
+            {
+                var cra = new NPOI.SS.Util.CellRangeAddress(startRow4 + i, startRow4 + i, 1, 2);
+                var cra1 = new NPOI.SS.Util.CellRangeAddress(startRow4 + i, startRow4 + i, 5, 6);
+                sheet.AddMergedRegion(cra);
+                sheet.AddMergedRegion(cra1);
+            }
 
             for (int i = 0; i < data.SanLuong.Count(); i++)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow1++, 7);
-                rowCur.Cells[0].SetCellValue(data.SanLuong[i]?.Stt.ToString());
+                rowCur.Cells[0].SetCellValue(data.SanLuong[i]?.Stt);
                 rowCur.Cells[1].SetCellValue(data.SanLuong[i]?.Name);
-                if (data.SanLuong[i].Value1 == 0 || data.SanLuong[i].Value1 == null)
+                if (data.SanLuong[i].Value1 == 0)
                 {
                     rowCur.Cells[2].SetCellValue("");
-                    rowCur.Cells[2].CellStyle.Alignment = HorizontalAlignment.Right;
                 }
                 else
                 {
                     rowCur.Cells[2].CellStyle = styleCellNumber;
                     rowCur.Cells[2].SetCellValue((double)Math.Round(data.SanLuong[i].Value1));
-                    rowCur.Cells[2].CellStyle.Alignment = HorizontalAlignment.Right;
                 }
-                if (data.SanLuong[i].Value2 == 0 || data.SanLuong[i].Value2 == null)
+                if (data.SanLuong[i].Value2 == 0)
                 {
                     rowCur.Cells[3].SetCellValue("");
                 }
@@ -301,7 +312,7 @@ namespace SMO.Service.BP
                     rowCur.Cells[3].CellStyle = styleCellNumber;
                     rowCur.Cells[3].SetCellValue((double)Math.Round(data.SanLuong[i].Value2));
                 }
-                if (data.SanLuong[i].Value3 == 0 || data.SanLuong[i].Value3 == null)
+                if (data.SanLuong[i].Value3 == 0)
                 {
                     rowCur.Cells[4].SetCellValue("");
                 }
@@ -310,7 +321,7 @@ namespace SMO.Service.BP
                     rowCur.Cells[4].CellStyle = styleCellNumber;
                     rowCur.Cells[4].SetCellValue((double)Math.Round(data.SanLuong[i].Value3));
                 }
-                if (data.SanLuong[i].Value4 == 0 || data.SanLuong[i].Value4 == null)
+                if (data.SanLuong[i].Value4 == 0)
                 {
                     rowCur.Cells[5].SetCellValue("");
                 }
@@ -319,7 +330,7 @@ namespace SMO.Service.BP
                     rowCur.Cells[5].CellStyle = styleCellNumber;
                     rowCur.Cells[5].SetCellValue((double)Math.Round(data.SanLuong[i].Value4));
                 }
-                if (data.SanLuong[i].Value5 == 0 || data.SanLuong[i].Value5 == null)
+                if (data.SanLuong[i].Value5 == 0)
                 {
                     rowCur.Cells[6].SetCellValue("");
                 }
@@ -345,20 +356,18 @@ namespace SMO.Service.BP
                     rowCur.Cells[j].CellStyle.BorderTop = BorderStyle.Thin;
                     rowCur.Cells[j].CellStyle.BorderLeft = BorderStyle.Thin;
                     rowCur.Cells[j].CellStyle.BorderRight = BorderStyle.Thin;
-                    rowCur.Cells[j].CellStyle.WrapText = true;
                 }
             }
 
             //InsertDT
-            
             for (int i = 0; i < data.DauTu.Count(); i++)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow2++, 7);
                 rowCur.Cells[0].SetCellValue(data.DauTu[i]?.Stt.ToString());
                 rowCur.Cells[1].SetCellValue(data.DauTu[i]?.Name);
                 rowCur.Cells[2].SetCellValue(data.DauTu[i]?.Value1);
-                
-                if (data.DauTu[i].Value2 == 0 || data.DauTu[i].Value2 == null)
+
+                if (data.DauTu[i].Value2 == 0)
                 {
                     rowCur.Cells[3].SetCellValue("");
                 }
@@ -367,7 +376,7 @@ namespace SMO.Service.BP
                     rowCur.Cells[3].CellStyle = styleCellNumber;
                     rowCur.Cells[3].SetCellValue((double)Math.Round(data.DauTu[i].Value2));
                 }
-                if (data.DauTu[i].Value3 == 0 || data.DauTu[i].Value3 == null)
+                if (data.DauTu[i].Value3 == 0)
                 {
                     rowCur.Cells[4].SetCellValue("");
                 }
@@ -396,7 +405,6 @@ namespace SMO.Service.BP
                     rowCur.Cells[j].CellStyle.BorderTop = BorderStyle.Thin;
                     rowCur.Cells[j].CellStyle.BorderLeft = BorderStyle.Thin;
                     rowCur.Cells[j].CellStyle.BorderRight = BorderStyle.Thin;
-                    rowCur.Cells[j].CellStyle.WrapText = true;
                 }
             }
 
@@ -404,18 +412,11 @@ namespace SMO.Service.BP
             
             for (int i = 0; i < data.SuaChuaLon.Count(); i++)
             {
-                var cra = new NPOI.SS.Util.CellRangeAddress(startRow3 + i, startRow3 + i, 1, 2);
-                var cra1 = new NPOI.SS.Util.CellRangeAddress(startRow3 + i, startRow3 + i, 5, 6);
-                sheet.AddMergedRegion(cra);
-                sheet.AddMergedRegion(cra1);
-            }
-            for (int i = 0; i < data.SuaChuaLon.Count(); i++)
-            {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow3++, 7);
                 rowCur.Cells[0].SetCellValue(data.SuaChuaLon[i]?.stt);
                 rowCur.Cells[1].SetCellValue(data.SuaChuaLon[i]?.name);
-                
-                if (data.SuaChuaLon[i].valueKP == 0 || data.SuaChuaLon[i].valueKP == null)
+
+                if (data.SuaChuaLon[i].valueKP == 0)
                 {
                     rowCur.Cells[3].SetCellValue("");
                 }
@@ -424,7 +425,7 @@ namespace SMO.Service.BP
                     rowCur.Cells[3].CellStyle = styleCellNumber;
                     rowCur.Cells[3].SetCellValue((double)Math.Round(data.SuaChuaLon[i].valueKP));
                 }
-               
+
                 rowCur.Cells[4].SetCellValue(data.SuaChuaLon[i]?.valueQM);
                 rowCur.Cells[5].SetCellValue(data.SuaChuaLon[i]?.des);
 
@@ -448,21 +449,13 @@ namespace SMO.Service.BP
                 }
             }
 
-            
-            for (int i = 0; i < data.ChiPhi.Count(); i++)
-            {
-                var cra = new NPOI.SS.Util.CellRangeAddress(startRow4 + i, startRow4 + i, 1, 2);
-                var cra1 = new NPOI.SS.Util.CellRangeAddress(startRow4 + i, startRow4 + i, 5, 6);
-                sheet.AddMergedRegion(cra);
-                sheet.AddMergedRegion(cra1);
-            }
             for (int i = 0; i < data.ChiPhi.Count(); i++)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow4++, 7);
                 rowCur.Cells[0].SetCellValue(data.ChiPhi[i]?.Stt);
                 rowCur.Cells[1].SetCellValue(data.ChiPhi[i]?.name);
-                
-                if (data.ChiPhi[i].valueCP == 0 || data.ChiPhi[i].valueCP == null)
+
+                if (data.ChiPhi[i].valueCP == 0)
                 {
                     rowCur.Cells[3].SetCellValue("");
                 }
@@ -472,7 +465,7 @@ namespace SMO.Service.BP
                     rowCur.Cells[3].SetCellValue((double)Math.Round(data.ChiPhi[i].valueCP));
                 }
 
-                if (data.ChiPhi[i].price == 0 || data.ChiPhi[i].price == null)
+                if (data.ChiPhi[i].price == 0)
                 {
                     rowCur.Cells[4].SetCellValue("");
                 }
@@ -535,7 +528,7 @@ namespace SMO.Service.BP
             var data = datas.chiPhiInReports;
             var startRow1 = 8;
 
-          
+
             for (int i = 0; i < data.Count(); i++)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow1++, 8);
@@ -626,7 +619,7 @@ namespace SMO.Service.BP
                     rowCur.Cells[j].CellStyle.WrapText = true;
                 }
             }
-           
+
             templateWorkbook.Write(outFileStream);
 
         }
@@ -868,7 +861,7 @@ namespace SMO.Service.BP
             foreach (var item in dataDetails)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-                
+
                 rowCur.Cells[0].SetCellValue(item.Stt);
                 rowCur.Cells[1].SetCellValue(item.NameExcel);
                 rowCur.Cells[2].SetCellValue(item.Unit);
@@ -3385,7 +3378,7 @@ namespace SMO.Service.BP
                             Stt = "a",
                             Name = "Chuẩn bị đầu tư và chuẩn bị thực hiện dự án",
                             Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
-                       
+
                         });
                         data.Add(new ReportModel
                         {
@@ -3515,7 +3508,7 @@ namespace SMO.Service.BP
             }
         }
 
-        public List<ReportModel> GetDataSCLByArea(string area, int year, 
+        public List<ReportModel> GetDataSCLByArea(string area, int year,
             List<T_BP_SUA_CHUA_LON_DATA> data,
             List<T_BP_SUA_CHUA_LON_DATA> dataBS,
             List<T_BP_SUA_CHUA_LON_DATA> dataTH,
@@ -3530,17 +3523,20 @@ namespace SMO.Service.BP
                     dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100001")).ToList();
                     dataTH = dataTH.Where(x => x.ORG_CODE.Contains("100001")).ToList();
                 }
-                if (area == "MB") {
+                if (area == "MB")
+                {
                     data = data.Where(x => x.ORG_CODE.Contains("100002")).ToList();
                     dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100002")).ToList();
                     dataTH = dataTH.Where(x => x.ORG_CODE.Contains("100002")).ToList();
                 }
-                if (area == "MT") {
+                if (area == "MT")
+                {
                     data = data.Where(x => x.ORG_CODE.Contains("100003")).ToList();
                     dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100003")).ToList();
                     dataTH = dataTH.Where(x => x.ORG_CODE.Contains("100003")).ToList();
                 }
-                if (area == "MN") {
+                if (area == "MN")
+                {
                     data = data.Where(x => x.ORG_CODE.Contains("100004")).ToList();
                     dataBS = dataBS.Where(x => x.ORG_CODE.Contains("100004")).ToList();
                     dataTH = dataTH.Where(x => x.ORG_CODE.Contains("100004")).ToList();
@@ -3773,7 +3769,7 @@ namespace SMO.Service.BP
 
                 if (!string.IsNullOrEmpty(area))
                 {
-                    if(area == "MB")
+                    if (area == "MB")
                     {
                         details1_1 = details1_1.Where(x => x.ORG_CODE.Contains("100002")).ToList();
                         details3 = details3.Where(x => x.ORG_CODE.Contains("100002")).ToList();

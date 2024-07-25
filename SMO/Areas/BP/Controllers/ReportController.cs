@@ -589,7 +589,7 @@ namespace SMO.Areas.BP.Controllers
 
         [HttpPost]
         public FileContentResult ExportExcelTHKHDT(int year, string phienBan, string kichBan, string area)
-         {
+        {
             MemoryStream outFileStream = new MemoryStream();
             var data = _servicePhienBan.GetDataReportDauTu(year, phienBan, kichBan, area);
             var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_DAU_TU.xlsx");
