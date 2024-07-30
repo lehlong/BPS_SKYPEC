@@ -286,6 +286,8 @@ namespace SMO.Service.MD
                     Value11 = dataDetails.Sum(x => x.VALUE_NOV) ?? 0,
                     Value12 = dataDetails.Sum(x => x.VALUE_SEP) ?? 0,
                     ValueSumYear = dataDetails.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+
+
                     IsBold = true,
                     Order = -1,
                     Level = 0,
