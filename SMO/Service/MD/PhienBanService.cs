@@ -39,6 +39,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using static iTextSharp.text.pdf.AcroFields;
 
+
 namespace SMO.Service.MD
 {
     public class PhienBanService : GenericService<T_MD_PHIEN_BAN, PhienBanRepo>
@@ -2853,10 +2854,29 @@ namespace SMO.Service.MD
                 #endregion
 
                 #region KẾ HOẠCH CHI PHÍ
+                //f(area == "CQ") data = data.Where(x => x.ORG_CODE.Contains("100001")).ToList();
+                //if (area == "MB") data = data.Where(x => x.ORG_CODE.Contains("100002")).ToList();
+                //if (area == "MT") data = data.Where(x => x.ORG_CODE.Contains("100003")).ToList();
+                //if (area == "MN") data = data.Where(x => x.ORG_CODE.Contains("100004")).ToList();
+                //if (area == "VT") data = data.Where(x => x.ORG_CODE.Contains("100005")).ToList();
+                Dictionary<string, string> OrgArea =
+              new Dictionary<string, string>()
+                    {
+                  {"CQ","100001"},
+                  {"MB","100002"},
+                  {"MT","100003"},
+                  {"MN","100004"},
+                  {"VT","100005"},
+              };
+                //var orgcode = OrgArea.ContainsKey(area) ? OrgArea[area]: true;
                 var headerCP_PB1 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataCP_PB1 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_PB1.Contains(x.TEMPLATE_CODE)).ToList();
                 var headerCP_CKP = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB4" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var dataCP_CKP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_CKP.Contains(x.TEMPLATE_CODE)).ToList();
+                var dataCP_CKP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_CKP.Contains(x.TEMPLATE_CODE) ).ToList();
+                if (OrgArea.ContainsKey(area))
+                {
+                    dataCP_CKP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_CKP.Contains(x.TEMPLATE_CODE)&&x.ORG_CODE.Contains(OrgArea[area])).ToList();
+                }
                 var headerCP_BS = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataCP_BS = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_BS.Contains(x.TEMPLATE_CODE)).ToList();
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
@@ -2867,8 +2887,8 @@ namespace SMO.Service.MD
                         Order = e.STT,
                         IsBold = e.IS_BOLD,
                         Name = e.GROUP_NAME,
-                        Col1 = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.AMOUNT),
-                        Col2 = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.AMOUNT)
+                        Col1 = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)&& (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) :true) ).Sum(x => x.AMOUNT),
+                        Col2 = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)&& (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.AMOUNT)
                     };
                     i.Col3 = i.Col1 + i.Col2;
                     switch (month)
@@ -4951,6 +4971,8 @@ namespace SMO.Service.MD
                 {
                     IsBold = true,
                     name = area == "MB" ? "Chi nhánh khu vực Miền Bắc" : area == "MT" ? "Chi nhánh khu vực Miền Trung" : area == "MN" ? "Chi nhánh khu vực Miền Nam" : area == "VT" ? "Chi nhánh Vận Tải" : "Cơ quan Công ty",
+                    Col2=(dataXDCB.Where(x => x.DauTuXayDungProfitCenter.Project.AREA_CODE == area && x.DauTuXayDungProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_1) ?? 0)+ (dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_1) ?? 0),
+                    Col3 = (dataXDCB.Where(x => x.DauTuXayDungProfitCenter.Project.AREA_CODE == area && x.DauTuXayDungProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_8))+(dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_10)),
                 });
 
                 data.Add(new ReportDauTuModel
@@ -5007,8 +5029,8 @@ namespace SMO.Service.MD
                     Stt = "II",
                     IsBold = true,
                     name = "Đầu tư trang thiết bị",
-                    Col2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_10),
+                    Col2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_1) ?? 0,
+                    Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_10),
 
                 });
                 var orderTTB = 1;
