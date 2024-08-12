@@ -112,6 +112,7 @@ namespace SMO.Models
         public List<DauTu> DauTu { get; set; } = new List<DauTu> { };
         public List<SuaChuaLon> SuaChuaLon { get; set; } = new List<SuaChuaLon> { };
         public List<ChiPhi> ChiPhi { get; set; } = new List<ChiPhi> { };
+        public List<SuaChuaThuongXuyenReportModel> SuaChuaThuongXuyen { get; set; } = new List<SuaChuaThuongXuyenReportModel> { };
 
     }
 

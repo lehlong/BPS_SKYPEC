@@ -8,6 +8,8 @@
     var gridTab2 = Guid.NewGuid().ToString("N");
     var gridTab3 = Guid.NewGuid().ToString("N");
     var gridTab4 = Guid.NewGuid().ToString("N");
+    var gridTab5 = Guid.NewGuid().ToString("N");
+
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
@@ -18,10 +20,13 @@
         <a title="Kế hoạch theo năm" data-toggle="tab" href="#tab2">II. KẾ HOẠCH ĐẦU TƯ, MUA SẮM TRANG THIẾT BỊ</a>
     </li>
     <li role="presentation" style="cursor: pointer;">
-        <a title="Kế hoạch theo năm" data-toggle="tab" href="#tab3">III. KẾ HOẠCH SỬA CHỮA LỚN TÀI SẢN CỐ ĐỊNH</a>
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#tab3">III. KẾ HOẠCH SỬA CHỮA LỚN </a>
     </li>
     <li role="presentation" style="cursor: pointer;">
         <a title="Kế hoạch theo năm" data-toggle="tab" href="#tab4">IV. KẾ HOẠCH CHI PHÍ</a>
+    </li>
+    <li role="presentation" style="cursor: pointer;">
+        <a title="Kế hoạch theo năm" data-toggle="tab" href="#tab5">V. KẾ HOẠCH SỬA CHỮA THƯỜNG XUYÊN</a>
     </li>
 </ul>
 <div class="tab-content" style="padding-bottom:0">
@@ -40,6 +45,9 @@
     <div role="tabpanel" class="tab-pane fade" id="tab4">
         <div style="height: calc(100vh - 262px); width: 100%" id="@gridTab4"></div>
     </div>
+    <div role="tabpanel" class="tab-pane fade" id="tab5">
+        <div style="height: calc(100vh - 262px); width: 100%" id="@gridTab5"></div>
+    </div>
 </div>
 <script type="text/javascript">
     var spans = [];
@@ -51,20 +59,20 @@
             })
         }
     });
-    console.log(spans)
+    console.log(dataSL)
     const gridTab1 = new dhx.Grid("@gridTab1", {
         columns: [
             { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
 
             { id: "code", header: [{ text: "Sản lượng theo sân bay", align: "center", colspan: 2 }, { text: "Mã sân bay", align: "center" }] },
-            { id: "name", header: ["", { text: "Tên sân bay", align: "center" }], footer: [{ text: "TỔNG CỘNG" }] },
+            { id: "name", header: ["", { text: "Tên sân bay", align: "center" }],/* footer: [{ text: "TỔNG CỘNG" }]*/ },
 
-            { id: "value1", header: [{ text: "HKVN", align: "center", colspan: 3 }, { text: "VNA", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
-            { id: "value2", header: ["", { text: "HKVN#", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
-            { id: "value3", header: ["", { text: "TỔNG", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+            { id: "value1", header: [{ text: "HKVN", align: "center", colspan: 3 }, { text: "VNA", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", /*footer: [{ content: "sum" }] */},
+            { id: "value2", header: ["", { text: "HKVN#", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", /*footer: [{ content: "sum" }]*/ },
+            { id: "value3", header: ["", { text: "TỔNG", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#", /*footer: [{ content: "sum" }] */},
 
-            { id: "value4", header: [{ text: "HKQT", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
-            { id: "value5", header: [{ text: "TỔNG", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#", footer: [{ content: "sum" }] },
+            { id: "value4", header: [{ text: "HKQT", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#",/* footer: [{ content: "sum" }]*/ },
+            { id: "value5", header: [{ text: "TỔNG", align: "center", rowspan: 2 }], minWidth: 160, align: "right", type: "number", format: "#.#",/* footer: [{ content: "sum" }]*/ },
 
         ],
         spans: spans,
@@ -133,5 +141,21 @@
         rowHeight: 30,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
+
+    const gridTab5 = new dhx.Grid("@gridTab5", {
+      columns : [
+         { id: "stt", header: [{ text: "STT", align: "center" }], align: "center", width: 100 },
+         { id: "name", header: [{ text: "DANH MỤC", align: "center" }, { content: "inputFilter" }], width: 500 },
+         { id: "valueGT", header: [{ text: "KH NĂM 2024", align: "center", colspan: 3 }, { text: "GIÁ TRỊ", align: "center" }], align: "right", width: 160, type: "number", format: "#.#" },
+         { id: "valueQM", header: [{ text: "", align: "center" }, { text: "QUY MÔ", align: "center" }], align: "right", width: 180 },
+         { id: "des", header: [{ text: "", align: "center" }, { text: "GHI CHÚ", align: "center" }], align: "right", width: 180 },
+        ],
+     data: @Html.Raw(JsonConvert.SerializeObject(Model.SuaChuaThuongXuyen, jsonSerializeSettings)),
+     resizable: true,
+     selection: "row",
+   /*  keyNavigation: true,*/
+     rowHeight: 30,
+     rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+ });
 
 </script>

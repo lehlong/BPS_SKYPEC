@@ -1672,7 +1672,7 @@ namespace SMO.Service.MD
                             Value1 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Value2 = dataSb.Where(x => !x.SanLuongProfitCenter.HangHangKhong.IS_VNA && x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Value3 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "ND").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
-                            Value4 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.TYPE == "QT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
+                            Value4 = dataSb.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == "HKQT").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Value5 = dataSb.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                             Stt = orderSL.ToString(),
                         };
@@ -1736,6 +1736,46 @@ namespace SMO.Service.MD
                         IsBold = i.IS_BOLD,
                     };
                     data.ChiPhi.Add(item);
+                }
+                #endregion
+
+                #region Kế hoạch sửa chữa thường xuyên
+               
+                var headerSCLTT = UnitOfWork.Repository<SuaChuaThuongXuyenRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSCLTT = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().Where(x => headerSCLTT.Contains(x.TEMPLATE_CODE)).ToList();
+
+                if (string.IsNullOrEmpty(area))
+                {
+                    data.SuaChuaThuongXuyen.Add(new SuaChuaThuongXuyenReportModel
+                    {
+                        Name = "TỔNG CỘNG TOÀN CÔNG TY",
+                        valueGT = dataSCL.Sum(x => x.VALUE) ?? 0,
+                        IsBold = true
+                    });
+                    var elementCodes = dataSCLTT.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
+                    var elementChild = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).ToList();
+                    foreach (var i in elementChild.Select(x => x.PARENT_CODE).Distinct().ToList())
+                    {
+                        var p = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.TIME_YEAR == year && x.CODE == i);
+                        if (p != null)
+                        {
+                            data.SuaChuaThuongXuyen.Add(new SuaChuaThuongXuyenReportModel
+                            {
+                                Stt = "-",
+                                Name = p.NAME,
+                                valueGT = dataSCLTT.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.Contains(p.CODE)).Sum(x => x.VALUE) ?? 0
+                            });
+                        }
+                    }
+                    data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea("MB", year, dataSCLTT));
+                    data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea("MT", year, dataSCLTT));
+                    data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea("MN", year, dataSCLTT));
+                    data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea("CQ", year, dataSCLTT));
+                    data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea("VT", year, dataSCLTT));
+                }
+                else
+                {
+                    data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea(area, year, dataSCLTT));
                 }
                 #endregion
 
