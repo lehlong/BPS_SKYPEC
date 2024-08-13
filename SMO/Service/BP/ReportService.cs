@@ -3860,7 +3860,7 @@ namespace SMO.Service.BP
                         dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID && x.GROUP_2_ID.Contains(e.GROUP_2_ID)).Sum(x => x.VALUE),
                     };
                     i.Col3 = i.Col1 + i.Col2;
-                    i.Col5 = i.Col4 == 0 || i.Col3 == 0 ? 0 : i.Col4 / i.Col1;
+                    i.Col5 = i.Col4 == 0 || i.Col3 == 0 ? 0 : (i.Col4 / i.Col3)*100;
                     data.Add(i);
                 }
 
