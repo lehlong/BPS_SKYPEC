@@ -34,23 +34,23 @@ namespace SMO.Areas.BP.Controllers
             var template = _service.GetTemplate(templateId);
             MemoryStream outFileStream = new MemoryStream();
             var templateExcel = "";
-            if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100001"))
+            if (template.DetailKeHoachChiPhi.Where(x=>x.Center!=null).Any(x => x.Center.COST_CENTER_CODE == "100001"))
             {
                 templateExcel = "Template_KeHoachChiPhiCoQuanCongTy.xlsx";
             }
-            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
+            else if (template.DetailKeHoachChiPhi.Where(x => x.Center != null).Any(x => x.Center.COST_CENTER_CODE == "100002"))
             {
                 templateExcel = "Template_KeHoachChiPhiMienBac.xlsx";
             }
-            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
+            else if (template.DetailKeHoachChiPhi.Where(x => x.Center != null).Any(x => x.Center.COST_CENTER_CODE == "100003"))
             {
                 templateExcel = "Template_KeHoachChiPhiMienTrung.xlsx";
             }
-            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
+            else if (template.DetailKeHoachChiPhi.Where(x => x.Center != null).Any(x => x.Center.COST_CENTER_CODE == "100004"))
             {
                 templateExcel = "Template_KeHoachChiPhiMienNam.xlsx";
             }
-            else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
+            else if (template.DetailKeHoachChiPhi.Where(x => x.Center != null).Any(x => x.Center.COST_CENTER_CODE == "100005"))
             {
                 templateExcel = "Template_KeHoachChiPhiDoiVanTai.xlsx";
             }

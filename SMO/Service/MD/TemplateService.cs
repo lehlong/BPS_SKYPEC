@@ -824,8 +824,9 @@ namespace SMO.Service.MD
             {
                 return UnitOfWork.Repository<TemplateDetailKeHoachChiPhiRepo>()
                                         .GetManyWithFetch(x => x.TIME_YEAR == year && x.TEMPLATE_CODE == templateId, x => x.Center)
+                                        .Where(x=>x.Center!=null)
                                         .Select(x => x.Center)
-                                        .Where(x => x.COST_CENTER_CODE == projectCode)
+                                        .Where(x =>x.COST_CENTER_CODE == projectCode)
                                         .Select(x => x.SAN_BAY_CODE)
                                         .Distinct();
             }

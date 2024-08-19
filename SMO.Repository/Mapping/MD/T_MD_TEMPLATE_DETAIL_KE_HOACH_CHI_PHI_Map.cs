@@ -13,7 +13,7 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.TIME_YEAR);
 
             References(x => x.Center, "CENTER_CODE")
-                .Not.Insert().Not.Update();
+                .Not.Insert().Not.Update().NotFound.Ignore();
             References(x => x.Element).Columns("ELEMENT_CODE", "TIME_YEAR")
                 .Not.Insert().Not.Update();
             References(x => x.Template, "TEMPLATE_CODE")

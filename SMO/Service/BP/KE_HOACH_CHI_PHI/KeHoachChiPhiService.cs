@@ -1560,8 +1560,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
                            var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
                            {
-                       0,
-                       0,
+                       query.Sum(x => x.QUANTITY) ?? 0,
+                       query.Sum(x => x.PRICE) ?? 0,
                        query.Sum(x => x.AMOUNT) ?? 0,
                            } : new decimal[3]{
                        query.Sum(x => x.QUANTITY) ?? 0,
@@ -1602,8 +1602,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                      detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
                             var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
                             {
-                            0,
-                            0,
+                            query.Sum(x => x.QUANTITY) ?? 0,
+                            query.Sum(x => x.PRICE) ?? 0,
                             query.Sum(x => x.AMOUNT) ?? 0,
                             } : new decimal[3]{
                             query.Sum(x => x.QUANTITY) ?? 0,
@@ -1645,8 +1645,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                      detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
                             var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
                             {
-                            0,
-                            0,
+                            query.Sum(x => x.QUANTITY) ?? 0,
+                            query.Sum(x => x.PRICE) ?? 0,
                             query.Sum(x => x.AMOUNT) ?? 0,
                             } : new decimal[3]{
                             query.Sum(x => x.QUANTITY) ?? 0,
@@ -1684,12 +1684,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         };
                         foreach (var sb in lstSanBay)
                         {
+                            var a = detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("B621") && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
+                            var b = detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == "B621" && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
                             var query = lstParentCode.Contains(element.CODE) ? detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList() :
                                      detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
                             var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
                             {
-                            0,
-                            0,
+                            query.Sum(x => x.QUANTITY) ?? 0,
+                            query.Sum(x => x.PRICE) ?? 0,
                             query.Sum(x => x.AMOUNT) ?? 0,
                             } : new decimal[3]{
                             query.Sum(x => x.QUANTITY) ?? 0,

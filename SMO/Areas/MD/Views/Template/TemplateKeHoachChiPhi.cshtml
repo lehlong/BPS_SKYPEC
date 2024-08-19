@@ -326,6 +326,24 @@
             };
             Forms.Ajax(ajaxParams);
         }
+        function BuildTreeElement2() {
+            debugger
+         var year = $("#TIME_YEAR").val();
+         $('#divTreeElement').html("");
+         //Forms.ShowLoading();
+              var ajaxParams = {
+                 url: '@Url.Action("BuildTreeKeHoachChiPhi")',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                    data: { templateId: '@Model.ObjDetail.CODE', type: '@TemplateType.ELEMENT.ToString()', year },
+                 success: function (response) {
+                     $.fn.zTree.init($("#divTreeElement"), setting, response);
+                     triggerSelectProject()
+                 }
+             };
+     Forms.Ajax(ajaxParams);
+ }
 
         function OnClick(event, treeId, treeNode) {
             var treeObj = $.fn.zTree.getZTreeObj("divTreeElement");
@@ -534,6 +552,7 @@
 
         function triggerSelectProject() {
             var treeObj = $.fn.zTree.getZTreeObj("divTreeProject");
+            console.log('đay la',treeObj)
             var nodes = treeObj.getNodesByFilter(filter); // search the array of the nodes
             if (nodes.length === 0) {
                 $('#divTreeElement').parent().addClass("hidden");
@@ -557,6 +576,7 @@
         }
 
         function triggerSelectCompany() {
+
             var treeObj = $.fn.zTree.getZTreeObj("divTreeCompany");
             var nodes = treeObj.getNodesByFilter(filter); // search the array of the nodes
             if (nodes.length === 0) {
@@ -638,6 +658,7 @@
 
 
         function SearchTree(treeId, filter, displayResult, isClick) {
+
             var treeObj = $.fn.zTree.getZTreeObj(treeId);
 
             var allNodes = treeObj.getNodesByFilter(function (node) {
@@ -671,6 +692,7 @@
         }
 
         function MoveBefore(treeId, displayResult) {
+
             var currentText = $(displayResult).html().trim();
             if (currentText !== '') {
                 var currentPositionText = currentText.substring(1, currentText.indexOf("/"));
@@ -702,6 +724,7 @@
 
                 if (currentPosition < total) {
 
+
                     $(displayResult).html(`[${currentPosition + 1}/${total}]`);
 
                     var treeObj = $.fn.zTree.getZTreeObj(treeId);
@@ -730,8 +753,8 @@
 
         $(function () {
             BuildTree();
-            BuildTreeElement();
-            setTimeout(() => triggerSelectProject(), 2000);
+            BuildTreeElement2();
+            
             Forms.CompleteUI();
             SetHeightTree();
         });
