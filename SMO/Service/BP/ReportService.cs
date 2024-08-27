@@ -3430,7 +3430,7 @@ namespace SMO.Service.BP
                     Col5 = DlTH.Sum(x => x.VALUE_6) ?? 0,
                     Col6 = DlTH.Sum(x => x.VALUE_7) ?? 0,
                     Col7 =DlTHLK,
-                    Col8=  DlTHLK ==0 ? 0 : (Dl1_1.Sum(x => x.VALUE_1) ?? 0)/DlTHLK,
+                    Col8=  DlTHLK ==0 ? 0 : ((Dl1_1.Sum(x => x.VALUE_1) ?? 0)/DlTHLK)*100,
 
                     IsBold = true,
                 });
@@ -3456,7 +3456,7 @@ namespace SMO.Service.BP
                         Col5 = detailth.Sum(x => x.VALUE_6) ?? 0,
                         Col6 = detailth.Sum(x => x.VALUE_7) ?? 0,
                         Col7 = detailthLK,
-                        Col8 = detailthLK==0? 0: (detail1_1.Sum(x => x.VALUE_1) ?? 0)/detailthLK,
+                        Col8 = detailthLK==0? 0: ((detail1_1.Sum(x => x.VALUE_1) ?? 0)/detailthLK)*100,
                         //Col9 = detail1_1.Select(x=>x.VALUE_8)
                     };
                     data.Add(i);
@@ -3473,7 +3473,7 @@ namespace SMO.Service.BP
                             Col5 = detailthCBDT.Sum(x => x.VALUE_6) ?? 0,
                             Col6 = detailthCBDT.Sum(x => x.VALUE_7) ?? 0,
                             Col7 = detaillkCBDT,
-                            Col8= detaillkCBDT==0 ? 0 :(detail1_1CBDT.Sum(x => x.VALUE_1) ?? 0)/ detaillkCBDT,
+                            Col8= detaillkCBDT==0 ? 0 :((detail1_1CBDT.Sum(x => x.VALUE_1) ?? 0)/ detaillkCBDT)*100,
                             //Col9= detail1_1CBDT.Select(x=>x.VALUE_8)
 
                         });
@@ -3486,7 +3486,7 @@ namespace SMO.Service.BP
                             Col5 = detailthTTDT.Sum(x => x.VALUE_6) ?? 0,
                             Col6 = detailthTTDT.Sum(x => x.VALUE_7) ?? 0,
                             Col7 = detaillkTTDT,
-                            Col8 = detaillkTTDT == 0 ? 0 : (detail1_1TTDT.Sum(x => x.VALUE_1) ?? 0) / detaillkCBDT,
+                            Col8 = detaillkTTDT == 0 ? 0 : ((detail1_1TTDT.Sum(x => x.VALUE_1) ?? 0) / detaillkCBDT)*100,
                             //Col9= detail1_1TTDT.Select(x=>x.VALUE_8)
                         });
 

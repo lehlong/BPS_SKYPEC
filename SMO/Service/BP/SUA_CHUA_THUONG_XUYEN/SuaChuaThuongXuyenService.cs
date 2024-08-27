@@ -3188,7 +3188,7 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
             {
                 if (isHasValue.Value)
                 {
-                    return sum.Where(x => x.Values.Sum() > 0).ToList();
+                    return sum.Where(x => x.Values.Sum() >= 0).ToList();
                 }
                 else
                 {

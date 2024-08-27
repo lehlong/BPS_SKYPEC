@@ -28,13 +28,14 @@
         { id: "col5", header: ["", "", { text: "Đơn giá", align: "center" }], align: "right", width: 140, type: "number", format: "#.#" },
         { id: "col6", header: ["", "", { text: "Thành tiền", align: "center" }], align: "right", width: 160, type: "number", format: "#.#" },
         { id: "col7", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center", rowspan: 2 }], align: "right", minWidth: 160, type: "number", format: "#.#" },
-        { id: "col8", header: ["", { text: "%TH/KH", align: "center", rowspan: 2 }], align: "right", minWidth: 140, type: "number", format: "#.#" },
+        { id: "col8", header: ["", { text: "%TH/KH", align: "center", rowspan: 2 }], align: "right", minWidth: 140, template: function (value) { return `<div>${Number.parseFloat(value).toFixed(3)}%</div>` }, htmlEnable: true },
 
         { id: "col9", header: [{ text: "Giá trị giải ngân", align: "center", colspan: 2 }, { text: "Ước giải ngân tháng báo cáo", align: "center", rowspan: 2 }], align: "right", minWidth: 160, type: "number", format: "#.#" },
-        { id: "col10", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center", rowspan: 2 }], align: "right", minWidth: 160, type: "number", format: "#.#" },
+        { id: "col10", header: ["", { text: "Lũy kế đến hết tháng báo cáo", align: "center", rowspan: 2 }], align: "right", minWidth: 160, },
 
         { id: "des", header: [{ text: "Ghi chú", align: "center", rowspan: 3 }], align: "right", adjust: true },
     ];
+    console.log(rawData)
     
     const treeGrid = new dhx.Grid("@gridId", {
         columns,
