@@ -24,7 +24,7 @@
         { id: "col2", header: [{ text: "KH bổ sung, điều chỉnh (theo CV đã được phê duyệt) ", align: "center", rowspan: 2 }], align: "right", width: 180, type: "number", format: "#.#" },
         { id: "col3", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center", rowspan: 2 }], align: "right", width: 160, type: "number", format: "#.#" },
         { id: "col4", header: [{ text: "Giá trị thực hiện", align: "center", rowspan: 2 }], align: "right", width: 160, type: "number", format: "#.#" },
-        { id: "col5", header: [{ text: "% so với KH", align: "center", rowspan: 2 }], align: "right", width: 160, type: "number", format: "#.#" },
+        { id: "col5", header: [{ text: "% so với KH", align: "center", rowspan: 2 }], align: "right", width: 160, template: function (value) { return `<div>${Number.parseFloat(value).toFixed(3)}%</div>` }, htmlEnable: true },
 
         { id: "des", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }], align: "right", adjust: true },
     ];
@@ -39,7 +39,7 @@
         selection: 'row',
         rowHeight: 30,
     });
-
+    console.log(rawData)
      function ExportData() {
         var Treedata = JSON.stringify(treeGrid.data.serialize());
         var template = "BM_2109";

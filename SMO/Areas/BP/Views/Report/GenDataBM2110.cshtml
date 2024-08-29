@@ -25,7 +25,7 @@
         col2: parentData.reduce((accum, item) => accum + item.col2, 0),
         col3: parentData.reduce((accum, item) => accum + item.col3, 0),
         col4: parentData.reduce((accum, item) => accum + item.col4, 0),
-        col5: parentData.reduce((accum, item) => accum + item.col5, 0),
+        col5: parentData.reduce((accum, item) => accum + item.col1, 0) == 0 || parentData.reduce((accum, item) => accum + item.col4, 0) == 0 ? 0 : (parentData.reduce((accum, item) => accum + item.col4, 0) / parentData.reduce((accum, item) => accum + item.col1, 0)) * 100,
         isBold: true
     })
     let columns = [

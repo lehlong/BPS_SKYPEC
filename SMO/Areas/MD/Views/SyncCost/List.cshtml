@@ -5,6 +5,7 @@
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var jsonData = Model.ObjList.OrderBy(x => x.CHI_NHANH).ThenBy(x => x.GROUP_2_ID).Select(x => new
     {
+        id=x.ID,
         chi_nhanh = x.CHI_NHANH,
         group_3_id = x.GROUP_3_ID,
         group_name_3 = x.GROUP_NAME_3,
@@ -57,7 +58,9 @@
         data: rawData
     });
     function ExportExcel() {
+        console.log(treeGrid.data.serialize())
         var Treedata = JSON.stringify(treeGrid.data.serialize());
+
         $('#@formIdExportExcel #Treedata').val(Treedata);
         $('#export_btn').click();
     }
