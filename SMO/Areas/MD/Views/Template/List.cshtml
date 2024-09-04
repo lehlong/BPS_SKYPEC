@@ -1,75 +1,110 @@
 ﻿@model SMO.Service.MD.TemplateService
-
-@{ 
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
     if (Model.ObjList.Count > 50)
     {
         Html.RenderPartial("Paging", Model);
     }
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    if (Model.ObjList.Count > 50)
+    {
+        Html.RenderPartial("Paging", Model);
+    }
+    var data = Model.ObjList.Select(x =>
+    {
+        return new
+        {
+            Code = x.CODE,
+            Name = x.NAME,
+            OrgCode=x.ORG_CODE,
+            OrgName=x?.Organize?.NAME,
+            BudgetType= BudgetType.GetText(x.BUDGET_TYPE),
+            ElementType=ElementType.GetText(x.ELEMENT_TYPE),
+            CreateBy=x.CREATE_BY,
+            CreateDate=x.CREATE_DATE?.ToString(Global.DateTimeToStringFormat),
+            Active=x.ACTIVE,
+            Status=x.ACTIVE?"Active":"Deactive"
+        };
+    });
+    var gridId = Guid.NewGuid().ToString("N");
 }
 
-<div class="table-responsive">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Mẫu khai báo</th>
-                <th>Đơn vị</th>
-                <th class="align-center">Loại khoản mục</th>
-                <th class="align-center">Loại kế hoạch</th>
-                <th class="align-center">Người tạo</th>
-                <th>Trạng thái</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.ObjList)
-            {
-                var vdbclickAction = string.Format("Forms.LoadAjax('{0}', this);", Url.Action("Details", new { id = item.CODE }));
-                <tr>
-                    <td ondblclick="@vdbclickAction">
-                        <a href="#" onclick="@vdbclickAction"><b>@item.CODE</b></a>
-                        <div>@item.NAME</div>
-                    </td>
-                    <td ondblclick="@vdbclickAction">
-                        <b>@item.ORG_CODE</b>
-                        <div>@(item?.Organize?.NAME)</div>
-                    <td ondblclick="@vdbclickAction" class="align-center">
-                        @ElementType.GetText(item.ELEMENT_TYPE)
-                    </td>
-                    <td ondblclick="@vdbclickAction" class="align-center">
-                        @BudgetType.GetText(item.BUDGET_TYPE)
-                    </td>
-                    <td class="align-center">
-                        @item.CREATE_BY
-                        <div>@(item.CREATE_DATE?.ToString(Global.DateTimeToStringFormat))</div>
-                    </td>
-                    <td>
-                        <div class="m-b-5">
-                            <div class="form-group">
-                                <input name="cbxIsBase_@item.CODE"
-                                       class="filled-in"
-                                       id="cbxIsBase_@item.CODE"
-                                       @(item.ACTIVE ? "checked" : "")
-                                       review-temp-name="checkOne"
-                                       type="checkbox"
-                                       value="@item.ACTIVE"
-                                       onchange="toggleStatusTemplate('@item.CODE', @item.ACTIVE.ToString().ToLower())"
-                                       data-val="true">
-                                <label for="cbxIsBase_@item.CODE" class="p-r-5"></label>
-                                @if (item.ACTIVE)
-                                {
-                                    <text><span class="text-success">Actived</span></text>
-                                }
-                                else
-                                {
-                                    <text><span class="text-danger">Deactived</span></text>
-                                }
-                            </div>
-                        </div>
-                    </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-</div>
+    <div class="m-t-20">
+        <div style="height: calc(100vh - 240px);" id="@gridId"></div>
+    </div>
+
+    <script type="text/javascript">
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(data, jsonSerializeSettings));
+    console.log(rawData)
+    const columns = [
+
+        {
+        
+            id: "code", header: [{ text: "Mẫu khai báo" }], template: (value, row, col) => {
+
+                return `<P><a href="#" onclick="Forms.LoadAjax({url: '@Url.Action("Details", new { @area = "MD" })', data: {id : '${value}' }});" >${value}</a><br>
+                        ${row.name}</P>`
+            },
+            htmlEnable: true,
+            width: 300
+        },
+        {
+            id: "orgCode", header: [{ text: "Đơn vị" }], template: (value, row, col) => {
+
+                return `<P>${value}<br>
+                        ${row.orgName}</P>`
+            },
+            htmlEnable: true,
+            width: 250
+        },
+        {
+            id: "createBy", header: [{ text: "Người tạo " }], template: (value, row, col) => {
+
+                return `<P>${value}<br>
+                        ${row.createDate}</P>`
+            },
+            htmlEnable: true,
+            width: 250
+        },
+        { id: "elementType", header: [{ text: "Loại khoản mục" }], width:150 },
+        { id: "budgetType", header: [{ text: "Loại kế hoạch" }], width: 150 },
+        {
+            id: "status", header: [{ text: "Trạng thái" }, { content: "selectFilter" }],
+            template: (value, row, col) => {
+
+                return `
+                                   <div class="m-b-5">
+                                      <div class="form-group">
+                                         <input name="cbxIsBase_${row.code}"
+                                           class="filled-in"
+                                         id="cbxIsBase_${row.code}"
+                                         ${row.active ? "checked" : ""}
+                                          review-temp-name="checkOne"
+                                         type="checkbox"
+                                         value="${row.active}"
+                                          data-val="true"
+                                         onchange="toggleStatusTemplate('${row.code}',  ${row.active.toString().toLowerCase()})"
+                                              >
+                                 <label for="cbxIsBase_${row.code}" class="p-r-5"></label>
+                                  ${value}
+                                        </div>
+                                    </div>
+                                `
+
+            }, htmlEnable: true }
+
+]
+
+    const grid = new dhx.Grid("@gridId", {
+        columns,
+        resizable: true,
+        keyNavigation: true,
+        data: rawData,
+    });
+
+    </script>
+
 @{ Html.RenderPartial("Paging", Model); }
 
 
