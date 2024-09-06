@@ -1445,7 +1445,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             ViewDataCenterModel model)
         {
             isDrillDownApply = model.IS_DRILL_DOWN;
-            var isRead = UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+            var isRead = UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE==model.TEMPLATE_CODE);
             if (isRead)
             {
                 ObjDetail.ORG_CODE = model.ORG_CODE;
@@ -3296,7 +3296,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
             var code = UnitOfWork.Repository<CostCenterRepo>().Queryable().Where(x => x.CODE == template.ORG_CODE).Select(x => x.PARENT_CODE).FirstOrDefault();
             var currentUserCenterCode = ProfileUtilities.User.ORGANIZE_CODE;
-            var isRead = UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+            var isRead = UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE==templateId);
             if (isRead)
             {
                 currentUserCenterCode = ObjDetail.ORG_CODE;
