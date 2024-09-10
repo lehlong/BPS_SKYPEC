@@ -77,7 +77,7 @@
                     }
                 </tr>
             }
-            @foreach (var item in Model.ObjList.Where(x => !string.IsNullOrEmpty(x.TEMPLATE_CODE) && !x.Template.ACTIVE).OrderByDescending(x => x.UPDATE_DATE).ThenBy(x => x.CREATE_DATE))
+            @foreach (var item in Model.ObjList.Where(x => !string.IsNullOrEmpty(x.TEMPLATE_CODE) && !x.Template.ACTIVE).OrderByDescending(x => x.UPDATE_DATE).ThenBy(x => x.CREATE_DATE).OrderByDescending(x=>x.STATUS=="03"))
             {
                 var clsChange = "";
                 if (Model.ObjListSumUpHistory.Count() > 0)

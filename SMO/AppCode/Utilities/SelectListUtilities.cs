@@ -170,6 +170,18 @@ namespace SMO
             lstData.Add(new Data { Value = "TTB-LE", Text = "Trang thiết bị lẻ" });
             return new SelectList(lstData, "Value", "Text", new Data { });
         }
+        public static SelectList GetAllStatus()
+        {
+            var lstData = new List<Data>();
+            lstData.Add(new Data { Value = "", Text = "-" });
+            lstData.Add(new Data { Value = "01", Text = "Chưa trình duyệt" });
+            lstData.Add(new Data { Value = "02", Text = "Chờ phê duyệt" });
+            lstData.Add(new Data { Value = "03", Text = "Đã phê duyệt" });
+            lstData.Add(new Data { Value = "04", Text = "Từ chối" });
+            lstData.Add(new Data { Value = "05", Text = "Hủy nộp" });
+            return new SelectList(lstData, "Value", "Text", new Data { });
+        }
+
 
         public static SelectList GetAllPhienBan()
         {
@@ -183,6 +195,7 @@ namespace SMO
             }
             return new SelectList(lstData, "Value", "Text", new Data { });
         }
+        //public static 
 
         public static SelectList GetAllMonth()
         {

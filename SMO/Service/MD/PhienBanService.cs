@@ -1,5 +1,6 @@
 ﻿using iTextSharp.text;
 using Microsoft.Ajax.Utilities;
+using Microsoft.CodeAnalysis;
 using Microsoft.Office.Interop.Excel;
 using NHibernate.Criterion;
 using NHibernate.Mapping;
@@ -1795,22 +1796,27 @@ namespace SMO.Service.MD
             {
                 var lstProject = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year && x.AREA_CODE == area).OrderByDescending(x => x.TYPE).ToList();
                 lstProject = lstProject.Where(x => x.CODE != "DA-2024-5").ToList();
+                var headerXDCB = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataXDCB = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => headerXDCB.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerTTB = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => headerTTB.Contains(x.TEMPLATE_CODE)).ToList();
                 var data = new List<DauTu>();
                 data.Add(new DauTu
                 {
                     Stt = "",
                     Name = area == "CQ" ? "CƠ QUAN CÔNG TY" : area == "MB" ? "CHI NHÁNH MIỀN BẮC" : area == "MN" ? "CHI NHÁNH MIỀN NAM" : area == "MT" ? "CHI NHÁNH MIỀN TRUNG" : "CHI NHÁNH VẬN TẢI",
-                    IsBold = true
+                    IsBold = true,
+                    Value2= (dataTTB.Where(x => lstProject.Any(y => y.CODE == x.DauTuTrangThietBiProfitCenter.PROJECT_CODE && y.LOAI_HINH == "TTB") ).Sum(x => x.VALUE_1) ?? 0)+ (dataXDCB.Where(x => lstProject.Any(y => y.CODE == x.DauTuXayDungProfitCenter.PROJECT_CODE && y.LOAI_HINH == "XDCB") ).Sum(x => x.VALUE_1) ?? 0) 
                 });
                 data.Add(new DauTu
                 {
                     Stt = "I",
                     Name = "Đầu tư XDCB",
-                    IsBold = true
+                    IsBold = true,
+                    Value2 = dataXDCB.Where(x => lstProject.Any(y=>y.CODE == x.DauTuXayDungProfitCenter.PROJECT_CODE && y.LOAI_HINH == "XDCB")).Sum(x => x.VALUE_1) ?? 0,
                 });
                 var orderXDCB = 1;
-                var headerXDCB = UnitOfWork.Repository<DauTuXayDungRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var dataXDCB = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => headerXDCB.Contains(x.TEMPLATE_CODE)).ToList();
+               
                 foreach (var project in lstProject.Where(x => x.LOAI_HINH == "XDCB"))
                 {
                     data.Add(new DauTu
@@ -1825,6 +1831,7 @@ namespace SMO.Service.MD
                     });
                     if (project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE))
                     {
+                        
                         data.Add(new DauTu
                         {
                             Stt = "a",
@@ -1852,11 +1859,11 @@ namespace SMO.Service.MD
                 {
                     Stt = "II",
                     Name = "Đầu tư trang thiết bị",
-                    IsBold = true
+                    IsBold = true,
+                     Value2 = dataTTB.Where(x => lstProject.Any(y=>y.CODE==x.DauTuTrangThietBiProfitCenter.PROJECT_CODE && y.LOAI_HINH == "TTB") ).Sum(x => x.VALUE_1) ?? 0,
                 });
                 var orderTTB = 1;
-                var headerTTB = UnitOfWork.Repository<DauTuTrangThietBiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
-                var dataTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => headerTTB.Contains(x.TEMPLATE_CODE)).ToList();
+               
                 foreach (var project in lstProject.Where(x => x.LOAI_HINH == "TTB"))
                 {
                     data.Add(new DauTu
@@ -1864,7 +1871,7 @@ namespace SMO.Service.MD
                         Stt = orderTTB.ToString(),
                         Name = project.NAME,
                         Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_2,
-                        Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5) ?? 0,
+                        Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0,
                         Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_3,
                         Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.DESCRIPTION,
                         IsBold = project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE) ? true : false,

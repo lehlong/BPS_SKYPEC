@@ -46,6 +46,8 @@
                 @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR, new { @class = "hddTimeYear" })
                 @Html.HiddenFor(m => m.ObjDetail.KICH_BAN, new { @class = "hddKichBan" })
                 @Html.HiddenFor(m => m.ObjDetail.PHIEN_BAN, new { @class = "hddPhienBan" })
+                @Html.HiddenFor(m => m.ObjDetail.STATUS, new { @class = "hddTrangThai" })
+
                 <div class="card border-grey" style="margin-bottom: 2px;">
                     <div class="body" style="padding-top: 0px;">
                         <ul class="nav nav-tabs" role="tablist">
@@ -72,6 +74,8 @@
                     @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR, new { @class = "hddTimeYear" })
                     @Html.HiddenFor(m => m.ObjDetail.KICH_BAN, new { @class = "hddKichBan" })
                     @Html.HiddenFor(m => m.ObjDetail.PHIEN_BAN, new { @class = "hddPhienBan" })
+                    @Html.HiddenFor(m => m.ObjDetail.STATUS, new { @class = "hddTrangThai" })
+
                     <div class="card border-grey" style="margin-bottom: 2px;">
                         <div class="body" style="padding-top: 0px;">
                             <ul class="nav nav-tabs" role="tablist">
@@ -122,11 +126,24 @@
                 </div>
             </div>
 
-            <div class="card border-grey hidden-sm hidden-xs" style="margin-bottom: 2px;">
+            <div class="card border-grey hidden-sm hidden-xs" style="margin-bottom: 2px; z-index: 9">
                 <div class="body">
                     <label class="col-deep-orange">CHỌN PHIÊN BẢN KẾ HOẠCH</label>
                     <div class="input-group">
                         @Html.MyDropDownListFor(m => m.ObjDetail.PHIEN_BAN, SelectListUtilities.GetAllPhienBan(), new { @class = "selectpicker show-tick", @onchange = "OnChangePhienBan(this);", @id = "dllPhienBan" })
+                        <span class="input-group-addon" onclick="RefreshData();" style="padding-left: 10px; cursor: pointer;">
+                            <i class="material-icons">refresh</i>
+                        </span>
+                    </div>
+
+                    <label class="lblAlert m-t-10 col-deep-orange" style="display: none;">CHÚ Ý: Năm kế hoạch đã đóng. Các đơn vị cấp dưới của tập đoàn không thể nhập, tổng hợp hay trình, phê duyệt dữ liệu!</label>
+                </div>
+            </div>
+            <div class="card border-grey hidden-sm hidden-xs" style="margin-bottom: 2px;">
+                <div class="body">
+                    <label class="col-deep-orange">CHỌN TRẠNG THÁI</label>
+                    <div class="input-group">
+                        @Html.MyDropDownListFor(m => m.ObjDetail.STATUS, SelectListUtilities.GetAllStatus(), new { @class = "selectpicker show-tick", @onchange = "OnChangeTrangThai(this);", @id = "dllTrangThai" })
                         <span class="input-group-addon" onclick="RefreshData();" style="padding-left: 10px; cursor: pointer;">
                             <i class="material-icons">refresh</i>
                         </span>
@@ -168,6 +185,8 @@
                             @Html.HiddenFor(m => m.ObjDetail.TIME_YEAR, new { @class = "hddTimeYear" })
                             @Html.HiddenFor(m => m.ObjDetail.KICH_BAN, new { @class = "hddKichBan" })
                             @Html.HiddenFor(m => m.ObjDetail.PHIEN_BAN, new { @class = "hddPhienBan" })
+                            @Html.HiddenFor(m => m.ObjDetail.STATUS, new { @class = "hddTrangThai" })
+
                             <div id="divResultHistory">
 
                             </div>

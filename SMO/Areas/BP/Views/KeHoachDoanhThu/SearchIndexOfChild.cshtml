@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.ObjList.Where(x => string.IsNullOrEmpty(x.TEMPLATE_CODE) || x.Template.ACTIVE).OrderByDescending(x => x.UPDATE_DATE).ThenBy(x => x.CREATE_DATE))
+            @foreach (var item in Model.ObjList.Where(x => string.IsNullOrEmpty(x.TEMPLATE_CODE) || x.Template.ACTIVE).OrderByDescending(x => x.UPDATE_DATE).ThenBy(x => x.CREATE_DATE).OrderByDescending(X=>X.STATUS))
             {
                 var clsChange = "";
                 if (Model.ObjListSumUpHistory.Count() > 0)

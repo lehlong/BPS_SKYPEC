@@ -1133,7 +1133,19 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 {
                     ObjDetail.PHIEN_BAN = "PB1";
                 }
-                this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                if (string.IsNullOrEmpty(ObjDetail.STATUS))
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+
+                else if (this.ObjDetail.STATUS == "05")
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.IS_DELETED == true).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+                else
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.STATUS == this.ObjDetail.STATUS).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
             }
             else
             {
@@ -1165,7 +1177,19 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 {
                     ObjDetail.PHIEN_BAN = "PB1";
                 }
-                this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                if (string.IsNullOrEmpty(ObjDetail.STATUS))
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+
+                else if (this.ObjDetail.STATUS == "05")
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.IS_DELETED == true).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+                else
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.STATUS == this.ObjDetail.STATUS).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
             }
                 
         }

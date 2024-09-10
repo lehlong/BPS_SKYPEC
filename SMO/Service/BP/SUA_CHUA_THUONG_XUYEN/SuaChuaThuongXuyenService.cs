@@ -1124,7 +1124,19 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                 {
                     ObjDetail.PHIEN_BAN = "PB1";
                 }
-                this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                if (string.IsNullOrEmpty(ObjDetail.STATUS))
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+
+                else if (this.ObjDetail.STATUS == "05")
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.IS_DELETED == true).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+                else
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.STATUS == this.ObjDetail.STATUS).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
             }
             else
             {
@@ -1156,7 +1168,19 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                 {
                     ObjDetail.PHIEN_BAN = "PB1";
                 }
-                this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                if (string.IsNullOrEmpty(ObjDetail.STATUS))
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+
+                else if (this.ObjDetail.STATUS == "05")
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.IS_DELETED == true).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+                else
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.STATUS == this.ObjDetail.STATUS).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
             }
             
         }
@@ -2214,8 +2238,9 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                             VERSION = versionNext,
                             KHOAN_MUC_SUA_CHUA_CODE = tableData.Rows[i][4].ToString().Trim(),
                             QUY_MO = tableData.Rows[i][6].ToString().Trim(),
-                            VALUE = tableData.Rows[i][7] as decimal? == null ? 0 : tableData.Rows[i][7] as decimal?,
-                            
+                            //VALUE = tableData.Rows[i][7] as decimal? == null ? 0 : tableData.Rows[i][7] as decimal?,
+                            //DT fix
+                            VALUE = tableData.Rows[i][7].GetType().Name == "DBNull" ? 0 : Convert.ToDecimal(tableData.Rows[i][7]),
                             DESCRIPTION = tableData.Rows[i][20].ToString(),
                             CREATE_BY = currentUser
                         };
@@ -2779,7 +2804,7 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
 
                 ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
                 styleCellNumber.CloneStyleFrom(styleCellDetail);
-                styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
+                styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0.00");
 
                 ICellStyle styleCellNumberColor = templateWorkbook.CreateCellStyle();
                 styleCellNumberColor.CloneStyleFrom(styleCellNumber);
@@ -4645,7 +4670,7 @@ namespace SMO.Service.BP.SUA_CHUA_THUONG_XUYEN
                     var columns = 3;
                     rowCur.Cells[0].SetCellValue(item.CODE);
                     rowCur.Cells[1].SetCellValue(item.NAME);
-                    rowCur.Cells[2].SetCellValue(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO);
+                    rowCur.Cells[2].SetCellValue(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData?.QUY_MO);
                     foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                     {
                         rowCur.Cells[columns].SetCellValue(dataCost.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN());

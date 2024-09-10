@@ -1125,7 +1125,19 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 {
                     ObjDetail.PHIEN_BAN = "PB1";
                 }
-                this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                if (string.IsNullOrEmpty(ObjDetail.STATUS))
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+
+                else if (this.ObjDetail.STATUS == "05")
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.IS_DELETED == true).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+                else
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.STATUS == this.ObjDetail.STATUS).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
             }
             else
             {
@@ -1157,7 +1169,19 @@ namespace SMO.Service.BP.SUA_CHUA_LON
                 {
                     ObjDetail.PHIEN_BAN = "PB1";
                 }
-                this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                if (string.IsNullOrEmpty(ObjDetail.STATUS))
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+
+                else if (this.ObjDetail.STATUS == "05")
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.IS_DELETED == true).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
+                else
+                {
+                    this.ObjList = this.ObjList.Where(x => x.KICH_BAN == this.ObjDetail.KICH_BAN && x.PHIEN_BAN == this.ObjDetail.PHIEN_BAN && x.STATUS == this.ObjDetail.STATUS).OrderBy(x => x.ORG_CODE).ThenBy(x => x.TEMPLATE_CODE).ToList();
+                }
             }
 
         }
@@ -2794,7 +2818,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
 
                 ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
                 styleCellNumber.CloneStyleFrom(styleCellDetail);
-                styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
+                styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0.00");
 
                 ICellStyle styleCellNumberColor = templateWorkbook.CreateCellStyle();
                 styleCellNumberColor.CloneStyleFrom(styleCellNumber);
@@ -3756,7 +3780,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             int? version = null)
         {
             string orgCode = ProfileUtilities.User.ORGANIZE_CODE;
-            var isRead = UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE);
+            var isRead = UnitOfWork.Repository<SuaChuaLonDepartmentAssignRepo>().Queryable().Any(x => x.DEPARTMENT_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TEMPLATE_CODE==templateCode);
             if (isRead)
             {
                 orgCode = ObjDetail.ORG_CODE;

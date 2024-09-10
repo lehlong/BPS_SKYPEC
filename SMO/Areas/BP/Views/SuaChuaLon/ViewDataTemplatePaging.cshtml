@@ -114,7 +114,7 @@ else
                                     }
                                     <td class="pre-whitespace @classParent">@(item.CODE)</td>
                                     <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
-                                    <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO)</td>
+                                    <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData?.QUY_MO)</td>
                                     @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                     {
                                         var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
@@ -156,7 +156,7 @@ else
                                     }
                                     <td class="pre-whitespace @classParent">@(item.CODE)</td>
                                     <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
-                                    <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData.QUY_MO)</td>
+                                    <td class="pre-whitespace">@(detailCostElements.FirstOrDefault(x => x.CENTER_CODE == item.CENTER_CODE && x.ELEMENT_CODE == item.CODE)?.PLData?.QUY_MO)</td>
                                     @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
                                     {
                                         var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);

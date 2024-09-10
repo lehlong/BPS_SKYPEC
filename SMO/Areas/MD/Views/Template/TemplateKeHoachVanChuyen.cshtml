@@ -304,7 +304,7 @@
                 success: function (response) {
                     $.fn.zTree.init($("#divTreeProject"), setting, response.projects);
                     $.fn.zTree.init($("#divTreeCompany"), setting, response.companies);
-                    console.log(response)
+              
                 }
             };
             Forms.Ajax(ajaxParams);
@@ -416,6 +416,7 @@
                     // uncheck all node in detail tree
                     treeObj.checkAllNodes(false);
                     var nodes = treeObj.transformToArray(treeObj.getNodes());
+                    console.log(nodes)
                     $.each(nodes, function (index, value) {
                         var findNode = treeObj.getNodesByParam("id", nodes[index].id, null);
                         findNode[0].name = findNode[0].name.replace("<span class='col-red'>", "").replace("</span>", "");
@@ -568,7 +569,7 @@
                 return;
             }
             $.each(nodes, function (index, node) {
-                console.log(node)
+            
                 if (!node.isParent) {
                     treeObj.selectNode(node);
                     OnClick(null, "divTreeCompany", node);

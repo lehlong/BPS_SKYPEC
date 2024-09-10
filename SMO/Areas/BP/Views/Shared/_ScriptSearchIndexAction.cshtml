@@ -205,8 +205,9 @@
         function RefreshData() {
             $("#divResult").html("");
             $("#divResultChild").html("");
-
+          
             var year = $(".hddTimeYear").val();
+            console.log(year)
             $(".spTitleYear").html(year);
 
             
@@ -218,6 +219,7 @@
         }
 
     function OnChangeTimeYear(obj) {
+      
         $(".lblAlert").hide();
         if ($(obj).find(':selected').attr("isClosed") == "True") {
             $(".lblAlert").show();
@@ -229,6 +231,7 @@
     }
 
     function OnChangeKichBan(obj) {
+      
         $(".lblAlert").hide();
         if ($(obj).find(':selected').attr("isClosed") == "True") {
             $(".lblAlert").show();
@@ -239,12 +242,24 @@
         RefreshData();
     }
     function OnChangePhienBan(obj) {
+  
         $(".lblAlert").hide();
         if ($(obj).find(':selected').attr("isClosed") == "True") {
             $(".lblAlert").show();
         }
         var year = $(obj).val();
         $(".hddPhienBan").val(year);
+        RefreshData();
+    }
+    function OnChangeTrangThai(obj) {
+   
+        $(".lblAlert").hide();
+        if ($(obj).find(':selected').attr("isClosed") == "True") {
+            $(".lblAlert").show();
+        }
+        var Startus = $(obj).val();
+ 
+        $(".hddTrangThai").val(Startus);
         RefreshData();
     }
 </script>
