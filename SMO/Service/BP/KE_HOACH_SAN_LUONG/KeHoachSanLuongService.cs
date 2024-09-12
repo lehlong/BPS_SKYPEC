@@ -5441,11 +5441,22 @@ namespace SMO.Service.BP.KE_HOACH_SAN_LUONG
         public override void Search()
         {
             base.Search();
-            /*if (ProfileUtilities.User.Organize.IS_GROUP)
+
+            if (string.IsNullOrEmpty(ObjDetail.STATUS))
             {
-                var lstTemSumUp = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.ORG_CODE == this.ObjDetail.ORG_CODE && x.TIME_YEAR == this.ObjDetail.TIME_YEAR && x.KICH_BAN == this.ObjDetail.KICH_BAN && x.IS_SUMUP);
-                this.ObjList.AddRange(lstTemSumUp);
-            }*/
+              
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN).ToList();
+            }
+            else if (ObjDetail.STATUS == "05")
+            {
+             
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.IS_DELETED == true).ToList();
+            }
+            else
+            {
+              
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.STATUS == ObjDetail.STATUS).ToList();
+            }
         }
     }
 

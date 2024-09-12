@@ -100,7 +100,26 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
         {
             return ShowReviewBtn(ObjDetail.TIME_YEAR);
         }
+        public override void Search()
+        {
+            base.Search();
 
+            if (string.IsNullOrEmpty(ObjDetail.STATUS))
+            {
+
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN).ToList();
+            }
+            else if (ObjDetail.STATUS == "05")
+            {
+
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.IS_DELETED == true).ToList();
+            }
+            else
+            {
+
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.STATUS == ObjDetail.STATUS).ToList();
+            }
+        }
         public override bool ShowReviewBtn(int year)
         {
             var lstReviewUsers = UnitOfWork.Repository<UserReviewRepo>()

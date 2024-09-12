@@ -1193,6 +1193,26 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             }
                 
         }
+        public override void Search()
+        {
+            base.Search();
+
+            if (string.IsNullOrEmpty(ObjDetail.STATUS))
+            {
+
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN).ToList();
+            }
+            else if (ObjDetail.STATUS == "05")
+            {
+
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.IS_DELETED == true).ToList();
+            }
+            else
+            {
+
+                this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.STATUS == ObjDetail.STATUS).ToList();
+            }
+        }
 
         /// <summary>
         /// Lấy lịch sử tổng hợp của một đơn vị

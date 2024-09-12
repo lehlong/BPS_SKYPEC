@@ -111,6 +111,7 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             return ShowReviewBtn(ObjDetail.TIME_YEAR);
         }
 
+
         public override bool ShowReviewBtn(int year)
         {
             var lstReviewUsers = UnitOfWork.Repository<UserReviewRepo>()
@@ -4413,6 +4414,21 @@ namespace SMO.Service.BP.SUA_CHUA_LON
             {
                 var lstTemplate = UnitOfWork.Repository<SuaChuaLonRepo>().Queryable().Where(x => x.TEMPLATE_CODE == departmentAssign.TEMPLATE_CODE && x.VERSION == departmentAssign.VERSION && x.TIME_YEAR == departmentAssign.YEAR && x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.KICH_BAN == ObjDetail.KICH_BAN);
                 ObjList.AddRange(lstTemplate);
+                if (string.IsNullOrEmpty(ObjDetail.STATUS))
+                {
+
+                    this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN).ToList();
+                }
+                else if (ObjDetail.STATUS == "05")
+                {
+
+                    this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.IS_DELETED == true).ToList();
+                }
+                else
+                {
+
+                    this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.STATUS == ObjDetail.STATUS).ToList();
+                }
             }
         }
 

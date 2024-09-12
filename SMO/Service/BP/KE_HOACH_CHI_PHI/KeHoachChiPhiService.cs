@@ -7419,8 +7419,25 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             var departmentAssign = UnitOfWork.Repository<KeHoachChiPhiDepartmentAssignRepo>().Queryable().Where(x => x.DEPARTMENT_CODE == ProfileUtilities.User.Organize.CODE).FirstOrDefault();
             if (departmentAssign != null)
             {
-                var lstTemplate = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == departmentAssign.TEMPLATE_CODE && x.VERSION == departmentAssign.VERSION && x.TIME_YEAR == departmentAssign.YEAR && x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.KICH_BAN == ObjDetail.KICH_BAN);
-                ObjList.AddRange(lstTemplate);
+                if (string.IsNullOrEmpty(ObjDetail.STATUS))
+                {
+                    var lstTemplate = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == departmentAssign.TEMPLATE_CODE && x.VERSION == departmentAssign.VERSION && x.TIME_YEAR == departmentAssign.YEAR && x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.KICH_BAN == ObjDetail.KICH_BAN);
+                    ObjList.AddRange(lstTemplate);
+                    this.ObjList = this.ObjList.Where(x=>x.PHIEN_BAN==ObjDetail.PHIEN_BAN && x.TIME_YEAR==ObjDetail.TIME_YEAR&& x.KICH_BAN==ObjDetail.KICH_BAN).ToList();
+                }
+                else if(ObjDetail.STATUS=="05")
+                {
+                    var lstTemplate = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == departmentAssign.TEMPLATE_CODE && x.VERSION == departmentAssign.VERSION && x.TIME_YEAR == departmentAssign.YEAR && x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.KICH_BAN == ObjDetail.KICH_BAN);
+                    ObjList.AddRange(lstTemplate);
+                    this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.IS_DELETED==true).ToList();
+                }
+                else
+                {
+                    var lstTemplate = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == departmentAssign.TEMPLATE_CODE && x.VERSION == departmentAssign.VERSION && x.TIME_YEAR == departmentAssign.YEAR && x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.KICH_BAN == ObjDetail.KICH_BAN);
+                    ObjList.AddRange(lstTemplate);
+                    this.ObjList = this.ObjList.Where(x => x.PHIEN_BAN == ObjDetail.PHIEN_BAN && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.KICH_BAN == ObjDetail.KICH_BAN && x.STATUS==ObjDetail.STATUS).ToList();
+                }
+               
             }
         }
 
