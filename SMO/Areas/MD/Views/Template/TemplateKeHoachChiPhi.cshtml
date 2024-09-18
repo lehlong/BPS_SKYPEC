@@ -7,6 +7,7 @@
     var period = SelectListUtilities.GetPureTimeYear();
     var selectList = SelectListUtilities.GetTimeYear(false);
     Model.TIME_YEAR = (int?)selectList.SelectedValue ?? 0;
+    var a = Model.ObjDetail.CODE.ToList();
 }
 
 @* load 2 view: edit and tree *@
@@ -302,9 +303,10 @@
                 dataType: "json",
                 data: { templateId: '@Model.ObjDetail.CODE', type: '@TemplateType.CENTER.ToString()', year },
                 success: function (response) {
+                 
                     $.fn.zTree.init($("#divTreeProject"), setting, response.projects);
                     $.fn.zTree.init($("#divTreeCompany"), setting, response.companies);
-                    console.log(response)
+                 
                 }
             };
             Forms.Ajax(ajaxParams);
@@ -327,7 +329,7 @@
             Forms.Ajax(ajaxParams);
         }
         function BuildTreeElement2() {
-            debugger
+
          var year = $("#TIME_YEAR").val();
          $('#divTreeElement').html("");
          //Forms.ShowLoading();
@@ -337,7 +339,8 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                     data: { templateId: '@Model.ObjDetail.CODE', type: '@TemplateType.ELEMENT.ToString()', year },
-                 success: function (response) {
+                  success: function (response) {
+                     
                      $.fn.zTree.init($("#divTreeElement"), setting, response);
                      triggerSelectProject()
                  }
@@ -487,7 +490,6 @@
         function OnCheck(event, treeId, treeNode) {
             if (treeId === "divTreeElement") {
                 var treeObj = $.fn.zTree.getZTreeObj("divTreeElement");
-
                 if (treeNode.checked) {
                     treeNode.name = "<span class='col-red'>" + treeNode.name + "</span>";
                 }
@@ -552,7 +554,7 @@
 
         function triggerSelectProject() {
             var treeObj = $.fn.zTree.getZTreeObj("divTreeProject");
-            console.log('đay la',treeObj)
+            
             var nodes = treeObj.getNodesByFilter(filter); // search the array of the nodes
             if (nodes.length === 0) {
                 $('#divTreeElement').parent().addClass("hidden");

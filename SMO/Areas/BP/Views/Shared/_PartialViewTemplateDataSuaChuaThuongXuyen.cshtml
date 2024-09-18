@@ -109,12 +109,24 @@ else
                                     }
                                     <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                     <td class="pre-whitespace"></td>
-                                    @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                    @if (item.NAME == "TỔNG CỘNG")
                                     {
-                                        var sbCheck = detailCostElements.Any(x=>x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
-                                        isEdit = sbCheck ? "" : "disabled";
-                                        <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(lstData.FirstOrDefault(x => x.SUA_CHUA_PROFIT_CENTER_CODE == sb.CENTER_CODE && x.KHOAN_MUC_SUA_CHUA_CODE == item.CODE)?.KhoanMucSuaChua.Values[0].ToStringVN())" /></td>
+                                        foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                        {
+
+                                            <td class="pre-whitespace"><input type="text" class="input-edit" onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(lstData.FirstOrDefault(x => x.SUA_CHUA_PROFIT_CENTER_CODE == sb.CENTER_CODE && x.KHOAN_MUC_SUA_CHUA_CODE == item.CODE)?.KhoanMucSuaChua.Values[0].ToStringVN())" /></td>
+                                        }
                                     }
+                                    else
+                                    {
+                                        foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                        {
+                                            var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
+                                            isEdit = sbCheck ? "" : "disabled";
+                                            <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(lstData.FirstOrDefault(x => x.SUA_CHUA_PROFIT_CENTER_CODE == sb.CENTER_CODE && x.KHOAN_MUC_SUA_CHUA_CODE == item.CODE)?.KhoanMucSuaChua.Values[0].ToStringVN())" /></td>
+                                        }
+                                    }
+
                                     <td class="pre-whitespace">@lstKhoanMuc.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
                                     <td>@item.DESCRIPTION</td>
                                 </tr>
@@ -150,11 +162,28 @@ else
                                     }
                                     <td class="pre-whitespace @classParent">@($"{space.ToString()}{item.NAME}")</td>
                                     <td class="pre-whitespace"></td>
-                                    @foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                    @*@foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                        {
+                                            var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
+                                            isEdit = sbCheck ? "" : "disabled";
+                                            <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
+                                        }*@
+                                    @if (item.NAME == "TỔNG CỘNG")
                                     {
-                                        var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
-                                        isEdit = sbCheck ? "" : "disabled";
-                                        <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
+                                        foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                        {
+
+                                            <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.Where(x => x.CENTER_CODE == sb.CENTER_CODE && x.IS_GROUP == true).Sum(x => x.Values[0]).ToStringVN())" /></td>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var sb in detailCostElements.GroupBy(x => x.Center.SAN_BAY_CODE).Select(x => x.First()))
+                                            {
+                                                var sbCheck = detailCostElements.Any(x => x.Center.SAN_BAY_CODE == sb.Center.SAN_BAY_CODE && x.ELEMENT_CODE == item.CODE);
+                                                isEdit = sbCheck ? "" : "disabled";
+                                                <td class="pre-whitespace"><input type="text" class="input-edit" @isEdit onchange="EditValue('@sb.Center.SAN_BAY_CODE', '@item.CODE', this.value)" value="@(Model.FirstOrDefault(x => x.CENTER_CODE == sb.CENTER_CODE && x.CODE == item.CODE)?.Values[0].ToStringVN())" /></td>
+                                            }
                                     }
                                     <td class="pre-whitespace">@Model.Where(x => x.CODE == item.CODE).Sum(x => x.Values[0]).ToStringVN()</td>
                                     <td>@item.DESCRIPTION</td>
@@ -202,7 +231,7 @@ else
                     elementCode: element,
                     sanBayCode: sanBayCode,
                     value: value,
-                    month: month 
+                    month: month
                 },
                 dataType: 'json',
                 success: function (response) {
