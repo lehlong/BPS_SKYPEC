@@ -1565,6 +1565,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 List<T_MD_KHOAN_MUC_HANG_HOA> data2 = new List<T_MD_KHOAN_MUC_HANG_HOA>();
                 List<T_MD_KHOAN_MUC_HANG_HOA> data3 = new List<T_MD_KHOAN_MUC_HANG_HOA>();
                 List<T_MD_KHOAN_MUC_HANG_HOA> data4 = new List<T_MD_KHOAN_MUC_HANG_HOA>();
+
+             
                 Task task1 = Task.Run(() =>
                 {
                     
@@ -1584,55 +1586,28 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                            IsChecked = expertise,
                            IsHighLight = isEdited || isCommented ? true : false,
                        };
-
-                        if (CodePhanbo.Any(x => x.CODE == element.CODE))
-                        {
-
-                            foreach (var sb in lstSanBay)
-                            {
-                                var query = lstParentCode.Contains(element.CODE) ? detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList() :
-                                         detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
-                                var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
-                                {
+                   
+                      
+                       foreach (var sb in lstSanBay)
+                       {
+                           var query = lstParentCode.Contains(element.CODE) ? detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList() :
+                                    detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
+                           var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
+                           {
                        query.Sum(x => x.QUANTITY) ?? 0,
                        query.Sum(x => x.PRICE) ?? 0,
                        query.Sum(x => x.AMOUNT) ?? 0,
-                                } : new decimal[3]{
+                           } : new decimal[3]{
                        query.Sum(x => x.QUANTITY) ?? 0,
                        query.Sum(x => x.PRICE) ?? 0,
                        query.Sum(x => x.AMOUNT) ?? 0,
-                                };
-                                var center = lstCenter.FirstOrDefault(x => x.SAN_BAY_CODE == sb);
-                                item.valueSb.Add(value);
-                                item.lstCenter.Add(center);
-                            }
-                            data1.Add(item);
-                            order++;
-                        }
-                        else
-                        {
-                            foreach (var sb in lstSanBay)
-                            {
-                                var query = lstParentCode.Contains(element.CODE) ? detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(element.CODE) && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList() :
-                                         detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE == element.CODE && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb).ToList();
-                                var value = lstParentCode.Contains(element.CODE) ? new decimal[3]
-                                {
-                       query.Sum(x => x.QUANTITY) ?? 0,
-                       query.Sum(x => x.PRICE) ?? 0,
-                       query.Sum(x => x.AMOUNT) ?? 0,
-                                } : new decimal[3]{
-                       query.Sum(x => x.QUANTITY) ?? 0,
-                       query.Sum(x => x.PRICE) ?? 0,
-                       query.Sum(x => x.AMOUNT) ?? 0,
-                                };
-                                var center = lstCenter.FirstOrDefault(x => x.SAN_BAY_CODE == sb);
-                                item.valueSb.Add(value);
-                                item.lstCenter.Add(center);
-                            }
-                            data1.Add(item);
-                            order++;
-                        }
-                       
+                           };
+                           var center = lstCenter.FirstOrDefault(x=>x.SAN_BAY_CODE == sb);
+                           item.valueSb.Add(value);
+                           item.lstCenter.Add(center);
+                       }
+                       data1.Add(item);
+                       order++;
                    }
                     
                 });
