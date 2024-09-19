@@ -16,14 +16,19 @@ namespace SMO.Service.MD
         {
             try
             {
-                if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+                if (CheckExist(x => x.TEXT==ObjDetail.TEXT))
                 {
-                    base.Create();
+                    State = false;
+                    MesseageCode = "7006";
                 }
-                else
+                else if (CheckExist(x => x.CODE == ObjDetail.CODE ))
                 {
                     State = false;
                     MesseageCode = "1101";
+                }
+                else
+                {
+                    base.Create();
                 }
             }
             catch (Exception ex)

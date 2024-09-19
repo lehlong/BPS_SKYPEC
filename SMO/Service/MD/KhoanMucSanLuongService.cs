@@ -67,15 +67,21 @@ namespace SMO.Service.MD
         {
             try
             {
-                if (!this.CheckExist(x => x.CODE == this.ObjDetail.CODE && x.TIME_YEAR == this.ObjDetail.TIME_YEAR))
+                if (this.CheckExist(x => x.CODE == this.ObjDetail.CODE && x.TIME_YEAR == this.ObjDetail.TIME_YEAR))
                 {
-                    ObjDetail.PARENT_CODE = ObjDetail.PARENT_CODE ?? string.Empty;
-                    base.Create();
+                    State = false;
+                    MesseageCode = "1001";
+                }
+                else if (this.CheckExist(x => x.NAME == ObjDetail.NAME))
+                {
+                    State = false;
+                    MesseageCode = "7006";
                 }
                 else
                 {
-                    State = false;
-                    MesseageCode = "1101";
+
+                    ObjDetail.PARENT_CODE = ObjDetail.PARENT_CODE ?? string.Empty;
+                    base.Create();
                 }
             }
             catch (Exception ex)

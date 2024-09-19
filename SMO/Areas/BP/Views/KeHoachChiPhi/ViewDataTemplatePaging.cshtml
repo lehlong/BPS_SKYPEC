@@ -23,13 +23,14 @@
 <script type="text/javascript">
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
-    console.log(rawData)
+  
     var idCol0 = rawData[0].lstCenter[0].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[0].SAN_BAY_CODE : rawData[0].lstCenter[0]._implementation.SAN_BAY_CODE;
     if (rawData[0].CODE.startsWith("B62")) {
         idCol0 = "VPCN"
     } else {
         idCol0 = rawData[0].lstCenter[0].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[0].SAN_BAY_CODE : rawData[0].lstCenter[0]._implementation.SAN_BAY_CODE;
     }
+    console.log('đây là',rawData)
 
     const columns = [
         { id: "name", header: [{ text: "CHỈ TIÊU", align: "center",rowspan: 2 },"", { content: "inputFilter" }], width: 500, footer: [{ text: "TỔNG CỘNG" }] },
@@ -183,7 +184,7 @@
         data: jsonData,
         rowHeight: 30
     });
-    console.log(jsonData)
+    
     treeGrid.collapseAll();
 
     treeGrid.events.on("cellClick", function (row, column) {
@@ -192,7 +193,7 @@
     });
 
     treeGrid.events.on("afterEditEnd", function (value, row, column) {
-        console.log(value);
+        
         if (column.id.includes("price")) {
             onEditCell('DG', '', '', row.code, value)
         } else {

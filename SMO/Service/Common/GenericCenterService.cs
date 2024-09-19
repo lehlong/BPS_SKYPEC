@@ -11,14 +11,21 @@ namespace SMO.Service.Common
         {
             try
             {
-                if (!CheckExist(x => x.CODE == ObjDetail.CODE))
+          
+                if (CheckExist(x => x.CODE == ObjDetail.CODE))
                 {
-                    base.Create();
+                    
+                    State = false;
+                    MesseageCode = "1101";
+                }
+                else if (CheckExist(x => x.NAME == ObjDetail.NAME))
+                {
+                    State = false;
+                    MesseageCode = "7006";
                 }
                 else
                 {
-                    State = false;
-                    MesseageCode = "1101";
+                    base.Create();
                 }
             }
             catch (Exception ex)
