@@ -30,7 +30,7 @@
     } else {
         idCol0 = rawData[0].lstCenter[0].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[0].SAN_BAY_CODE : rawData[0].lstCenter[0]._implementation.SAN_BAY_CODE;
     }
-    console.log('đây là',rawData)
+    
 
     const columns = [
         { id: "name", header: [{ text: "CHỈ TIÊU", align: "center",rowspan: 2 },"", { content: "inputFilter" }], width: 500, footer: [{ text: "TỔNG CỘNG" }] },
@@ -141,6 +141,21 @@
 
     var jsonData = [];
 
+    var ParentKhoanMucCode = rawData.filter(x => x.PARENT_CODE == "VT6273" || x.PARENT_CODE == "B6273" || x.PARENT_CODE == "CQ6273" || x.PARENT_CODE == "N6273" || x.PARENT_CODE == "T6273")
+
+    var ListCodeParentKhoanMucB = []
+    var ListCodeKhoanMucB = []
+    for (var i = 0; i < ParentKhoanMucCode.length; i++) {
+        ListCodeParentKhoanMucB.push(ParentKhoanMucCode[i].CODE)
+    }
+
+    var filterlstB = rawData.filter(x => ListCodeParentKhoanMucB.includes(x.PARENT_CODE)).filter(x => x.CODE.slice(-1) == "B")
+
+    for (var i = 0; i < filterlstB.length; i++) {
+        ListCodeKhoanMucB.push(filterlstB[i].CODE)
+    }
+  
+
     rawData.forEach((item) => {
         var obj = {
             id: item.CODE,
@@ -154,20 +169,65 @@
         }
         var sumQuantity = 0;
         var sumTotal = 0;
-        for (var i = 0; i < item.lstCenter.length; i++) {
-            if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
-                obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
-                obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][2];
-            } else {
-                obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
-                obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][2];
+       
+        if (ListCodeKhoanMucB.includes(item.CODE))
+        {
+            for (var i = 0; i < item.lstCenter.length; i++) {
+                if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
+                    var sumlst=[]
+                    var lst = rawData.filter(x => x.PARENT_CODE == item.CODE)
+                   
+                    for (var j = 0; j < lst.length; j++) {
+                        sumlst.push(lst[j].valueSb[i][2])
+                    }
+                    const sumResult = sumlst.reduce((a, b) => {
+                        return a + (b > 10000000 ? b / 2 : b);
+                    }, 0);
+                    obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
+                    obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = sumResult;
+                    console.log(sumResult, item.valueSb[i][2])
+                    console.log(sumlst)
+                  
+                } else {
+                    var sumlst = []
+                    var lst = rawData.filter(x => x.PARENT_CODE == item.CODE)
+                    for (var j = 0; j < lst.length; j++) {
+                        sumlst.push(lst[j].valueSb[i][2])
+                    }
+                    const sumResult = sumlst.reduce((a, b) => {
+                        return a + (b > 10000000 ? b / 2 : b);
+                    }, 0);
+            
+                    obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
+                    obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = sumResult;
+                    console.log(sumResult, item.valueSb[i][2])
+                    console.log(sumlst)
+                }
+
+                sumQuantity += item.valueSb[i][0];
+                sumTotal += item.valueSb[i][2];
             }
-         
-            sumQuantity += item.valueSb[i][0];
-            sumTotal += item.valueSb[i][2];
+            obj[`sumQuantity`] = sumQuantity;
+            obj[`sumTotal`] = sumTotal;
+        } else
+        {
+            for (var i = 0; i < item.lstCenter.length; i++) {
+                if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
+                    obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
+                    obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][2];
+                } else {
+
+                    obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
+                    obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][2];
+                }
+
+                sumQuantity += item.valueSb[i][0];
+                sumTotal += item.valueSb[i][2];
+            }
+            obj[`sumQuantity`] = sumQuantity;
+            obj[`sumTotal`] = sumTotal;
         }
-        obj[`sumQuantity`] = sumQuantity;
-        obj[`sumTotal`] = sumTotal;
+       
 
         jsonData.push(obj);
     });
