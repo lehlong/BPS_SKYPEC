@@ -108,7 +108,21 @@ else
         const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
         let columns = [
             { id: "code", header: [{ text: "Mã", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
-            { id: "name", header: [{ text: "Tuyến đường", align: "center", rowspan: 2 }, { text: "", align: "center" },{ content: "inputFilter" }], minWidth: 180 },
+            { id: "name", header: [{ text: "Tuyến đường", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
+            {
+                id: "check", header: [
+                    { text: "", align: 'center', rowspan: 3 },
+                ],
+                adjust: false,
+                width: 40,
+                align: 'center',
+                template: (value, row, col) => {
+                    var isChecked = row.isChecked ? "checked" : "";
+                    return `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+<label for="chkItem${row.code}"></label>`
+                },
+                htmlEnable: true,
+            },
             { id: "valuesSL", header: [{ text: "Sản lượng tra nạp (năm)", align: "center", rowspan: 3 },],align: "right", minWidth: 135 },
             { id: "valuesCL", header: [{ text: "Cự ly vận chuyển có hàng (Km)", align: "center", rowspan: 3 },], align: "right", minWidth: 135 },
             { id: "valuesSC", header: [{ text: "Số chuyến VC (ch/xe/ngày)", align: "center", rowspan: 3 },], align: "right", minWidth: 135 },
@@ -130,7 +144,7 @@ else
 
          const treeGrid = new dhx.TreeGrid("@grid", {
          columns,
-         leftSplit: 2,
+         leftSplit: 3,
          resizable: true,
          keyNavigation: true,
          rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },

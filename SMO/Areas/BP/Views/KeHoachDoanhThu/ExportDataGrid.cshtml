@@ -70,6 +70,20 @@
     //Init Data Month...
     const rawDataMonth = @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings));
     let columnsMonth = [
+        {
+            id: "check", header: [
+                { text: "", align: 'center', rowspan: 2 },
+            ],
+            adjust: false,
+            width: 40,
+            align: 'center',
+            template: (value, row, col) => {
+                var isChecked = row.isChecked ? "checked" : "";
+                return `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+        <label for="chkItem${row.code}"></label>`
+            },
+            htmlEnable: true,
+        },
         { id: "airport", header: [{ text: "SÂN BAY", align: "center" }, { content: "selectFilter" }], minWidth: 130 },
         { id: "airlines", header: [{ text: "HHK", align: "center" }, { content: "selectFilter" }], minWidth: 120 },
         { id: "element", header: [{ text: "KHOẢN MỤC", align: "center" }, { content: "selectFilter" }], minWidth: 185, footer: [{ text: "TỔNG CỘNG" }] },
@@ -94,7 +108,7 @@
     const treeGrid = new dhx.Grid("@gridTab1", {
         columns: columnsMonth,
         data: rawDataMonth,
-        leftSplit: 3,
+        leftSplit: 4,
         resizable: true,
         keyNavigation: true,
         selection: "row",
@@ -106,6 +120,18 @@
     const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(dataTab3, jsonSerializeSettings));
     const rawDataTab4 = @Html.Raw(JsonConvert.SerializeObject(dataTab4, jsonSerializeSettings));
     let columns = [
+        {
+            id: "check", header: [{ text: "", align: 'center'},],
+            adjust: false,
+            width: 40,
+            align: 'center',
+            template: (value, row, col) => {
+                var isChecked = row.isChecked ? "checked" : "";
+                return `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+        <label for="chkItem${row.code}"></label>`
+            },
+            htmlEnable: true,
+        },
         { id: "airport", header: [{ text: "SÂN BAY", align: "center" }], minWidth: 130, footer: [{ text: "TỔNG CỘNG" }] },
         { id: "vn", header: [{ text: "VN", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] },
         { id: "ov", header: [{ text: "0V", align: "center" }], align: "right", minWidth: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] },

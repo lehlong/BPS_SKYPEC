@@ -95,6 +95,20 @@ else
         let columns = [
             { id: "code", header: [{ text: "MÃ DỰ ÁN", align: "center" }, { content: "inputFilter" }], align: "left", width: 140 },
             {
+                id: "check", header: [
+                    { text: "", align: 'center', rowspan: 2 },
+                ],
+                adjust: false,
+                width: 40,
+                align: 'center',
+                template: (value, row, col) => {
+                    var isChecked = row.isChecked ? "checked" : "";
+                    return `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+<label for="chkItem${row.code}"></label>`
+                },
+                htmlEnable: true,
+            },
+            {
                 id: "comment", header: [{ text: "", align: 'center', rowspan: 2 }],
                 adjust: false,
                 width: 40,
@@ -104,6 +118,7 @@ else
                 },
                 htmlEnable: true,
             },
+
             { id: "name", header: [{ text: "TÊN DỰ ÁN", align: "center" }, { content: "inputFilter" }], align: "left", adjust: true },
             { id: "value1", header: [{ text: "THÔNG TIN VỀ DANH MỤC ĐẦU TƯ", align: "center", colspan: 3 }, { text: "TỔNG MỨC ĐẦU TƯ", align: "center" }], align: "right", minWidth: 200 },
             { id: "value2", header: [{ text: "", align: "center" }, { text: "NGUỒN VỐN", align: "center" }], align: "right", minWidth: 200 },
@@ -126,7 +141,7 @@ else
         const treeGrid = new dhx.Grid("@grid", {
             columns,
             data: rawData,
-            leftSplit: 3,
+            leftSplit: 4,
             resizable: true,
             keyNavigation: true,
             rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },

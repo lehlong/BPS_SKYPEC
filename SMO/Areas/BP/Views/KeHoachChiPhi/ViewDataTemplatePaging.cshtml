@@ -12,6 +12,9 @@
     .row-bold .dhx_grid-cell, .row-bold .dhx_tree-cell {
         font-weight: bold
     }
+    .highlight-cell .dhx_grid-cell, .highlight-cell .dhx_tree-cell {
+        background: #C8E2B1
+    }
 
     .grid .dhx_grid-cell {
         word-break: break-word
@@ -23,14 +26,14 @@
 <script type="text/javascript">
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
-  
+
     var idCol0 = rawData[0].lstCenter[0].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[0].SAN_BAY_CODE : rawData[0].lstCenter[0]._implementation.SAN_BAY_CODE;
     if (rawData[0].CODE.startsWith("B62")) {
         idCol0 = "VPCN"
     } else {
         idCol0 = rawData[0].lstCenter[0].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[0].SAN_BAY_CODE : rawData[0].lstCenter[0]._implementation.SAN_BAY_CODE;
     }
-    
+
 
     const columns = [
         { id: "name", header: [{ text: "CHỈ TIÊU", align: "center",rowspan: 2 },"", { content: "inputFilter" }], width: 500, footer: [{ text: "TỔNG CỘNG" }] },
@@ -105,7 +108,7 @@
 
     }
 
-   
+
 
     columns.push(
         { id: "sumQuantity", header: ["", "", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] },
@@ -132,8 +135,8 @@
             columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] });
         };
     }
-  
-    
+
+
     columns.push(
         { id: "sumTotal", header: ["","", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] },
         { id: "notes", header: [{ text: "GHI CHÚ", align: "center", rowspan: 3 }], width: 150 }
@@ -154,7 +157,7 @@
     for (var i = 0; i < filterlstB.length; i++) {
         ListCodeKhoanMucB.push(filterlstB[i].CODE)
     }
-  
+
 
     rawData.forEach((item) => {
         var obj = {
@@ -169,14 +172,14 @@
         }
         var sumQuantity = 0;
         var sumTotal = 0;
-       
+
         if (ListCodeKhoanMucB.includes(item.CODE))
         {
             for (var i = 0; i < item.lstCenter.length; i++) {
                 if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
                     var sumlst=[]
                     var lst = rawData.filter(x => x.PARENT_CODE == item.CODE)
-                   
+
                     for (var j = 0; j < lst.length; j++) {
                         sumlst.push(lst[j].valueSb[i][2])
                     }
@@ -185,9 +188,7 @@
                     }, 0);
                     obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
                     obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = sumResult;
-                    console.log(sumResult, item.valueSb[i][2])
-                    console.log(sumlst)
-                  
+
                 } else {
                     var sumlst = []
                     var lst = rawData.filter(x => x.PARENT_CODE == item.CODE)
@@ -197,11 +198,9 @@
                     const sumResult = sumlst.reduce((a, b) => {
                         return a + (b > 10000000 ? b / 2 : b);
                     }, 0);
-            
+
                     obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
                     obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = sumResult;
-                    console.log(sumResult, item.valueSb[i][2])
-                    console.log(sumlst)
                 }
 
                 sumQuantity += item.valueSb[i][0];
@@ -227,11 +226,11 @@
             obj[`sumQuantity`] = sumQuantity;
             obj[`sumTotal`] = sumTotal;
         }
-       
+
 
         jsonData.push(obj);
     });
-    
+
     jsonData.forEach((item) => {
         if (item.parent == 'CQCT' || item.parent == 'DVT' || item.parent == 'CPMB' || item.parent == 'CPMT' || item.parent == 'CPMN') delete item.parent
     });
@@ -240,11 +239,20 @@
         columns,
         leftSplit: 1,
         resizable: true,
-        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        rowCss: function ({ isBold, isChecked }) {
+            var css = "";
+            if (isBold == true) {
+                css += "row-bold";
+            }
+            if (isChecked == true) {
+                css += "highlight-cell";
+            }
+            return css;
+        },
         data: jsonData,
         rowHeight: 30
     });
-    
+
     treeGrid.collapseAll();
 
     treeGrid.events.on("cellClick", function (row, column) {
@@ -253,7 +261,7 @@
     });
 
     treeGrid.events.on("afterEditEnd", function (value, row, column) {
-        
+
         if (column.id.includes("price")) {
             onEditCell('DG', '', '', row.code, value)
         } else {
