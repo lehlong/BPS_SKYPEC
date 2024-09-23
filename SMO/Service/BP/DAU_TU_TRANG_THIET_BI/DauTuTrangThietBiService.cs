@@ -4492,22 +4492,40 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             styleCellNumber.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
             styleCellNumber.WrapText = true;
 
+            var template = UnitOfWork.Repository<TemplateRepo>().Get(lstData.FirstOrDefault().TEMPLATE_CODE);
+            var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 0, NUM_CELL);
+            ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
+            rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {template.Organize?.Parent?.NAME.ToUpper()}");
+
+            var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
+
+            ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
+            rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
+            rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
+
+            var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
+
+            ReportUtilities.CreateCell(ref rowHeader3, NUM_CELL);
+            rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
+
+
             foreach (var detail in lstProject.Where(x => x.CODE != null).Select(x => x.CODE).Distinct())
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                 var item = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == detail).ToList();
                 rowCur.Cells[0].SetCellValue(item.FirstOrDefault()?.DauTuTrangThietBiProfitCenter.Project?.CODE);
-                rowCur.Cells[1].SetCellValue(item.FirstOrDefault()?.DauTuTrangThietBiProfitCenter.Project?.NAME);
-                rowCur.Cells[2].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4001").Sum(x => x.VALUE)?.ToStringVN());
-                rowCur.Cells[3].SetCellValue(item.FirstOrDefault()?.EQUITY_SOURCES);
-                rowCur.Cells[4].SetCellValue(item.FirstOrDefault()?.PROCESS);
-                rowCur.Cells[5].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4010").Sum(x => x.VALUE)?.ToStringVN());
+                rowCur.Cells[1].SetCellValue(item.FirstOrDefault()?.KHOAN_MUC_DAU_TU_CODE);
+                rowCur.Cells[2].SetCellValue(item.FirstOrDefault()?.DauTuTrangThietBiProfitCenter.Project?.NAME);
+                rowCur.Cells[3].SetCellValue(item.Sum(x => x.VALUE_1)?.ToStringVN());
+                rowCur.Cells[4].SetCellValue(item.FirstOrDefault()?.VALUE_2);
+                rowCur.Cells[5].SetCellValue(item.FirstOrDefault()?.VALUE_3);
                 rowCur.Cells[6].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4030").Sum(x => x.VALUE)?.ToStringVN());
-                rowCur.Cells[7].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4031").Sum(x => x.VALUE)?.ToStringVN());
-                rowCur.Cells[8].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4032").Sum(x => x.VALUE)?.ToStringVN());
-                rowCur.Cells[9].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4012").Sum(x => x.VALUE)?.ToStringVN());
-                rowCur.Cells[10].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4020").Sum(x => x.VALUE)?.ToStringVN());
+                rowCur.Cells[7].SetCellValue(item.Sum(x => x.VALUE_5)?.ToStringVN());
+                rowCur.Cells[8].SetCellValue(item.Sum(x => x.VALUE_6)?.ToStringVN());
+                rowCur.Cells[9].SetCellValue(item.Sum(x => x.VALUE_5*x.VALUE_6)?.ToStringVN());
+                rowCur.Cells[10].SetCellValue(item.FirstOrDefault()?.VALUE_8);
                 rowCur.Cells[11].SetCellValue(item.FirstOrDefault()?.QKH);
+                rowCur.Cells[12].SetCellValue(item.FirstOrDefault()?.DESCRIPTION);
                 rowCur.Cells[12].SetCellValue(item.FirstOrDefault()?.DESCRIPTION);
                 for (int i = 0; i < NUM_CELL; i++)
                 {

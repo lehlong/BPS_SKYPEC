@@ -4526,7 +4526,22 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
             styleCellNumber.CloneStyleFrom(sheet.GetRow(7).Cells[0].CellStyle);
             styleCellNumber.WrapText = true;
+            //header
+            var template = UnitOfWork.Repository<TemplateRepo>().Get(lstData.FirstOrDefault().TEMPLATE_CODE);
+            var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 0, NUM_CELL);
+            ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
+            rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {template.Organize?.Parent?.NAME.ToUpper()}");
 
+            var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
+
+            ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
+            rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
+            rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
+
+            var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
+
+            ReportUtilities.CreateCell(ref rowHeader3, NUM_CELL);
+            rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
             foreach (var detail in lstProject.Where(x => x.CODE != null).Select(x => x.CODE).Distinct())
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);

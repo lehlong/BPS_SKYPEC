@@ -102,11 +102,8 @@
                 <tr class="@clsChange">
 
                     @{
-                        Html.RenderPartial("_PartialViewTableChildDauTuXayDung", item,
-                               new ViewDataDictionary
-                                {
-                                               new KeyValuePair<string, object>("number", number)
-});
+                        Html.RenderPartial("_PartialViewTableChildKeHoachVanChuyen", item,
+                               new ViewDataDictionary {new KeyValuePair<string, object>("number", number)});
                     }
                 </tr>
             }

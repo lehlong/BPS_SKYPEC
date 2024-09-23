@@ -177,7 +177,7 @@ namespace SMO.Areas.BP.Controllers
             var lstData = _service.GetProject(model.TEMPLATE_CODE, model.VERSION, model.YEAR);
             var lstProject = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).ToList();
             MemoryStream outFileStream = new MemoryStream();
-            var fileName = "Dữ liệu kế hoạch đầu tư xây dựng";
+            var fileName = "Dữ liệu kế hoạch đầu trang thiet bị";
             var templateExcel = "Template_DauTuTrangThietBi.xlsx";
             string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
             _service.GenerateData(ref outFileStream, path, model, lstData, lstProject);
