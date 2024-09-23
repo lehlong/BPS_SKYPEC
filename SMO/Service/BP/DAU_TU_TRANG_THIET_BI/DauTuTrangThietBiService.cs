@@ -4526,7 +4526,6 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                 rowCur.Cells[10].SetCellValue(item.FirstOrDefault()?.VALUE_8);
                 rowCur.Cells[11].SetCellValue(item.FirstOrDefault()?.QKH);
                 rowCur.Cells[12].SetCellValue(item.FirstOrDefault()?.DESCRIPTION);
-                rowCur.Cells[12].SetCellValue(item.FirstOrDefault()?.DESCRIPTION);
                 for (int i = 0; i < NUM_CELL; i++)
                 {
                     rowCur.Cells[i].CellStyle = styleCellNumber;

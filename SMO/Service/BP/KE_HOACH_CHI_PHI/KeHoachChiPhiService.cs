@@ -2557,7 +2557,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                                 }
                                 var row = tableKHCP.NewRow();
-                                VPCT
+                               
                                 var costDataVPCT = new T_BP_KE_HOACH_CHI_PHI_DATA();
                                 costDataVPCT = new T_BP_KE_HOACH_CHI_PHI_DATA()
                                 {
