@@ -4507,7 +4507,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             IWorkbook templateWorkbook;
             templateWorkbook = new XSSFWorkbook(fs);
-            templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachChiPhi));
+            templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.DauTuXayDung));
             fs.Close();
             ISheet sheet = templateWorkbook.GetSheetAt(0);
 
@@ -4536,7 +4536,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
 
             ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
             rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
-            rowHeader2.Cells[2].SetCellValue(template.TITLE.ToUpper());
+           
 
             var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
 

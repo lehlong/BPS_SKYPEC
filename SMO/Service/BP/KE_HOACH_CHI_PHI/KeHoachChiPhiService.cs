@@ -2412,8 +2412,26 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         IS_SUMUP = false,
                         CREATE_BY = currentUser
                     });
-                }
+                 
 
+
+                }
+               
+                DataTable tableKHCP = new DataTable();
+                tableKHCP.TableName = "T_BP_KE_HOACH_CHI_PHI_DATA";
+                tableKHCP.Columns.Add("PKID", typeof(Guid));
+                tableKHCP.Columns.Add("ORG_CODE", typeof(string));
+                tableKHCP.Columns.Add("CHI_PHI_PROFIT_CENTER_CODE", typeof(string));
+                tableKHCP.Columns.Add("TEMPLATE_CODE", typeof(string));
+                tableKHCP.Columns.Add("TIME_YEAR", typeof(string));
+                tableKHCP.Columns.Add("MONTH", typeof(string));
+                tableKHCP.Columns.Add("STATUS", typeof(string));
+                tableKHCP.Columns.Add("VERSION", typeof(string));
+                tableKHCP.Columns.Add("KHOAN_MUC_HANG_HOA_CODE", typeof(string));
+                tableKHCP.Columns.Add("QUANTITY", typeof(string));
+                tableKHCP.Columns.Add("PRICE", typeof(string));
+                tableKHCP.Columns.Add("DESCRIPTION", typeof(string));
+                tableKHCP.Columns.Add("CREATE_BY", typeof(string));
                 // Đưa next version vào bảng log
                 UnitOfWork.Repository<KeHoachChiPhiVersionRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_VERSION()
                 {
@@ -2538,8 +2556,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 {
                                     throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                                 }
-
-                                //VPCT
+                                var row = tableKHCP.NewRow();
+                                VPCT
                                 var costDataVPCT = new T_BP_KE_HOACH_CHI_PHI_DATA();
                                 costDataVPCT = new T_BP_KE_HOACH_CHI_PHI_DATA()
                                 {
@@ -2559,6 +2577,19 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 };
                                 costDataVPCT.AMOUNT = costDataVPCT.QUANTITY * costDataVPCT.PRICE;
                                 UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Create(costDataVPCT);
+                                //row["PKID"] = Guid.NewGuid().ToString();
+                                //row["ORG_CODE"] = orgCode,
+                                //row["CHI_PHI_PROFIT_CENTER_CODE"]= centerCodeVPCT.CODE;
+                                //row["TEMPLATE_CODE"]= ObjDetail.TEMPLATE_CODE;
+                                //row["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                //row["MONTH"] = month;
+                                //row["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                //row["VERSION"] = versionNext;
+                                //row["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                //row["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString());
+                                //row["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString());
+                                //row["DESCRIPTION"] = tableData.Rows[i][15].ToString();
+                                //row["CREATE_BY"] = currentUser;
 
                                 //MB
                                 var costDataMB = new T_BP_KE_HOACH_CHI_PHI_DATA();

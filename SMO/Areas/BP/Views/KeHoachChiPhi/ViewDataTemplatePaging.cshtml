@@ -93,7 +93,7 @@
                 { text: "KẾ HOẠCH CHI TIẾT", colspan: rawData[0].lstCenter.length * 2 + 3, align: 'center' },
                 {id:"ID_HDSL", text: "SỐ LƯỢNG", colspan: rawData[0].lstCenter.length + 1, align: 'center' },
                 { text: idCol0, align: 'center', sortable: false, }
-            ], align: 'right', width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }]
+            ], align: 'right', width: 150, type: "number", format: "#.#", 
         },
     );
     const sortquantity = ["VPCN", "HAN", "HPH", "THD", "VII", "VDH", "VDO"];
@@ -151,7 +151,7 @@
 
 
     columns.push(
-        { id: "sumQuantity", header: ["", "", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#",  },
+        { id: "sumQuantity", header: ["", "", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#",},
         { id: "price", header: ["", { text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], width: 150, type: "number", format: "#.#",},
     );
 
@@ -161,7 +161,7 @@
                 "",
                 { text: "THÀNH TIỀN", colspan: rawData[0].lstCenter.length + 1, align: 'center' },
                 { text: idCol0, align: 'center' }
-            ], align: 'right', width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }]
+            ], align: 'right', width: 150, type: "number", format: "#.#", 
         },
     );
     if (rawData[0].CODE.startsWith("B62")) {
