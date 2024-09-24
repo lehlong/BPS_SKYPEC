@@ -1,4 +1,5 @@
 ﻿@model SMO.Service.Class.ViewDataCenterModel
+@using Newtonsoft.Json;
 @{
     var viewId = Guid.NewGuid().ToString();
     var formId = Guid.NewGuid().ToString();
@@ -15,7 +16,8 @@
                 @if (SMOUtilities.CheckRight("R301"))
                 {
                     @Html.MyButton("cmdBack", "Kết xuất", $"$('#IS_DRILL_DOWN').val($('#chkDrillDown').is(':checked'));Forms.SubmitForm('{formId}');", "Alt+N", "search")
-                    @Html.MyButton("cmdBack", "Download", $"DownloadDataCenter();", "Alt+N", "file_download")
+                    @Html.MyButton("cmdBack", "Download", $"DownloadData();", "Alt+N", "file_download")
+                    <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(Model)})" target="_blank" hidden></a>
                 }
                 @Html.MyButton("cmdBack", "Lọc", "ShowLeft();", "Alt+N", "sort")
 
@@ -39,7 +41,7 @@
                                 new KeyValuePair<string, object>("objectType", TemplateObjectType.VanChuyen),
                                 new KeyValuePair<string, object>("budgetType", BudgetType.VanChuyen),
                                 new KeyValuePair<string, object>("elementType", ElementType.VanChuyen),
-            });
+    });
                     }
                 </div>
                 <div class="export-left-tab" id="divExportTab_@viewId">
@@ -116,6 +118,9 @@
         function ShowLeft() {
             $("#divExportLeft_@viewId").toggle();
         }
+        function DownloadData() {
+            document.getElementById('download-data').click();
+        };
 
         var lastScrollLeft = 0;
 

@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Core.Entities.MD;
@@ -14,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace SMO.Areas.BP.Controllers
 {
@@ -140,6 +142,20 @@ namespace SMO.Areas.BP.Controllers
                 SMOUtilities.GetMessage("1005", _service, result);
             }
             return result.ToJsonResult();
+        }
+        public FileContentResult DownloadData(string modelJson)
+        {
+            var model = JsonConvert.DeserializeObject<ViewDataCenterModel>(modelJson);
+            var template = _service.GetTemplate(model.TEMPLATE_CODE);
+            var lstData =_service.GetDataCost(out IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_VAN_CHUYEN> detailCostElements,
+                out IList<T_BP_KE_HOACH_VAN_CHUYEN_DATA> detailCostData, out bool isDrillDownApply, model);
+            var dataOrder = _service.OrderData(lstData);
+            MemoryStream outFileStream = new MemoryStream();
+            var fileName = "Dữ liệu kế hoạch Vận Chuyển";
+            var templateExcel = "Template_KeHoachVanChuyen.xlsx";
+            string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
+            _service.GenerateDataVC(ref outFileStream, path, model, dataOrder, detailCostElements);
+            return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
     }
 }

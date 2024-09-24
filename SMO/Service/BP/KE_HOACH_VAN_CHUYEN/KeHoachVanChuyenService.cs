@@ -4,6 +4,7 @@ using NPOI.XSSF.UserModel;
 using SMO.AppCode.Utilities;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
+using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Core.Entities.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Core.Entities.BP.KE_HOACH_VAN_CHUYEN.KE_HOACH_VAN_CHUYEN_DATA_BASE;
 using SMO.Core.Entities.MD;
@@ -13,6 +14,7 @@ using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Repository.Implement.BP.KE_HOACH_VAN_CHUYEN.KE_HOACH_VAN_CHUYEN_DATA_BASE;
 using SMO.Repository.Implement.MD;
+using SMO.Repository.Mapping.MD;
 using SMO.Service.Class;
 using SMO.Service.Common;
 using SMO.ServiceInterface.BP.KeHoachVanChuyen;
@@ -1693,6 +1695,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
         /// <param name="lst1"></param>
         /// <param name="lst2"></param>
         /// <returns></returns>
+        /// 
         private IList<T_MD_KHOAN_MUC_VAN_CHUYEN> SummaryUpElement(IList<T_MD_KHOAN_MUC_VAN_CHUYEN> lst1, IList<T_MD_KHOAN_MUC_VAN_CHUYEN> lst2)
         {
             if (lst1.Count == 0)
@@ -4222,6 +4225,95 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                 return null;
             }
 
+        }
+
+        public void GenerateDataVC(ref MemoryStream outFileStream, string path, ViewDataCenterModel model, IList<T_MD_KHOAN_MUC_VAN_CHUYEN> lstData, IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_VAN_CHUYEN> lstProject)
+        {
+            //Mở file Template
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook templateWorkbook;
+            templateWorkbook = new XSSFWorkbook(fs);
+            templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachVanChuyen));
+            fs.Close();
+            ISheet sheet = templateWorkbook.GetSheetAt(0);
+       
+            //Số hàng và số cột hiện tại
+            int startRow = 8;
+            int NUM_CELL = 13;
+      
+            //Style cần dùng
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle();
+            styleCellBold.WrapText = true;
+            var fontBold = templateWorkbook.CreateFont();
+            //fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 11;
+            fontBold.FontName = "Times New Roman";
+
+            ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
+
+            styleCellNumber.WrapText = true;
+
+            var template = UnitOfWork.Repository<TemplateRepo>().Get(lstProject.FirstOrDefault().TEMPLATE_CODE);
+            var rowHeader1 = ReportUtilities.CreateRow(ref sheet, 0, NUM_CELL);
+            ReportUtilities.CreateCell(ref rowHeader1, NUM_CELL);
+            rowHeader1.Cells[0].SetCellValue(rowHeader1.Cells[0].StringCellValue + $" {template.Organize?.Parent?.NAME.ToUpper()}");
+
+            var rowHeader2 = ReportUtilities.CreateRow(ref sheet, 1, NUM_CELL);
+
+            ReportUtilities.CreateCell(ref rowHeader2, NUM_CELL);
+            rowHeader2.Cells[0].SetCellValue($"{template.Organize.NAME}");
+
+
+            var rowHeader3 = ReportUtilities.CreateRow(ref sheet, 2, NUM_CELL);
+
+            ReportUtilities.CreateCell(ref rowHeader3, NUM_CELL);
+            rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
+
+
+            //var jsonData = dataOrder.OrderBy(x => x.C_ORDER).Select(x => new
+            //{
+            //    Id = x.C_ORDER.ToString(),
+            //    Parent = x.ParentOrder,
+            //    Code = x.CODE,
+            //    Name = x.NAME,
+            //    ValuesSL = x.ValuesSL.ToStringVN(),
+            //    ValuesCL = x.ValuesCL.ToStringVN(),
+            //    ValuesSC = x.ValuesSC.ToStringVN(),
+            //    ValuesT = x.ValuesT.ToStringVN(),
+            //    ValuesM3 = x.ValuesM3.ToStringVN(),
+            //    ValuesTVTB = x.ValuesTVTB.ToStringVN(),
+            //    ValuesTVC = x.ValuesTVC.ToStringVN(),
+            //    ValuesTVT = x.ValuesTVT.ToStringVN(),
+            //    ValuesTN = x.ValuesTN.ToStringVN(),
+            //    ValuesLCT = x.ValuesLCT.ToStringVN(),
+            //    ValuesLCM3 = x.ValuesLCM3.ToStringVN(),
+            //    IsBold = x.Isbold,
+            //});
+
+            foreach (var item in lstData)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+          
+                rowCur.Cells[0].SetCellValue(item.CODE);
+                rowCur.Cells[1].SetCellValue(item.NAME);
+                rowCur.Cells[2].SetCellValue(item.ValuesSL.ToStringVN());
+                rowCur.Cells[3].SetCellValue(item.ValuesCL.ToStringVN());
+                rowCur.Cells[4].SetCellValue(item.ValuesSC.ToStringVN());
+                rowCur.Cells[5].SetCellValue(item.ValuesT.ToStringVN());
+                rowCur.Cells[6].SetCellValue(item.ValuesM3.ToStringVN());
+                rowCur.Cells[7].SetCellValue(item.ValuesTVTB.ToStringVN());
+                rowCur.Cells[8].SetCellValue(item.ValuesTVC.ToStringVN());
+                rowCur.Cells[9].SetCellValue(item.ValuesTVT.ToStringVN());
+                rowCur.Cells[10].SetCellValue(item.ValuesTN.ToStringVN());
+                rowCur.Cells[11].SetCellValue(item.ValuesLCT.ToStringVN());
+                rowCur.Cells[12].SetCellValue(item.ValuesLCM3.ToStringVN());
+                for (int i = 0; i < NUM_CELL; i++)
+                {
+                    rowCur.Cells[i].CellStyle = styleCellNumber;
+                }
+            }
+
+            templateWorkbook.Write(outFileStream);
         }
 
     }
