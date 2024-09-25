@@ -27,7 +27,7 @@
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
 
-    var idCol0 = rawData[0].lstCenter[0].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[0].SAN_BAY_CODE : rawData[0].lstCenter[0]._implementation.SAN_BAY_CODE;
+    let idCol0 
     if (rawData[0].CODE.startsWith("B62") || rawData[0].CODE.startsWith("T62") || rawData[0].CODE.startsWith("N62") || rawData[0].CODE.startsWith("VT62")) {
         idCol0 = "VPCN"
     } else if (rawData[0].CODE.startsWith("CQ62")) {
