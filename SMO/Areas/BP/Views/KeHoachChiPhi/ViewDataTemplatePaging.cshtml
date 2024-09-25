@@ -98,7 +98,7 @@
     );
     const sortquantity = ["VPCN", "HAN", "HPH", "THD", "VII", "VDH", "VDO"];
     const sortCQ = ["VPCT", "MB", "MT", "CR", "MN"];
-    const sortMN = ["VPCN","TNS","PQC", "PLI", "VCA", "BMV","VCS"];
+    const sortMN = ["VPCN","SGN","PQC", "DLI", "VCA", "BMV","VCS"];
     const sortMT = ["VPCN", "DAD", "CXR", "HUI", "UIH", "VCL", "PXU", "TBB"];
     const sortVT = ["VPCN", "VTMB", "VTMT", "VTMN"];
     if (rawData[0].CODE.startsWith("B62")) {
@@ -247,39 +247,41 @@
 
         if (ListCodeKhoanMucB.includes(item.CODE))
         {
+            var codechild = rawData.filter(x => x.PARENT_CODE == item.CODE).map(x => x.CODE)
+            let childB=[]
+            //loc ca phan tu con cua muc b
+            for (let i = 0; i < codechild.length; i++) {
+                var lstKmc = rawData.filter(x => x.PARENT_CODE == codechild[i])
+                childB =childB.concat(lstKmc)
+            }
+          
+            var sumchild = 0;
             for (var i = 0; i < item.lstCenter.length; i++) {
                 if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
-                    var sumlst=[]
-                    var lst = rawData.filter(x => x.PARENT_CODE == item.CODE)
-
-                    for (var j = 0; j < lst.length; j++) {
-                        sumlst.push(lst[j].valueSb[i][2])
-                    }
-                    const sumResult = sumlst.reduce((a, b) => {
-                        return a + (b > 10000000 ? b / 2 : b);
-                    }, 0);
+                  
                     obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
-                    obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = sumResult;
-
+                    var sum = childB.map(x => x.valueSb[0][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => {return a+b},0)
+             
+                    obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = sum;
+              
+                    console.log(childB)
+                
                 } else {
-                    var sumlst = []
-                    var lst = rawData.filter(x => x.PARENT_CODE == item.CODE)
-                    for (var j = 0; j < lst.length; j++) {
-                        sumlst.push(lst[j].valueSb[i][2])
-                    }
-                    const sumResult = sumlst.reduce((a, b) => {
-                        return a + (b > 10000000 ? b / 2 : b);
-                    }, 0);
-
+                    var sum = childB.map(x => x.valueSb[0][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => { return a + b }, 0)
+                
                     obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
-                    obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = sumResult;
+                    obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = sum;
+                    console.log(childB)
+                  
                 }
 
                 sumQuantity += item.valueSb[i][0];
-                sumTotal += item.valueSb[i][2];
+                sumTotal += sum;
+               
             }
             obj[`sumQuantity`] = sumQuantity;
             obj[`sumTotal`] = sumTotal;
+        
         } else
         {
             for (var i = 0; i < item.lstCenter.length; i++) {
