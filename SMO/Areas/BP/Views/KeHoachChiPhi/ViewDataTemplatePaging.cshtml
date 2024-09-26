@@ -248,12 +248,30 @@
         if (ListCodeKhoanMucB.includes(item.CODE))
         {
             var codechild = rawData.filter(x => x.PARENT_CODE == item.CODE).map(x => x.CODE)
-            let childB=[]
+            let childB = []
+            
             //loc ca phan tu con cua muc b
             for (let i = 0; i < codechild.length; i++) {
-                var lstKmc = rawData.filter(x => x.PARENT_CODE == codechild[i])
-                childB =childB.concat(lstKmc)
+               /* console.log('a',codechild[i])*/
+                var lstKmc = rawData.filter(x => x.PARENT_CODE == codechild[i]).map(x => x.CODE)
+              /*  console.log(lstKmc.length>0)*/
+                if (lstKmc.length > 0) {
+
+                    for (let j = 0; j < lstKmc.length; j++) {
+                     /*   console.log('b',lstKmc[j])*/
+                        var checkparent = rawData.filter(x => x.PARENT_CODE == lstKmc[j]).map(x => x.CODE)
+                        if (checkparent.length > 0) {
+                            childB = childB.concat(rawData.filter(x => x.PARENT_CODE == lstKmc[j]))
+                        } else {
+                            childB = childB.concat(rawData.filter(x => x.CODE == lstKmc[j]))
+                        }
+                    }
+                } else {
+             
+                    childB = childB.concat(rawData.filter(x => x.CODE == codechild[i]))
+                }
             }
+            console.log(childB)
           
             var sumchild = 0;
             for (var i = 0; i < item.lstCenter.length; i++) {
@@ -309,8 +327,7 @@ Object.keys(jsonData[0]).forEach(key => {
             if (key.startsWith('total_')) {
                 totalKeys.push(key);
             }});
-    console.log(ListCodeParentKhoanMucB)
-    console.log(totalKeys)
+   
     // tổng con của dụng cụ công cụ
     jsonData.forEach(x => {
         if (ListCodeParentKhoanMucB.includes(x.code)) {
@@ -319,6 +336,8 @@ Object.keys(jsonData[0]).forEach(key => {
                 var sum = jsonData.filter(y => x.code == y.parent).map(e => e[totalKeys[i]]).reduce((a,b)=>a+b,0)
                 x[totalKeys[i]]=sum
             }
+            var sumtotal = jsonData.filter(y => x.code == y.parent).map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
+            x['sumTotal'] = sumtotal
         }
         }
     )
@@ -328,8 +347,10 @@ Object.keys(jsonData[0]).forEach(key => {
                 let total = 0;
                 var sum = jsonData.filter(y => x.code == y.parent).map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
                 x[totalKeys[i]] = sum
-                console.log(sum)
+           
             }
+            var sumtotal = jsonData.filter(y => x.code == y.parent).map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
+            x['sumTotal'] = sumtotal
     } })
     const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
