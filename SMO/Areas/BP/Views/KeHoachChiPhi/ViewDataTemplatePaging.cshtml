@@ -263,16 +263,12 @@
                     var sum = childB.map(x => x.valueSb[0][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => {return a+b},0)
              
                     obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = sum;
-              
-                    console.log(childB)
                 
                 } else {
                     var sum = childB.map(x => x.valueSb[0][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => { return a + b }, 0)
                 
                     obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
                     obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = sum;
-                    console.log(childB)
-                  
                 }
 
                 sumQuantity += item.valueSb[i][0];
@@ -308,7 +304,33 @@
     jsonData.forEach((item) => {
         if (item.parent == 'CQCT' || item.parent == 'DVT' || item.parent == 'CPMB' || item.parent == 'CPMT' || item.parent == 'CPMN') delete item.parent
     });
-
+    const totalKeys = [];
+Object.keys(jsonData[0]).forEach(key => {
+            if (key.startsWith('total_')) {
+                totalKeys.push(key);
+            }});
+    console.log(ListCodeParentKhoanMucB)
+    console.log(totalKeys)
+    // tổng con của dụng cụ công cụ
+    jsonData.forEach(x => {
+        if (ListCodeParentKhoanMucB.includes(x.code)) {
+            for (let i = 0; i < totalKeys.length; i++) {
+                let total = 0;
+                var sum = jsonData.filter(y => x.code == y.parent).map(e => e[totalKeys[i]]).reduce((a,b)=>a+b,0)
+                x[totalKeys[i]]=sum
+            }
+        }
+        }
+    )
+    jsonData.forEach(x => {
+        if (x.code.endsWith("6273")) {
+            for (let i = 0; i < totalKeys.length; i++) {
+                let total = 0;
+                var sum = jsonData.filter(y => x.code == y.parent).map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
+                x[totalKeys[i]] = sum
+                console.log(sum)
+            }
+    } })
     const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         leftSplit: 1,
