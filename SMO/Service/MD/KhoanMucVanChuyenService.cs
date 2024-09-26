@@ -70,7 +70,7 @@ namespace SMO.Service.MD
                 if (this.CheckExist(x => x.CODE == this.ObjDetail.CODE && x.TIME_YEAR == this.ObjDetail.TIME_YEAR))
                 {
                     State = false;
-                    MesseageCode = "1001";
+                    MesseageCode = "1101";
                 }
                 else if (this.CheckExist(x => x.NAME == ObjDetail.NAME))
                 {
