@@ -106,7 +106,7 @@ namespace SMO.Core.Entities.MD
         public virtual int ORDER { get; set; }
         public virtual string PARENT_ORDER { get; set; }
 
-
+        public virtual bool IsChecked { get; set; }
         public virtual object Clone()
         {
             return MemberwiseClone();

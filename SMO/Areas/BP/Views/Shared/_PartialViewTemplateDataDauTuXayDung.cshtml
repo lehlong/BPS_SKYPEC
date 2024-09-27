@@ -15,6 +15,9 @@
     var lstProject = lstData.Select(x => x.DauTuXayDungProfitCenter).ToList();
     var lstSanBay = SelectListUtilities.GetListSanBay();
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var tempalteCode = dataCenterModel.TEMPLATE_CODE;
+    var year = dataCenterModel.YEAR;
+    var version = dataCenterModel.VERSION;
     var grid = Guid.NewGuid().ToString();
     var jsonData = Model.OrderBy(x => x.ORDER).Select(x => new
     {
@@ -34,6 +37,7 @@
         value7 = x.VALUE_7.ToStringVN(),
         value8 = x.VALUE_8,
         description = x.DESCRIPTION,
+        isChecked = x.IsChecked
     });
 }
 
@@ -88,7 +92,7 @@ else
 {
     Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
     <div style="height: calc(100vh - 180px);" id="@grid"></div>
-
+    <span id="reload_paging" style="display:none;"></span>
     <script type="text/javascript">
         const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
 
@@ -103,8 +107,8 @@ else
                 align: 'center',
                 template: (value, row, col) => {
                     var isChecked = row.isChecked ? "checked" : "";
-                    return `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
-<label for="chkItem${row.code}"></label>`
+                    return row.code? `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                                    <label for="chkItem${row.code}"></label>`:`<div></div>`
                 },
                 htmlEnable: true,
             },
@@ -277,5 +281,75 @@ else
             };
             Forms.Ajax(ajaxParams);
         }
+   function IsDoneExpertise(isCheck, element) {
+       var originalCheckboxState = $('#chkItem' + element).prop('checked');
+      
+    if (!isCheck) {
+        Swal.fire({
+            title: "Lưu ý?",
+            text: "Hạng mục này đã được thẩm định! Hành động này sẽ không được lưu lại!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Huỷ"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var ajaxParams = {
+                    url: 'BP/DauTuXayDung/UnExpertise',
+                    type: 'POST',
+                    data: {
+                        templateCode: '@tempalteCode',
+                        version: '@version',
+                        year: '@year',
+                        elementCode: element,
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        Message.execute(response)
+                    }
+                };
+                Forms.Ajax(ajaxParams);
+            }
+            else {
+                $('#chkItem' + element).prop('checked', !originalCheckboxState);
+            }
+        });
+        return;
+    } else {
+        Swal.fire({
+            title: "Lưu ý?",
+            text: "Bạn có chắc hoàn thành thẩm định chỉ tiêu này?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Huỷ"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var ajaxParams = {
+                    url: 'BP/DauTuXayDung/Expertise',
+                    type: 'POST',
+                    data: {
+                        templateCode: '@tempalteCode',
+                        version: '@version',
+                        year: '@year',
+                        elementCode: element,
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        Message.execute(response)
+                    }
+                };
+                Forms.Ajax(ajaxParams);
+            }
+            else {
+                $('#chkItem' + element).prop('checked', !originalCheckboxState);
+            }
+        });
+    }
+}
     </script>
 }

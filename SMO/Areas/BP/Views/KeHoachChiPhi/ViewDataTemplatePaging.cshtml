@@ -6,6 +6,8 @@
 @{
     var gridId = Guid.NewGuid().ToString("N");
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
+    var Chinhanh = ViewBag.Chinhanh as string;
+    var SAP_CODE = ViewBag.Sap as string;
 }
 
 <style>
@@ -26,8 +28,10 @@
 <script type="text/javascript">
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
-
-    let idCol0 
+    var CN =@Html.Raw(JsonConvert.SerializeObject(Chinhanh))
+    var Sap =@Html.Raw(JsonConvert.SerializeObject(SAP_CODE))
+    console.log(CN)
+    let idCol0
     if (rawData[0].CODE.startsWith("B62") || rawData[0].CODE.startsWith("T62") || rawData[0].CODE.startsWith("N62") || rawData[0].CODE.startsWith("VT62")) {
         idCol0 = "VPCN"
     } else if (rawData[0].CODE.startsWith("CQ62")) {
@@ -51,8 +55,9 @@
             align: 'center',
             template: (value, row, col) => {
                 var isChecked = row.isChecked ? "checked" : "";
-                return `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                return row.title?`<div></div>` :`<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
                         <label for="chkItem${row.code}"></label>`
+
             },
             htmlEnable: true,
         },
@@ -62,7 +67,7 @@
             width: 40,
             align: 'center',
             template: (value, row, col) => {
-                return `<i class="material-icons icon-function" onclick="getCommentElement('${row.code}')">comment</i>`
+                return row.title ? `<div></div>` : `<i class="material-icons icon-function" onclick="getCommentElement('${row.code}')">comment</i>`
             },
             htmlEnable: true,
         },
@@ -72,7 +77,7 @@
             width: 40,
             align: 'center',
             template: (value, row, col) => {
-                return `<i class="material-icons icon-function" onclick="getAssignDepartmentElement('${row.code}')">group_add</i>`
+                return row.title ? `<div></div>` : `<i class="material-icons icon-function" onclick="getAssignDepartmentElement('${row.code}')">group_add</i>`
             },
             htmlEnable: true,
         },
@@ -82,7 +87,7 @@
             width: 40,
             align: 'center',
             template: (value, row, col) => {
-                return `<i class="material-icons icon-function" onclick="getHistoryEditElement('${row.code}')">history</i>`
+                return row.title ? `<div></div>` : `<i class="material-icons icon-function" onclick="getHistoryEditElement('${row.code}')">history</i>`
             },
             htmlEnable: true,
         }
@@ -93,7 +98,7 @@
                 { text: "KẾ HOẠCH CHI TIẾT", colspan: rawData[0].lstCenter.length * 2 + 3, align: 'center' },
                 {id:"ID_HDSL", text: "SỐ LƯỢNG", colspan: rawData[0].lstCenter.length + 1, align: 'center' },
                 { text: idCol0, align: 'center', sortable: false, }
-            ], align: 'right', width: 150, type: "number", format: "#.#", 
+            ], align: 'right', width: 150, type: "number", format: "#.#",
         },
     );
     const sortquantity = ["VPCN", "HAN", "HPH", "THD", "VII", "VDH", "VDO"];
@@ -122,7 +127,7 @@
             var idCol = sortVT[i];
             columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
-  
+
     }
     else if (rawData[0].CODE.startsWith("N62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++)
@@ -130,14 +135,14 @@
             var idCol = sortMN[i];
             columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
-     
+
     }
     else if (rawData[0].CODE.startsWith("CQ62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortCQ[i];
             columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
-     
+
     }
     else {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
@@ -161,7 +166,7 @@
                 "",
                 { text: "THÀNH TIỀN", colspan: rawData[0].lstCenter.length + 1, align: 'center' },
                 { text: idCol0, align: 'center' }
-            ], align: 'right', width: 150, type: "number", format: "#.#", 
+            ], align: 'right', width: 150, type: "number", format: "#.#",
         },
     );
     if (rawData[0].CODE.startsWith("B62")) {
@@ -183,7 +188,7 @@
             var idCol = sortVT[i];
             columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
-        
+
     }
     else if (rawData[0].CODE.startsWith("N62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++)
@@ -191,7 +196,7 @@
             var idCol = sortMN[i];
             columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
-        
+
     }
     else if (rawData[0].CODE.startsWith("CQ62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++)
@@ -199,7 +204,7 @@
             var idCol = sortCQ[i];
             columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
-        
+
     }
     else {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
@@ -249,16 +254,16 @@
         {
             var codechild = rawData.filter(x => x.PARENT_CODE == item.CODE).map(x => x.CODE)
             let childB = []
-            
+
             //loc ca phan tu con cua muc b
             for (let i = 0; i < codechild.length; i++) {
-               /* console.log('a',codechild[i])*/
+
                 var lstKmc = rawData.filter(x => x.PARENT_CODE == codechild[i]).map(x => x.CODE)
-              /*  console.log(lstKmc.length>0)*/
+
                 if (lstKmc.length > 0) {
 
                     for (let j = 0; j < lstKmc.length; j++) {
-                     /*   console.log('b',lstKmc[j])*/
+
                         var checkparent = rawData.filter(x => x.PARENT_CODE == lstKmc[j]).map(x => x.CODE)
                         if (checkparent.length > 0) {
                             childB = childB.concat(rawData.filter(x => x.PARENT_CODE == lstKmc[j]))
@@ -267,35 +272,35 @@
                         }
                     }
                 } else {
-             
+
                     childB = childB.concat(rawData.filter(x => x.CODE == codechild[i]))
                 }
             }
-            console.log(childB)
-          
+
+
             var sumchild = 0;
             for (var i = 0; i < item.lstCenter.length; i++) {
                 if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
-                  
+
                     obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
                     var sum = childB.map(x => x.valueSb[0][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => {return a+b},0)
-             
+
                     obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = sum;
-                
+
                 } else {
                     var sum = childB.map(x => x.valueSb[0][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => { return a + b }, 0)
-                
+
                     obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
                     obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = sum;
                 }
 
                 sumQuantity += item.valueSb[i][0];
                 sumTotal += sum;
-               
+
             }
             obj[`sumQuantity`] = sumQuantity;
             obj[`sumTotal`] = sumTotal;
-        
+
         } else
         {
             for (var i = 0; i < item.lstCenter.length; i++) {
@@ -327,7 +332,7 @@ Object.keys(jsonData[0]).forEach(key => {
             if (key.startsWith('total_')) {
                 totalKeys.push(key);
             }});
-   
+
     // tổng con của dụng cụ công cụ
     jsonData.forEach(x => {
         if (ListCodeParentKhoanMucB.includes(x.code)) {
@@ -347,11 +352,13 @@ Object.keys(jsonData[0]).forEach(key => {
                 let total = 0;
                 var sum = jsonData.filter(y => x.code == y.parent).map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
                 x[totalKeys[i]] = sum
-           
+
             }
             var sumtotal = jsonData.filter(y => x.code == y.parent).map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
-    } })
+        }
+    })
+    jsonData.unshift({ name: `${CN}-${Sap}`, isChecked: false, title: true, isBold: true })
     const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         leftSplit: 1,

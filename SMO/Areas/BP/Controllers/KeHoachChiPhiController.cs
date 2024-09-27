@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
+using NHibernate.SqlCommand;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
 using SMO.Core.Entities.MD;
@@ -160,6 +161,7 @@ namespace SMO.Areas.BP.Controllers
         {
             var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
             var data = _service.GetSanBayInTemplate(modelJson);
+
             ViewBag.dataCenterModel = modelJson;
             ViewBag.Skip = 0;
             return PartialView(data);
@@ -170,6 +172,9 @@ namespace SMO.Areas.BP.Controllers
             var modelJson = JsonConvert.DeserializeObject<ViewDataCenterModel>(model);
             var lstSanBay = _service.GetSanBayInTemplate(modelJson).ToList();
             var data = await _service.GetDataChiPhi(modelJson, lstSanBay, month);
+            var template = _service.GetTemplate(modelJson.TEMPLATE_CODE);
+            ViewBag.Chinhanh = template.Organize.NAME;
+            ViewBag.Sap = template.Organize.SAP_CODE;
             ViewBag.dataCenterModel = modelJson;
             skip = skip < 0 ? 0 : skip;
             ViewBag.Skip = skip;

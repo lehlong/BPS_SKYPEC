@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using iTextSharp.text;
 using Microsoft.CodeAnalysis;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -9,6 +10,7 @@ using SMO.Core.Entities.BP;
 using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
 using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG.DAU_TU_XAY_DUNG_DATA_BASE;
 using SMO.Core.Entities.BP.KE_HOACH_CHI_PHI;
+using SMO.Core.Entities.BP.SUA_CHUA_THUONG_XUYEN;
 using SMO.Core.Entities.MD;
 using SMO.Helper;
 using SMO.Models;
@@ -17,6 +19,7 @@ using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG.DAU_TU_XAY_DUNG_DATA_BASE;
 using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Implement.BP.SUA_CHUA_LON;
+using SMO.Repository.Implement.BP.SUA_CHUA_THUONG_XUYEN;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Class;
 using SMO.Service.Common;
@@ -1561,10 +1564,11 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 // Lấy danh sách dự án
                 var lstData = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).ToList();
                 var lstProfit = lstData.Select(x => x.DauTuXayDungProfitCenter).Distinct().ToList();
-
+                var allExpertise = UnitOfWork.Repository<DauTuXayDungDepartmentExpertiseRepo>().GetAll();
                 var Order = 0;
                 foreach (var profit in lstProfit)
                 {
+                    var expertise = allExpertise.Any(x => x.ELEMENT_CODE == profit.PROJECT_CODE);
                     var item = new T_MD_KHOAN_MUC_DAU_TU
                     {
                         PKID = profit.PROJECT_CODE,
@@ -1585,6 +1589,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                         ORDER = Order,
                         LEVEL = 0,
                         IS_GROUP = true,
+                        IsChecked = expertise
                     };
                     lstKhoanMuc.Add(item);
                     var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
@@ -3892,7 +3897,52 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
 
             return SummaryCenter(plDataOtherKhoanMucDauTus, centerCode, year, isHasValue);
         }
+        public void Expertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<DauTuXayDungDepartmentExpertiseRepo>().Create(new T_BP_DAU_TU_XAY_DUNG_DEPARTMENT_EXPERTISE
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    TYPE = BudgetType.DauTuXayDung,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
 
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void UnExpertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var KhoanMuc = UnitOfWork.Repository<DauTuXayDungDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
+                if (KhoanMuc != null)
+                {
+                    UnitOfWork.Repository<DauTuXayDungDepartmentExpertiseRepo>().Delete(KhoanMuc);
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
         /// <summary>
         /// Get data has summed up (history)
         /// Lấy dữ liệu đã được tổng hợp lên đơn vị cha theo version

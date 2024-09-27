@@ -39,10 +39,12 @@
 
     <script type="text/javascript">
         function SubmitIndex() {
+            console.log('a')
             Forms.SubmitForm('@Model.FormId');
         }
 
         $(function () {
+            console.log('a')
             Forms.SubmitForm('@Model.FormId');
             Forms.CompleteUI();
             Forms.SubmitByEnter("@Model.FormId");

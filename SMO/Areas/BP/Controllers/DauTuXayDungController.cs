@@ -223,6 +223,47 @@ namespace SMO.Areas.BP.Controllers
             _service.GenerateData(ref outFileStream, path, model, lstData, lstProject);
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
+        public ActionResult Expertise(string templateCode, int version, int year, string elementCode)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.Expertise(templateCode, version, year, elementCode);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult UnExpertise(string templateCode, int version, int year, string elementCode)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.UnExpertise(templateCode, version, year, elementCode);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
 
 
     }

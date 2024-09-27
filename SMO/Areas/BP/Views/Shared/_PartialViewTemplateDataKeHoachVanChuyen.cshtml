@@ -30,8 +30,8 @@
         ValuesTVC = x.ValuesTVC.ToStringVN(),
         ValuesTVT = x.ValuesTVT.ToStringVN(),
         ValuesTN = x.ValuesTN.ToStringVN(),
-        ValuesLCT = x.ValuesLCT.ToStringVN(),
-        ValuesLCM3 = x.ValuesLCM3.ToStringVN(),
+        ValuesLCT =  ( x.ValuesT * x.ValuesCL).ToStringVN(),
+        ValuesLCM3 = ( x.ValuesM3*x.ValuesCL).ToStringVN(),
         IsBold = x.Isbold,
     });
 

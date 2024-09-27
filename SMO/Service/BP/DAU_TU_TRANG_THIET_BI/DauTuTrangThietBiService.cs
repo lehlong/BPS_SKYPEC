@@ -1,4 +1,5 @@
-﻿using NPOI.SS.UserModel;
+﻿using iTextSharp.text;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 using SMO.AppCode.Utilities;
@@ -7,6 +8,7 @@ using SMO.Core.Entities.BP;
 using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI.DAU_TU_TRANG_THIET_BI_DATA_BASE;
 using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
+using SMO.Core.Entities.BP.SUA_CHUA_THUONG_XUYEN;
 using SMO.Core.Entities.MD;
 using SMO.Helper;
 using SMO.Models;
@@ -14,6 +16,8 @@ using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI.DAU_TU_TRANG_THIET_BI_DATA_BASE;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
+using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
+using SMO.Repository.Implement.BP.SUA_CHUA_THUONG_XUYEN;
 using SMO.Repository.Implement.MD;
 using SMO.Service.Class;
 using SMO.Service.Common;
@@ -99,6 +103,52 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
         public override bool ShowReviewBtn()
         {
             return ShowReviewBtn(ObjDetail.TIME_YEAR);
+        }
+        public void Expertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<DauTuTrangThietBiDepartmentExpertiseRepo>().Create(new T_BP_DAU_TU_TRANG_THIET_BI_DEPARTMENT_EXPERTISE
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    TYPE = BudgetType.DauTuTrangThietBi,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void UnExpertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var KhoanMuc = UnitOfWork.Repository<DauTuTrangThietBiDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
+                if (KhoanMuc != null)
+                {
+                    UnitOfWork.Repository<DauTuTrangThietBiDepartmentExpertiseRepo>().Delete(KhoanMuc);
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
         }
         public override void Search()
         {
@@ -2253,10 +2303,12 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             var lstData = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.ORG_CODE == model.ORG_CODE && x.VERSION == model.VERSION && x.TIME_YEAR == model.YEAR).OrderByDescending(x => x.DauTuTrangThietBiProfitCenter.Project.TYPE).ThenBy(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE).ToList();
             lstData = model.PHIEN_BAN != "PB1" ? lstData.Where(x => x.MONTH == model.MONTH).ToList() : lstData;
             var lstProfit = lstData.Select(x => x.DauTuTrangThietBiProfitCenter).Distinct().ToList();
+            var allExpertise = UnitOfWork.Repository<DauTuTrangThietBiDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == model.TEMPLATE_CODE && x.VERSION == model.VERSION && x.YEAR == model.YEAR).ToList();
 
             var Order = 0;
             foreach (var profit in lstProfit)
             {
+                var expertise = allExpertise.Any(x => x.ELEMENT_CODE == profit.PROJECT_CODE);
                 var item = new T_MD_KHOAN_MUC_DAU_TU
                 {
                     PKID = profit.PROJECT_CODE,
@@ -2281,13 +2333,15 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     ORDER = Order,
                     LEVEL = 0,
                     IS_GROUP = profit.Project.TYPE == "TTB-LON" ? true : false,
-                };
+                    IsChecked=expertise
+            };
                 lstKhoanMuc.Add(item);
                 var lstgiaiDoan = UnitOfWork.Repository<GiaiDoanDauTuRepo>().Queryable().Where(x => x.TYPE == profit.Project.TYPE).ToList();
                 if (lstgiaiDoan.Count > 1)
                 {
                     foreach (var gd in lstgiaiDoan)
                     {
+
                         var child = lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE && x.KHOAN_MUC_DAU_TU_CODE == gd.CODE);
                         var itemChild = new T_MD_KHOAN_MUC_DAU_TU
                         {
@@ -3224,6 +3278,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
             var templateDetails = UnitOfWork.Repository<TemplateDetailDauTuTrangThietBiRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateId && x.TIME_YEAR == year).OrderByDescending(x => x.Center.Project.TYPE).ToList();
             var lstProject = templateDetails.Select(x => x.Center.Project).Distinct().ToList();
             var lstKhoanMuc = new List<T_MD_KHOAN_MUC_DAU_TU>();
+           
             foreach (var project in lstProject)
             {
                 var item = new T_MD_KHOAN_MUC_DAU_TU

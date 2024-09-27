@@ -212,7 +212,9 @@
     }
 
     function IsDoneExpertise(isCheck, element) {
+       
         var originalCheckboxState = $('#chkItem' + element).prop('checked');
+        console.log(originalCheckboxState)
         if (!isCheck) {
             Swal.fire({
                 title: "Lưu ý?",

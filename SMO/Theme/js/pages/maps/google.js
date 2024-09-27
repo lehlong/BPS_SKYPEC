@@ -22,7 +22,7 @@ $(function () {
         },
         click: function (e) {
             if (console.log)
-                console.log(e);
+              
             alert('You clicked in this marker');
         }
     });
