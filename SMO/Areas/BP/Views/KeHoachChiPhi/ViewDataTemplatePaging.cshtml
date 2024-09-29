@@ -55,7 +55,7 @@
             align: 'center',
             template: (value, row, col) => {
                 var isChecked = row.isChecked ? "checked" : "";
-                return row.title?`<div></div>` :`<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                return row.title ? `<div></div>` : `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
                         <label for="chkItem${row.code}"></label>`
 
             },

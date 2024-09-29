@@ -92,10 +92,9 @@ else
 {
     Html.RenderPartial("_PartialViewSearchAndDetail", dataCenterModel);
     <div style="height: calc(100vh - 180px);" id="@grid"></div>
-    <span id="reload_paging" style="display:none;"></span>
     <script type="text/javascript">
         const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
-
+        console.log(rawData)
         let columns = [
             { id: "code", header: [{ text: "MÃ DỰ ÁN", align: "center" }, { content: "inputFilter" }], align: "left", width: 140 },
             {
@@ -107,11 +106,14 @@ else
                 align: 'center',
                 template: (value, row, col) => {
                     var isChecked = row.isChecked ? "checked" : "";
-                    return row.code? `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
-                                    <label for="chkItem${row.code}"></label>`:`<div></div>`
+                    var codecheck = row.code.replace(/-/g, '') +'1'
+
+                    return row.code ? `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                        <label for="chkItem${row.code}"></label>` : `<div></div>`
                 },
                 htmlEnable: true,
             },
+      
             {
                 id: "comment", header: [{ text: "", align: 'center', rowspan: 2 }],
                 adjust: false,
@@ -145,7 +147,7 @@ else
         const treeGrid = new dhx.Grid("@grid", {
             columns,
             data: rawData,
-            leftSplit: 4,
+            leftSplit: 1,
             resizable: true,
             keyNavigation: true,
             rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
@@ -281,6 +283,7 @@ else
             };
             Forms.Ajax(ajaxParams);
         }
+
    function IsDoneExpertise(isCheck, element) {
        var originalCheckboxState = $('#chkItem' + element).prop('checked');
       
