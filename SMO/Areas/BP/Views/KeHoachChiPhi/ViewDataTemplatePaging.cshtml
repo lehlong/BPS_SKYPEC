@@ -29,7 +29,18 @@
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
     var CN =@Html.Raw(JsonConvert.SerializeObject(Chinhanh))
-    var Sap =@Html.Raw(JsonConvert.SerializeObject(SAP_CODE))
+        let TenCN;
+    if (CN.includes("100001")) {
+        TenCN = "CƠ QUAN CÔNG TY"
+    } else if (CN.includes("100002")) {
+        TenCN = "CHI NHÁNH MIỀN BẮC"
+    } else if (CN.includes("100003")) {
+        TenCN = "CHI NHÁNH MIỀN TRUNG"
+    } else if (CN.includes("100004")) {
+        TenCN = "CHI NHÁNH MIỀN NAM"
+    } else  {
+        TenCN = "CHI NHÁNH VẬN TẢI"
+    }
     console.log(CN)
     let idCol0
     if (rawData[0].CODE.startsWith("B62") || rawData[0].CODE.startsWith("T62") || rawData[0].CODE.startsWith("N62") || rawData[0].CODE.startsWith("VT62")) {
@@ -358,7 +369,7 @@ Object.keys(jsonData[0]).forEach(key => {
             x['sumTotal'] = sumtotal
         }
     })
-    jsonData.unshift({ name: `${CN}-${Sap}`, isChecked: false, title: true, isBold: true })
+    jsonData.unshift({ name: `${TenCN}`, isChecked: false, title: true, isBold: true })
     const treeGrid = new dhx.TreeGrid("@gridId", {
         columns,
         leftSplit: 1,

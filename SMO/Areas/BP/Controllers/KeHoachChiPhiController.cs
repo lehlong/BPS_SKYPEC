@@ -173,7 +173,7 @@ namespace SMO.Areas.BP.Controllers
             var lstSanBay = _service.GetSanBayInTemplate(modelJson).ToList();
             var data = await _service.GetDataChiPhi(modelJson, lstSanBay, month);
             var template = _service.GetTemplate(modelJson.TEMPLATE_CODE);
-            ViewBag.Chinhanh = template.Organize.NAME;
+            ViewBag.Chinhanh = template.Organize.CODE;
             ViewBag.Sap = template.Organize.SAP_CODE;
             ViewBag.dataCenterModel = modelJson;
             skip = skip < 0 ? 0 : skip;
