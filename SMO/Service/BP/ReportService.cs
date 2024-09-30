@@ -410,7 +410,7 @@ namespace SMO.Service.BP
             }
 
             //InsertSC
-            
+
             for (int i = 0; i < data.SuaChuaLon.Count(); i++)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow3++, 7);
@@ -3419,50 +3419,50 @@ namespace SMO.Service.BP
                 projects = projects.Where(x => x.CODE != "DA-2024-5").ToList();
                 var order = 1;
                 var Dl1_1 = details1_1.Where(x => projects.Select(y => y.CODE).Contains(x.DauTuTrangThietBiProfitCenter.PROJECT_CODE));
-                var DlTH = detailsTH.Where(x => projects.Select(y => y.CODE).Contains(x.DauTuTrangThietBiProfitCenter.PROJECT_CODE)&& x.MONTH==month);
+                var DlTH = detailsTH.Where(x => projects.Select(y => y.CODE).Contains(x.DauTuTrangThietBiProfitCenter.PROJECT_CODE) && x.MONTH == month);
                 var test = detailsTH.Where(x => projects.Select(y => y.CODE).Contains(x.DauTuTrangThietBiProfitCenter.PROJECT_CODE));
-                var DlTHLK = detailsTH.Where(x => projects.Select(y => y.CODE).Contains(x.DauTuTrangThietBiProfitCenter.PROJECT_CODE)&& x.MONTH<=month).Sum(x=>x.VALUE_7)??0;
-             
+                var DlTHLK = detailsTH.Where(x => projects.Select(y => y.CODE).Contains(x.DauTuTrangThietBiProfitCenter.PROJECT_CODE) && x.MONTH <= month).Sum(x => x.VALUE_7) ?? 0;
+
                 data.Add(new ReportModel
                 {
                     Name = "Tổng kinh phí đầu tư XDCB",
                     Col1 = Dl1_1.Sum(x => x.VALUE_1) ?? 0,
-                    Col4= DlTH.Sum(x=>x.VALUE_5) ??0,
+                    Col4 = DlTH.Sum(x => x.VALUE_5) ?? 0,
                     Col5 = DlTH.Sum(x => x.VALUE_6) ?? 0,
                     Col6 = DlTH.Sum(x => x.VALUE_7) ?? 0,
-                    Col7 =DlTHLK,
-                    Col8= Dl1_1.Sum(x => x.VALUE_1) == 0 ? 0 : (DlTHLK/ Dl1_1.Sum(x => x.VALUE_1) ) *100,
+                    Col7 = DlTHLK,
+                    Col8 = Dl1_1.Sum(x => x.VALUE_1) == 0 ? 0 : (DlTHLK / Dl1_1.Sum(x => x.VALUE_1)) * 100,
 
                     IsBold = true,
                 });
 
                 foreach (var project in projects)
                 {
-                    
+
                     var detail1_1 = details1_1.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE);
-                    var detailth = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE&& x.MONTH==month);
-                    var detailthLK = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.MONTH <= month).Sum(x=>x.VALUE_7)??0 ;
+                    var detailth = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.MONTH == month);
+                    var detailthLK = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.MONTH <= month).Sum(x => x.VALUE_7) ?? 0;
                     var detail1_1CBDT = details1_1.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT");
                     var detailthCBDT = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT" && x.MONTH == month);
                     var detaillkCBDT = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT" && x.MONTH <= month).Sum(x => x.VALUE_7) ?? 0;
                     var detail1_1TTDT = details1_1.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT");
-                    var detailthTTDT = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT"&&x.MONTH==month);
+                    var detailthTTDT = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT" && x.MONTH == month);
                     var detaillkTTDT = detailsTH.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT" && x.MONTH <= month).Sum(x => x.VALUE_7) ?? 0;
-                 
+
                     var i = new ReportModel
                     {
                         Stt = order.ToString(),
                         Name = project.NAME,
                         Col1 = detail1_1.Sum(x => x.VALUE_1) ?? 0,
-                        Col4 = detailth.Sum(x=>x.VALUE_5)??0,
+                        Col4 = detailth.Sum(x => x.VALUE_5) ?? 0,
                         Col5 = detailth.Sum(x => x.VALUE_6) ?? 0,
                         Col6 = detailth.Sum(x => x.VALUE_7) ?? 0,
                         Col7 = detailthLK,
-                        Col8 = detail1_1.Sum(x => x.VALUE_1) == 0? 0: (detailthLK/(detail1_1.Sum(x => x.VALUE_1) ?? 0))*100,
+                        Col8 = detail1_1.Sum(x => x.VALUE_1) == 0 ? 0 : (detailthLK / (detail1_1.Sum(x => x.VALUE_1) ?? 0)) * 100,
                         //Col9 = detail1_1.Select(x=>x.VALUE_8)
                     };
                     data.Add(i);
-                    
+
                     if (project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE))
                     {
 
@@ -3475,7 +3475,7 @@ namespace SMO.Service.BP
                             Col5 = detailthCBDT.Sum(x => x.VALUE_6) ?? 0,
                             Col6 = detailthCBDT.Sum(x => x.VALUE_7) ?? 0,
                             Col7 = detaillkCBDT,
-                            Col8= detail1_1CBDT.Sum(x => x.VALUE_1) == 0 ? 0 :(detaillkCBDT / detail1_1CBDT.Sum(x => x.VALUE_1))*100,
+                            Col8 = detail1_1CBDT.Sum(x => x.VALUE_1) == 0 ? 0 : (detaillkCBDT / detail1_1CBDT.Sum(x => x.VALUE_1)) * 100,
                             //Col9= detail1_1CBDT.Select(x=>x.VALUE_8)
 
                         });
@@ -3488,7 +3488,7 @@ namespace SMO.Service.BP
                             Col5 = detailthTTDT.Sum(x => x.VALUE_6) ?? 0,
                             Col6 = detailthTTDT.Sum(x => x.VALUE_7) ?? 0,
                             Col7 = detaillkTTDT,
-                            Col8 = detaillkTTDT == 0 ? 0 : (detaillkCBDT / detail1_1TTDT.Sum(x => x.VALUE_1)  )*100,
+                            Col8 = detaillkTTDT == 0 ? 0 : (detaillkCBDT / detail1_1TTDT.Sum(x => x.VALUE_1)) * 100,
                             //Col9= detail1_1TTDT.Select(x=>x.VALUE_8)
                         });
 
@@ -3542,7 +3542,7 @@ namespace SMO.Service.BP
                     Col2 = data.Where(x => string.IsNullOrEmpty(x.Stt)).Sum(x => x.Col2),
                     Col3 = data.Where(x => string.IsNullOrEmpty(x.Stt)).Sum(x => x.Col3),
                     Col4 = data.Where(x => string.IsNullOrEmpty(x.Stt)).Sum(x => x.Col4),
-                    Col5 = SumCol1==0||SumCol4==0?0: (SumCol4/SumCol1)*100 
+                    Col5 = SumCol1 == 0 || SumCol4 == 0 ? 0 : (SumCol4 / SumCol1) * 100
                 });
                 return data;
 
@@ -3596,7 +3596,7 @@ namespace SMO.Service.BP
                 var e = data.Union(dataBS).Union(dataTH);
                 var elementCodes = e.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
                 var elementChild = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).ToList();
-                var testdata = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).Select(x=>x.PARENT_CODE).Distinct();
+                var testdata = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).Select(x => x.PARENT_CODE).Distinct();
                 foreach (var i in elementChild.Select(x => x.PARENT_CODE).Distinct().ToList())
                 {
                     var p = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.TIME_YEAR == year && x.CODE == i);
@@ -3866,7 +3866,7 @@ namespace SMO.Service.BP
                         dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID && x.GROUP_2_ID.Contains(e.GROUP_2_ID)).Sum(x => x.VALUE),
                     };
                     i.Col3 = i.Col1 + i.Col2;
-                    i.Col5 = i.Col4 == 0 || i.Col1 == 0 ? 0 : (i.Col4 / i.Col1)*100;
+                    i.Col5 = i.Col4 == 0 || i.Col1 == 0 ? 0 : (i.Col4 / i.Col1) * 100;
                     data.Add(i);
                 }
 
@@ -4634,6 +4634,7 @@ namespace SMO.Service.BP
                 return new List<ReportModel>();
             }
         }
+
     }
     public class ReportDataCenter
     {

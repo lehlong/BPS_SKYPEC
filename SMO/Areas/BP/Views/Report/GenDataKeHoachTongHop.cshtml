@@ -10,6 +10,8 @@
     var gridTab4 = Guid.NewGuid().ToString("N");
     var gridTab5 = Guid.NewGuid().ToString("N");
 
+    var data = ReportUtilities.ProcessData(Model);
+
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
@@ -51,7 +53,7 @@
 </div>
 <script type="text/javascript">
     var spans = [];
-    var dataSL = @Html.Raw(JsonConvert.SerializeObject(Model.SanLuong, jsonSerializeSettings));
+    var dataSL = @Html.Raw(JsonConvert.SerializeObject(data.SanLuong, jsonSerializeSettings));
     dataSL.forEach((item) => {
         if (item.isBold == true) {
             spans.push({
@@ -59,7 +61,6 @@
             })
         }
     });
-    console.log(dataSL)
     const gridTab1 = new dhx.Grid("@gridTab1", {
         columns: [
             { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
@@ -94,7 +95,7 @@
             { id: "value4", header: [{ text: "Tiến độ triển khai giai đoạn đầu tư", align: "center" }], width: 180 },
             { id: "des", header: [{ text: "Ghi chú", align: "center" }], adjust: true },
         ],
-        data: @Html.Raw(JsonConvert.SerializeObject(Model.DauTu, jsonSerializeSettings)),
+        data: @Html.Raw(JsonConvert.SerializeObject(data.DauTu, jsonSerializeSettings)),
         resizable: true,
         selection: "row",
         rowHeight: 30,
@@ -109,14 +110,14 @@
             { id: "valueQM", header: [{ text: "Quy mô s/c", align: "center" }], adjust: true },
             { id: "des", header: [{ text: "Ghi chú", align: "center" }], adjust: true },
         ],
-        data: @Html.Raw(JsonConvert.SerializeObject(Model.SuaChuaLon, jsonSerializeSettings)),
+        data: @Html.Raw(JsonConvert.SerializeObject(data.SuaChuaLon, jsonSerializeSettings)),
         resizable: true,
         selection: "row",
         rowHeight: 30,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
 
-    var dataCP = @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi, jsonSerializeSettings));
+    var dataCP = @Html.Raw(JsonConvert.SerializeObject(data.ChiPhi, jsonSerializeSettings));
     var parentData = dataCP.filter(x => x.isBold == true);
 
     Number.prototype.format = function (n, x, s, c) {
@@ -134,7 +135,7 @@
             { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }, ""], minWidth: 160, align: "right", type: "number", format: "#.#" },
             { id: "notes", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }, ""], minWidth: 160 },
         ],
-        data: @Html.Raw(JsonConvert.SerializeObject(Model.ChiPhi, jsonSerializeSettings)),
+        data: @Html.Raw(JsonConvert.SerializeObject(data.ChiPhi, jsonSerializeSettings)),
         resizable: true,
         selection: "row",
         adjust: true,
@@ -150,12 +151,12 @@
          { id: "valueQM", header: [{ text: "", align: "center" }, { text: "QUY MÔ", align: "center" }], align: "right", width: 180 },
          { id: "des", header: [{ text: "", align: "center" }, { text: "GHI CHÚ", align: "center" }], align: "right", width: 180 },
         ],
-     data: @Html.Raw(JsonConvert.SerializeObject(Model.SuaChuaThuongXuyen, jsonSerializeSettings)),
+     data: @Html.Raw(JsonConvert.SerializeObject(data.SuaChuaThuongXuyen, jsonSerializeSettings)),
      resizable: true,
      selection: "row",
    /*  keyNavigation: true,*/
      rowHeight: 30,
      rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
- });
+    });
 
 </script>

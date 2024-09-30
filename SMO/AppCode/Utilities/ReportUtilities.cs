@@ -1,4 +1,6 @@
 ﻿using NPOI.SS.UserModel;
+using SMO.Models;
+using System.Linq;
 
 namespace SMO
 {
@@ -127,6 +129,85 @@ namespace SMO
             {
                 sheet.ShiftRows(rowIndex + 1, lastRowNum, -1);
             }
+        }
+        public static SynthesizeThePlanReportModel ProcessData(SynthesizeThePlanReportModel Model)
+        {
+            foreach (var c in Model.ChiPhi)
+            {
+                if (c.name == "Thuê s/c thường xuyên nhà cửa vật kiến trúc" && c.Stt == "2.1")
+                {
+                    c.valueCP = Model.SuaChuaThuongXuyen.Where(x => x.Stt == "I").Sum(x => x.valueGT);
+                }
+                if (c.name.Contains("Giá trị thực hiện trong năm") && c.Stt == "2.2.2")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.stt == "I").Sum(x => x.valueKP) / 2;
+                }
+                if (c.name.Contains("Giá trị SCL dự kiến trong năm") && c.Stt == "2.3")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.stt == "I").Sum(x => x.valueKP);
+                }
+                if (c.name.Contains("Thuê SCTX máy móc, thiết bị") && c.Stt == "3.1")
+                {
+                    c.valueCP = Model.SuaChuaThuongXuyen.Where(x => x.Name.Contains("SCTX - Máy móc TB")).Sum(x => x.valueGT);
+                }
+                if (c.name.Contains("Giá trị SCL dự kiến trong năm") && c.Stt == "3.3")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("SCL Máy móc TB")).Sum(x => x.valueKP);
+                }
+                if (c.name.Contains("Giá trị thực hiện trong năm") && c.Stt == "3.2.2")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("SCL Máy móc TB")).Sum(x => x.valueKP) / 2;
+                }
+                if (c.name.Contains("Thuê s/c thường xuyên phương tiện vận tải") && c.Stt == "4.1")
+                {
+                    c.valueCP = Model.SuaChuaThuongXuyen.Where(x => x.Name.Contains("SCTX PTVT")).Sum(x => x.valueGT);
+                }
+                if (c.name.Contains("Thuê s/c thường xuyên thiết bị quản lý") && c.Stt == "5.1")
+                {
+                    c.valueCP = Model.SuaChuaThuongXuyen.Where(x => x.Name.Contains("SCTX Thiết bị quản lý")).Sum(x => x.valueGT);
+                }
+                if (c.name.Contains("Thuê s/c thường xuyên tài sản cố định khác") && c.Stt == "7.1")
+                {
+                    c.valueCP = Model.SuaChuaThuongXuyen.Where(x => x.Name.Contains("SCTX TSCĐ Khác")).Sum(x => x.valueGT);
+                }
+                if (c.name.Contains("Giá trị thực hiện trong năm") && c.Stt == "4.2.2")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("SCL PTVT")).Sum(x => x.valueKP) / 2;
+                }
+                if (c.name.Contains("Giá trị SCL dự kiến trong năm") && c.Stt == "4.3")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("SCL PTVT")).Sum(x => x.valueKP);
+                }
+                if (c.name.Contains("Giá trị thực hiện trong năm") && c.Stt == "5.2.2")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("Thiết bị quản lý")).Sum(x => x.valueKP) / 2;
+                }
+                if (c.name.Contains("Giá trị SC dự kiến trong năm") && c.Stt == "5.2.3")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("Thiết bị quản lý")).Sum(x => x.valueKP);
+                }
+                if (c.name.Contains("Thuê s/c thường xuyên kho bể") && c.Stt == "6.1")
+                {
+                    c.valueCP = Model.SuaChuaThuongXuyen.Where(x => x.Name.Contains("SCTX Kho Bể")).Sum(x => x.valueGT);
+                }
+                if (c.name.Contains("Giá trị thực hiện trong năm") && c.Stt == "7.2.2")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("SCL TSCĐ khác")).Sum(x => x.valueKP) / 2;
+                }
+                if (c.name.Contains("Giá trị SC dự kiến trong năm") && c.Stt == "7.2.3")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("SCL TSCĐ khác")).Sum(x => x.valueKP);
+                }
+                if (c.name.Contains("Giá trị thực hiện trong năm") && c.Stt == "6.2.2")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("SCL Kho bể")).Sum(x => x.valueKP) / 2;
+                }
+                if (c.name.Contains("Giá trị SCL dự kiến trong năm") && c.Stt == "6.3")
+                {
+                    c.valueCP = Model.SuaChuaLon.Where(x => x.name.Contains("SCL Kho bể")).Sum(x => x.valueKP);
+                }
+            }
+            return Model;
         }
     }
 }
