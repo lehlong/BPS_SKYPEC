@@ -1731,6 +1731,7 @@ namespace SMO.Service.MD
                 {
                     var item = new ChiPhi
                     {
+                        code = i.GROUP_1_ID + i.GROUP_2_ID,
                         Stt = i.STT,
                         name = i.GROUP_NAME,
                         valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(firstCode + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,

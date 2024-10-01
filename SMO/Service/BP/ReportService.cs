@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
+using System.Runtime.CompilerServices;
 using System.Web;
 
 namespace SMO.Service.BP
@@ -525,8 +526,28 @@ namespace SMO.Service.BP
             var fontNormal = templateWorkbook.CreateFont();
             fontNormal.FontHeightInPoints = 12;
             fontNormal.FontName = "Times New Roman";
-
+            var parentList = datas.chiPhiInReports.Where(x => x.IsBold == true);
+            var sumMB = parentList.Sum(x => x.valueCNMB);
+            var sumMT = parentList.Sum(x => x.valueCNMT);
+            var sumVT = parentList.Sum(x => x.valueCNVT);
+            var sumMN = parentList.Sum(x => x.valueCNMN);
+            var sumCQ = parentList.Sum(x => x.valueCQCT);
+            var sumTcty = parentList.Sum(x => x.valueTcty);
+            datas.chiPhiInReports.Insert(0, new ChiPhiInReport
+            {
+                Stt = "",
+                name = "TỔNG CỘNG",
+                IsBold=true,
+                valueCQCT=sumCQ,
+                valueCNMN=sumMN,
+                valueCNMT = sumMT,
+                valueCNVT = sumVT,
+                valueCNMB = sumMB,
+                valueTcty=sumTcty
+            });
             var data = datas.chiPhiInReports;
+         
+
             var startRow1 = 8;
 
 

@@ -126,7 +126,16 @@
 
         return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
     };
+    var data = @Html.Raw(JsonConvert.SerializeObject(data.ChiPhi, jsonSerializeSettings));
+    var ParentArray = ["6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB"]
+    data.forEach(x => {
 
+        if (ParentArray.includes(x.code)) {
+            var sum = data.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCP).reduce((a, b) => a + b, 0)
+            x.valueCP=sum
+        }
+    })
+    console.log('datachiphi', data)
     const gridTab4 = new dhx.Grid("@gridTab4", {
         columns: [
             { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }, { text: "" }], align: "center", minWidth: 100 },
@@ -135,7 +144,7 @@
             { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }, ""], minWidth: 160, align: "right", type: "number", format: "#.#" },
             { id: "notes", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }, ""], minWidth: 160 },
         ],
-        data: @Html.Raw(JsonConvert.SerializeObject(data.ChiPhi, jsonSerializeSettings)),
+        data: data,
         resizable: true,
         selection: "row",
         adjust: true,

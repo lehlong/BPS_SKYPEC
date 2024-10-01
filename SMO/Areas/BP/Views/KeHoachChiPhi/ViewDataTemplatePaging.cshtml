@@ -28,8 +28,17 @@
 <script type="text/javascript">
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
-    var CN =@Html.Raw(JsonConvert.SerializeObject(Chinhanh))
-     
+    var CN =@Html.Raw(JsonConvert.SerializeObject(Chinhanh));
+    var ParentDVMNArray = ["N6277G002AB", "N6277G00B02", "N6277G005AB", "N6277G006AB", "N6277G007AB", "T6277G002AB", "T6277G003AB", "T6277G004AB", "T6277G005AB", "T6277G006AB", "T6277G007AB", "VT6277G0023", "VT6277G0033", "VT6277G0043", "VT6277G0053", "VT6277G0063", "VT6277G007D", "CQ6277G007002AB", "CQ6277G007003AB", "CQ6277G007004AB", "CQ6277G007005AB", "CQ6277G007006AB", "CQ6277G007AB", "B6277G002B"
+,"B6277G003AB",
+"B6277G004AB",
+"B6277G005AB",
+"B6277G006AB",
+"B6277G007AB"
+]
+    var ChildDVMNArray = ["N6277G002AB01", "N6277G002AB02","N6277G00B03","N6277G005AB01","N6277G005AB02","N6277G006AB01","N6277G006AB02",
+        "N6277G007AB01", "N6277G007AB02", "T6277G002AB1", "T6277G002AB2", "T6277G003AB1", "T6277G003AB2", "T6277G004AB1", "T6277G004AB2", "T6277G005AB1", "T6277G005AB2", "T6277G006AB1", "T6277G006AB2", "T6277G007AB1", "T6277G007AB2", "VT6277G0024","VT6277G0025","VT6277G0034","VT6277G0035","VT6277G0044","VT6277G0045","VT6277G0054","VT6277G0055","VT6277G0064","VT6277G0065","VT6277G007D1",	"CQ6277G007002ABA","CQ6277G007002ABB","CQ6277G007003ABA","CQ6277G007003AB","CQ6277G007004ABA","CQ6277G007004ABB","CQ6277G007005ABA","CQ6277G007005AB","CQ6277G007006ABA","CQ6277G007006ABB","CQ6277G007ABA","CQ6277G007ABB"
+        ,"B6277G002B1","B6277G002B2","B6277G003AB1","B6277G003AB2","B6277G004AB1","B6277G004AB2","B6277G005AB1","B6277G005AB2","B6277G006AB1","B6277G006AB2","B6277G007AB1","B6277G007AB2"]
     let TenCN;
     if (CN.includes("100001")) {
         TenCN = "CƠ QUAN CÔNG TY"
@@ -344,11 +353,13 @@
     jsonData.forEach((item) => {
         if (item.parent == 'CQCT' || item.parent == 'DVT' || item.parent == 'CPMB' || item.parent == 'CPMT' || item.parent == 'CPMN') delete item.parent
     });
-    const totalKeys = [];
+    let totalKeys = [];
+ 
 Object.keys(jsonData[0]).forEach(key => {
             if (key.startsWith('total_')) {
                 totalKeys.push(key);
-            }});
+    }
+});
 
     // tổng con của dụng cụ công cụ
     jsonData.forEach(x => {
@@ -373,6 +384,23 @@ Object.keys(jsonData[0]).forEach(key => {
             }
             var sumtotal = jsonData.filter(y => x.code == y.parent).map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
+        }
+    })
+    // tính lại mục b khoan mục dịch vụ
+    jsonData.forEach(x => {
+            
+        if (ParentDVMNArray.includes(x.code)) {
+            var listchild = jsonData.filter(y => y.parent == x.code).filter(z => ChildDVMNArray.includes(z.code))
+            for (let i = 0; i < totalKeys.length; i++) {
+                let total = 0
+                var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
+                x[totalKeys[i]] = sum
+                console.log(sum)
+            }
+            var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
+            x['sumTotal'] = sumtotal
+         
+            
         }
     })
     jsonData.unshift({ name: `${TenCN}`, isChecked: false, title: true, isBold: true })
