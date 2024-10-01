@@ -106,6 +106,8 @@ else
 
     <script>
         const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
+        const rawDataorg = @Html.Raw(JsonConvert.SerializeObject(org));
+        console.log(rawDataorg)
         let columns = [
             { id: "code", header: [{ text: "Mã", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
             { id: "name", header: [{ text: "Tuyến đường", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
@@ -123,19 +125,35 @@ else
                 },
                 htmlEnable: true,
             },
-            { id: "valuesSL", header: [{ text: "Sản lượng tra nạp (năm)", align: "center", rowspan: 3 },],align: "right", minWidth: 135 },
+        /*    { id: "valuesSL", header: [{ text: "Sản lượng tra nạp (năm)", align: "center", rowspan: 3 },],align: "right", minWidth: 135 },*/
             { id: "valuesCL", header: [{ text: "Cự ly vận chuyển có hàng (Km)", align: "center", rowspan: 3 },], align: "right", minWidth: 135 },
-            { id: "valuesSC", header: [{ text: "Số chuyến VC (ch/xe/ngày)", align: "center", rowspan: 3 },], align: "right", minWidth: 135 },
-            { id: "valuesT", header: [{ text: "Kế hoạch sản lượng vận chuyển năm", align: "center", colspan: 6 }, { text: "Tấn", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
-            { id: "valuesM3", header: [{ text: "", align: "center" }, { text: "M3", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
-            { id: "valuesTVTB", header: [{ text: "", align: "center" }, { text: "Trong đó", align: "center", colspan: 4 }, { text: "Tự vận trung bình", align: "center" }], align: "right", minWidth: 180 },
-            { id: "valuesTVC", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Tự vận cao", align: "center" }], align: "right", minWidth: 180 },
-            { id: "valuesTVT", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Tự vận thấp", align: "center" }], align: "right", minWidth: 180 },
-            { id: "valuesTN", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Thuê ngoài", align: "center" }], align: "right", minWidth: 180 },
-            { id: "valuesLCT", header: [{ text: "Kế hoạch sản lượng luân chuyển năm", align: "center", colspan: 2 }, { text: "Tấn.km", align: "center", rowspan: 2 }], align: "right", minWidth: 135 },
-            { id: "valuesLCM3", header: [{ text: "", align: "center" }, { text: "M3.km", align: "center", rowspan: 2 }], align: "right", minWidth: 135 },
+           
         ];
-
+        if (!rawDataorg.includes("100005")) {
+            columns.push(
+                { id: "valuesSC", header: [{ text: "Số chuyến VC (ch/xe/ngày)", align: "center", rowspan: 3 },], align: "right", minWidth: 145 },
+                { id: "valuesT", header: [{ text: "Kế hoạch sản lượng vận chuyển năm", align: "center", colspan: 3 }, { text: "Tấn", align: "center" }], align: "right", minWidth: 130 },
+                { id: "valuesM3", header: [{ text: "", align: "center" }, { text: "M3", align: "center" }], align: "right", minWidth: 130 },
+                //{ id: "valuesTVTB", header: [{ text: "", align: "center" }, { text: "Trong đó", align: "center", colspan: 4 }, { text: "Tự vận trung bình", align: "center" }], align: "right", minWidth: 180 },
+                //{ id: "valuesTVC", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Tự vận cao", align: "center" }], align: "right", minWidth: 180 },
+                //{ id: "valuesTVT", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Tự vận thấp", align: "center" }], align: "right", minWidth: 180 },
+                { id: "valuesTN", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Thuê ngoài", align: "center" }], align: "right", minWidth: 190 },
+                { id: "valuesLCT", header: [{ text: "Kế hoạch sản lượng luân chuyển năm", align: "center", colspan: 2 }, { text: "Tấn.km", align: "center", rowspan: 2 }], align: "right", minWidth: 145 },
+                { id: "valuesLCM3", header: [{ text: "", align: "center" }, { text: "M3.km", align: "center", rowspan: 2 }], align: "right", minWidth: 145 },
+            )
+        }
+        else {
+            columns.push(
+                { id: "valuesSC", header: [{ text: "Số chuyến VC (ch/xe/ngày)", align: "center", rowspan: 3 },], align: "right", minWidth: 155 },
+                { id: "valuesT", header: [{ text: "Kế hoạch sản lượng vận chuyển năm", align: "center", colspan: 2 }, { text: "Tấn", align: "center" }], align: "right", minWidth: 140 },
+                { id: "valuesM3", header: [{ text: "", align: "center" }, { text: "M3", align: "center" }], align: "right", minWidth: 140 },
+                //{ id: "valuesTVTB", header: [{ text: "", align: "center" }, { text: "Trong đó", align: "center", colspan: 4 }, { text: "Tự vận trung bình", align: "center" }], align: "right", minWidth: 180 },
+                //{ id: "valuesTVC", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Tự vận cao", align: "center" }], align: "right", minWidth: 180 },
+                //{ id: "valuesTVT", header: [{ text: "", align: "center" }, { text: "", align: "center" }, { text: "Tự vận thấp", align: "center" }], align: "right", minWidth: 180 },
+                { id: "valuesLCT", header: [{ text: "Kế hoạch sản lượng luân chuyển năm", align: "center", colspan: 2 }, { text: "Tấn.km", align: "center", rowspan: 2 }], align: "right", minWidth: 155 },
+                { id: "valuesLCM3", header: [{ text: "", align: "center" }, { text: "M3.km", align: "center", rowspan: 2 }], align: "right", minWidth: 155 },
+            )
+        }
         rawData.forEach((item) => {
             if (item.parent == null) {
                 delete item.parent

@@ -29,7 +29,8 @@
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
     var CN =@Html.Raw(JsonConvert.SerializeObject(Chinhanh))
-        let TenCN;
+     
+    let TenCN;
     if (CN.includes("100001")) {
         TenCN = "CƠ QUAN CÔNG TY"
     } else if (CN.includes("100002")) {
@@ -41,7 +42,7 @@
     } else  {
         TenCN = "CHI NHÁNH VẬN TẢI"
     }
-    console.log(CN)
+   
     let idCol0
     if (rawData[0].CODE.startsWith("B62") || rawData[0].CODE.startsWith("T62") || rawData[0].CODE.startsWith("N62") || rawData[0].CODE.startsWith("VT62")) {
         idCol0 = "VPCN"
@@ -124,7 +125,8 @@
         };
 
     }
-    else if (rawData[0].CODE.startsWith("T62") )
+    else 
+    if (rawData[0].CODE.startsWith("T62"))
     {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortMT[i];
@@ -161,10 +163,7 @@
             columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         };
 
-
     }
-
-
 
     columns.push(
         { id: "sumQuantity", header: ["", "", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#",},
@@ -248,6 +247,13 @@
 
 
     rawData.forEach((item) => {
+        let valuePrice
+        for (let i = 0; i < item.valueSb.length; i++) {
+            if (item.valueSb[i][1] > 0) {
+                valuePrice = item.valueSb[i][1]
+                break
+            } 
+        }
         var obj = {
             id: item.CODE,
             code: item.CODE,
@@ -256,7 +262,7 @@
             isBold: item.IS_GROUP,
             notes: item.DESCRIPTION,
             isChecked: item.IsChecked,
-            price: item.valueSb[0][1],
+            price: valuePrice ? valuePrice : item.valueSb[0][1],
         }
         var sumQuantity = 0;
         var sumTotal = 0;
