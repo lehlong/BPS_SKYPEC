@@ -4851,6 +4851,7 @@ namespace SMO.Service.MD
                 {
                     var item = new ChiPhiInReport
                     {
+                        code= i.GROUP_1_ID +i.GROUP_2_ID,
                         Stt = i.STT,
                         name = i.GROUP_NAME,
                         IsBold = i.IS_BOLD,

@@ -1,9 +1,11 @@
 ﻿
 using Newtonsoft.Json;
 using SMO.Core.Entities;
+using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Core.Entities.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Core.Entities.MD;
 using SMO.Repository.Implement.BP;
+using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Repository.Implement.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Service.BP;
 using SMO.Service.BP.KE_HOACH_VAN_CHUYEN;
@@ -107,6 +109,49 @@ namespace SMO.Areas.BP.Controllers
             ViewBag.dataCenterModel = model;
             return PartialView(dataCost);
         }
+        public ActionResult GetCommentElement(string templateCode, int version, int year, string elementCode)
+        {
+            var data = _service.GetCommentElement(templateCode, version, year, elementCode);
+            ViewBag.TemplateCode = templateCode;
+            ViewBag.Version = version;
+            ViewBag.Year = year;
+            ViewBag.ElementCode = elementCode;
+            return PartialView(data);
+        }
+        [HttpPost]
+        [MyValidateAntiForgeryToken]
+        public ActionResult InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.InsertComment(templateCode, version, year, type, sanBay, costCenter, elementCode, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+                result.ExtData = "SubmitIndex();";
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
+        //public IList<T_Ke> GetCommentElement(string templateCode, int version, int year, string elementCode)
+        //{
+        //    try
+        //    {
+        //        return UnitOfWork.Repository<DauTuTrangThietBiCommentRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        this.State = false;
+        //        this.Exception = ex;
+        //        return new List<T_BP_DAU_TU_TRANG_THIET_BI_COMMENT>();
+        //    }
+        //}
         public ActionResult Expertise(string templateCode, int version, int year, string elementCode)
         {
             var result = new TransferObject

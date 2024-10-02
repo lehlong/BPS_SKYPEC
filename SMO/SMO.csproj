@@ -2114,6 +2114,7 @@
     <Content Include="Areas\BP\Views\Report\IndexCKP.cshtml" />
     <Content Include="Areas\BP\Views\Report\GenDataCKP.cshtml" />
     <Content Include="Areas\MD\Views\Template\ViewDataDauTu.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachVanChuyen\GetCommentElement.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

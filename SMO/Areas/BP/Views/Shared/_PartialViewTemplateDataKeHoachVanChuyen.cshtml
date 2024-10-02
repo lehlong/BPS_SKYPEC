@@ -129,6 +129,16 @@ else
                 },
                 htmlEnable: true,
             },
+            {
+                id: "comment", header: [{ text: "", align: 'center'}],
+                adjust: false,
+                width: 40,
+                align: 'center',
+                template: (value, row, col) => {
+                    return row.name ?`<i class="material-icons icon-function" onclick="getCommentElement('${row.code}')">comment</i>`:`<div></div>`
+                },
+                htmlEnable: true,
+            },
         /*    { id: "valuesSL", header: [{ text: "Sản lượng tra nạp (năm)", align: "center", rowspan: 3 },],align: "right", minWidth: 135 },*/
             { id: "valuesCL", header: [{ text: "Cự ly vận chuyển có hàng (Km)", align: "center", rowspan: 3 },], align: "right", minWidth: 135 },
 
@@ -208,6 +218,22 @@ else
                     tr[i].style.display = 'none'; // Ẩn hàng nếu không có kết quả khớp
                 }
             }
+        }
+        function getCommentElement(elementCode) {
+            var templateCode = $("#TEMPLATE_CODE").val();
+            var version = $("#VERSION").val();
+            var year = $("#YEAR").val();
+            var ajaxParams = {
+                url: 'BP/KeHoachVanChuyen/GetCommentElement',
+                type: "POST",
+                data: {
+                    templateCode: templateCode,
+                    version: version,
+                    year: year,
+                    elementCode: elementCode,
+                },
+            };
+            Forms.LoadAjaxModal(ajaxParams);
         }
          function IsDoneExpertise(isCheck, element) {
        var originalCheckboxState = $('#chkItem' + element).prop('checked');

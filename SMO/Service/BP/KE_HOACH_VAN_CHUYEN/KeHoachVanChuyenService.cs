@@ -5,6 +5,7 @@ using SMO.AppCode.Utilities;
 using SMO.Core.Entities;
 using SMO.Core.Entities.BP;
 using SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI;
+using SMO.Core.Entities.BP.DAU_TU_XAY_DUNG;
 using SMO.Core.Entities.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Core.Entities.BP.KE_HOACH_VAN_CHUYEN.KE_HOACH_VAN_CHUYEN_DATA_BASE;
 using SMO.Core.Entities.MD;
@@ -1643,6 +1644,47 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
             }
             catch (Exception ex){
                 throw ex;
+            }
+        }
+
+        public IList<T_BP_KE_HOACH_VAN_CHUYEN_COMMENT> GetCommentElement(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                return UnitOfWork.Repository<KeHoachVanChuyenommentRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.State = false;
+                this.Exception = ex;
+                return new List<T_BP_KE_HOACH_VAN_CHUYEN_COMMENT>();
+            }
+        }
+
+        public void InsertComment(string templateCode, int version, int year, string type, string sanBay, string costCenter, string elementCode, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<KeHoachVanChuyenommentRepo>().Create(new T_BP_KE_HOACH_VAN_CHUYEN_COMMENT
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    COMMENT = value,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
             }
         }
         public IList<T_MD_KHOAN_MUC_VAN_CHUYEN> SummaryVanChuyen(out IList<T_BP_KE_HOACH_VAN_CHUYEN_DATA> plDataOtherKhoanMucVanChuyens, string orgCode, int year, int? version)
