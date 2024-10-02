@@ -11,6 +11,7 @@ using SMO.Core.Entities.MD;
 using SMO.Helper;
 using SMO.Models;
 using SMO.Repository.Implement.BP;
+using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
 using SMO.Repository.Implement.BP.KE_HOACH_VAN_CHUYEN;
 using SMO.Repository.Implement.BP.KE_HOACH_VAN_CHUYEN.KE_HOACH_VAN_CHUYEN_DATA_BASE;
 using SMO.Repository.Implement.MD;
@@ -1553,6 +1554,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
         {
             try
             {
+                var allExpertise = UnitOfWork.Repository<KeHoachVanChuyenDepartmentExpertiseRepo>().GetAll();
                 var data = new List<T_MD_KHOAN_MUC_VAN_CHUYEN>();
                 var sumData = new T_MD_KHOAN_MUC_VAN_CHUYEN()
                 {
@@ -1603,8 +1605,10 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                     order++;
                     foreach (var detail in dataCost.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
                     {
+                        
                         var item = dataCost.Where(x => x.CENTER_CODE == detail && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).ToList();
-                        if(item.Count() != 0)
+                        var expertise = allExpertise.Any(x => x.ELEMENT_CODE == item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.CODE);
+                        if (item.Count() != 0)
                         {
                             var itemData = new T_MD_KHOAN_MUC_VAN_CHUYEN()
                             {
@@ -1622,6 +1626,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                                 ValuesLCT = item.Where(x => x.CODE == "6012").Sum(x => x.Values[0]),
                                 ValuesLCM3 = item.Where(x => x.CODE == "6013").Sum(x => x.Values[0]),
                                 C_ORDER = order,
+                                IsChecked=expertise,
                                 ParentOrder = parentOrder.ToString(),
                             };
                             data.Add(itemData);
@@ -3171,6 +3176,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
             var lookupElementsCenter = detailOtherKhoanMucVanChuyens.ToLookup(x => x.CENTER_CODE);
 
             var pureLstItems = new List<T_MD_KHOAN_MUC_VAN_CHUYEN>();
+            var allExpertise = UnitOfWork.Repository<KeHoachVanChuyenDepartmentExpertiseRepo>().GetAll();
             // loop through all center
             foreach (var ctCode in lookupElementsCenter.Select(l => l.Key))
             {
@@ -3184,6 +3190,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                     // add all leaf to temp list item
                     lst.AddRange(from item in lookupElements[code]
                                  let center = UnitOfWork.Repository<VanChuyenProfitCenterRepo>().Queryable().FirstOrDefault(x => x.CODE == ctCode)
+
                                  select new T_MD_KHOAN_MUC_VAN_CHUYEN
                                  {
                                      CENTER_CODE = ctCode,
@@ -3194,6 +3201,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                                      LEVEL = 0,
                                      TIME_YEAR = item.TIME_YEAR,
                                      VanChuyenProfitCenter = center == null ? new T_MD_VAN_CHUYEN_PROFIT_CENTER() : center,
+                                 
                                  });
                     var parentCode = code;
                     while (!string.IsNullOrEmpty(parentCode))
@@ -4225,6 +4233,53 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                 return null;
             }
 
+        }
+
+        public void Expertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                UnitOfWork.Repository<KeHoachVanChuyenDepartmentExpertiseRepo>().Create(new T_BP_KE_HOACH_VAN_CHUYEN_DEPARTMENT_EXPERTISE
+                {
+                    ID = Guid.NewGuid(),
+                    TEMPLATE_CODE = templateCode,
+                    VERSION = version,
+                    YEAR = year,
+                    ELEMENT_CODE = elementCode,
+                    TYPE = BudgetType.DauTuTrangThietBi,
+                    CREATE_BY = ProfileUtilities.User.USER_NAME,
+                    CREATE_DATE = DateTime.Now,
+                });
+
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public void UnExpertise(string templateCode, int version, int year, string elementCode)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                var KhoanMuc = UnitOfWork.Repository<KeHoachVanChuyenDepartmentExpertiseRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.YEAR == year && x.ELEMENT_CODE == elementCode).FirstOrDefault();
+                if (KhoanMuc != null)
+                {
+                    UnitOfWork.Repository<KeHoachVanChuyenDepartmentExpertiseRepo>().Delete(KhoanMuc);
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
         }
 
         public void GenerateDataVC(ref MemoryStream outFileStream, string path, ViewDataCenterModel model, IList<T_MD_KHOAN_MUC_VAN_CHUYEN> lstData, IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_VAN_CHUYEN> lstProject)

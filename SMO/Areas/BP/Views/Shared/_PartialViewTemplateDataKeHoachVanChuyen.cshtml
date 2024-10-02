@@ -15,6 +15,9 @@
     var lstSanBay = SelectListUtilities.GetListSanBay();
     var org = ProfileUtilities.User.ORGANIZE_CODE;
     var grid = Guid.NewGuid().ToString("N");
+    var tempalteCode = dataCenterModel.TEMPLATE_CODE;
+    var year = dataCenterModel.YEAR;
+    var version = dataCenterModel.VERSION;
     var jsonData = dataOrder.OrderBy(x => x.C_ORDER).Select(x => new
     {
         Id = x.C_ORDER.ToString(),
@@ -33,6 +36,7 @@
         ValuesLCT =  ( x.ValuesT * x.ValuesCL).ToStringVN(),
         ValuesLCM3 = ( x.ValuesM3*x.ValuesCL).ToStringVN(),
         IsBold = x.Isbold,
+        isChecked = x.IsChecked
     });
 
 }
@@ -120,14 +124,14 @@ else
                 align: 'center',
                 template: (value, row, col) => {
                     var isChecked = row.isChecked ? "checked" : "";
-                    return `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
-<label for="chkItem${row.code}"></label>`
+                    return row.name? `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+<label for="chkItem${row.code}"></label>`:`<div></div>`
                 },
                 htmlEnable: true,
             },
         /*    { id: "valuesSL", header: [{ text: "Sản lượng tra nạp (năm)", align: "center", rowspan: 3 },],align: "right", minWidth: 135 },*/
             { id: "valuesCL", header: [{ text: "Cự ly vận chuyển có hàng (Km)", align: "center", rowspan: 3 },], align: "right", minWidth: 135 },
-           
+
         ];
         if (!rawDataorg.includes("100005")) {
             columns.push(
@@ -162,7 +166,7 @@ else
 
          const treeGrid = new dhx.TreeGrid("@grid", {
          columns,
-         leftSplit: 3,
+         leftSplit: 1,
          resizable: true,
          keyNavigation: true,
          rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
@@ -205,5 +209,77 @@ else
                 }
             }
         }
+         function IsDoneExpertise(isCheck, element) {
+       var originalCheckboxState = $('#chkItem' + element).prop('checked');
+
+    if (!isCheck) {
+        Swal.fire({
+            title: "Lưu ý?",
+            text: "Hạng mục này đã được thẩm định! Hành động này sẽ không được lưu lại!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Huỷ"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var ajaxParams = {
+                    url: 'BP/KeHoachVanChuyen/UnExpertise',
+                    type: 'POST',
+                    data: {
+                        templateCode: '@tempalteCode',
+                        version: '@version',
+                        year: '@year',
+                        elementCode: element,
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        Message.execute(response)
+                    }
+                };
+                Forms.Ajax(ajaxParams);
+            }
+            else {
+                $('#chkItem' + element).prop('checked', !originalCheckboxState);
+            }
+        });
+        return;
+    } else {
+        Swal.fire({
+            title: "Lưu ý?",
+            text: "Bạn có chắc hoàn thành thẩm định chỉ tiêu này?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Huỷ"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var ajaxParams = {
+                    url: 'BP/KeHoachVanChuyen/Expertise',
+                    type: 'POST',
+                    data: {
+                        templateCode: '@tempalteCode',
+                        version: '@version',
+                        year: '@year',
+                        elementCode: element,
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        Message.execute(response)
+                    }
+                };
+                Forms.Ajax(ajaxParams);
+            }
+            else {
+                $('#chkItem' + element).prop('checked', !originalCheckboxState);
+            }
+        });
+    }
+}
+
+
     </script>
 }

@@ -27,7 +27,7 @@ namespace SMO.Core.Entities.MD
         public virtual string ParentOrder { get; set; }
         public virtual bool Isbold { get; set; }
 
-
+        public virtual bool IsChecked { get; set; }
 
 
         public virtual object Clone()

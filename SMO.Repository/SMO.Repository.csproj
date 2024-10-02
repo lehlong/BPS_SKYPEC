@@ -190,6 +190,7 @@
     <Compile Include="Implement\BP\KE_HOACH_SAN_LUONG\KeHoachSanLuongVersionRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_SAN_LUONG\KE_HOACH_SAN_LUONG_DATA_BASE\KeHoachSanLuongDataBaseHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_SAN_LUONG\KE_HOACH_SAN_LUONG_DATA_BASE\KeHoachSanLuongDataBaseRepo.cs" />
+    <Compile Include="Implement\BP\KE_HOACH_VAN_CHUYEN\KeHoachVanChuyenDepartmentExpertiseRepo .cs" />
     <Compile Include="Implement\BP\KE_HOACH_VAN_CHUYEN\KeHoachVanChuyenDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_VAN_CHUYEN\KeHoachVanChuyenDataRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_VAN_CHUYEN\KeHoachVanChuyenHistoryRepo.cs" />
@@ -463,6 +464,7 @@
     <Compile Include="Interface\BP\KE_HOACH_SAN_LUONG\IKeHoachSanLuongVersionRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_SAN_LUONG\KE_HOACH_SAN_LUONG_DATA_BASE\IKeHoachSanLuongDataBaseHistoryRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_SAN_LUONG\KE_HOACH_SAN_LUONG_DATA_BASE\IKeHoachSanLuongDataBaseRepo.cs" />
+    <Compile Include="Interface\BP\KE_HOACH_VAN_CHUYEN\IKeHoachVanChuyenDepartmentExpertiseRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_VAN_CHUYEN\IKeHoachVanChuyenDataHistoryRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_VAN_CHUYEN\IKeHoachVanChuyenDataRepo.cs" />
     <Compile Include="Interface\BP\KE_HOACH_VAN_CHUYEN\IKeHoachVanChuyenHistoryRepo.cs" />
@@ -729,6 +731,7 @@
     <Compile Include="Mapping\BP\KE_HOACH_SAN_LUONG\T_BP_KE_HOACH_SAN_LUONG_VERSION_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_VAN_CHUYEN\KE_HOACH_VAN_CHUYEN_DATA_BASE\T_BP_KE_HOACH_VAN_CHUYEN_DATA_BASE_HISTORY_Mapping.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_VAN_CHUYEN\KE_HOACH_VAN_CHUYEN_DATA_BASE\T_BP_KE_HOACH_VAN_CHUYEN_DATA_BASE_Mapping.cs" />
+    <Compile Include="Mapping\BP\KE_HOACH_VAN_CHUYEN\T_BP_KE_HOACH_VAN_CHUYEN_DEPARTMENT_EXPERTISE_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_VAN_CHUYEN\T_BP_KE_HOACH_VAN_CHUYEN_DATA_HISTORY_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_VAN_CHUYEN\T_BP_KE_HOACH_VAN_CHUYEN_DATA_Map.cs" />
     <Compile Include="Mapping\BP\KE_HOACH_VAN_CHUYEN\T_BP_KE_HOACH_VAN_CHUYEN_HISTORY_Map.cs" />
