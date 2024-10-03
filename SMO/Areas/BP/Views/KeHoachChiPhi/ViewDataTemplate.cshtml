@@ -16,6 +16,7 @@
     var version = dataCenterModel.VERSION;
     var skip = ViewBag.Skip;
     var formId = Guid.NewGuid();
+
 }
 <style>
     .icon-function {
@@ -50,6 +51,7 @@
     }
 </style>
 <div id='@viewId' class="container-fluid child-content">
+
     <div class="card border-grey">
         <div class="body" style="padding-top: 0px;">
             <ul class="nav nav-tabs" role="tablist">
@@ -62,11 +64,11 @@
                 <div style="margin: 5px; border-bottom: 1px dotted #e4e4e4; padding-bottom: 5px; display: flex">
                     <div class="fixed-btn">
                         @Html.MyButton("cmdBack", "Quay lại", string.Format("Forms.Close('{0}');", viewId), "Alt+N", "arrow_back")
-                        @Html.MyButton("cmdDownload", "Xuất Excel", "ExportExcel();", "Alt+N", "download")
+                        @Html.MyButton("cmdDownloadtest", "Xuất Excel", "DownloadData();", "Alt+V", "download")
                         @Html.MyButton("cmdDownload", "Kết xuất", "LoadUpdate();", "Alt+N", "search")
                         @Html.MyButton("cmdDownload", "Ẩn chi tiết", "HideDetailColumns();", "Alt+N", "visibility_off")
                         @Html.MyButton("cmdDownload", "Hiện chi tiết", "ShowAllColumns();", "Alt+N", "visibility")
-                        <a id="download-data" href="@Url.Action("DownloadData", new {modelJson = JsonConvert.SerializeObject(dataCenterModel)})" target="_blank" hidden></a>
+
                     </div>
                     @if (dataCenterModel.PHIEN_BAN == "PB5" || dataCenterModel.PHIEN_BAN == "PB4")
                     {
@@ -153,10 +155,11 @@
             Forms.Ajax(ajaxParams);
     }
 
+
     function onEditCell(type, sanBay, costCenter, elementCode, value) {
         if (value == "") {
             value = 0;
-        } 
+        }
         if (value == null) {
             return;
         }

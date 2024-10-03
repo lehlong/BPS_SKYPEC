@@ -27,26 +27,7 @@
 
         return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
     };
-    console.log(rawDataTab1)
-    var ParentArray = ["6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB"]
-    rawDataTab1.forEach(x => {
 
-        if (ParentArray.includes(x.code)) {
-            var sumCQCT = rawDataTab1.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCQCT).reduce((a, b) => a + b, 0);
-            var sumCNMB = rawDataTab1.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCNMB).reduce((a, b) => a + b, 0);
-            var sumCNMT = rawDataTab1.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCNMT).reduce((a, b) => a + b, 0);
-            var sumCNVT = rawDataTab1.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCNVT).reduce((a, b) => a + b, 0);
-            var sumMTMN = rawDataTab1.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCNMN).reduce((a, b) => a + b, 0);
-            var sumTcty = rawDataTab1.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCNtcty).reduce((a, b) => a + b, 0);
-            x.valueCNMB = sumCNMB;
-            x.valueCNMN = sumMTMN;
-            x.valueCNMT = sumCNMT;
-            x.valueCNVT = sumCNVT;
-            x.valueCQCT = sumCQCT
-            x.valueCNtcty = sumTcty
-
-        }
-    })
 
     const grid = new dhx.Grid("@gridTab", {
         columns: [

@@ -8,6 +8,7 @@
     var dataCenterModel = ViewBag.dataCenterModel as ViewDataCenterModel;
     var Chinhanh = ViewBag.Chinhanh as string;
     var SAP_CODE = ViewBag.Sap as string;
+    var formIdExportExcel = Guid.NewGuid();
 }
 
 <style>
@@ -24,11 +25,18 @@
 </style>
 
 <div style="height: calc(100vh - 240px);" id="@gridId"></div>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("DownloadData")">
+        @Html.Hidden("dataCP")
+        @Html.Hidden("modelJson")
 
+    </form>
+</div>
 <script type="text/javascript">
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
     var CN =@Html.Raw(JsonConvert.SerializeObject(Chinhanh));
+
     var ParentDVMNArray = ["N6277G002AB", "N6277G00B02", "N6277G005AB", "N6277G006AB", "N6277G007AB", "T6277G002AB", "T6277G003AB", "T6277G004AB", "T6277G005AB", "T6277G006AB", "T6277G007AB", "VT6277G0023", "VT6277G0033", "VT6277G0043", "VT6277G0053", "VT6277G0063", "VT6277G007D", "CQ6277G007002AB", "CQ6277G007003AB", "CQ6277G007004AB", "CQ6277G007005AB", "CQ6277G007006AB", "CQ6277G007AB", "B6277G002B"
 ,"B6277G003AB",
 "B6277G004AB",
@@ -51,7 +59,7 @@
     } else  {
         TenCN = "CHI NHÁNH VẬN TẢI"
     }
-   
+
     let idCol0
     if (rawData[0].CODE.startsWith("B62") || rawData[0].CODE.startsWith("T62") || rawData[0].CODE.startsWith("N62") || rawData[0].CODE.startsWith("VT62")) {
         idCol0 = "VPCN"
@@ -134,7 +142,7 @@
         };
 
     }
-    else 
+    else
     if (rawData[0].CODE.startsWith("T62"))
     {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
@@ -261,7 +269,7 @@
             if (item.valueSb[i][1] > 0) {
                 valuePrice = item.valueSb[i][1]
                 break
-            } 
+            }
         }
         var obj = {
             id: item.CODE,
@@ -354,7 +362,7 @@
         if (item.parent == 'CQCT' || item.parent == 'DVT' || item.parent == 'CPMB' || item.parent == 'CPMT' || item.parent == 'CPMN') delete item.parent
     });
     let totalKeys = [];
- 
+
 Object.keys(jsonData[0]).forEach(key => {
             if (key.startsWith('total_')) {
                 totalKeys.push(key);
@@ -388,7 +396,7 @@ Object.keys(jsonData[0]).forEach(key => {
     })
     // tính lại mục b khoan mục dịch vụ
     jsonData.forEach(x => {
-            
+
         if (ParentDVMNArray.includes(x.code)) {
             var listchild = jsonData.filter(y => y.parent == x.code).filter(z => ChildDVMNArray.includes(z.code))
             for (let i = 0; i < totalKeys.length; i++) {
@@ -399,8 +407,8 @@ Object.keys(jsonData[0]).forEach(key => {
             }
             var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
-         
-            
+
+
         }
     })
     jsonData.unshift({ name: `${TenCN}`, isChecked: false, title: true, isBold: true })
@@ -452,13 +460,22 @@ Object.keys(jsonData[0]).forEach(key => {
             onEditCell('SL', column.id.replace("quantity_", ""), centerCode, row.code, value)
         }
     });
-
+    console.log(treeGrid.data.serialize())
     var lstCol = columns.filter(x => x.id.includes("quantity_") || x.id.includes("total_"))
 
     function ShowAllColumns() {
         lstCol.forEach((item) => {
             treeGrid.showColumn(item.id);
         })
+    }
+
+    function DownloadData() {
+        var dataCP = JSON.stringify(treeGrid.data.serialize());
+        var modelJson = JSON.stringify(dataCenterModel)
+        $('#@formIdExportExcel #dataCP').val(dataCP);
+        $('#@formIdExportExcel #modelJson').val(modelJson);
+    $('#@formIdExportExcel').submit();
+
     }
     function HideDetailColumns() {
         lstCol.forEach((item) => {

@@ -1739,10 +1739,11 @@ namespace SMO.Service.MD
                     };
                     data.ChiPhi.Add(item);
                 }
+              
                 #endregion
 
                 #region Kế hoạch sửa chữa thường xuyên
-               
+
                 var headerSCLTT = UnitOfWork.Repository<SuaChuaThuongXuyenRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataSCLTT = UnitOfWork.Repository<SuaChuaThuongXuyenDataRepo>().Queryable().Where(x => headerSCLTT.Contains(x.TEMPLATE_CODE)).ToList();
 
@@ -1780,7 +1781,31 @@ namespace SMO.Service.MD
                     data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea(area, year, dataSCLTT));
                 }
                 #endregion
+                data = ReportUtilities.ProcessData(data);
 
+                List<string> CodePB = new List<string> { "6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB" };
+                List<string> ParrentPB = new List<string> { "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
+
+                data.ChiPhi.ForEach(x =>
+                {
+                    if (CodePB.Contains(x.code))
+                    {
+                        x.valueCP = data.ChiPhi.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCP);
+                    }
+                });
+
+                data.ChiPhi.ForEach(x =>
+                {
+                    if (x.code == "6277G002")
+                    {
+                        x.valueCP = data.ChiPhi.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCP);
+                    }
+                    if (ParrentPB.Contains(x.code))
+                    {
+                        x.valueCP = data.ChiPhi.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCP);
+                    }
+
+                });
                 return data;
             }
             catch (Exception ex)
@@ -4847,6 +4872,8 @@ namespace SMO.Service.MD
                 var header = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TIME_YEAR == year).Select(x => x.TEMPLATE_CODE).ToList();
                 var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && header.Contains(x.TEMPLATE_CODE)).ToList();
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+                List<string> CodePB = new List<string> { "6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB" };
+                List<string> ParrentPB = new List<string> {  "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
                 foreach (var i in elements)
                 {
                     var item = new ChiPhiInReport
@@ -4864,6 +4891,38 @@ namespace SMO.Service.MD
                     };
                     data.chiPhiInReports.Add(item);
                 }
+                data.chiPhiInReports.ForEach(x => {
+                    if (CodePB.Contains(x.code))
+                    {
+                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCQCT);
+                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCNMB);
+                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCNMT);
+                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCNMN);
+                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCNVT);
+                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueTcty);
+                    }
+                });
+                var test= ParrentPB.Contains("6277G002");
+                data.chiPhiInReports.ForEach(x => {
+                    if (ParrentPB.Contains(x.code))
+                    {
+                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCQCT);
+                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCNMB);
+                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCNMT);
+                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCNMN);
+                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCNVT);
+                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueTcty);
+                    }
+                    if(x.code== "6277G002")
+                    {
+                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCQCT);
+                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCNMB);
+                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCNMT);
+                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCNMN);
+                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCNVT);
+                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueTcty);
+                    }
+                });
                 return data;
             }
             catch (Exception ex)

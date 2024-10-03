@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using static SMO.SelectListUtilities;
 
 namespace SMO.Areas.BP.Controllers
 {
@@ -62,11 +63,14 @@ namespace SMO.Areas.BP.Controllers
 
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
-
-        public FileContentResult DownloadData(string modelJson)
+        [HttpPost]
+        [ValidateInput(false)]
+        public FileContentResult DownloadData(string modelJson,string dataCP)
         {
+            var data = modelJson;
+            var DataUI = dataCP;
             var model = JsonConvert.DeserializeObject<ViewDataCenterModel>(modelJson);
-
+            var DLUI= JsonConvert.DeserializeObject<DLkehoachData[]>(dataCP);
             var template = _service.GetTemplate(model.TEMPLATE_CODE);
             var lstSanBay = _service.GetSanBayInTemplate(model).ToList();
             MemoryStream outFileStream = new MemoryStream();
@@ -101,11 +105,13 @@ namespace SMO.Areas.BP.Controllers
             }
 
             string path = Server.MapPath("~/TemplateExcel/" + templateExcel);
-            _service.GenerateData(ref outFileStream, path, model, orgCodeInTemplate, lstSanBay);
+            _service.GenerateData2(ref outFileStream, path, model, orgCodeInTemplate, lstSanBay, DLUI);
             var fileName = template.NAME;
-
+            var a = outFileStream.ToArray();
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
+      
+      
 
         public override ActionResult ViewTemplate(string templateId, int? version, int year, string centerCode = "")
         {
