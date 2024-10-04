@@ -4575,9 +4575,9 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                 rowCur.Cells[4].SetCellValue(item.FirstOrDefault()?.VALUE_2);
                 rowCur.Cells[5].SetCellValue(item.FirstOrDefault()?.VALUE_3);
                 rowCur.Cells[6].SetCellValue(item.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "4030").Sum(x => x.VALUE)?.ToStringVN());
-                rowCur.Cells[7].SetCellValue(item.Sum(x => x.VALUE_5)?.ToStringVN());
-                rowCur.Cells[8].SetCellValue(item.Sum(x => x.VALUE_6)?.ToStringVN());
-                rowCur.Cells[9].SetCellValue(item.Sum(x => x.VALUE_5*x.VALUE_6)?.ToStringVN());
+                rowCur.Cells[7].SetCellValue(item.Sum(x => x.VALUE_5).ToStringVN());
+                rowCur.Cells[8].SetCellValue(item.Sum(x => x.VALUE_6).ToStringVN());
+                rowCur.Cells[9].SetCellValue(item.Sum(x => x.VALUE_5*x.VALUE_6).ToStringVN());
                 rowCur.Cells[10].SetCellValue(item.FirstOrDefault()?.VALUE_8);
                 rowCur.Cells[11].SetCellValue(item.FirstOrDefault()?.QKH);
                 rowCur.Cells[12].SetCellValue(item.FirstOrDefault()?.DESCRIPTION);

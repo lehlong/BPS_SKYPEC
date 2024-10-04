@@ -4605,7 +4605,7 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                 rowCur.Cells[4].SetCellValue("");
                 rowCur.Cells[5].SetCellValue(item.FirstOrDefault()?.VALUE_3);
                 rowCur.Cells[6].SetCellValue(item.Sum(x => x.VALUE_4)?.ToStringVN()); ;
-                rowCur.Cells[7].SetCellValue(item.Sum(x => x.VALUE_5)?.ToStringVN());
+                rowCur.Cells[7].SetCellValue(item.Sum(x => x.VALUE_5).ToStringVN());
                 rowCur.Cells[8].SetCellValue(item.FirstOrDefault()?.VALUE_6);
                 rowCur.Cells[9].SetCellValue(item.Sum(x => x.VALUE_7)?.ToStringVN()); ;
                 rowCur.Cells[10].SetCellValue(item.Sum(x => x.VALUE_8).ToStringVN());
@@ -4626,8 +4626,8 @@ namespace SMO.Service.BP.DAU_TU_XAY_DUNG
                     rowCur.Cells[3].SetCellValue(i.VALUE_1?.ToStringVN());
                     rowCur.Cells[4].SetCellValue(i.VALUE_2);
                     rowCur.Cells[5].SetCellValue(i.VALUE_3);
-                    rowCur.Cells[6].SetCellValue(i.VALUE_4?.ToStringVN()); ;
-                    rowCur.Cells[7].SetCellValue(i.VALUE_5?.ToStringVN());
+                    rowCur.Cells[6].SetCellValue(i.VALUE_4?.ToStringVN()); 
+                    rowCur.Cells[7].SetCellValue(i.VALUE_5.ToStringVN());
                     rowCur.Cells[8].SetCellValue(i.VALUE_6);
                     rowCur.Cells[9].SetCellValue(i.VALUE_7?.ToStringVN()); ;
                     rowCur.Cells[10].SetCellValue(i.VALUE_8.ToStringVN());

@@ -284,7 +284,7 @@ namespace SMO.Models
         public decimal Value2 { get; set; }
         public decimal Value3 { get; set; }
         public string Value4 { get; set; }
-        public string Value5 { get; set; }
+        public decimal Value5 { get; set; }
         public decimal ValueDLTH { get; set; }
         public decimal valueDLTH1 { get; set; }
         public decimal valueDLTH2 { get; set; }

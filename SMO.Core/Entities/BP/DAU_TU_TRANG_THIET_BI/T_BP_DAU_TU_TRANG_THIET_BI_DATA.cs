@@ -16,8 +16,8 @@ namespace SMO.Core.Entities.BP.DAU_TU_TRANG_THIET_BI
         public virtual string VALUE_2 { get; set; }
         public virtual string VALUE_3 { get; set; }
         public virtual string VALUE_4 { get; set; }
-        public virtual decimal? VALUE_5 { get; set; }
-        public virtual decimal? VALUE_6 { get; set; }
+        public virtual decimal VALUE_5 { get; set; }
+        public virtual decimal VALUE_6 { get; set; }
         public virtual decimal? VALUE_7 { get; set; }
         public virtual string VALUE_8 { get; set; }
         public virtual decimal? VALUE_9 { get; set; }

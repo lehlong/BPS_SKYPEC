@@ -1725,6 +1725,7 @@ namespace SMO.Service.MD
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
                 var dataHeaderCP = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderCP.Contains(x.TEMPLATE_CODE)).ToList();
+               
                 var firstCode = area == "CQ" ? "CQ" : area == "MB" ? "B" : area == "MT" ? "T" : area == "MN" ? "N" : area == "VT" ? "VT" : "";
 
                 foreach (var i in elements)
@@ -1734,7 +1735,7 @@ namespace SMO.Service.MD
                         code = i.GROUP_1_ID + i.GROUP_2_ID,
                         Stt = i.STT,
                         name = i.GROUP_NAME,
-                        valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(firstCode + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                        valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(firstCode + i.GROUP_1_ID + i.GROUP_2_ID)&& (firstCode == "" || x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(firstCode)) ) ?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
                         IsBold = i.IS_BOLD,
                     };
                     data.ChiPhi.Add(item);
@@ -1852,6 +1853,7 @@ namespace SMO.Service.MD
                         Value1 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_2,
                         Value2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0,
                         Value4 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_3,
+                        Value5 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5) ,
                         Des = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.DESCRIPTION,
                         IsBold = project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE) ? true : false,
                     });
@@ -1865,6 +1867,7 @@ namespace SMO.Service.MD
                             Value1 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_2,
                             Value2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
                             Value4 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_3,
+                            Value5 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5) ,
                             Des = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.DESCRIPTION,
                         });
                         data.Add(new DauTu
@@ -1874,6 +1877,7 @@ namespace SMO.Service.MD
                             Value1 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_2,
                             Value2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
                             Value4 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_3,
+                            Value5 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5) ,
                             Des = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.DESCRIPTION,
                         });
 
@@ -1899,6 +1903,7 @@ namespace SMO.Service.MD
                         Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_2,
                         Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0,
                         Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_3,
+                        Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5) ,
                         Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.DESCRIPTION,
                         IsBold = project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE) ? true : false,
                     });
@@ -1911,6 +1916,7 @@ namespace SMO.Service.MD
                             Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_2,
                             Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
                             Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_3,
+                            Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5),
                             Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.DESCRIPTION,
                         });
                         data.Add(new DauTu
@@ -1920,6 +1926,7 @@ namespace SMO.Service.MD
                             Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_2,
                             Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
                             Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_3,
+                            Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5),
                             Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.DESCRIPTION,
                         });
 
@@ -4287,7 +4294,7 @@ namespace SMO.Service.MD
                 rowCur.Cells[4].SetCellValue((double)dataRow.Value3);
                 rowCur.Cells[5].SetCellValue(dataRow.Value4);
                 rowCur.Cells[6].SetCellValue((double)dataRow.ValueDLTH);
-                rowCur.Cells[7].SetCellValue(dataRow.Value5);
+                rowCur.Cells[7].SetCellValue((double)dataRow.Value5);
                 for (int j = 0; j < NUM_CELL; j++)
                 {
                     if (dataRow.IsBold)
@@ -4536,6 +4543,23 @@ namespace SMO.Service.MD
             {
                 data.AddRange(GetDataSCLByArea(area, year, dataSCL));
             }
+            var SC01 = data.Where(x => x.code == "SC01").Sum(x => x.valueKP);
+            var SC02 = data.Where(x => x.code == "SC02").Sum(x => x.valueKP);
+            var SC03 = data.Where(x => x.code == "SC03").Sum(x => x.valueKP);
+            var SC04 = data.Where(x => x.code == "SC04").Sum(x => x.valueKP);
+            var SC05 = data.Where(x => x.code == "SC05").Sum(x => x.valueKP);
+            var SC06 = data.Where(x => x.code == "SC06").Sum(x => x.valueKP);
+            void InsertSuaChuaLon(List<SuaChuaLon> dataList, string name, decimal valueKP)
+            {
+                dataList.Insert(0, new SuaChuaLon { name = name, valueKP = valueKP });
+            }
+            InsertSuaChuaLon(data, "Thiết bị quản lý", SC06);
+            InsertSuaChuaLon(data, "SCL Máy móc TB", SC05);
+            InsertSuaChuaLon(data, "SCL TSCĐ khác", SC04);
+            InsertSuaChuaLon(data, "SCL Kho bể", SC03);
+            InsertSuaChuaLon(data, "SCL PTVT", SC02);
+            InsertSuaChuaLon(data, "SCL NHÀ CỬA VKT", SC01);
+
             return data;
         }
         internal List<SuaChuaLonReportModel> GetReportDataSuaChuaLonByArea(int year, string phienBan, string kichBan, string area)
@@ -4771,21 +4795,21 @@ namespace SMO.Service.MD
                     valueGT = dataSCL.Sum(x => x.VALUE) ?? 0,
                     IsBold = true
                 });
-                var elementCodes = dataSCL.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
-                var elementChild = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).ToList();
-                foreach (var i in elementChild.Select(x => x.PARENT_CODE).Distinct().ToList())
-                {
-                    var p = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.TIME_YEAR == year && x.CODE == i);
-                    if (p != null)
-                    {
-                        data.Add(new SuaChuaThuongXuyenReportModel
-                        {
-                            Stt = "-",
-                            Name = p.NAME,
-                            valueGT = dataSCL.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.Contains(p.CODE)).Sum(x => x.VALUE) ?? 0
-                        });
-                    }
-                }
+                //var elementCodes = dataSCL.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
+                //var elementChild = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).ToList();
+                //foreach (var i in elementChild.Select(x => x.PARENT_CODE).Distinct().ToList())
+                //{
+                //    var p = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.TIME_YEAR == year && x.CODE == i);
+                //    if (p != null)
+                //    {
+                //        data.Add(new SuaChuaThuongXuyenReportModel
+                //        {
+                //            Stt = "-",
+                //            Name = p.NAME,
+                //            valueGT = dataSCL.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.Contains(p.CODE)).Sum(x => x.VALUE) ?? 0
+                //        });
+                //    }
+                //}
                 data.AddRange(GetDataSCTXByArea("MB", year, dataSCL));
                 data.AddRange(GetDataSCTXByArea("MT", year, dataSCL));
                 data.AddRange(GetDataSCTXByArea("MN", year, dataSCL));
@@ -4796,6 +4820,23 @@ namespace SMO.Service.MD
             {
                 data.AddRange(GetDataSCTXByArea(area, year, dataSCL));
             }
+            var SC07 = data.Where(x => x.Code == "SC07").Sum(x => x.valueGT);
+            var SC08 = data.Where(x => x.Code == "SC08").Sum(x => x.valueGT);
+            var SC09 = data.Where(x => x.Code == "SC09").Sum(x => x.valueGT);
+            var SC10 = data.Where(x => x.Code == "SC10").Sum(x => x.valueGT);
+            var SC11 = data.Where(x => x.Code == "SC11").Sum(x => x.valueGT);
+            var SC12 = data.Where(x => x.Code == "SC12").Sum(x => x.valueGT);
+
+            void InsertSCThuongxuyen( string name, decimal ValueGT)
+            {
+                data.Insert(1, new SuaChuaThuongXuyenReportModel { Stt = "-", Name = name, valueGT = ValueGT });
+            }
+            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC07);
+            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC08);
+            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC09);
+            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC10);
+            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC11);
+            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC12);
             return data;
         }
         public MemoryStream ExportExcelSuaChuaLon(string path, int year, string phienBan, string kichBan, string area)
@@ -5018,7 +5059,8 @@ namespace SMO.Service.MD
                     IsBold = true,
                     name = "TỔNG CỘNG TOÀN CÔNG TY",
                     Col2 = dataXDCB.Sum(x => x.VALUE_1) + dataTTB.Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataXDCB.Sum(x => x.VALUE_8) + dataTTB.Sum(x => x.VALUE_10),
+                    Col3 = dataXDCB.Sum(x => x.VALUE_8) + dataTTB.Sum(x => x.VALUE_6*x.VALUE_5),
+
 
                 });
                 data.Add(new ReportDauTuModel
@@ -5027,27 +5069,31 @@ namespace SMO.Service.MD
                     name = "Đầu tư xây dựng cơ bản",
                     Col2 = dataXDCB.Sum(x => x.VALUE_1) ?? 0,
                     Col3 = dataXDCB.Sum(x => x.VALUE_8),
+
                 });
                 data.Add(new ReportDauTuModel
                 {
                     Stt = "2",
                     name = "Đầu tư trang thiết bị",
                     Col2 = dataTTB.Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataTTB.Sum(x => x.VALUE_10),
+                    Col3 = dataTTB.Sum(x => x.VALUE_5*x.VALUE_6),
+
                 });
                 data.Add(new ReportDauTuModel
                 {
                     Stt = "-",
                     name = "Trang thiết bị lẻ",
                     Col2 = dataTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "TTB-LE").Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "TTB-LE").Sum(x => x.VALUE_10),
+                    Col3 = dataTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE == "TTB-LE").Sum(x => x.VALUE_5*x.VALUE_6),
+
                 });
                 data.Add(new ReportDauTuModel
                 {
                     Stt = "-",
                     name = "Trang thiết bị",
                     Col2 = dataTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE != "TTB-LE").Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE != "TTB-LE").Sum(x => x.VALUE_10),
+                    Col3 = dataTTB.Where(x => x.KHOAN_MUC_DAU_TU_CODE != "TTB-LE").Sum(x => x.VALUE_5*x.VALUE_6),
+
                 });
                 if (string.IsNullOrEmpty(area))
                 {
@@ -5080,7 +5126,7 @@ namespace SMO.Service.MD
                     IsBold = true,
                     name = area == "MB" ? "Chi nhánh khu vực Miền Bắc" : area == "MT" ? "Chi nhánh khu vực Miền Trung" : area == "MN" ? "Chi nhánh khu vực Miền Nam" : area == "VT" ? "Chi nhánh Vận Tải" : "Cơ quan Công ty",
                     Col2=(dataXDCB.Where(x => x.DauTuXayDungProfitCenter.Project.AREA_CODE == area && x.DauTuXayDungProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_1) ?? 0)+ (dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_1) ?? 0),
-                    Col3 = (dataXDCB.Where(x => x.DauTuXayDungProfitCenter.Project.AREA_CODE == area && x.DauTuXayDungProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_8))+(dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_10)),
+                    Col3 = (dataXDCB.Where(x => x.DauTuXayDungProfitCenter.Project.AREA_CODE == area && x.DauTuXayDungProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_5))+(dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_5*x.VALUE_6)),
                 });
 
                 data.Add(new ReportDauTuModel
@@ -5089,7 +5135,7 @@ namespace SMO.Service.MD
                     IsBold = true,
                     name = "Đầu tư XDCB",
                     Col2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.Project.AREA_CODE == area && x.DauTuXayDungProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.Project.AREA_CODE == area && x.DauTuXayDungProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_8),
+                    Col3 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.Project.AREA_CODE == area && x.DauTuXayDungProfitCenter.Project.LOAI_HINH == "XDCB").Sum(x => x.VALUE_5),
 
                 });
                 var orderXDCB = 1;
@@ -5101,7 +5147,7 @@ namespace SMO.Service.MD
                         name = i.NAME,
                         Col1 = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
                         Col2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE).Sum(x => x.VALUE_1) ?? 0,
-                        Col3 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE).Sum(x => x.VALUE_8),
+                        Col3 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE).Sum(x => x.VALUE_5),
                         Col4 = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                         Des = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                     });
@@ -5113,7 +5159,7 @@ namespace SMO.Service.MD
                             name = "Chuẩn bị đầu tư và chuẩn bị thực hiện dự án",
                             Col1 = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT" && !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
                             Col2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
-                            Col3 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_8),
+                            Col3 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5),
                             Col4 = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT" && !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                             Des = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT" && !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                         });
@@ -5123,7 +5169,7 @@ namespace SMO.Service.MD
                             name = "Thực hiện dự án",
                             Col1 = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT" && !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
                             Col2 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
-                            Col3 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_8),
+                            Col3 = dataXDCB.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5),
                             Col4 = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT" && !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                             Des = dataXDCB.FirstOrDefault(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT" && !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                         });
@@ -5138,7 +5184,7 @@ namespace SMO.Service.MD
                     IsBold = true,
                     name = "Đầu tư trang thiết bị",
                     Col2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_10),
+                    Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.Project.AREA_CODE == area && x.DauTuTrangThietBiProfitCenter.Project.LOAI_HINH == "TTB").Sum(x => x.VALUE_5*x.VALUE_6),
 
                 });
                 var orderTTB = 1;
@@ -5150,7 +5196,7 @@ namespace SMO.Service.MD
                         name = i.NAME,
                         Col1 = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
                         Col2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE).Sum(x => x.VALUE_1) ?? 0,
-                        Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE).Sum(x => x.VALUE_10),
+                        Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE).Sum(x => x.VALUE_5*x.VALUE_6),
                         Col4 = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                         Des = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                     });
@@ -5162,7 +5208,7 @@ namespace SMO.Service.MD
                             name = "Chuẩn bị đầu tư và chuẩn bị thực hiện dự án",
                             Col1 = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT" && !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
                             Col2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
-                            Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_10),
+                            Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5*x.VALUE_6),
                             Col4 = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT" && !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                             Des = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT" && !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                         });
@@ -5172,7 +5218,7 @@ namespace SMO.Service.MD
                             name = "Thực hiện dự án",
                             Col1 = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT" && !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
                             Col2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
-                            Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_10),
+                            Col3 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5*x.VALUE_6),
                             Col4 = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT" && !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                             Des = dataTTB.FirstOrDefault(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == i.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT" && !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                         });
