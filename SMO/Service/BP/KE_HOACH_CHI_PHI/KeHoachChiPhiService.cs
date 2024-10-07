@@ -4625,22 +4625,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                 }
 
-                DataTable tableKHCP = new DataTable();
-                tableKHCP.TableName = "DataInsertChiPhi";
-                tableKHCP.Columns.Add("PKID", typeof(string));
-                tableKHCP.Columns.Add("ORG_CODE", typeof(string));
-                tableKHCP.Columns.Add("CHI_PHI_PROFIT_CENTER_CODE", typeof(string));
-                tableKHCP.Columns.Add("TEMPLATE_CODE", typeof(string));
-                tableKHCP.Columns.Add("TIME_YEAR", typeof(int));
-                tableKHCP.Columns.Add("MONTH", typeof(int));
-                tableKHCP.Columns.Add("STATUS", typeof(string));
-                tableKHCP.Columns.Add("VERSION", typeof(int));
-                tableKHCP.Columns.Add("KHOAN_MUC_HANG_HOA_CODE", typeof(string));
-                tableKHCP.Columns.Add("QUANTITY", typeof(decimal));
-                tableKHCP.Columns.Add("PRICE", typeof(decimal));
-                tableKHCP.Columns.Add("DESCRIPTION", typeof(string));
-                tableKHCP.Columns.Add("CREATE_BY", typeof(string));
-                tableKHCP.Columns.Add("AMOUNT", typeof(decimal));
+
 
                 // Đưa next version vào bảng log
                 UnitOfWork.Repository<KeHoachChiPhiVersionRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_VERSION()
@@ -4672,7 +4657,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     CREATE_BY = currentUser
                 });
 
-
                 // Insert data vào history
                 foreach (var item in dataCurrent)
                 {
@@ -4680,10 +4664,24 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>().Create(revenueDataHis);
                     UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Delete(item);
                 }
-
                 var allChiPhiProfitCenters = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().GetAll();
+
                 UnitOfWork.Commit();
-                // Insert dữ liệu vào bảng data
+
+                SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["SMO_MSSQL_Connection"].ConnectionString);
+                objConn.Open();
+               
+                string tableName = "T_BP_KE_HOACH_CHI_PHI_DATA";
+                SqlDataAdapter daAdapter = new SqlDataAdapter("SELECT * FROM " + tableName, objConn);
+                daAdapter.UpdateBatchSize = 0;
+                DataSet dataSet = new DataSet(tableName);
+                daAdapter.FillSchema(dataSet, SchemaType.Source, tableName);
+
+                DataTable tableKHCP;
+                tableKHCP = dataSet.Tables[tableName];
+
+
+                #region insert data
                 for (int i = 8; i < actualRows; i++)
                 {
                     var percentagePreventive = GetPreventive(orgCode, year: ObjDetail.TIME_YEAR)?.PERCENTAGE;
@@ -4769,7 +4767,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 }
                                 var row = tableKHCP.NewRow();
 
-                               
+
                                 row["PKID"] = Guid.NewGuid().ToString();
                                 row["ORG_CODE"] = orgCode;
                                 row["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeVPCT.CODE;
@@ -4803,7 +4801,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row2["CREATE_BY"] = currentUser;
                                 row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                                 tableKHCP.Rows.Add(row2);
-                              
+
                                 //MT
                                 var row3 = tableKHCP.NewRow();
                                 row3["PKID"] = Guid.NewGuid().ToString();
@@ -4821,7 +4819,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row3["CREATE_BY"] = currentUser;
                                 row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                                 tableKHCP.Rows.Add(row3);
-                              
+
 
                                 //CR
 
@@ -4841,7 +4839,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row4["CREATE_BY"] = currentUser;
                                 row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                                 tableKHCP.Rows.Add(row4);
-                             
+
 
                                 //MN
                                 var row5 = tableKHCP.NewRow();
@@ -4860,7 +4858,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row5["CREATE_BY"] = currentUser;
                                 row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                                 tableKHCP.Rows.Add(row5);
-                               
+
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100002"))
                             {
@@ -4954,7 +4952,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row1);
 
-                             
+
 
                                 //HAN
                                 var row2 = tableKHCP.NewRow();
@@ -4973,7 +4971,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row2["CREATE_BY"] = currentUser;
                                 row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row2);
-                             
+
 
                                 //VDO
                                 var row3 = tableKHCP.NewRow();
@@ -4992,7 +4990,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row3["CREATE_BY"] = currentUser;
                                 row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row3);
-                               
+
 
                                 //HPH
                                 var row4 = tableKHCP.NewRow();
@@ -5011,7 +5009,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row4["CREATE_BY"] = currentUser;
                                 row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row4);
-                              
+
 
                                 //DIN
                                 var row5 = tableKHCP.NewRow();
@@ -5030,7 +5028,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row5["CREATE_BY"] = currentUser;
                                 row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row5);
-                            
+
 
                                 //THD
 
@@ -5050,7 +5048,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row6["CREATE_BY"] = currentUser;
                                 row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row6);
-                             
+
 
                                 //NAF
                                 var row7 = tableKHCP.NewRow();
@@ -5069,7 +5067,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row7["CREATE_BY"] = currentUser;
                                 row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row7);
-                             
+
 
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100003"))
@@ -5169,7 +5167,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row1["CREATE_BY"] = currentUser;
                                 row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                                 tableKHCP.Rows.Add(row1);
-                               
+
 
                                 //DAD
                                 var row2 = tableKHCP.NewRow();
@@ -5188,7 +5186,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row2["CREATE_BY"] = currentUser;
                                 row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                                 tableKHCP.Rows.Add(row2);
-                               
+
 
                                 //CXR
                                 var row3 = tableKHCP.NewRow();
@@ -5207,7 +5205,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row3["CREATE_BY"] = currentUser;
                                 row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                                 tableKHCP.Rows.Add(row3);
-                              
+
                                 //HUI
                                 var row4 = tableKHCP.NewRow();
                                 row4["PKID"] = Guid.NewGuid().ToString();
@@ -5225,7 +5223,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row4["CREATE_BY"] = currentUser;
                                 row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                                 tableKHCP.Rows.Add(row4);
-                         
+
 
                                 //UIH
                                 var row5 = tableKHCP.NewRow();
@@ -5244,7 +5242,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row5["CREATE_BY"] = currentUser;
                                 row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                                 tableKHCP.Rows.Add(row5);
-                             
+
 
                                 //VCL
                                 var row6 = tableKHCP.NewRow();
@@ -5263,7 +5261,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row6["CREATE_BY"] = currentUser;
                                 row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                                 tableKHCP.Rows.Add(row6);
-                             
+
 
 
 
@@ -5285,7 +5283,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                                 tableKHCP.Rows.Add(row7);
 
-                              
+
 
 
 
@@ -5307,7 +5305,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row8["CREATE_BY"] = currentUser;
                                 row8["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? "0" : tableData.Rows[i][9].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row8);
-                              
+
 
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100004"))
@@ -5400,7 +5398,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row1);
 
-                               
+
                                 //SGN
                                 var row2 = tableKHCP.NewRow();
                                 row2["PKID"] = Guid.NewGuid().ToString();
@@ -5418,7 +5416,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row2["CREATE_BY"] = currentUser;
                                 row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row2);
-                             
+
 
 
                                 //PQC
@@ -5438,7 +5436,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row3["CREATE_BY"] = currentUser;
                                 row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row3);
-                             
+
 
                                 //DLI
                                 var row4 = tableKHCP.NewRow();
@@ -5457,7 +5455,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row4["CREATE_BY"] = currentUser;
                                 row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row4);
-                            
+
 
                                 //VCA
                                 var row5 = tableKHCP.NewRow();
@@ -5476,7 +5474,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row5["CREATE_BY"] = currentUser;
                                 row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row5);
-                              
+
 
                                 //BMV
                                 var row6 = tableKHCP.NewRow();
@@ -5495,7 +5493,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row6["CREATE_BY"] = currentUser;
                                 row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row6);
-                            
+
 
                                 //VCS
                                 var row7 = tableKHCP.NewRow();
@@ -5514,7 +5512,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row7["CREATE_BY"] = currentUser;
                                 row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                                 tableKHCP.Rows.Add(row7);
-                              
+
 
                             }
                             else if (template.DetailKeHoachChiPhi.Any(x => x.Center.COST_CENTER_CODE == "100005"))
@@ -5581,7 +5579,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row1["CREATE_BY"] = currentUser;
                                 row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()));
                                 tableKHCP.Rows.Add(row1);
-                               
+
 
                                 //VTMB
                                 var row2 = tableKHCP.NewRow();
@@ -5600,7 +5598,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row2["CREATE_BY"] = currentUser;
                                 row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()));
                                 tableKHCP.Rows.Add(row2);
-                           
+
 
                                 //VTMT
                                 var row3 = tableKHCP.NewRow();
@@ -5619,7 +5617,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row3["CREATE_BY"] = currentUser;
                                 row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()));
                                 tableKHCP.Rows.Add(row3);
-                           
+
 
                                 //VTMN
                                 var row4 = tableKHCP.NewRow();
@@ -5638,7 +5636,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 row4["CREATE_BY"] = currentUser;
                                 row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()));
                                 tableKHCP.Rows.Add(row4);
-                              
+
                             }
                             else
                             {
@@ -5724,7 +5722,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["CREATE_BY"] = currentUser;
                             row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                             tableKHCP.Rows.Add(row1);
-                       
+
 
                             //MB
                             var row2 = tableKHCP.NewRow();
@@ -5742,7 +5740,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row2["CREATE_BY"] = currentUser;
                             row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                             tableKHCP.Rows.Add(row2);
-                         
+
 
                             //MT
                             var row3 = tableKHCP.NewRow();
@@ -5760,7 +5758,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row3["CREATE_BY"] = currentUser;
                             row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                             tableKHCP.Rows.Add(row3);
-                      
+
 
                             //CR
                             var row4 = tableKHCP.NewRow();
@@ -5778,7 +5776,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row4["CREATE_BY"] = currentUser;
                             row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                             tableKHCP.Rows.Add(row4);
-                           
+
 
                             //MN
                             var row5 = tableKHCP.NewRow();
@@ -5796,7 +5794,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row5["CREATE_BY"] = currentUser;
                             row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                             tableKHCP.Rows.Add(row5);
-                           
+
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center?.COST_CENTER_CODE == "100002"))
                         {
@@ -5887,7 +5885,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["CREATE_BY"] = currentUser;
                             row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row1);
-                        
+
 
                             //HAN
                             var row2 = tableKHCP.NewRow();
@@ -5905,7 +5903,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row2["CREATE_BY"] = currentUser;
                             row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row2);
-                          
+
 
                             //VDO
                             var row3 = tableKHCP.NewRow();
@@ -5923,7 +5921,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row3["CREATE_BY"] = currentUser;
                             row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row3);
-                       
+
 
                             //HPH
                             var row4 = tableKHCP.NewRow();
@@ -5941,7 +5939,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row4["CREATE_BY"] = currentUser;
                             row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row4);
-                          
+
 
                             //DIN
                             var row5 = tableKHCP.NewRow();
@@ -5959,7 +5957,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row5["CREATE_BY"] = currentUser;
                             row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row5);
-                        
+
 
                             //THD
                             var row6 = tableKHCP.NewRow();
@@ -5977,7 +5975,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row6["CREATE_BY"] = currentUser;
                             row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row6);
-                         
+
 
                             //NAF
                             var row7 = tableKHCP.NewRow();
@@ -5995,7 +5993,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row7["CREATE_BY"] = currentUser;
                             row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row7);
-                       
+
 
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center?.COST_CENTER_CODE == "100003"))
@@ -6094,7 +6092,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["CREATE_BY"] = currentUser;
                             row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                             tableKHCP.Rows.Add(row1);
-                           
+
                             //DAD
                             var row2 = tableKHCP.NewRow();
                             row2["PKID"] = Guid.NewGuid().ToString();
@@ -6111,7 +6109,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row2["CREATE_BY"] = currentUser;
                             row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                             tableKHCP.Rows.Add(row2);
-                           
+
                             //CXR
                             var row3 = tableKHCP.NewRow();
                             row3["PKID"] = Guid.NewGuid().ToString();
@@ -6128,7 +6126,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row3["CREATE_BY"] = currentUser;
                             row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                             tableKHCP.Rows.Add(row3);
-                         
+
 
                             //HUI
                             var row4 = tableKHCP.NewRow();
@@ -6146,7 +6144,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row4["CREATE_BY"] = currentUser;
                             row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                             tableKHCP.Rows.Add(row4);
-                      
+
 
                             //UIH
                             var row5 = tableKHCP.NewRow();
@@ -6164,7 +6162,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row5["CREATE_BY"] = currentUser;
                             row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                             tableKHCP.Rows.Add(row5);
-                           
+
 
                             //VCL
                             var row6 = tableKHCP.NewRow();
@@ -6182,7 +6180,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row6["CREATE_BY"] = currentUser;
                             row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                             tableKHCP.Rows.Add(row6);
-                     
+
 
 
 
@@ -6202,7 +6200,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row7["CREATE_BY"] = currentUser;
                             row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
                             tableKHCP.Rows.Add(row7);
-                         
+
 
 
 
@@ -6224,7 +6222,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row8["CREATE_BY"] = currentUser;
                             row8["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? "0" : tableData.Rows[i][9].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row8);
-                       
+
 
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center?.COST_CENTER_CODE == "100004"))
@@ -6316,7 +6314,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["CREATE_BY"] = currentUser;
                             row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row1);
-                          
+
 
                             //SGN
                             var row2 = tableKHCP.NewRow();
@@ -6334,7 +6332,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row2["CREATE_BY"] = currentUser;
                             row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row2);
-                         
+
 
                             //PQC
                             var row3 = tableKHCP.NewRow();
@@ -6352,7 +6350,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row3["CREATE_BY"] = currentUser;
                             row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row3);
-                          
+
 
                             //DLI
                             var row4 = tableKHCP.NewRow();
@@ -6370,7 +6368,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row4["CREATE_BY"] = currentUser;
                             row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row4);
-                        
+
 
                             //VCA
                             var row5 = tableKHCP.NewRow();
@@ -6388,7 +6386,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row5["CREATE_BY"] = currentUser;
                             row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row5);
-                       
+
 
                             //BMV
                             var row6 = tableKHCP.NewRow();
@@ -6406,7 +6404,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row6["CREATE_BY"] = currentUser;
                             row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row6);
-                           
+
 
                             //VCS
                             if (centerCodeVCS != null)
@@ -6428,7 +6426,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 tableKHCP.Rows.Add(row7);
                             }
 
-                           
+
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center?.COST_CENTER_CODE == "100005"))
                         {
@@ -6495,7 +6493,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["CREATE_BY"] = currentUser;
                             row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()));
                             tableKHCP.Rows.Add(row1);
-                            
+
 
                             //VTMB
                             var row2 = tableKHCP.NewRow();
@@ -6513,7 +6511,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row2["CREATE_BY"] = currentUser;
                             row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()));
                             tableKHCP.Rows.Add(row2);
-                          
+
 
                             //VTMT
                             var row3 = tableKHCP.NewRow();
@@ -6531,7 +6529,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row3["CREATE_BY"] = currentUser;
                             row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()));
                             tableKHCP.Rows.Add(row3);
-                         
+
 
                             //VTMN
                             var row4 = tableKHCP.NewRow();
@@ -6549,7 +6547,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row4["CREATE_BY"] = currentUser;
                             row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString()));
                             tableKHCP.Rows.Add(row4);
-                          
+
                         }
                         else
                         {
@@ -6558,33 +6556,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     }
 
                 }
-              
+                #endregion
 
-                using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SMO_MSSQL_Connection"].ConnectionString))
-                {
-                    using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(connection))
-                    {
-                        sqlBulkCopy.DestinationTableName = "dbo.T_BP_KE_HOACH_CHI_PHI_DATA";
-                        sqlBulkCopy.ColumnMappings.Add("PKID", "PKID");
-                        sqlBulkCopy.ColumnMappings.Add("ORG_CODE", "ORG_CODE");
-                        sqlBulkCopy.ColumnMappings.Add("CHI_PHI_PROFIT_CENTER_CODE", "CHI_PHI_PROFIT_CENTER_CODE");
-                        sqlBulkCopy.ColumnMappings.Add("TEMPLATE_CODE", "TEMPLATE_CODE");
-                        sqlBulkCopy.ColumnMappings.Add("TIME_YEAR", "TIME_YEAR");
-                        sqlBulkCopy.ColumnMappings.Add("MONTH", "MONTH");
-                        sqlBulkCopy.ColumnMappings.Add("STATUS", "STATUS");
-                        sqlBulkCopy.ColumnMappings.Add("VERSION", "VERSION");
-                        sqlBulkCopy.ColumnMappings.Add("KHOAN_MUC_HANG_HOA_CODE", "KHOAN_MUC_HANG_HOA_CODE");
-                        sqlBulkCopy.ColumnMappings.Add("QUANTITY", "QUANTITY");
-                        sqlBulkCopy.ColumnMappings.Add("PRICE", "PRICE");
-                        sqlBulkCopy.ColumnMappings.Add("DESCRIPTION", "DESCRIPTION");
-                        sqlBulkCopy.ColumnMappings.Add("CREATE_BY", "CREATE_BY");
-                        sqlBulkCopy.ColumnMappings.Add("AMOUNT", "AMOUNT");
-                        sqlBulkCopy.BatchSize = 2000;
-                        connection.Open();
-                        sqlBulkCopy.WriteToServer(tableKHCP);
-                    }
-                };
 
+                SqlCommandBuilder objCommandBuilder = new SqlCommandBuilder(daAdapter);
+                daAdapter.Update(dataSet, tableName);
                 NotifyUtilities.CreateNotify(
                     new NotifyPara()
                     {
@@ -6595,6 +6571,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         ModulType = ModulType.KeHoachChiPhi,
                         UserSent = currentUser
                     });
+
+             
             }
             catch (Exception ex)
             {

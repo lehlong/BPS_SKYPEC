@@ -1701,6 +1701,7 @@ namespace SMO.Service.MD
                     data.DauTu.AddRange(GetDauTuKHTHByArea(area, year, phienBan, kichBan));
                 }
 
+
                 #endregion
 
                 #region KẾ HOẠCH SỬA CHỮA LỚN
@@ -1721,6 +1722,26 @@ namespace SMO.Service.MD
                     data.SuaChuaLon.AddRange(GetDataSCLByArea(area, year, dataSCL));
                 }
 
+                var SC01 = data.SuaChuaLon.Where(x => x.code == "SC01").Sum(x => x.valueKP);
+                var SC02 = data.SuaChuaLon.Where(x => x.code == "SC02").Sum(x => x.valueKP);
+                var SC03 = data.SuaChuaLon.Where(x => x.code == "SC03").Sum(x => x.valueKP);
+                var SC04 = data.SuaChuaLon.Where(x => x.code == "SC04").Sum(x => x.valueKP);
+                var SC05 = data.SuaChuaLon.Where(x => x.code == "SC05").Sum(x => x.valueKP);
+                var SC06 = data.SuaChuaLon.Where(x => x.code == "SC06").Sum(x => x.valueKP);
+                void InsertSuaChuaLon(List<SuaChuaLon> dataList, string name, decimal valueKP)
+                {
+                    dataList.Insert(0, new SuaChuaLon { name = name, valueKP = valueKP });
+                }
+                var TongCty = ProfileUtilities.User.ORGANIZE_CODE;
+                if (TongCty == "1000")
+                {
+                    InsertSuaChuaLon(data.SuaChuaLon, "Thiết bị quản lý", SC06);
+                    InsertSuaChuaLon(data.SuaChuaLon, "SCL Máy móc TB", SC05);
+                    InsertSuaChuaLon(data.SuaChuaLon, "SCL TSCĐ khác", SC04);
+                    InsertSuaChuaLon(data.SuaChuaLon, "SCL Kho bể", SC03);
+                    InsertSuaChuaLon(data.SuaChuaLon, "SCL PTVT", SC02);
+                    InsertSuaChuaLon(data.SuaChuaLon, "SCL NHÀ CỬA VKT", SC01);
+                }
                 #endregion
 
                 #region KẾ HOẠCH CHI PHÍ
@@ -1784,21 +1805,7 @@ namespace SMO.Service.MD
                         valueGT = dataSCL.Sum(x => x.VALUE) ?? 0,
                         IsBold = true
                     });
-                    var elementCodes = dataSCLTT.Select(x => x.KHOAN_MUC_SUA_CHUA_CODE).Distinct().ToList();
-                    var elementChild = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().Where(x => x.TIME_YEAR == year && elementCodes.Contains(x.CODE)).ToList();
-                    foreach (var i in elementChild.Select(x => x.PARENT_CODE).Distinct().ToList())
-                    {
-                        var p = UnitOfWork.Repository<KhoanMucSuaChuaRepo>().Queryable().FirstOrDefault(x => x.TIME_YEAR == year && x.CODE == i);
-                        if (p != null)
-                        {
-                            data.SuaChuaThuongXuyen.Add(new SuaChuaThuongXuyenReportModel
-                            {
-                                Stt = "-",
-                                Name = p.NAME,
-                                valueGT = dataSCLTT.Where(x => x.KHOAN_MUC_SUA_CHUA_CODE.Contains(p.CODE)).Sum(x => x.VALUE) ?? 0
-                            });
-                        }
-                    }
+                   
                     data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea("MB", year, dataSCLTT));
                     data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea("MT", year, dataSCLTT));
                     data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea("MN", year, dataSCLTT));
@@ -1809,12 +1816,35 @@ namespace SMO.Service.MD
                 {
                     data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea(area, year, dataSCLTT));
                 }
+                var SC07 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC07").Sum(x => x.valueGT);
+                var SC08 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC08").Sum(x => x.valueGT);
+                var SC09 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC09").Sum(x => x.valueGT);
+                var SC10 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC10").Sum(x => x.valueGT);
+                var SC11 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC11").Sum(x => x.valueGT);
+                var SC12 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC12").Sum(x => x.valueGT);
+
+                void InsertSCThuongxuyen(string name, decimal ValueGT)
+                {
+                    data.SuaChuaThuongXuyen.Insert(1, new SuaChuaThuongXuyenReportModel { Stt = "-", Name = name, valueGT = ValueGT });
+                }
+           
+                if (TongCty == "1000")
+                {
+                    InsertSCThuongxuyen("SCTX TSCĐ Khác", SC12);
+                    InsertSCThuongxuyen("SCTX Kho Bể", SC11);
+                    InsertSCThuongxuyen("SCTX Thiết bị quản lý", SC10);
+                    InsertSCThuongxuyen("SCTX PTVT", SC09);
+                    InsertSCThuongxuyen("SCTX - Máy móc TB", SC08);
+                    InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC07);
+             
+                }
+
                 #endregion
                 data = ReportUtilities.ProcessData(data);
 
                 List<string> CodePB = new List<string> { "6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB" };
                 List<string> ParrentPB = new List<string> { "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
-
+                // them cong tuc vao phan dich vu mua ngoai
                 data.ChiPhi.ForEach(x =>
                 {
                     if (CodePB.Contains(x.code))
@@ -1874,7 +1904,8 @@ namespace SMO.Service.MD
                     Stt = "",
                     Name = area == "CQ" ? "CƠ QUAN CÔNG TY" : area == "MB" ? "CHI NHÁNH MIỀN BẮC" : area == "MN" ? "CHI NHÁNH MIỀN NAM" : area == "MT" ? "CHI NHÁNH MIỀN TRUNG" : "CHI NHÁNH VẬN TẢI",
                     IsBold = true,
-                    Value2= (dataTTB.Where(x => lstProject.Any(y => y.CODE == x.DauTuTrangThietBiProfitCenter.PROJECT_CODE && y.LOAI_HINH == "TTB") ).Sum(x => x.VALUE_1) ?? 0)+ (dataXDCB.Where(x => lstProject.Any(y => y.CODE == x.DauTuXayDungProfitCenter.PROJECT_CODE && y.LOAI_HINH == "XDCB") ).Sum(x => x.VALUE_1) ?? 0) 
+                    Value2= (dataTTB.Where(x => lstProject.Any(y => y.CODE == x.DauTuTrangThietBiProfitCenter.PROJECT_CODE && y.LOAI_HINH == "TTB") ).Sum(x => x.VALUE_1) ?? 0)+ (dataXDCB.Where(x => lstProject.Any(y => y.CODE == x.DauTuXayDungProfitCenter.PROJECT_CODE && y.LOAI_HINH == "XDCB") ).Sum(x => x.VALUE_1) ?? 0),
+                    Value5= (dataTTB.Where(x => lstProject.Any(y => y.CODE == x.DauTuTrangThietBiProfitCenter.PROJECT_CODE && y.LOAI_HINH == "TTB")).Sum(x => x.VALUE_5*x.VALUE_6) ) + (dataXDCB.Where(x => lstProject.Any(y => y.CODE == x.DauTuXayDungProfitCenter.PROJECT_CODE && y.LOAI_HINH == "XDCB")).Sum(x => x.VALUE_5) )
                 });
                 data.Add(new DauTu
                 {
@@ -1882,6 +1913,8 @@ namespace SMO.Service.MD
                     Name = "Đầu tư XDCB",
                     IsBold = true,
                     Value2 = dataXDCB.Where(x => lstProject.Any(y=>y.CODE == x.DauTuXayDungProfitCenter.PROJECT_CODE && y.LOAI_HINH == "XDCB")).Sum(x => x.VALUE_1) ?? 0,
+                    Value5 = dataXDCB.Where(x => lstProject.Any(y => y.CODE == x.DauTuXayDungProfitCenter.PROJECT_CODE && y.LOAI_HINH == "XDCB")).Sum(x => x.VALUE_5),
+
                 });
                 var orderXDCB = 1;
                
@@ -1932,6 +1965,7 @@ namespace SMO.Service.MD
                     Name = "Đầu tư trang thiết bị",
                     IsBold = true,
                      Value2 = dataTTB.Where(x => lstProject.Any(y=>y.CODE==x.DauTuTrangThietBiProfitCenter.PROJECT_CODE && y.LOAI_HINH == "TTB") ).Sum(x => x.VALUE_1) ?? 0,
+                    Value5 = dataTTB.Where(x => lstProject.Any(y => y.CODE == x.DauTuTrangThietBiProfitCenter.PROJECT_CODE && y.LOAI_HINH == "TTB")).Sum(x => x.VALUE_5*x.VALUE_6),
                 });
                 var orderTTB = 1;
                
@@ -1944,7 +1978,7 @@ namespace SMO.Service.MD
                         Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_2,
                         Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0,
                         Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.VALUE_3,
-                        Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5) ,
+                        Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5 *x.VALUE_6) ,
                         Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE).FirstOrDefault()?.DESCRIPTION,
                         IsBold = project.TYPE == "TTB-LON" || string.IsNullOrEmpty(project.TYPE) ? true : false,
                     });
@@ -1957,7 +1991,7 @@ namespace SMO.Service.MD
                             Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_2,
                             Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
                             Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.VALUE_3,
-                            Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5),
+                            Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5*x.VALUE_6),
                             Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").FirstOrDefault()?.DESCRIPTION,
                         });
                         data.Add(new DauTu
@@ -1967,7 +2001,7 @@ namespace SMO.Service.MD
                             Value1 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_2,
                             Value2 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
                             Value4 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.VALUE_3,
-                            Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5),
+                            Value5 = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5*x.VALUE_6),
                             Des = dataTTB.Where(x => x.DauTuTrangThietBiProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").FirstOrDefault()?.DESCRIPTION,
                         });
 
@@ -4594,12 +4628,18 @@ namespace SMO.Service.MD
             {
                 dataList.Insert(0, new SuaChuaLon { name = name, valueKP = valueKP });
             }
-            InsertSuaChuaLon(data, "Thiết bị quản lý", SC06);
-            InsertSuaChuaLon(data, "SCL Máy móc TB", SC05);
-            InsertSuaChuaLon(data, "SCL TSCĐ khác", SC04);
-            InsertSuaChuaLon(data, "SCL Kho bể", SC03);
-            InsertSuaChuaLon(data, "SCL PTVT", SC02);
-            InsertSuaChuaLon(data, "SCL NHÀ CỬA VKT", SC01);
+            var TongCty = ProfileUtilities.User.ORGANIZE_CODE;
+            if (TongCty == "1000")
+            {
+                InsertSuaChuaLon(data, "Thiết bị quản lý", SC06);
+                InsertSuaChuaLon(data, "SCL Máy móc TB", SC05);
+                InsertSuaChuaLon(data, "SCL TSCĐ khác", SC04);
+                InsertSuaChuaLon(data, "SCL Kho bể", SC03);
+                InsertSuaChuaLon(data, "SCL PTVT", SC02);
+                InsertSuaChuaLon(data, "SCL NHÀ CỬA VKT", SC01);
+            }
+        
+
 
             return data;
         }
@@ -4872,12 +4912,17 @@ namespace SMO.Service.MD
             {
                 data.Insert(1, new SuaChuaThuongXuyenReportModel { Stt = "-", Name = name, valueGT = ValueGT });
             }
-            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC07);
-            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC08);
-            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC09);
-            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC10);
-            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC11);
-            InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC12);
+            var TongCty = ProfileUtilities.User.ORGANIZE_CODE;
+            if (TongCty=="1000")
+            {
+                InsertSCThuongxuyen("SCTX TSCĐ Khác", SC12);
+                InsertSCThuongxuyen("SCTX Kho Bể", SC11);
+                InsertSCThuongxuyen("SCTX Thiết bị quản lý", SC10);
+                InsertSCThuongxuyen("SCTX PTVT", SC09);
+                InsertSCThuongxuyen("SCTX - Máy móc TB", SC08);
+                InsertSCThuongxuyen("SCTX - Nhà cửa, VTK", SC07);
+            }
+            
             return data;
         }
         public MemoryStream ExportExcelSuaChuaLon(string path, int year, string phienBan, string kichBan, string area)
