@@ -1,5 +1,6 @@
 ﻿using iTextSharp.text;
 using Microsoft.AspNet.SignalR;
+
 using NHibernate.Criterion;
 using NHibernate.Linq;
 using NPOI.SS.UserModel;
@@ -25,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -2324,7 +2326,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             }
 
         }
-
+        #region import cũ
         /// <summary>
         /// Nhập dữ liệu từ excel vào database
         /// </summary>
@@ -4534,7 +4536,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
         //        Exception = ex;
         //    }
         //}
-
+        #endregion
         public override void ImportExcel(HttpRequestBase request)
         {
             base.ImportExcel(request);
@@ -4597,13 +4599,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 // Cập nhật version
                 if (KeHoachChiPhiCurrent != null)
                 {
-                    // Cập nhật next version vào bảng chính
+                  
                     KeHoachChiPhiCurrent.VERSION = versionNext;
                     KeHoachChiPhiCurrent.IS_DELETED = false;
                     CurrentRepository.Update(KeHoachChiPhiCurrent);
                 }
                 else
                 {
+             
                     // Tạo mới bản ghi revenue pl
                     CurrentRepository.Create(new T_BP_KE_HOACH_CHI_PHI()
                     {
@@ -4620,12 +4623,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         IS_SUMUP = false,
                         CREATE_BY = currentUser
                     });
-
+                  
 
 
                 }
-
-
 
                 // Đưa next version vào bảng log
                 UnitOfWork.Repository<KeHoachChiPhiVersionRepo>().Create(new T_BP_KE_HOACH_CHI_PHI_VERSION()
@@ -4656,32 +4657,79 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     ACTION_USER = currentUser,
                     CREATE_BY = currentUser
                 });
-
-                // Insert data vào history
                 foreach (var item in dataCurrent)
                 {
-                    var revenueDataHis = (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)item;
-                    UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>().Create(revenueDataHis);
                     UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Delete(item);
                 }
-                var allChiPhiProfitCenters = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().GetAll();
-
                 UnitOfWork.Commit();
 
+                //Insert data vào history
                 SqlConnection objConn = new SqlConnection(ConfigurationManager.ConnectionStrings["SMO_MSSQL_Connection"].ConnectionString);
                 objConn.Open();
+
+                string tableNamehistory = "T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY";
+                SqlDataAdapter daAdapterhistory = new SqlDataAdapter("SELECT * FROM " + tableNamehistory, objConn);
+                daAdapterhistory.UpdateBatchSize = 500;
+                DataSet dataSethistory = new DataSet(tableNamehistory);
+                daAdapterhistory.FillSchema(dataSethistory, SchemaType.Source, tableNamehistory);
+                daAdapterhistory.Fill(dataSethistory, tableNamehistory);
+                DataTable dataTablehistory;
+                dataTablehistory = dataSethistory.Tables[tableNamehistory];
+              
+                foreach (var item in dataCurrent)
+                {
+
+                    var revenueDataHis = (T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY)item;
+                    DataRow newRow = dataTablehistory.NewRow();
+                    newRow["PKID"] = revenueDataHis.PKID;
+                    newRow["ORG_CODE"] = revenueDataHis.ORG_CODE;
+                    newRow["CHI_PHI_PROFIT_CENTER_CODE"] = revenueDataHis.CHI_PHI_PROFIT_CENTER_CODE;
+                    newRow["TEMPLATE_CODE"] = revenueDataHis.TEMPLATE_CODE;
+                    newRow["KHOAN_MUC_HANG_HOA_CODE"] = revenueDataHis.KHOAN_MUC_HANG_HOA_CODE; 
+                    newRow["VERSION"] = revenueDataHis.VERSION;
+                    newRow["TIME_YEAR"] = revenueDataHis.TIME_YEAR;
+                    newRow["QUANTITY"] = revenueDataHis.QUANTITY ??  0;
+                    newRow["PRICE"] = revenueDataHis.PRICE?? 0;
+                    newRow["AMOUNT"] = revenueDataHis.AMOUNT?? 0;
+                    newRow["QUY_MO"] = revenueDataHis.QUY_MO;
+                    newRow["STATUS"] = revenueDataHis.STATUS;
+
+                    newRow["DESCRIPTION"] = revenueDataHis.DESCRIPTION;
+                    newRow["QUANTITY_TD"] = revenueDataHis.QUANTITY_TD ?? 0;
+                    newRow["PRICE_TD"] = revenueDataHis.PRICE_TD ?? 0;
+                    newRow["AMOUNT_TD"] = revenueDataHis.AMOUNT_TD ?? 0;
+                    newRow["DESCRIPTION_TD"] = revenueDataHis.DESCRIPTION_TD;
+                    dataTablehistory.Rows.Add(newRow);
+
                
-                string tableName = "T_BP_KE_HOACH_CHI_PHI_DATA";
-                SqlDataAdapter daAdapter = new SqlDataAdapter("SELECT * FROM " + tableName, objConn);
-                daAdapter.UpdateBatchSize = 0;
-                DataSet dataSet = new DataSet(tableName);
-                daAdapter.FillSchema(dataSet, SchemaType.Source, tableName);
 
-                DataTable tableKHCP;
-                tableKHCP = dataSet.Tables[tableName];
+                }
+                SqlCommandBuilder objCommandBuilder = new SqlCommandBuilder(daAdapterhistory);
+                daAdapterhistory.Update(dataSethistory, tableNamehistory);
+           
 
+                var allChiPhiProfitCenters = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().GetAll();
+
+               
+                DataTable tableKHCP = new DataTable();
+                tableKHCP.TableName = "DataInsertChiPhi";
+                tableKHCP.Columns.Add("PKID", typeof(string));
+                tableKHCP.Columns.Add("ORG_CODE", typeof(string));
+                tableKHCP.Columns.Add("CHI_PHI_PROFIT_CENTER_CODE", typeof(string));
+                tableKHCP.Columns.Add("TEMPLATE_CODE", typeof(string));
+                tableKHCP.Columns.Add("TIME_YEAR", typeof(int));
+                tableKHCP.Columns.Add("MONTH", typeof(int));
+                tableKHCP.Columns.Add("STATUS", typeof(string));
+                tableKHCP.Columns.Add("VERSION", typeof(int));
+                tableKHCP.Columns.Add("KHOAN_MUC_HANG_HOA_CODE", typeof(string));
+                tableKHCP.Columns.Add("QUANTITY", typeof(decimal));
+                tableKHCP.Columns.Add("PRICE", typeof(decimal));
+                tableKHCP.Columns.Add("DESCRIPTION", typeof(string));
+                tableKHCP.Columns.Add("CREATE_BY", typeof(string));
+                tableKHCP.Columns.Add("AMOUNT", typeof(decimal));
 
                 #region insert data
+
                 for (int i = 8; i < actualRows; i++)
                 {
                     var percentagePreventive = GetPreventive(orgCode, year: ObjDetail.TIME_YEAR)?.PERCENTAGE;
@@ -6559,8 +6607,31 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 #endregion
 
 
-                SqlCommandBuilder objCommandBuilder = new SqlCommandBuilder(daAdapter);
-                daAdapter.Update(dataSet, tableName);
+    
+                using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SMO_MSSQL_Connection"].ConnectionString))
+                {
+                    using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(connection))
+                    {
+                        sqlBulkCopy.DestinationTableName = "dbo.T_BP_KE_HOACH_CHI_PHI_DATA";
+                        sqlBulkCopy.ColumnMappings.Add("PKID", "PKID");
+                        sqlBulkCopy.ColumnMappings.Add("ORG_CODE", "ORG_CODE");
+                        sqlBulkCopy.ColumnMappings.Add("CHI_PHI_PROFIT_CENTER_CODE", "CHI_PHI_PROFIT_CENTER_CODE");
+                        sqlBulkCopy.ColumnMappings.Add("TEMPLATE_CODE", "TEMPLATE_CODE");
+                        sqlBulkCopy.ColumnMappings.Add("TIME_YEAR", "TIME_YEAR");
+                        sqlBulkCopy.ColumnMappings.Add("MONTH", "MONTH");
+                        sqlBulkCopy.ColumnMappings.Add("STATUS", "STATUS");
+                        sqlBulkCopy.ColumnMappings.Add("VERSION", "VERSION");
+                        sqlBulkCopy.ColumnMappings.Add("KHOAN_MUC_HANG_HOA_CODE", "KHOAN_MUC_HANG_HOA_CODE");
+                        sqlBulkCopy.ColumnMappings.Add("QUANTITY", "QUANTITY");
+                        sqlBulkCopy.ColumnMappings.Add("PRICE", "PRICE");
+                        sqlBulkCopy.ColumnMappings.Add("DESCRIPTION", "DESCRIPTION");
+                        sqlBulkCopy.ColumnMappings.Add("CREATE_BY", "CREATE_BY");
+                        sqlBulkCopy.ColumnMappings.Add("AMOUNT", "AMOUNT");
+                        sqlBulkCopy.BatchSize = 2000;
+                        connection.Open();
+                        sqlBulkCopy.WriteToServer(tableKHCP);
+                    }
+                };
                 NotifyUtilities.CreateNotify(
                     new NotifyPara()
                     {
@@ -6572,7 +6643,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         UserSent = currentUser
                     });
 
-             
+
             }
             catch (Exception ex)
             {
@@ -6899,20 +6970,27 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
         private IList<string> GetTemplateData(List<string> lstOrgCodes, int? year = null)
         {
-            return UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
-                .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value))
-                .Select(x => x.TEMPLATE_CODE)
+            return UnitOfWork.GetSession().Query<T_BP_KE_HOACH_CHI_PHI_DATA>().Where(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value)).Select(x => x.TEMPLATE_CODE)
                 .Distinct()
                 .ToList();
+            //return UnitOfWork.Repository<KeHoachChiPhiDataRepo>()
+            //    .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value))
+            //    .Select(x => x.TEMPLATE_CODE)
+            //    .Distinct()
+            //    .ToList();
         }
 
         private IList<string> GetTemplateDataHistory(List<string> lstOrgCodes, int? year = null)
         {
-            return UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>()
-                .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value))
-                .Select(x => x.TEMPLATE_CODE)
+            return UnitOfWork.GetSession().Query<T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY>().Where(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value)).Select(x => x.TEMPLATE_CODE)
                 .Distinct()
                 .ToList();
+
+            //return UnitOfWork.Repository<KeHoachChiPhiDataHistoryRepo>()
+            //    .GetManyByExpression(x => lstOrgCodes.Contains(x.ORG_CODE) && x.TEMPLATE_CODE != string.Empty && (!year.HasValue || x.TIME_YEAR == year.Value))
+            //    .Select(x => x.TEMPLATE_CODE)
+            //    .Distinct()
+            //    .ToList();
         }
         #endregion
 

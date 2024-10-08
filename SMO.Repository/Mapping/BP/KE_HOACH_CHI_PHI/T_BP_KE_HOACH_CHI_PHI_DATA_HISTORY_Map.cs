@@ -34,13 +34,13 @@ namespace SMO.Repository.Mapping.BP.KE_HOACH_CHI_PHI
             Map(x => x.DESCRIPTION_TD);
 
             References(x => x.KhoanMucHangHoa).Columns("KHOAN_MUC_HANG_HOA_CODE", "TIME_YEAR")
-                .Not.Insert().Not.Update();
+                .Not.Insert().Not.Update().LazyLoad();
             References(x => x.ChiPhiProfitCenter, "CHI_PHI_PROFIT_CENTER_CODE")
-                .Not.Insert().Not.Update();
+                .Not.Insert().Not.Update().LazyLoad();
             References(x => x.Organize, "ORG_CODE")
-                .Not.Insert().Not.Update();
+                .Not.Insert().Not.Update().LazyLoad();
             References(x => x.Template, "TEMPLATE_CODE")
-                .Not.Insert().Not.Update();
+                .Not.Insert().Not.Update().LazyLoad();
 
         }
     }

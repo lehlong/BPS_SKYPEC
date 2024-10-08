@@ -22,7 +22,7 @@ namespace SMO.Repository.Mapping
 
             References(x => x.FileUpload).Column("FILE_ID").Not.Insert().Not.Update().LazyLoad();
             References(x => x.Template, "TEMPLATE_CODE").Not.Insert().Not.Update().LazyLoad();
-            References(x => x.Organize).Column("ORG_CODE").Not.Insert().Not.Update();
+            References(x => x.Organize).Column("ORG_CODE").Not.Insert().Not.Update().LazyLoad();
         }
     }
 }

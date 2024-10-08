@@ -17,10 +17,10 @@ namespace SMO.Repository.Mapping.MD
 
             References(x => x.CostCenter, "COST_CENTER_CODE")
                 .Not.Insert()
-                .Not.Update();
+                .Not.Update().LazyLoad();
             References(x => x.SanBay, "SAN_BAY_CODE")
                 .Not.Insert()
-                .Not.Update();
+                .Not.Update().LazyLoad();
 
         }
     }
