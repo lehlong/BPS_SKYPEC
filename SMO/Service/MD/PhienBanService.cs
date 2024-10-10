@@ -1816,6 +1816,23 @@ namespace SMO.Service.MD
                 {
                     data.SuaChuaThuongXuyen.AddRange(GetDataSCTXByArea(area, year, dataSCLTT));
                 }
+                // công các khoản mục của chi nhánh
+
+                if (area =="CQ")
+                {
+                    data.SuaChuaThuongXuyen.ForEach(x =>
+                    {
+                        if (x.Code == "SC10")
+                        {
+                            x.valueGT = data.SuaChuaThuongXuyen.Where(y => y.Parent=="SC10" ).Sum(y => y.valueGT);
+                        };
+                        if (x.Code == "SC11")
+                        {
+                            x.valueGT = data.SuaChuaThuongXuyen.Where(y => y.Parent == "SC11").Sum(y => y.valueGT);
+                        };
+                    });
+
+                }
                 var SC07 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC07").Sum(x => x.valueGT);
                 var SC08 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC08").Sum(x => x.valueGT);
                 var SC09 = data.SuaChuaThuongXuyen.Where(x => x.Code == "SC09").Sum(x => x.valueGT);
@@ -3042,8 +3059,8 @@ namespace SMO.Service.MD
                         Order = e.STT,
                         IsBold = e.IS_BOLD,
                         Name = e.GROUP_NAME,
-                        Col1 = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)&& (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) :true) ).Sum(x => x.AMOUNT),
-                        Col2 = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)&& (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.AMOUNT)
+                        Col1 = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)&& (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) :true) ).Sum(x => x.QUANTITY*x.PRICE),
+                        Col2 = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)&& (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE)
                     };
                     i.Col3 = i.Col1 + i.Col2;
                     switch (month)
@@ -4900,6 +4917,21 @@ namespace SMO.Service.MD
             else
             {
                 data.AddRange(GetDataSCTXByArea(area, year, dataSCL));
+            }
+            if (area == "CQ")
+            {
+                data.ForEach(x =>
+                {
+                    if (x.Code == "SC10")
+                    {
+                        x.valueGT = data.Where(y => y.Parent == "SC10").Sum(y => y.valueGT);
+                    };
+                    if (x.Code == "SC11")
+                    {
+                        x.valueGT = data.Where(y => y.Parent == "SC11").Sum(y => y.valueGT);
+                    };
+                });
+
             }
             var SC07 = data.Where(x => x.Code == "SC07").Sum(x => x.valueGT);
             var SC08 = data.Where(x => x.Code == "SC08").Sum(x => x.valueGT);
