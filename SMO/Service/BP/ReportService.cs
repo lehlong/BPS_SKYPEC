@@ -1,8 +1,10 @@
 ﻿using Microsoft.Ajax.Utilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Office.Interop.Excel;
 using NHibernate.Criterion;
 using NPOI.HSSF.Record.Chart;
+using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -3565,6 +3567,21 @@ namespace SMO.Service.BP
                     Col4 = data.Where(x => string.IsNullOrEmpty(x.Stt)).Sum(x => x.Col4),
                     Col5 = SumCol1 == 0 || SumCol4 == 0 ? 0 : (SumCol4 / SumCol1) * 100
                 });
+                var parent = data.Where(x=>x.IsBold==true && x.Parent!=null).Select(x => new {x.Code,x.Name}).Distinct().ToList();
+                foreach (var item in parent)
+                {
+                    data.Insert(1, new ReportModel
+                    {
+                        Name = item.Name,
+                        Col1 = data.Where(y => y.Code == item.Code).Sum(y => y.Col1),
+                        Col2 = data.Where(y => y.Code == item.Code).Sum(y => y.Col2),
+                        Col3 = data.Where(y => y.Code == item.Code).Sum(y => y.Col3),
+                        Col4 = data.Where(y => y.Code == item.Code).Sum(y => y.Col4),
+                        Col5 = data.Where(y => y.Code == item.Code).Sum(y => y.Col1) == 0 ? 0 : (data.Where(y => y.Code == item.Code).Sum(y => y.Col4) / data.Where(y => y.Code == item.Code).Sum(y => y.Col1)) * 100
+                    });
+                }
+               
+
                 return data;
 
             }

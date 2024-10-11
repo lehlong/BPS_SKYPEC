@@ -1,8 +1,10 @@
-﻿using SMO.Core.Entities.MD;
+﻿using Newtonsoft.Json;
+using SMO.Core.Entities.MD;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Script.Serialization;
 
 namespace SMO.Core.Entities
 {
@@ -48,8 +50,13 @@ namespace SMO.Core.Entities
         public virtual DateTime? LAST_CHANGE_PASS_DATE { get; set; }
         public virtual ISet<T_AD_USER_USER_GROUP> ListUserUserGroup { get; set; }
         public virtual ISet<T_AD_USER_RIGHT> ListUserRight { get; set; }
+        [JsonIgnore]
+        [ScriptIgnore]
         public virtual ISet<T_AD_USER_ROLE> ListUserRole { get; set; }
+
         public virtual ISet<T_AD_USER_HISTORY> ListUserHistory { get; set; }
+        [JsonIgnore]
+        [ScriptIgnore]
         public virtual ISet<T_AD_USER_ORG> ListUserOrg { get; set; }
         private T_MD_COST_CENTER _Organize;
         public virtual T_MD_COST_CENTER Organize
@@ -69,6 +76,7 @@ namespace SMO.Core.Entities
         }
         public T_AD_USER()
         {
+          
             ListUserUserGroup = new HashSet<T_AD_USER_USER_GROUP>(new List<T_AD_USER_USER_GROUP>());
             ListUserRight = new HashSet<T_AD_USER_RIGHT>(new List<T_AD_USER_RIGHT>());
             ListUserRole = new HashSet<T_AD_USER_ROLE>(new List<T_AD_USER_ROLE>());
