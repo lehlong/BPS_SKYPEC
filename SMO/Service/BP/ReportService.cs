@@ -3382,6 +3382,7 @@ namespace SMO.Service.BP
                 {
                     Name = "Tổng kinh phí đầu tư XDCB",
                     Col1 = details1_1.Where(x => projects.Select(y => y.CODE).Contains(x.DauTuXayDungProfitCenter.PROJECT_CODE)).Sum(x => x.VALUE_1) ?? 0,
+                    Col2 = details1_1.Where(x => projects.Select(y => y.CODE).Contains(x.DauTuXayDungProfitCenter.PROJECT_CODE)).Sum(x => x.VALUE_5),
                     IsBold = true,
                 });
 
@@ -3391,7 +3392,8 @@ namespace SMO.Service.BP
                     {
                         Stt = order.ToString(),
                         Name = project.NAME,
-                        Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0
+                        Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0,
+                           Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5) 
                     };
                     data.Add(i);
 
@@ -3402,6 +3404,7 @@ namespace SMO.Service.BP
                             Stt = "a",
                             Name = "Chuẩn bị đầu tư và chuẩn bị thực hiện dự án",
                             Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
+                            Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5) ,
 
                         });
                         data.Add(new ReportModel
@@ -3409,6 +3412,7 @@ namespace SMO.Service.BP
                             Stt = "b",
                             Name = "Thực hiện dự án",
                             Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
+                            Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5) ,
                         });
 
                     }
