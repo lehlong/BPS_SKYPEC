@@ -103,8 +103,10 @@ else
                 align: 'center',
                 template: (value, row, col) => {
                     var isChecked = row.isChecked ? "checked" : "";
-                    return row.code ? `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
-                        <label for="chkItem${row.code}"></label>` :`<div></div>`
+                    //return row.code ? `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}" modelId="${row.code}" style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+                    //    <label for="chkItem${row.code}"></label>` :`<div></div>`
+                    return row.code ? `<input type="checkbox" ${isChecked} class="filled-in chkItem" name="chkItem" id="chkItem${row.code}"  style="margin:0;" onchange="IsDoneExpertise($(this).is(':checked'), $(this).attr('modelId'))" />
+     <label for="chkItem${row.code}"></label>` : `<div></div>`
                 },
                 htmlEnable: true,
             },
@@ -143,7 +145,7 @@ else
         const treeGrid = new dhx.TreeGrid("@grid", {
             columns,
             data: rawData,
-            leftSplit: 1,
+    /*        leftSplit: 1,*/
             resizable: true,
             keyNavigation: true,
         
@@ -161,6 +163,7 @@ else
             if (column.id == "code" || column.id == "name" || column.id == "comment" || column.id == "value7"){
                 return;
             } 
+            if (column.id != "check")
             treeGrid.editCell(row.id, column.id);
             
         });
