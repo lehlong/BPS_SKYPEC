@@ -4660,7 +4660,7 @@ namespace SMO.Service.MD
             var SC04 = data.Where(x => x.code == "SC04").Sum(x => x.valueKP);
             var SC05 = data.Where(x => x.code == "SC05").Sum(x => x.valueKP);
             var SC06 = data.Where(x => x.code == "SC06").Sum(x => x.valueKP);
-            var Total = data.Where(x => x.IsBold==true).Sum(x => x.valueKP);
+            //var Total = data.Where(x => x.IsBold==true).Sum(x => x.valueKP);
             void InsertSuaChuaLon(List<SuaChuaLon> dataList, string name, decimal valueKP)
             {
                 dataList.Insert(0, new SuaChuaLon { name = name, valueKP = valueKP });
@@ -4674,7 +4674,7 @@ namespace SMO.Service.MD
                 InsertSuaChuaLon(data, "SCL Kho bể", SC03);
                 InsertSuaChuaLon(data, "SCL PTVT", SC02);
                 InsertSuaChuaLon(data, "SCL NHÀ CỬA VKT", SC01);
-                InsertSuaChuaLon(data, "TỔNG CỘNG TOÀN CÔng TY", Total);
+                //InsertSuaChuaLon(data, "TỔNG CỘNG TOÀN CÔNG TY", Total);
             }
         
 
