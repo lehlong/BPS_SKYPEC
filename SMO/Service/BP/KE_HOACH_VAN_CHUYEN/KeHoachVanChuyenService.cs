@@ -4367,48 +4367,55 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
             rowHeader3.Cells[1].SetCellValue(template.CREATE_BY);
 
 
-            //var jsonData = dataOrder.OrderBy(x => x.C_ORDER).Select(x => new
-            //{
-            //    Id = x.C_ORDER.ToString(),
-            //    Parent = x.ParentOrder,
-            //    Code = x.CODE,
-            //    Name = x.NAME,
-            //    ValuesSL = x.ValuesSL.ToStringVN(),
-            //    ValuesCL = x.ValuesCL.ToStringVN(),
-            //    ValuesSC = x.ValuesSC.ToStringVN(),
-            //    ValuesT = x.ValuesT.ToStringVN(),
-            //    ValuesM3 = x.ValuesM3.ToStringVN(),
-            //    ValuesTVTB = x.ValuesTVTB.ToStringVN(),
-            //    ValuesTVC = x.ValuesTVC.ToStringVN(),
-            //    ValuesTVT = x.ValuesTVT.ToStringVN(),
-            //    ValuesTN = x.ValuesTN.ToStringVN(),
-            //    ValuesLCT = x.ValuesLCT.ToStringVN(),
-            //    ValuesLCM3 = x.ValuesLCM3.ToStringVN(),
-            //    IsBold = x.Isbold,
-            //});
+        
+            if (!ProfileUtilities.User.ORGANIZE_CODE.Contains("100005")) {
 
-            foreach (var item in lstData)
-            {
-                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
-          
-                rowCur.Cells[0].SetCellValue(item.CODE);
-                rowCur.Cells[1].SetCellValue(item.NAME);
-                rowCur.Cells[2].SetCellValue(item.ValuesSL.ToStringVN());
-                rowCur.Cells[3].SetCellValue(item.ValuesCL.ToStringVN());
-                rowCur.Cells[4].SetCellValue(item.ValuesSC.ToStringVN());
-                rowCur.Cells[5].SetCellValue(item.ValuesT.ToStringVN());
-                rowCur.Cells[6].SetCellValue(item.ValuesM3.ToStringVN());
-                rowCur.Cells[7].SetCellValue(item.ValuesTVTB.ToStringVN());
-                rowCur.Cells[8].SetCellValue(item.ValuesTVC.ToStringVN());
-                rowCur.Cells[9].SetCellValue(item.ValuesTVT.ToStringVN());
-                rowCur.Cells[10].SetCellValue(item.ValuesTN.ToStringVN());
-                rowCur.Cells[11].SetCellValue(item.ValuesLCT.ToStringVN());
-                rowCur.Cells[12].SetCellValue(item.ValuesLCM3.ToStringVN());
-                for (int i = 0; i < NUM_CELL; i++)
+                foreach (var item in lstData)
                 {
-                    rowCur.Cells[i].CellStyle = styleCellNumber;
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+
+                    rowCur.Cells[0].SetCellValue(item.CODE);
+                    rowCur.Cells[1].SetCellValue(item.NAME);
+                    rowCur.Cells[2].SetCellValue(item.ValuesSL.ToStringVN());
+                    rowCur.Cells[3].SetCellValue(item.ValuesCL.ToStringVN());
+                    rowCur.Cells[4].SetCellValue(item.ValuesSC.ToStringVN());
+                    rowCur.Cells[5].SetCellValue(item.ValuesT.ToStringVN());
+                    rowCur.Cells[6].SetCellValue(item.ValuesM3.ToStringVN());
+                    rowCur.Cells[7].SetCellValue(item.ValuesTN.ToStringVN());
+                    rowCur.Cells[8].SetCellValue((item.ValuesCL * item.ValuesT).ToStringVN());
+                    rowCur.Cells[9].SetCellValue((item.ValuesM3 * item.ValuesM3).ToStringVN());
+                    ;
+                    for (int i = 0; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellNumber;
+                    }
                 }
             }
+            else
+            {
+                foreach (var item in lstData)
+                {
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+
+                    rowCur.Cells[0].SetCellValue(item.CODE);
+                    rowCur.Cells[1].SetCellValue(item.NAME);
+                    rowCur.Cells[2].SetCellValue(item.ValuesSL.ToStringVN());
+                    rowCur.Cells[3].SetCellValue(item.ValuesCL.ToStringVN());
+                    rowCur.Cells[4].SetCellValue(item.ValuesSC.ToStringVN());
+                    rowCur.Cells[5].SetCellValue(item.ValuesT.ToStringVN());
+                    rowCur.Cells[6].SetCellValue(item.ValuesM3.ToStringVN());
+                    rowCur.Cells[7].SetCellValue("");
+                    rowCur.Cells[8].SetCellValue((item.ValuesCL * item.ValuesT).ToStringVN());
+                    rowCur.Cells[9].SetCellValue((item.ValuesM3 * item.ValuesM3).ToStringVN());
+                    ;
+                    for (int i = 0; i < NUM_CELL; i++)
+                    {
+                        rowCur.Cells[i].CellStyle = styleCellNumber;
+                    }
+                }
+
+            };
+           
 
             templateWorkbook.Write(outFileStream);
         }
