@@ -16,5 +16,11 @@ namespace SMO.Core.Entities.MD
         public virtual string STT { get; set; }
         public virtual int TIME_YEAR { get; set; }
         public virtual bool IS_BOLD {  get; set; }
+        public virtual string IDMB { get; set; }
+        public virtual string IDMT { get; set; }
+        public virtual string IDMN { get; set; }
+        public virtual string IDVT{ get; set; }
+        public virtual string IDCQ { get; set; }
+
     }
 }

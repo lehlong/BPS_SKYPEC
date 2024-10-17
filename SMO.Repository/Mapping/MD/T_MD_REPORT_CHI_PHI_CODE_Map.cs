@@ -20,6 +20,11 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.TIME_YEAR);
             Map(x => x.C_ORDER);
             Map(x => x.STT);
+            Map(x => x.IDCQ);
+            Map(x => x.IDMN);
+            Map(x => x.IDMB);
+            Map(x => x.IDMT);
+            Map(x => x.IDVT);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
             Map(x => x.IS_BOLD).Not.Nullable().CustomType<YesNoType>();
         }

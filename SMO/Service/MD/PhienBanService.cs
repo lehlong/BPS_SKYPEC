@@ -5052,100 +5052,105 @@ namespace SMO.Service.MD
                 var header = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TIME_YEAR == year).Select(x => x.TEMPLATE_CODE).ToList();
                 var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && header.Contains(x.TEMPLATE_CODE)).ToList();
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
-                List<string> CodePB = new List<string> { "6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB" };
-                List<string> ParrentPB = new List<string> {  "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
-                string[] ListKMB = { "C001B", "C002B", "C003B", "C004B", "C005B", "C006B", "C007B", "C009B" };
-                string[] LisTCostYear = { "C001C", "C002C", "C003C", "C004C", "C005C", "C006C", "C009C", "C007C" };
+               
                 foreach (var i in elements)
                 {
+                    var ValueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDCQ != null ? i.IDCQ : ("CQ" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                    var ValueCNMB = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMB != null ? i.IDMB : ("B" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                    var ValueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith("T")&& x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMT != null ? i.IDMT : ("T" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                    var ValueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMN != null ? i.IDMN : ("N" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                    var ValueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDVT != null ? i.IDVT : ("VT" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                    // cong cu dung cu chia 2
+                    if (i.GROUP_1_ID == "6273" && i.GROUP_2_ID.EndsWith("B"))
+                    {
+                        ValueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDCQ != null ? i.IDCQ : ("CQ" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
+                        ValueCNMB = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMB != null ? i.IDMB : ("B" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
+                        ValueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith("T") && x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMT != null ? i.IDMT : ("T" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
+                        ValueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMN != null ? i.IDMN : ("N" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
+                        ValueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDVT != null ? i.IDVT : ("VT" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
+
+                    }
+
                     var item = new ChiPhiInReport { };
-                    if (i.GROUP_1_ID=="6273"&& ListKMB.Contains(i.GROUP_2_ID))
-                    {
+                   
                         item = new ChiPhiInReport
                         {
+                           
                             code = i.GROUP_1_ID + i.GROUP_2_ID,
                             Stt = i.STT,
                             name = i.GROUP_NAME,
                             IsBold = i.IS_BOLD,
-                            valueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("CQ" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY *( x.PRICE>10000000? x.PRICE/2:x.PRICE)) ?? 0,
-                            valueCNMB = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("B" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0,
-                            valueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("T" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0,
-                            valueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("N" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0,
-                            valueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("VT" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0,
-                            valueTcty = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                            valueCQCT = ValueCQCT,
+                            valueCNMB = ValueCNMB,
+                            valueCNMT = ValueCNMT,
+                            valueCNMN = ValueCNMN,
+                            valueCNVT = ValueCNVT,
+                            valueTcty = ValueCNMB+ValueCNMN+ValueCNMT+ValueCQCT+ValueCNVT
                         };
-
-                    }else if (i.GROUP_1_ID == "6273" && LisTCostYear.Contains(i.GROUP_2_ID))
-                    {
-                        var lenghtCode = i.GROUP_2_ID.Length - 1;
-                        item = new ChiPhiInReport
-                        {
-                            code = i.GROUP_1_ID + i.GROUP_2_ID,
-                            Stt = i.STT,
-                            name = i.GROUP_NAME,
-                            IsBold = i.IS_BOLD,
-                            valueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("CQ" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0,lenghtCode) +"B"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueCNMB = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("B" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, lenghtCode) + "B"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("T" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, lenghtCode) + "B"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("N" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, lenghtCode) + "B"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("VT" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, lenghtCode) + "B"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueTcty = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, lenghtCode)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                        };
-
-                    }
-                    else
-                    {
-                        item = new ChiPhiInReport
-                        {
-                            code = i.GROUP_1_ID + i.GROUP_2_ID,
-                            Stt = i.STT,
-                            name = i.GROUP_NAME,
-                            IsBold = i.IS_BOLD,
-                            valueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("CQ" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueCNMB = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("B" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("T" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("N" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("VT" + i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            valueTcty = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                        };
-
-                    }
-                  
                     data.chiPhiInReports.Add(item);
+              
+                  
                 }
-                data.chiPhiInReports.ForEach(x => {
-                    if (CodePB.Contains(x.code))
+                // update 2.3/2 =2.2.2
+                data.chiPhiInReports.ForEach(x =>
+                {
+                    if (x.code.Contains("6277") && x.code.EndsWith("B2"))
                     {
-                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCQCT);
-                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCNMB);
-                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCNMT);
-                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCNMN);
-                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueCNVT);
-                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == $"{x.code}1" || y.code == $"{x.code}2").Sum(z => z.valueTcty);
+
+                        var lenght = x.code.Length - 1;
+                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == x.code.Substring(0, lenght) + "3").Sum(y => y.valueCQCT / 2);
+                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == x.code.Substring(0, lenght) + "3").Sum(y => y.valueCNMB / 2);
+                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == x.code.Substring(0, lenght) + "3").Sum(y => y.valueCNMT / 2);
+                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == x.code.Substring(0, lenght) + "3").Sum(y => y.valueCNMN / 2);
+                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == x.code.Substring(0, lenght) + "3").Sum(y => y.valueCNVT / 2);
+                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == x.code.Substring(0, lenght) + "3").Sum(y => y.valueTcty / 2);
                     }
                 });
-                // thêm công thứs cho chi phí dịch vụ
-             
-                data.chiPhiInReports.ForEach(x => {
-                    if (ParrentPB.Contains(x.code))
+
+                data.chiPhiInReports.ForEach(x =>
+                {
+                    if (x.code.Contains("6277") && x.code.EndsWith("B"))
                     {
-                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCQCT);
-                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCNMB);
-                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCNMT);
-                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCNMN);
-                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueCNVT);
-                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == $"{x.code}AA" || y.code == $"{x.code}AB").Sum(z => z.valueTcty);
-                    }
-                    if(x.code== "6277G002")
-                    {
-                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCQCT);
-                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCNMB);
-                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCNMT);
-                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCNMN);
-                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueCNVT);
-                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == $"{x.code}A" || y.code == $"{x.code}B").Sum(z => z.valueTcty);
+
+                        var lenght = x.code.Length - 1;
+                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == x.code + "1" || y.code == x.code + "2").Sum(y => y.valueCQCT);
+                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == x.code + "1" || y.code == x.code + "2").Sum(y => y.valueCNMB);
+                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == x.code + "1" || y.code == x.code + "2").Sum(y => y.valueCNMT);
+                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == x.code + "1" || y.code == x.code + "2").Sum(y => y.valueCNMN);
+                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == x.code + "1" || y.code == x.code + "2").Sum(y => y.valueCNVT);
+                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == x.code + "1" || y.code == x.code + "2").Sum(y => y.valueTcty);
                     }
                 });
+                List<string> listParrent = new List<string> { "6277G002", "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
+                data.chiPhiInReports.ForEach(x =>
+                {
+                    if (listParrent.Contains(x.code))
+                    {
+                        var a = data.chiPhiInReports.Where(y => y.code == x.code + "A" || y.code == x.code + "A" || y.code == x.code + "AA" || y.code == x.code + "BB");
+
+                        x.valueCQCT = data.chiPhiInReports.Where(y => y.code == x.code + "A" || y.code == x.code + "B" || y.code == x.code + "AA" || y.code == x.code + "AB").Sum(y => y.valueCQCT);
+                        x.valueCNMB = data.chiPhiInReports.Where(y => y.code == x.code + "A" || y.code == x.code + "B" || y.code == x.code + "AA" || y.code == x.code + "AB").Sum(y => y.valueCNMB);
+                        x.valueCNMT = data.chiPhiInReports.Where(y => y.code == x.code + "A" || y.code == x.code + "B" || y.code == x.code + "AA" || y.code == x.code + "AB").Sum(y => y.valueCNMT);
+                        x.valueCNMN = data.chiPhiInReports.Where(y => y.code == x.code + "A" || y.code == x.code + "B" || y.code == x.code + "AA" || y.code == x.code + "AB").Sum(y => y.valueCNMN);
+                        x.valueCNVT = data.chiPhiInReports.Where(y => y.code == x.code + "A" || y.code == x.code + "B" || y.code == x.code + "AA" || y.code == x.code + "AB").Sum(y => y.valueCNVT);
+                        x.valueTcty = data.chiPhiInReports.Where(y => y.code == x.code + "A" || y.code == x.code + "B" || y.code == x.code + "AA" || y.code == x.code + "AB").Sum(y => y.valueTcty);
+                    }
+                });
+                data.chiPhiInReports.ForEach(x =>
+                {
+                    List<string> ListchildCode = new List<string> { "6277G002", "6277G003", "6277G004", "6277G005", "6277G006", "6277G007", "6277G008", "6277G009", "6277G010", "6277G011", "6277G012", "6277G019" };
+                    if (x.code == "6277")
+                    {
+                        var a = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code));
+                        x.valueCQCT = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueCQCT);
+                        x.valueCNMB = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueCNMB);
+                        x.valueCNMT = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueCNMT);
+                        x.valueCNMN = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueCNMN);
+                        x.valueCNVT = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueCNVT);
+                        x.valueTcty = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueTcty);
+                    }
+                });
+
                 return data;
             }
             catch (Exception ex)
