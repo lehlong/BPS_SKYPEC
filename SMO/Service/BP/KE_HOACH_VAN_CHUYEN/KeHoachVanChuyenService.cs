@@ -1579,10 +1579,10 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                 var lstArea = UnitOfWork.Repository<AreaRepo>().GetAll();
                 foreach(var areaCode in lstArea)
                 {
-                    if(areaCode.CODE == "VT" || areaCode.CODE == "CQ")
-                    {
-                        continue;
-                    }
+                    //if(areaCode.CODE == "VT" || areaCode.CODE == "CQ")
+                    //{
+                    //    continue;
+                    //}
                     var itemParent = new T_MD_KHOAN_MUC_VAN_CHUYEN()
                     {
                         CODE = areaCode.TEXT,
