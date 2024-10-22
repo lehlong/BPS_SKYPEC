@@ -187,6 +187,8 @@ namespace SMO.Models
     {
         public string Order { get; set; }
         public string Name { get; set; }
+        public string Group_1_ID { get; set; }
+        public string Group_2_ID { get; set; }
         public decimal? Col1 { get; set; }
 
         public decimal? Col2 { get; set; }

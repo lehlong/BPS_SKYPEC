@@ -1886,7 +1886,7 @@ namespace SMO.Service.MD
                 }
 
                 #endregion
-                data = ReportUtilities.ProcessData(data);
+                //data = ReportUtilities.ProcessData(data);
 
                 List<string> CodePB = new List<string> { "6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB" };
                 List<string> ParrentPB = new List<string> { "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
@@ -3071,127 +3071,237 @@ namespace SMO.Service.MD
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
                 foreach (var e in elements)
                 {
-                    var i = new ChiPhiCKP
+                    string checkID = null;
+                    if (area == "MT")
                     {
-                        Order = e.STT,
-                        IsBold = e.IS_BOLD,
-                        Name = e.GROUP_NAME,
-                        Col1 = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)&& (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) :true) ).Sum(x => x.QUANTITY*x.PRICE),
-                        Col2 = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)&& (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE)
-                    };
-                    i.Col3 = i.Col1 + i.Col2;
-                    switch (month)
-                    {
-                        case 1:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 2:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 3:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 4:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 5:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 6:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 7:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 8:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 9:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col12 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 10:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col12 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col13 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 10).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 11:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col12 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col13 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 10).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col14 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 11).Sum(x => x.AMOUNT) ?? 0;
-                            break;
-                        case 12:
-                            i.Col4 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col5 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col6 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col7 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col8 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col9 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col10 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col11 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col12 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col13 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 10).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col14 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 11).Sum(x => x.AMOUNT) ?? 0;
-                            i.Col15 = dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 12).Sum(x => x.AMOUNT) ?? 0;
-                            break;
+                        checkID = e.IDMT;
                     }
-                    i.Col16 = i.Col4 + i.Col5 + i.Col6 + i.Col7 + i.Col8 + i.Col9 + i.Col10 + i.Col11 + i.Col12 + i.Col13 + i.Col14 + i.Col15;
+                    else if (area == "MN")
+                    {
+                        checkID = e.IDMN;
+                    }
+                    else if (area == "MB")
+                    {
+                        checkID = e.IDMB;
+                    }
+                    else if (area == "CQ")
+                    {
+                        checkID = e.IDCQ;
+                    }
+                    else if (area == "VT")
+                    {
+                        checkID = e.IDVT;
+                    }
+                    else
+                    {
+                        checkID = null;
+                    };
+                    var i = new ChiPhiCKP { };
 
+                    if (string.IsNullOrEmpty(area))
+                    {
+                        var col1MB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var col1MT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var col1MN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var col1CQ = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var col1VT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var Col2MB = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var Col2MT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var Col2MN = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var Col2VT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var Col2CQ = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("B"))
+                        {
+                            col1MB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            col1MT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains( e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            col1MN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            col1CQ = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            col1VT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains( e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            Col2MB = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains( e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            Col2MT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            Col2MN = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains( e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            Col2VT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            Col2CQ = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                        }
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("C"))
+                        {
+                             col1MB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             col1MT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             col1MN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             col1CQ = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             col1VT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             Col2MB = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             Col2MT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             Col2MN = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             Col2VT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                             Col2CQ = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        }
+
+                        i = new ChiPhiCKP
+                        {
+                            Group_1_ID = e.GROUP_1_ID,
+                            Group_2_ID = e.GROUP_2_ID,
+                            Order = e.STT,
+                            IsBold = e.IS_BOLD,
+                            Name = e.GROUP_NAME,
+                            Col1 = col1CQ + col1MB + col1MN + col1MT + col1VT,
+                            Col2 = Col2CQ + Col2MB + Col2VT + Col2MT + Col2MN
+
+                        };
+                    }
+                    else
+                    {
+                        var Col1data = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                        var Col2data = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("B"))
+                        {
+                             Col1data = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY  * x.PRICE >10000000?x.PRICE/2:x.PRICE);
+                             Col2data = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE>10000000?x.PRICE/2:x.PRICE );
+                        }
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("C"))
+                        {
+                            Col1data = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY *  x.PRICE);
+                            Col2data = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                        }
+
+                        i = new ChiPhiCKP
+                        {
+                            Group_1_ID = e.GROUP_1_ID,
+                            Group_2_ID = e.GROUP_2_ID,
+                            Order = e.STT,
+                            IsBold = e.IS_BOLD,
+                            Name = e.GROUP_NAME,
+                            Col1 = Col1data,
+                            Col2 = Col2data,
+                        };
+
+                        i.Col3 = i.Col1 + i.Col2;
+
+                    }
+                    i.Col4 = month == 1 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col5 = month == 2 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col6 = month == 3 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col7 = month == 4 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col8 = month == 5 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col9 = month == 6 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col10 = month == 7 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col11 = month == 8 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col12 = month == 9 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col13 = month == 10 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 10).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col14 = month == 11 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 11).Sum(x => x.AMOUNT) ?? 0 : 0;
+                    i.Col15 = month == 12 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && x.MONTH == 12).Sum(x => x.AMOUNT) ?? 0 : 0;
+
+                    // gán giá trị a  sang giá tri B
+                    if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("C"))
+                    {
+                        i.Col4 = month == 1 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 1).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col5 = month == 2 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 2).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col6 = month == 3 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 3).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col7 = month == 4 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 4).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col8 = month == 5 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 5).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col9 = month == 6 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 6).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col10 = month == 7 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 7).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col11 = month == 8 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 8).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col12 = month == 9 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 9).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col13 = month == 10 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 10).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col14 = month == 11 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 11).Sum(x => x.AMOUNT) ?? 0 : 0;
+                        i.Col15 = month == 12 ? dataCP_CKP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && x.MONTH == 12).Sum(x => x.AMOUNT) ?? 0 : 0;
+
+                    }
+
+                    i.Col16 = i.Col4 + i.Col5 + i.Col6 + i.Col7 + i.Col8 + i.Col9 + i.Col10 + i.Col11 + i.Col12 + i.Col13 + i.Col14 + i.Col15;
                     data.ChiPhi.Add(i);
                 }
                 #endregion
+                // gán giá trị 2.2.2 = giá trị 2.3 /2
+                data.ChiPhi.ForEach(x =>
+                {
+                    if(x.Group_1_ID=="6277" && x.Group_2_ID.EndsWith("B2"))
+                    {
+                        var Codelen = x.Group_2_ID.Length - 1;
+                        x.Col1 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y=>y.Col1/2);
+                        x.Col2 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col2 / 2);
+                        x.Col4 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col4 / 2);
+                        x.Col5 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col5 / 2);
+                        x.Col6 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col6 / 2);
+                        x.Col7 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col7 / 2);
+                        x.Col8 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col8 / 2);
+                        x.Col9 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col9 / 2);
+                        x.Col10 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col10 / 2);
+                        x.Col11 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col11 / 2);
+                        x.Col12 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col12 / 2);
+                        x.Col13 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col13 / 2);
+                        x.Col14 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col14 / 2);
+                        x.Col15 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.Col15 / 2);
+                    }
+                });
+                data.ChiPhi.ForEach(x =>
+                {
+                    if (x.Group_1_ID == "6277" && x.Group_2_ID.EndsWith("B"))
+                    {
+                     
+                        x.Col1 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID==x.Group_2_ID+"1"|| y.Group_2_ID == x.Group_2_ID + "2") ).Sum(y => y.Col1 );
+                        x.Col2 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col2 );
+                        x.Col4 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col4);
+                        x.Col5 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col5 );
+                        x.Col6 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col6) ;
+                        x.Col7 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col7 );
+                        x.Col8 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col8 );
+                        x.Col9 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col9);
+                        x.Col10 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col10 );
+                        x.Col11 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col11 );
+                        x.Col12 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col12 );
+                        x.Col13 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col13 );
+                        x.Col14 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col14 );
+                        x.Col15 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.Col15 );
+                    }
+                });
+                //cộng lại các dòng STT =2,3,4 ...
+                List<string> listParrent = new List<string> { "G002", "G003", "G004", "G005", "G006", "G007" };
+                data.ChiPhi.ForEach(x =>
+                {
+                    if (x.Group_1_ID == "6277" && listParrent.Contains(x.Group_2_ID))
+                    {
 
-                return data;
+                        x.Col1 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col1);
+                        x.Col2 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col2);
+                        x.Col4 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col4);
+                        x.Col5 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col5);
+                        x.Col6 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col6);
+                        x.Col7 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col7);
+                        x.Col8 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col8);
+                        x.Col9 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col9);
+                        x.Col10 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col10);
+                        x.Col11 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col11);
+                        x.Col12 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col12);
+                        x.Col13 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col13);
+                        x.Col14 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col14);
+                        x.Col15 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.Col15);
+                    }
+                });
+                // cộng dòng tổng
+                List<string> ListchildCode = new List<string> { "G002", "G003", "G004", "G005", "G006", "G007", "6277G008", "G009", "G010", "G011", "G012", "G019" };
+                data.ChiPhi.ForEach(x =>
+                {
+                    if (x.Group_1_ID == "6277" && string.IsNullOrEmpty(x.Group_2_ID))
+                    {
+                        x.Col1 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col1 );
+                        x.Col2 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col2 );
+                        x.Col4 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col4 );
+                        x.Col5 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col5 );
+                        x.Col6 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col6 );
+                        x.Col7 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col7 );
+                        x.Col8 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col8 );
+                        x.Col9 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col9 );
+                        x.Col10 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col10 );
+                        x.Col11 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col11 );
+                        x.Col12 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col12 );
+                        x.Col13 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col13 );
+                        x.Col14 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col14 );
+                        x.Col15 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col15 );
+                    }
+                });
+                    return data;
             }
             catch (Exception ex)
             {
@@ -5052,7 +5162,8 @@ namespace SMO.Service.MD
                 var header = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03" && x.TIME_YEAR == year).Select(x => x.TEMPLATE_CODE).ToList();
                 var dataInHeaderCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && header.Contains(x.TEMPLATE_CODE)).ToList();
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
-               
+                // list mã 
+                string[] LisTCostYear = { "6273C001C", "6273C002C", "6273C003C", "6273C004C", "6273C005C", "6273C006C", "6273C009C" };
                 foreach (var i in elements)
                 {
                     var ValueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDCQ != null ? i.IDCQ : ("CQ" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
@@ -5068,6 +5179,18 @@ namespace SMO.Service.MD
                         ValueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith("T") && x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMT != null ? i.IDMT : ("T" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
                         ValueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMN != null ? i.IDMN : ("N" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
                         ValueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDVT != null ? i.IDVT : ("VT" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
+
+                    }
+                    if (LisTCostYear.Contains(i.GROUP_1_ID + i.GROUP_2_ID))
+                    {
+                        //cộng hạng mục C
+
+                        ValueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains( ("CQ" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0,4)+"B")))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        ValueCNMB = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(("B" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, 4) + "B")))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        ValueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith("T") && x.KHOAN_MUC_HANG_HOA_CODE.Contains( ("T" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, 4) + "B")))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        ValueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains( ("N" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, 4) + "B")))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        ValueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(("VT" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, 4) + "B")))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+
 
                     }
 
@@ -5121,6 +5244,7 @@ namespace SMO.Service.MD
                         x.valueTcty = data.chiPhiInReports.Where(y => y.code == x.code + "1" || y.code == x.code + "2").Sum(y => y.valueTcty);
                     }
                 });
+                // cộng các dòng số la mã
                 List<string> listParrent = new List<string> { "6277G002", "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
                 data.chiPhiInReports.ForEach(x =>
                 {
@@ -5136,12 +5260,13 @@ namespace SMO.Service.MD
                         x.valueTcty = data.chiPhiInReports.Where(y => y.code == x.code + "A" || y.code == x.code + "B" || y.code == x.code + "AA" || y.code == x.code + "AB").Sum(y => y.valueTcty);
                     }
                 });
+                // công dòng tổng
                 data.chiPhiInReports.ForEach(x =>
                 {
                     List<string> ListchildCode = new List<string> { "6277G002", "6277G003", "6277G004", "6277G005", "6277G006", "6277G007", "6277G008", "6277G009", "6277G010", "6277G011", "6277G012", "6277G019" };
                     if (x.code == "6277")
                     {
-                        var a = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code));
+                  
                         x.valueCQCT = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueCQCT);
                         x.valueCNMB = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueCNMB);
                         x.valueCNMT = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueCNMT);
@@ -5150,6 +5275,9 @@ namespace SMO.Service.MD
                         x.valueTcty = data.chiPhiInReports.Where(y => ListchildCode.Contains(y.code)).Sum(y => y.valueTcty);
                     }
                 });
+              
+
+            
 
                 return data;
             }

@@ -5194,8 +5194,6 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             try
             {
                 UnitOfWork.Clear();
-                UnitOfWork.BeginTransaction();
-
                 var checkData = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.Template.ACTIVE == true && x.STATUS == "03").ToList();
                 if (checkData.Count() != 1)
                 {
@@ -5226,7 +5224,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 && x.TIME_YEAR == year && x.TEMPLATE_CODE == dataHeaderSanLuong.TEMPLATE_CODE).ToList();
                 var dataCurrentHistory = UnitOfWork.Repository<KeHoachSanLuongDataHistoryRepo>().Queryable().Where(x => x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE
                 && x.TIME_YEAR == year && x.TEMPLATE_CODE == dataHeaderSanLuong.TEMPLATE_CODE).ToList();
-
+                UnitOfWork.BeginTransaction();
                 if (checkTemplate.Count() == 0)
                 {
                     if (UnitOfWork.Repository<TemplateRepo>().Queryable().FirstOrDefault(x => x.CODE == templateCode) == null)
@@ -5337,8 +5335,9 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
         {
             try
             {
+              
+                var template = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year).ToList();
                 UnitOfWork.BeginTransaction();
-                var template = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year).ToList();                
                 foreach (var item in template)
                 {
                     var center = UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Queryable().FirstOrDefault(x => x.CODE == item.CENTER_CODE);

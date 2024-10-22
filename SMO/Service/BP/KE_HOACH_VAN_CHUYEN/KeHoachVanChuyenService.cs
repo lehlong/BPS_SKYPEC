@@ -2177,7 +2177,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                         percentagePreventive = 1 + percentagePreventive / 100;
                     }
 
-                    var centerCode = UnitOfWork.Repository<TemplateDetailKeHoachVanChuyenRepo>().Queryable().FirstOrDefault(
+                var centerCode = UnitOfWork.Repository<TemplateDetailKeHoachVanChuyenRepo>().Queryable().FirstOrDefault(
                                                 x => x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE &&
                                                 x.Center.ROUTE_CODE == tableData.Rows[i][0].ToString().Trim())?.CENTER_CODE;
 
@@ -2195,9 +2195,9 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                     var str6 = tableData.Rows[i][7].ToString();
                     var str7 = tableData.Rows[i][8].ToString();
                     var str8 = tableData.Rows[i][9].ToString();
-                    var str9 = tableData.Rows[i][10].ToString();
-                    var str10 = tableData.Rows[i][11].ToString();
-                    var str11 = tableData.Rows[i][12].ToString();
+                    //var str9 = tableData.Rows[i][10].ToString();
+                    //var str10 = tableData.Rows[i][11].ToString();
+                    //var str11 = tableData.Rows[i][12].ToString();
 
                     if (!decimal.TryParse(str1, out decimal value) && !string.IsNullOrEmpty(str1))
                     {
@@ -2235,36 +2235,40 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                         this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
                         return;
                     }
-                    if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                    if (ProfileUtilities.User.ORGANIZE_CODE.Contains("100001"))
+                    {
+                        if (!decimal.TryParse(str7, out decimal value6) && !string.IsNullOrEmpty(str7))
+                        {
+                            this.State = false;
+                            this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                            return;
+                        }
+                    }
+                  
+                        if (!decimal.TryParse(str8, out decimal value7) && !string.IsNullOrEmpty(str8))
                     {
                         this.State = false;
                         this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
                         return;
                     }
-                    if (!decimal.TryParse(str8, out decimal value7) && !string.IsNullOrEmpty(str8))
-                    {
-                        this.State = false;
-                        this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
-                        return;
-                    }
-                    if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
-                    {
-                        this.State = false;
-                        this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
-                        return;
-                    }
-                    if (!decimal.TryParse(str10, out decimal value9) && !string.IsNullOrEmpty(str10))
-                    {
-                        this.State = false;
-                        this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
-                        return;
-                    }
-                    if (!decimal.TryParse(str11, out decimal value10) && !string.IsNullOrEmpty(str11))
-                    {
-                        this.State = false;
-                        this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
-                        return;
-                    }
+                    //if (!decimal.TryParse(str9, out decimal value8) && !string.IsNullOrEmpty(str9))
+                    //{
+                    //    this.State = false;
+                    //    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                    //    return;
+                    //}
+                    //if (!decimal.TryParse(str10, out decimal value9) && !string.IsNullOrEmpty(str10))
+                    //{
+                    //    this.State = false;
+                    //    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                    //    return;
+                    //}
+                    //if (!decimal.TryParse(str11, out decimal value10) && !string.IsNullOrEmpty(str11))
+                    //{
+                    //    this.State = false;
+                    //    this.ErrorMessage = $"Sai định dạng ở dòng thứ {i + 1}";
+                    //    return;
+                    //}
 
 
 
@@ -2274,13 +2278,19 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
 
                     var value6005 = tableData.Rows[i][5].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][5]);
                     var value6006 = tableData.Rows[i][6].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][6]);
-                    var value6007 = tableData.Rows[i][7].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][7]);
+                    var value6007 = tableData.Rows[i][7].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][7]); ;
+                    if (!ProfileUtilities.User.ORGANIZE_CODE.Contains("100001"))
+                    {
+                        value6007 = 0;
+                    }
+                   
+
                     var value6008 = tableData.Rows[i][8].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][8]);
                     var value6009 = tableData.Rows[i][9].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][9]);
-                    var value6010 = tableData.Rows[i][10].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][10]);
+                    //var value6010 = tableData.Rows[i][10].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][10]);
 
-                    var value6012 = tableData.Rows[i][11].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][11]);
-                    var value6013 = tableData.Rows[i][12].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][12]);
+                    //var value6012 = tableData.Rows[i][11].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][11]);
+                    //var value6013 = tableData.Rows[i][12].ToString() == "" ? 0 : Convert.ToDecimal(tableData.Rows[i][12]);
                     foreach (var ele in lstElement.Where(x => x.CENTER_CODE == centerCode))
                     {
                         costData = new T_BP_KE_HOACH_VAN_CHUYEN_DATA()
@@ -2293,7 +2303,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                             STATUS = Approve_Status.ChuaTrinhDuyet,
                             VERSION = versionNext,
                             KHOAN_MUC_VAN_CHUYEN_CODE = ele.ELEMENT_CODE,
-                            VALUE = ele.ELEMENT_CODE == "6001" ? value6001 : ele.ELEMENT_CODE == "6002" ? value6002 : ele.ELEMENT_CODE == "6003" ? value6003 : ele.ELEMENT_CODE == "6005" ? value6005 : ele.ELEMENT_CODE == "6006" ? value6006 : ele.ELEMENT_CODE == "6007" ? value6007 : ele.ELEMENT_CODE == "6008" ? value6008 : ele.ELEMENT_CODE == "6009" ? value6009 : ele.ELEMENT_CODE == "6010" ? value6010 : ele.ELEMENT_CODE == "6012" ? value6012 : ele.ELEMENT_CODE == "6013" ? value6013 : 0,
+                            VALUE = ele.ELEMENT_CODE == "6001" ? value6001 : ele.ELEMENT_CODE == "6002" ? value6002 : ele.ELEMENT_CODE == "6003" ? value6003 : ele.ELEMENT_CODE == "6005" ? value6005 : ele.ELEMENT_CODE == "6006" ? value6006 : ele.ELEMENT_CODE == "6007" ? value6007 : ele.ELEMENT_CODE == "6008" ? value6008 : ele.ELEMENT_CODE == "6009" ? value6009 : 0,
                             DESCRIPTION = tableData.Rows[i][10].ToString(),
                             PROCESS = tableData.Rows[i][4].ToString(),
                             CREATE_BY = currentUser
