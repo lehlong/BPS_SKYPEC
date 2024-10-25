@@ -111,7 +111,7 @@ else
     <script>
         const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
         const rawDataorg = @Html.Raw(JsonConvert.SerializeObject(org));
-        console.log(rawDataorg)
+        console.log(rawData)
         let columns = [
             { id: "code", header: [{ text: "Mã", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
             { id: "name", header: [{ text: "Tuyến đường", align: "center", rowspan: 2 }, { text: "", align: "center" }, { content: "inputFilter" }], minWidth: 180 },
@@ -161,13 +161,13 @@ else
                 { id: "valuesLCM3", header: [{ text: "", align: "center" }, { text: "M3.km", align: "center", rowspan: 2 }], align: "right", minWidth: 155 },
             )
         }
-        rawData.forEach((item) => {
-            if (item.parent == null) {
-                delete item.parent
-            }
-        });
+        //rawData.forEach((item) => {
+        //    if (item.parent == null) {
+        //        delete item.parent
+        //    }
+        //});
 
-         const treeGrid = new dhx.TreeGrid("@grid", {
+         const treeGrid = new dhx.Grid("@grid", {
          columns,
          leftSplit: 1,
          resizable: true,
@@ -178,7 +178,6 @@ else
          data: rawData,
          });
 
-        treeGrid.closeAll();
 
         $(document).on("keyup", "#text-search-table", () => SearchTable(5, 0, 4, 5));
         function mask(e) {

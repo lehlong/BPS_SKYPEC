@@ -25,13 +25,15 @@ using SMO.ServiceInterface.BP.KeHoachDoanhThu;
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-
+using static iTextSharp.text.pdf.AcroFields;
 using static SMO.SelectListUtilities;
 
 namespace SMO.Service.BP.KE_HOACH_DOANH_THU
@@ -2995,6 +2997,7 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
 
         public List<ViewDataQuantityPlan> ExportData(string templateCode, int year, int version, string orgCode, string nhomSanBay, string chiNhanh)
         {
+           
             var result = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode && x.TEMPLATE_CODE == templateCode && x.VERSION == version && x.TIME_YEAR == year && x.VALUE_SUM_YEAR > 0).OrderBy(x => x.DoanhThuProfitCenter.SAN_BAY_CODE).ThenBy(x => x.DoanhThuProfitCenter.HANG_HANG_KHONG_CODE).ToList();
             if (!string.IsNullOrEmpty(nhomSanBay))
             {
@@ -5224,105 +5227,99 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
                 && x.TIME_YEAR == year && x.TEMPLATE_CODE == dataHeaderSanLuong.TEMPLATE_CODE).ToList();
                 var dataCurrentHistory = UnitOfWork.Repository<KeHoachSanLuongDataHistoryRepo>().Queryable().Where(x => x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE
                 && x.TIME_YEAR == year && x.TEMPLATE_CODE == dataHeaderSanLuong.TEMPLATE_CODE).ToList();
-                UnitOfWork.BeginTransaction();
-                if (checkTemplate.Count() == 0)
-                {
-                    if (UnitOfWork.Repository<TemplateRepo>().Queryable().FirstOrDefault(x => x.CODE == templateCode) == null)
-                    {
-                        //Tạo header template cho kế hoạch doanh thu
-                        var template = new T_MD_TEMPLATE
-                        {
-                            CODE = templateCode,
-                            OBJECT_TYPE = TemplateObjectType.DoanhThu,
-                            ELEMENT_TYPE = ElementType.DoanhThu,
-                            BUDGET_TYPE = BudgetType.DoanhThu,
-                            ACTIVE = true,
-                            NAME = templateKeHoachSanLuong.NAME,
-                            TITLE = templateKeHoachSanLuong.TITLE,
-                            ORG_CODE = templateKeHoachSanLuong.ORG_CODE,
-                        };
-                        UnitOfWork.Repository<TemplateRepo>().Create(template);
-                    }
+               
+                //UnitOfWork.BeginTransaction();
+                //if (checkTemplate.Count() == 0)
+                //{
+                //    if (UnitOfWork.Repository<TemplateRepo>().Queryable().FirstOrDefault(x => x.CODE == templateCode) == null)
+                //    {
+                //        //Tạo header template cho kế hoạch doanh thu
+                //        var template = new T_MD_TEMPLATE
+                //        {
+                //            CODE = templateCode,
+                //            OBJECT_TYPE = TemplateObjectType.DoanhThu,
+                //            ELEMENT_TYPE = ElementType.DoanhThu,
+                //            BUDGET_TYPE = BudgetType.DoanhThu,
+                //            ACTIVE = true,
+                //            NAME = templateKeHoachSanLuong.NAME,
+                //            TITLE = templateKeHoachSanLuong.TITLE,
+                //            ORG_CODE = templateKeHoachSanLuong.ORG_CODE,
+                //        };
+                //        UnitOfWork.Repository<TemplateRepo>().Create(template);
+                //    }
 
-                    //Gen template detail cho header vừa tạo
-                    foreach (var item in templateDetailKeHoachSanLuong.DistinctBy(x => x.CENTER_CODE))
-                    {
-                        var profitCenterCode = Guid.NewGuid().ToString();
-                        var profitCenter = new T_MD_DOANH_THU_PROFIT_CENTER
-                        {
-                            CODE = profitCenterCode,
-                            HANG_HANG_KHONG_CODE = item.Center.HANG_HANG_KHONG_CODE,
-                            SAN_BAY_CODE = item.Center.SAN_BAY_CODE,
-                        };
-                        UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Create(profitCenter);
-                        foreach (var element in lstKhoanMucDoanhThu)
-                        {
-                            var elementDoanhThu = new T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU
-                            {
-                                PKID = Guid.NewGuid().ToString(),
-                                CENTER_CODE = profitCenterCode,
-                                ELEMENT_CODE = element.CODE,
-                                TEMPLATE_CODE = templateCode,
-                                TIME_YEAR = year
-                            };
-                            UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Create(elementDoanhThu);
-                        }
-                    }
+                //    //Gen template detail cho header vừa tạo
+                //    foreach (var item in templateDetailKeHoachSanLuong.DistinctBy(x => x.CENTER_CODE))
+                //    {
+                //        var profitCenterCode = Guid.NewGuid().ToString();
+                //        var profitCenter = new T_MD_DOANH_THU_PROFIT_CENTER
+                //        {
+                //            CODE = profitCenterCode,
+                //            HANG_HANG_KHONG_CODE = item.Center.HANG_HANG_KHONG_CODE,
+                //            SAN_BAY_CODE = item.Center.SAN_BAY_CODE,
+                //        };
+                //        UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Create(profitCenter);
+                //        foreach (var element in lstKhoanMucDoanhThu)
+                //        {
+                //            var elementDoanhThu = new T_MD_TEMPLATE_DETAIL_KE_HOACH_DOANH_THU
+                //            {
+                //                PKID = Guid.NewGuid().ToString(),
+                //                CENTER_CODE = profitCenterCode,
+                //                ELEMENT_CODE = element.CODE,
+                //                TEMPLATE_CODE = templateCode,
+                //                TIME_YEAR = year
+                //            };
+                //            UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Create(elementDoanhThu);
+                //        }
+                //    }
 
-                    //Tạo header data kế hoạch doanh thu
-                    var headerKeHoachDoanhThu = new T_BP_KE_HOACH_DOANH_THU
-                    {
-                        PKID = Guid.NewGuid().ToString(),
-                        ORG_CODE = dataHeaderSanLuong.ORG_CODE,
-                        TEMPLATE_CODE = templateCode,
-                        TIME_YEAR = year,
-                        VERSION = 1,
-                        PHIEN_BAN = dataHeaderSanLuong.PHIEN_BAN,
-                        KICH_BAN = dataHeaderSanLuong.KICH_BAN,
-                        STATUS = Approve_Status.ChuaTrinhDuyet,
-                        FILE_ID = dataHeaderSanLuong.FILE_ID,
-                        IS_DELETED = false,
-                        IS_SUMUP = false,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME,
-                        CREATE_DATE = DateTime.Now
-                    };
-                    UnitOfWork.Repository<KeHoachDoanhThuRepo>().Create(headerKeHoachDoanhThu);
+                //    //Tạo header data kế hoạch doanh thu
+                //    var headerKeHoachDoanhThu = new T_BP_KE_HOACH_DOANH_THU
+                //    {
+                //        PKID = Guid.NewGuid().ToString(),
+                //        ORG_CODE = dataHeaderSanLuong.ORG_CODE,
+                //        TEMPLATE_CODE = templateCode,
+                //        TIME_YEAR = year,
+                //        VERSION = 1,
+                //        PHIEN_BAN = dataHeaderSanLuong.PHIEN_BAN,
+                //        KICH_BAN = dataHeaderSanLuong.KICH_BAN,
+                //        STATUS = Approve_Status.ChuaTrinhDuyet,
+                //        FILE_ID = dataHeaderSanLuong.FILE_ID,
+                //        IS_DELETED = false,
+                //        IS_SUMUP = false,
+                //        CREATE_BY = ProfileUtilities.User.USER_NAME,
+                //        CREATE_DATE = DateTime.Now
+                //    };
+                //    UnitOfWork.Repository<KeHoachDoanhThuRepo>().Create(headerKeHoachDoanhThu);
 
-                    UnitOfWork.Repository<KeHoachDoanhThuVersionRepo>().Create(new T_BP_KE_HOACH_DOANH_THU_VERSION()
-                    {
-                        PKID = Guid.NewGuid().ToString(),
-                        ORG_CODE = dataHeaderSanLuong.ORG_CODE,
-                        TEMPLATE_CODE = templateCode,
-                        VERSION = 1,
-                        KICH_BAN = dataHeaderSanLuong.KICH_BAN,
-                        PHIEN_BAN = dataHeaderSanLuong.PHIEN_BAN,
-                        TIME_YEAR = year,
-                        FILE_ID = dataHeaderSanLuong.FILE_ID,
-                        CREATE_BY = ProfileUtilities.User.USER_NAME
-                    });
-                    UnitOfWork.Commit();
+                //    UnitOfWork.Repository<KeHoachDoanhThuVersionRepo>().Create(new T_BP_KE_HOACH_DOANH_THU_VERSION()
+                //    {
+                //        PKID = Guid.NewGuid().ToString(),
+                //        ORG_CODE = dataHeaderSanLuong.ORG_CODE,
+                //        TEMPLATE_CODE = templateCode,
+                //        VERSION = 1,
+                //        KICH_BAN = dataHeaderSanLuong.KICH_BAN,
+                //        PHIEN_BAN = dataHeaderSanLuong.PHIEN_BAN,
+                //        TIME_YEAR = year,
+                //        FILE_ID = dataHeaderSanLuong.FILE_ID,
+                //        CREATE_BY = ProfileUtilities.User.USER_NAME
+                //    });
+                //    UnitOfWork.Commit();
 
-                    GenDataKeHoachSanLuong(false, templateCode, year, dataCurrent);
-                }
-                else
-                {
-                    var lstData = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TIME_YEAR == year).ToList();
-                    var lstDataHistory = UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.ORG_CODE == ProfileUtilities.User.ORGANIZE_CODE && x.TIME_YEAR == year).ToList();
+                //    GenDataKeHoachSanLuong(false, templateCode, year, dataCurrent);
+                //}
+                //else
+                //{
+                  
+                //    var strSql = $"DELETE FROM T_BP_KE_HOACH_DOANH_THU_DATA WHERE TIME_YEAR = {year} AND ORG_CODE='{ProfileUtilities.User.ORGANIZE_CODE}' AND TEMPLATE_CODE='{templateCode}'";
+                //    UnitOfWork.GetSession().CreateSQLQuery(strSql).ExecuteUpdate();
+                //    var strSqlhistory = $"DELETE FROM T_BP_KE_HOACH_DOANH_THU_DATA_HISTORY WHERE TIME_YEAR = {year} AND ORG_CODE='{ProfileUtilities.User.ORGANIZE_CODE}' AND TEMPLATE_CODE='{templateCode}'";
+                //    UnitOfWork.GetSession().CreateSQLQuery(strSqlhistory).ExecuteUpdate();
+                //    UnitOfWork.Commit();
 
-                    foreach (var item in lstData)
-                    {
-                        UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Delete(item);
-                    }
-                    foreach (var item in lstDataHistory)
-                    {
-                        UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Delete(item);
-                    }
-                    
-                    UnitOfWork.Commit();
-
-                    GenDataKeHoachSanLuong(true, templateCode, year, dataCurrent);
-                }
-                UnitOfWork.Commit();
+                //    GenDataKeHoachSanLuong(true, templateCode, year, dataCurrent);
+                //}
+      
             }
             catch (Exception ex)
             {
@@ -5337,68 +5334,133 @@ namespace SMO.Service.BP.KE_HOACH_DOANH_THU
             {
               
                 var template = UnitOfWork.Repository<TemplateDetailKeHoachDoanhThuRepo>().Queryable().Where(x => x.TEMPLATE_CODE == templateCode && x.TIME_YEAR == year).ToList();
-                UnitOfWork.BeginTransaction();
+                var a = template.Where(x => x.CENTER_CODE == "2acb6570-8b25-4a5c-81b5-bdc043ed8aa2").ToList();
+             
+                DataTable tableKHDT = new DataTable();
+                tableKHDT.TableName = "DataInsertChiPhi";
+                tableKHDT.Columns.Add("PKID", typeof(string));
+                tableKHDT.Columns.Add("ORG_CODE", typeof(string));
+                tableKHDT.Columns.Add("TEMPLATE_CODE", typeof(string));
+                tableKHDT.Columns.Add("DOANH_THU_PROFIT_CENTER_CODE", typeof(string));
+                tableKHDT.Columns.Add("KHOAN_MUC_DOANH_THU_CODE", typeof(string));
+                tableKHDT.Columns.Add("TIME_YEAR", typeof(int));
+                tableKHDT.Columns.Add("VERSION", typeof(int));
+                tableKHDT.Columns.Add("VALUE_JAN", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_FEB", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_MAR", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_APR", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_MAY", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_JUN", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_JUL", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_AUG", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_SEP", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_OCT", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_NOV", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_DEC", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_SUM_YEAR_PREVENTIVE", typeof(decimal));
+                tableKHDT.Columns.Add("VALUE_SUM_YEAR", typeof(decimal));
+                tableKHDT.Columns.Add("STATUS", typeof(string));
+
+
+
+
+                var centerlist = UnitOfWork.Repository<DoanhThuProfitCenterRepo>().GetAll();
                 foreach (var item in template)
                 {
-                    var center = UnitOfWork.Repository<DoanhThuProfitCenterRepo>().Queryable().FirstOrDefault(x => x.CODE == item.CENTER_CODE);
+                    var center = centerlist.FirstOrDefault(x => x.CODE == item.CENTER_CODE);
                     var check = new T_BP_KE_HOACH_SAN_LUONG_DATA();
-                    check = center == null ? null : dataCurrent.FirstOrDefault(x => x.SanLuongProfitCenter.SanBay.CODE == center.SAN_BAY_CODE && x.SanLuongProfitCenter.HangHangKhong.CODE == center.HANG_HANG_KHONG_CODE && x.KHOAN_MUC_SAN_LUONG_CODE == item.ELEMENT_CODE);                   
-                    var data = new T_BP_KE_HOACH_DOANH_THU_DATA
-                    {
-                        PKID = Guid.NewGuid().ToString(),
-                        ORG_CODE = ProfileUtilities.User.ORGANIZE_CODE,
-                        TEMPLATE_CODE = templateCode,
-                        DOANH_THU_PROFIT_CENTER_CODE = item.CENTER_CODE,
-                        KHOAN_MUC_DOANH_THU_CODE = item.ELEMENT_CODE,
-                        VERSION = 1,
-                        TIME_YEAR = year,
-                        VALUE_JAN = check == null ? 0 : check.VALUE_JAN,
-                        VALUE_FEB = check == null ? 0 : check.VALUE_FEB,
-                        VALUE_MAR = check == null ? 0 : check.VALUE_MAR,
-                        VALUE_APR = check == null ? 0 : check.VALUE_APR,
-                        VALUE_MAY = check == null ? 0 : check.VALUE_MAY,
-                        VALUE_JUN = check == null ? 0 : check.VALUE_JUN,
-                        VALUE_JUL = check == null ? 0 : check.VALUE_JUL,
-                        VALUE_AUG = check == null ? 0 : check.VALUE_AUG,
-                        VALUE_SEP = check == null ? 0 : check.VALUE_SEP,
-                        VALUE_OCT = check == null ? 0 : check.VALUE_OCT,
-                        VALUE_NOV = check == null ? 0 : check.VALUE_NOV,
-                        VALUE_DEC = check == null ? 0 : check.VALUE_DEC,
-                        VALUE_SUM_YEAR = check == null ? 0 : check.VALUE_SUM_YEAR,
-                        VALUE_SUM_YEAR_PREVENTIVE = check == null ? 0 : check.VALUE_SUM_YEAR_PREVENTIVE,
-                        STATUS = Approve_Status.DaPheDuyet,
-                    };
+                    check = center == null ? null : dataCurrent.FirstOrDefault(x => x.SanLuongProfitCenter.SanBay.CODE == center.SAN_BAY_CODE && x.SanLuongProfitCenter.HangHangKhong.CODE == center.HANG_HANG_KHONG_CODE && x.KHOAN_MUC_SAN_LUONG_CODE == item.ELEMENT_CODE);
+                   
+                    var row = tableKHDT.NewRow();
+                    row["PKID"] = Guid.NewGuid().ToString();
+                    row["ORG_CODE"] = ProfileUtilities.User.ORGANIZE_CODE;
+                    row["TEMPLATE_CODE"] = templateCode;
+                    row["DOANH_THU_PROFIT_CENTER_CODE"] = item.CENTER_CODE;
+                    row["KHOAN_MUC_DOANH_THU_CODE"] = item.ELEMENT_CODE;
+                    row["VERSION"] =1;
+                    row["TIME_YEAR"] = year;
+                    row["VALUE_JAN"] = check == null ? 0 : check.VALUE_JAN;
+                    row["VALUE_FEB"] = check == null ? 0 : check.VALUE_FEB;
+                    row["VALUE_MAR"] = check == null ? 0 : check.VALUE_MAR;
+                    row["VALUE_APR"] = check == null ? 0 : check.VALUE_APR;
+                    row["VALUE_MAY"] = check == null ? 0 : check.VALUE_MAY;
+                    row["VALUE_JUN"] = check == null ? 0 : check.VALUE_JUN;
+                    row["VALUE_JUL"] = check == null ? 0 : check.VALUE_JUL;
+                    row["VALUE_AUG"] = check == null ? 0 : check.VALUE_AUG;
+                    row["VALUE_SEP"] = check == null ? 0 : check.VALUE_SEP;
+                    row["VALUE_OCT"] = check == null ? 0 : check.VALUE_OCT;
+                    row["VALUE_NOV"] = check == null ? 0 : check.VALUE_NOV;
+                    row["VALUE_DEC"] = check == null ? 0 : check.VALUE_DEC;
+                    row["VALUE_SUM_YEAR"] = check == null ? 0 : check.VALUE_SUM_YEAR;
+                    row["VALUE_SUM_YEAR_PREVENTIVE"] = check == null ? 0 : check.VALUE_SUM_YEAR_PREVENTIVE;
+                    row["STATUS"] = Approve_Status.DaPheDuyet;
+                    tableKHDT.Rows.Add(row);
 
-                    var dataHistory = new T_BP_KE_HOACH_DOANH_THU_DATA_HISTORY
-                    {
-                        PKID = Guid.NewGuid().ToString(),
-                        ORG_CODE = ProfileUtilities.User.ORGANIZE_CODE,
-                        TEMPLATE_CODE = templateCode,
-                        DOANH_THU_PROFIT_CENTER_CODE = item.CENTER_CODE,
-                        KHOAN_MUC_DOANH_THU_CODE = item.ELEMENT_CODE,
-                        VERSION = 1,
-                        TIME_YEAR = year,
-                        VALUE_JAN = check == null ? 0 : check.VALUE_JAN,
-                        VALUE_FEB = check == null ? 0 : check.VALUE_FEB,
-                        VALUE_MAR = check == null ? 0 : check.VALUE_MAR,
-                        VALUE_APR = check == null ? 0 : check.VALUE_APR,
-                        VALUE_MAY = check == null ? 0 : check.VALUE_MAY,
-                        VALUE_JUN = check == null ? 0 : check.VALUE_JUN,
-                        VALUE_JUL = check == null ? 0 : check.VALUE_JUL,
-                        VALUE_AUG = check == null ? 0 : check.VALUE_AUG,
-                        VALUE_SEP = check == null ? 0 : check.VALUE_SEP,
-                        VALUE_OCT = check == null ? 0 : check.VALUE_OCT,
-                        VALUE_NOV = check == null ? 0 : check.VALUE_NOV,
-                        VALUE_DEC = check == null ? 0 : check.VALUE_DEC,
-                        VALUE_SUM_YEAR = check == null ? 0 : check.VALUE_SUM_YEAR,
-                        VALUE_SUM_YEAR_PREVENTIVE = check == null ? 0 : check.VALUE_SUM_YEAR_PREVENTIVE,
-                        STATUS = Approve_Status.ChuaTrinhDuyet,
-                    };
-
-                    UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Create(data);
-                    UnitOfWork.Repository<KeHoachDoanhThuDataHistoryRepo>().Create(dataHistory);
                 }
-                UnitOfWork.Commit();
+                using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SMO_MSSQL_Connection"].ConnectionString))
+                {
+                    connection.Open();
+                    using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(connection))
+                    {
+                        sqlBulkCopy.DestinationTableName = "dbo.T_BP_KE_HOACH_DOANH_THU_DATA_HISTORY";
+                        sqlBulkCopy.ColumnMappings.Add("PKID", "PKID");
+                        sqlBulkCopy.ColumnMappings.Add("ORG_CODE", "ORG_CODE");
+                        sqlBulkCopy.ColumnMappings.Add("DOANH_THU_PROFIT_CENTER_CODE", "DOANH_THU_PROFIT_CENTER_CODE");
+                        sqlBulkCopy.ColumnMappings.Add("TEMPLATE_CODE", "TEMPLATE_CODE");
+                        sqlBulkCopy.ColumnMappings.Add("KHOAN_MUC_DOANH_THU_CODE", "KHOAN_MUC_DOANH_THU_CODE");
+                        sqlBulkCopy.ColumnMappings.Add("TIME_YEAR", "TIME_YEAR");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_JAN", "VALUE_JAN");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_FEB", "VALUE_FEB");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_MAR", "VALUE_MAR");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_APR", "VALUE_APR");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_MAY", "VALUE_MAY");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_JUN", "VALUE_JUN");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_JUL", "VALUE_JUL");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_AUG", "VALUE_AUG");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_SEP", "VALUE_SEP");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_OCT", "VALUE_OCT");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_NOV", "VALUE_NOV");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_DEC", "VALUE_DEC");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_SUM_YEAR", "VALUE_SUM_YEAR");
+                        sqlBulkCopy.ColumnMappings.Add("VALUE_SUM_YEAR_PREVENTIVE", "VALUE_SUM_YEAR_PREVENTIVE");
+                        sqlBulkCopy.ColumnMappings.Add("STATUS", "STATUS");
+                        sqlBulkCopy.ColumnMappings.Add("VERSION", "VERSION");
+                        sqlBulkCopy.BatchSize = 2000;
+                      
+                        sqlBulkCopy.WriteToServer(tableKHDT);
+                    }
+                    using (SqlBulkCopy sqlBulkCopy2 = new SqlBulkCopy(connection))
+                    {
+                        sqlBulkCopy2.DestinationTableName = "dbo.T_BP_KE_HOACH_DOANH_THU_DATA";
+                        sqlBulkCopy2.ColumnMappings.Add("PKID", "PKID");
+                        sqlBulkCopy2.ColumnMappings.Add("ORG_CODE", "ORG_CODE");
+                        sqlBulkCopy2.ColumnMappings.Add("DOANH_THU_PROFIT_CENTER_CODE", "DOANH_THU_PROFIT_CENTER_CODE");
+                        sqlBulkCopy2.ColumnMappings.Add("TEMPLATE_CODE", "TEMPLATE_CODE");
+                        sqlBulkCopy2.ColumnMappings.Add("KHOAN_MUC_DOANH_THU_CODE", "KHOAN_MUC_DOANH_THU_CODE");
+                        sqlBulkCopy2.ColumnMappings.Add("TIME_YEAR", "TIME_YEAR");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_JAN", "VALUE_JAN");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_FEB", "VALUE_FEB");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_MAR", "VALUE_MAR");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_APR", "VALUE_APR");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_MAY", "VALUE_MAY");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_JUN", "VALUE_JUN");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_JUL", "VALUE_JUL");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_AUG", "VALUE_AUG");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_SEP", "VALUE_SEP");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_OCT", "VALUE_OCT");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_NOV", "VALUE_NOV");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_DEC", "VALUE_DEC");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_SUM_YEAR", "VALUE_SUM_YEAR");
+                        sqlBulkCopy2.ColumnMappings.Add("VALUE_SUM_YEAR_PREVENTIVE", "VALUE_SUM_YEAR_PREVENTIVE");
+                        sqlBulkCopy2.ColumnMappings.Add("STATUS", "STATUS");
+                        sqlBulkCopy2.ColumnMappings.Add("VERSION", "VERSION");
+                        sqlBulkCopy2.BatchSize = 2000;
+
+                        sqlBulkCopy2.WriteToServer(tableKHDT);
+                    }
+                };
+
+              
 
             }
             catch (Exception ex)

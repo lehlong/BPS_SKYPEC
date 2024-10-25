@@ -539,16 +539,16 @@ namespace SMO.Service.BP
             {
                 Stt = "",
                 name = "TỔNG CỘNG",
-                IsBold=true,
-                valueCQCT=sumCQ,
-                valueCNMN=sumMN,
+                IsBold = true,
+                valueCQCT = sumCQ,
+                valueCNMN = sumMN,
                 valueCNMT = sumMT,
                 valueCNVT = sumVT,
                 valueCNMB = sumMB,
-                valueTcty=sumTcty
+                valueTcty = sumTcty
             });
             var data = datas.chiPhiInReports;
-         
+
 
             var startRow1 = 8;
 
@@ -1828,22 +1828,424 @@ namespace SMO.Service.BP
                 return new List<ReportModel>();
             }
         }
+        public List<ReportModel2B> GetElementsBM01A(int year)
+        {
+            try
+            {
+                var data = new List<ReportModel2B>();
+                var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year).ToList();
+                var DataTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+                var DataXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+                var DataTTBcenter = UnitOfWork.Repository<DauTuTrangThietBiProfitCenterRepo>().GetAll().ToList();
+                var DataXDcenter = UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().GetAll().ToList();
+
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "A",
+                    Stt = "A",
+                    Name = "Dự án chuyển tiếp kỳ truớc",
+                    NameExcel = "Dự án chuyển tiếp kỳ truớc",
+                    IsBold = true,
+                });
+                data.Add(new ReportModel2B
+                {
+                    Id = "A.I",
+                    Stt = "I",
+                    Name = "Đầu tư trang thiết bị",
+                    NameExcel = "Đầu tư trang thiết bị",
+                    Parent = "A",
+                    IsBold = true,
+                });
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "A.I.1",
+                    Stt = "1",
+                    Name = "Các dự án chuẩn bị đầu tư",
+                    NameExcel = "Các dự án chuẩn bị đầu tư",
+                    Parent = "A.I",
+                    IsBold = true,
+                });
+                var orderAI1 = 1;
+                var a = projects.Where(x => x.LOAI_HINH == "TTB" && x.CHUAN_BI_DAU_TU == true && x.CHUYEN_TIEP == true && x.TYPE == "TTB-LON");
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.CHUAN_BI_DAU_TU == true && x.CHUYEN_TIEP == true && x.TYPE == "TTB-LON"))
+                {
+                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "A.I.1" + p.CODE,
+                        Stt = "1." + orderAI1.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "A.I.1",
+                        Col1=DataTTB.Where(x=>x.DAU_TU_PROFIT_CENTER_CODE==codeTTB)?.Sum(x=>x.VALUE_1),
+                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x=>!string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
+                        Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
+                        Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderAI1 += 1;
+                }
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "A.I.2",
+                    Stt = "2",
+                    Name = "Các dự án thực hiện đầu tư",
+                    NameExcel = "Các dự án thực hiện đầu tư",
+                    Parent = "A.I",
+                    IsBold = true,
+                });
+                var orderAI2 = 1;
+                var d = projects.Where(x => x.LOAI_HINH == "TTB" && x.THUC_HIEN_DAU_TU == true && x.CHUYEN_TIEP == true && x.TYPE == "TTB-LON");
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.THUC_HIEN_DAU_TU == true && x.CHUYEN_TIEP == true && x.TYPE == "TTB-LON"))
+                {
+                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "A.I.2" + p.CODE,
+                        Stt = "2." + orderAI2.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "A.I.2",
+                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
+                        Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
+                        Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderAI2 += 1;
+                }
+
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "A.I.3",
+                    Stt = "3",
+                    Name = "Đầu tư trang thiết bị lẻ",
+                    NameExcel = "Đầu tư trang thiết bị lẻ",
+                    Parent = "A.I",
+                    IsBold = true,
+                });
+
+                var orderAI3 = 1;
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.TYPE == "TTB-LE" && x.CHUYEN_TIEP == true))
+                {
+                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "A.I.3" + p.CODE,
+                        Stt = "3." + orderAI3.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "A.I.3",
+                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
+                        Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
+                        Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderAI3 += 1;
+                }
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "A.II",
+                    Stt = "II",
+                    Name = "Đầu tư xây dựng cơ bản",
+                    NameExcel = "Đầu tư xây dựng cơ bản",
+                    Parent = "A",
+                    IsBold = true,
+                });
+                data.Add(new ReportModel2B
+                {
+                    Id = "A.II.1",
+                    Stt = "1",
+                    Name = "Các dự án chuẩn bị đầu tư",
+                    NameExcel = "Các dự án chuẩn bị đầu tư",
+                    Parent = "A.II",
+                    IsBold = true,
+                });
+
+                var orderAII1 = 1;
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "XDCB" && x.CHUYEN_TIEP == true && x.CHUAN_BI_DAU_TU == true))
+                {
+                    var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "A.II.1" + p.CODE,
+                        Stt = "1." + orderAII1.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "A.II.1",
+                        Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col2 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5),
+                        //Col6 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_6),
+                        //Col7 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_6))?.VALUE_6,
+                        Col9 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderAII1 += 1;
+                }
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "A.II.2",
+                    Stt = "2",
+                    Name = "Các dự án thực hiện đầu tư",
+                    NameExcel = "Các dự án thực hiện đầu tư",
+                    Parent = "A.II",
+                    IsBold = true,
+                });
+
+                var orderAII2 = 1;
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "XDCB" && x.CHUYEN_TIEP == true && x.THUC_HIEN_DAU_TU == true))
+                {
+                    var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "A.II.2" + p.CODE,
+                        Stt = "2." + orderAII2.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "A.II.2",
+                        Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col2 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5),
+                        //Col6 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_6),
+                        //Col7                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_10), = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == DataXD).Sum(x => x.VALUE_6),
+                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_6))?.VALUE_6,
+                        Col9 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderAII2 += 1;
+                }
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "B",
+                    Stt = "B",
+                    Name = "Dự án đầu tư mới",
+                    NameExcel = "Dự án đầu tư mới",
+                    IsBold = true,
+                });
+                data.Add(new ReportModel2B
+                {
+                    Id = "B.I",
+                    Stt = "I",
+                    Name = "Đầu tư trang thiết bị",
+                    NameExcel = "Đầu tư trang thiết bị",
+                    Parent = "B",
+                    IsBold = true,
+                });
+                data.Add(new ReportModel2B
+                {
+                    Id = "B.I.1",
+                    Stt = "1",
+                    Name = "Các dự án chuẩn bị đầu tư",
+                    NameExcel = "Các dự án chuẩn bị đầu tư",
+                    Parent = "B.I",
+                    IsBold = true,
+                });
+
+                var orderBI1 = 1;
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.CHUAN_BI_DAU_TU == true && x.DAU_TU_MOI == true && x.TYPE == "TTB-LON"))
+                {
+                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "B.I.1" + p.CODE,
+                        Stt = "1." + orderBI1.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "B.I.1",
+                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
+                        Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
+                        Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    }); ; ;
+                    orderBI1 += 1;
+                }
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "B.I.2",
+                    Stt = "2",
+                    Name = "Các dự án thực hiện đầu tư",
+                    NameExcel = "Các dự án thực hiện đầu tư",
+                    Parent = "B.I",
+                    IsBold = true,
+                });
+
+                var orderBI2 = 1;
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.THUC_HIEN_DAU_TU == true && x.DAU_TU_MOI == true && x.TYPE == "TTB-LON"))
+                {
+                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "B.I.2" + p.CODE,
+                        Stt = "2." + orderBI2.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án thực hiện đầu tư",
+                        Parent = "B.I.2",
+                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
+                        Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
+                        Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderBI2 += 1;
+                }
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "B.I.3",
+                    Stt = "3",
+                    Name = "Đầu tư trang thiết bị lẻ",
+                    NameExcel = "Đầu tư trang thiết bị lẻ",
+                    Parent = "B.I",
+                    IsBold = true,
+                });
+
+                var orderBI3 = 1;
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.TYPE == "TTB-LE" && x.DAU_TU_MOI == true))
+                {
+                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "B.I.3" + p.CODE,
+                        Stt = "3." + orderBI3.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "B.I.3",
+                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
+                        Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
+                        Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderBI3 += 1;
+                }
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "B.II",
+                    Stt = "II",
+                    Name = "Đầu tư xây dựng cơ bản",
+                    NameExcel = "Đầu tư xây dựng cơ bản",
+                    Parent = "B",
+                    IsBold = true,
+                });
+                data.Add(new ReportModel2B
+                {
+                    Id = "B.II.1",
+                    Stt = "1",
+                    Name = "Các dự án chuẩn bị đầu tư",
+                    NameExcel = "Các dự án chuẩn bị đầu tư",
+                    Parent = "B.II",
+                    IsBold = true,
+                });
+                var orderBII1 = 1;
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "XDCB" && x.DAU_TU_MOI == true && x.CHUAN_BI_DAU_TU == true))
+                {
+                    var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "B.II.1" + p.CODE,
+                        Stt = "1." + orderBII1.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "B.II.1",
+                        Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col2 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5),
+                        //Col6 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_6),
+                        //Col7 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD).Sum(x => x.VALUE_6),
+                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_6))?.VALUE_6,
+                        Col9 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderBII1 += 1;
+                }
+
+                data.Add(new ReportModel2B
+                {
+                    Id = "B.II.2",
+                    Stt = "2",
+                    Name = "Các dự án thực hiện đầu tư",
+                    NameExcel = "Các dự án thực hiện đầu tư",
+                    Parent = "B.II",
+                    IsBold = true,
+                });
+                var orderBII2 = 1;
+                foreach (var p in projects.Where(x => x.LOAI_HINH == "XDCB" && x.DAU_TU_MOI == true && x.THUC_HIEN_DAU_TU == true))
+                {
+                    var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    data.Add(new ReportModel2B
+                    {
+                        Id = "B.II.2" + p.CODE,
+                        Stt = "2." + orderBII2.ToString(),
+                        Name = p.NAME,
+                        NameExcel = "Các dự án chuẩn bị đầu tư",
+                        Parent = "B.II.2",
+                        Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col2 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col3 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5),
+                        //Col6 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_6),
+                        Col7 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD).Sum(x => x.VALUE_6),
+                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_6))?.VALUE_6,
+                        Col9 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
+                    });
+                    orderBII2 += 1;
+                }
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return new List<ReportModel2B>();
+            }
+        }
         public ReportDataCenter GenDataBM02A(int year)
         {
             try
             {
                 var data = new ReportDataCenter();
-                data.BM02A = GetElementsBM01D(year);
+                data.BM02B = GetElementsBM01A(year);
 
-                foreach (var i in data.BM02A.OrderByDescending(x => x.Id))
+                foreach (var i in data.BM02B.OrderByDescending(x => x.Id))
                 {
-                    var child = data.BM02A.Where(x => x.Parent == i.Id).ToList();
+                    var child = data.BM02B.Where(x => x.Parent == i.Id).ToList();
                     i.Col1 = child.Count() == 0 ? i.Col1 : child.Sum(x => x.Col1);
-                    i.Col2 = child.Count() == 0 ? i.Col2 : child.Sum(x => x.Col2);
+                    //i.Col2 = child.Count() == 0 ? i.Col2 : child.Sum(x => x.Col2);
                     i.Col4 = child.Count() == 0 ? i.Col4 : child.Sum(x => x.Col4);
                     i.Col5 = child.Count() == 0 ? i.Col5 : child.Sum(x => x.Col5);
                     i.Col7 = child.Count() == 0 ? i.Col7 : child.Sum(x => x.Col7);
-                    i.Col8 = child.Count() == 0 ? i.Col8 : child.Sum(x => x.Col8);
+                    //i.Col8 = child.Count() == 0 ? i.Col8 : child.Sum(x => x.Col8);
                 }
                 return data;
             }
@@ -3393,7 +3795,7 @@ namespace SMO.Service.BP
                         Stt = order.ToString(),
                         Name = project.NAME,
                         Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0,
-                           Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5) 
+                        Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5)
                     };
                     data.Add(i);
 
@@ -3404,7 +3806,7 @@ namespace SMO.Service.BP
                             Stt = "a",
                             Name = "Chuẩn bị đầu tư và chuẩn bị thực hiện dự án",
                             Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_1) ?? 0,
-                            Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5) ,
+                            Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "CBDT").Sum(x => x.VALUE_5),
 
                         });
                         data.Add(new ReportModel
@@ -3412,7 +3814,7 @@ namespace SMO.Service.BP
                             Stt = "b",
                             Name = "Thực hiện dự án",
                             Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_1) ?? 0,
-                            Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5) ,
+                            Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE && x.KHOAN_MUC_DAU_TU_CODE == "TTDT").Sum(x => x.VALUE_5),
                         });
 
                     }
@@ -3454,8 +3856,8 @@ namespace SMO.Service.BP
                 {
                     Name = "Tổng kinh phí đầu tư XDCB",
                     Col1 = Dl1_1.Sum(x => x.VALUE_1) ?? 0,
-                    Col4 = DlTH.Sum(x => x.VALUE_5) ,
-                    Col5 = DlTH.Sum(x => x.VALUE_6) ,
+                    Col4 = DlTH.Sum(x => x.VALUE_5),
+                    Col5 = DlTH.Sum(x => x.VALUE_6),
                     Col6 = DlTH.Sum(x => x.VALUE_7) ?? 0,
                     Col7 = DlTHLK,
                     Col8 = Dl1_1.Sum(x => x.VALUE_1) == 0 ? 0 : (DlTHLK / Dl1_1.Sum(x => x.VALUE_1)) * 100,
@@ -3571,7 +3973,7 @@ namespace SMO.Service.BP
                     Col4 = data.Where(x => string.IsNullOrEmpty(x.Stt)).Sum(x => x.Col4),
                     Col5 = SumCol1 == 0 || SumCol4 == 0 ? 0 : (SumCol4 / SumCol1) * 100
                 });
-                var parent = data.Where(x=>x.IsBold==true && x.Parent!=null).Select(x => new {x.Code,x.Name}).Distinct().ToList();
+                var parent = data.Where(x => x.IsBold == true && x.Parent != null).Select(x => new { x.Code, x.Name }).Distinct().ToList();
                 foreach (var item in parent)
                 {
                     data.Insert(1, new ReportModel
@@ -3584,7 +3986,7 @@ namespace SMO.Service.BP
                         Col5 = data.Where(y => y.Code == item.Code).Sum(y => y.Col1) == 0 ? 0 : (data.Where(y => y.Code == item.Code).Sum(y => y.Col4) / data.Where(y => y.Code == item.Code).Sum(y => y.Col1)) * 100
                     });
                 }
-               
+
 
                 return data;
 
@@ -4683,6 +5085,7 @@ namespace SMO.Service.BP
         public List<ReportModel> BM01D { get; set; } = new List<ReportModel>();
         public List<ReportModel> BM02A { get; set; } = new List<ReportModel>();
         public List<ReportModel> BM02C { get; set; } = new List<ReportModel>();
+        public List<ReportModel2B> BM02B { get; set; } = new List<ReportModel2B>();
         public List<ReportModel> BM02D { get; set; } = new List<ReportModel>();
         public List<ReportModel> BM02D1 { get; set; } = new List<ReportModel>();
     }
@@ -4708,6 +5111,43 @@ namespace SMO.Service.BP
         public decimal? Col8 { get; set; }
         public decimal? Col9 { get; set; }
         public decimal? Col10 { get; set; }
+        public decimal? Col11 { get; set; }
+        public decimal? Col12 { get; set; }
+        public decimal? Col13 { get; set; }
+        public decimal? Col14 { get; set; }
+        public decimal? Col15 { get; set; }
+        public decimal? Col16 { get; set; }
+        public decimal? Col17 { get; set; }
+        public decimal? Col18 { get; set; }
+        public decimal? Col19 { get; set; }
+        public decimal? Col20 { get; set; }
+        public string Tdth { get; set; }
+        public string Tdtk { get; set; }
+        public string Des { get; set; }
+    }
+
+    public class ReportModel2B
+    {
+        public string Code { get; set; }
+        public string ElementCode { get; set; }
+        public string Unit { get; set; }
+        public string Stt { get; set; }
+        public string Id { get; set; }
+        public string Parent { get; set; }
+        public string Name { get; set; }
+        public string NameExcel { get; set; }
+        public int Order { get; set; }
+        public bool IsBold { get; set; }
+        public decimal? Col1 { get; set; }
+        public string Col2 { get; set; }
+        public string Col3 { get; set; }
+        public decimal? Col4 { get; set; }
+        public decimal? Col5 { get; set; }
+        public decimal? Col6 { get; set; }
+        public decimal? Col7 { get; set; }
+        public string Col8 { get; set; }
+        public string Col9 { get; set; }
+        public string Col10 { get; set; }
         public decimal? Col11 { get; set; }
         public decimal? Col12 { get; set; }
         public decimal? Col13 { get; set; }

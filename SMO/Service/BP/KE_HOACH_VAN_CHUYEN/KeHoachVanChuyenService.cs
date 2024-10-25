@@ -1577,37 +1577,38 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                 data.Add(sumData);
                 var order = 0;
                 var lstArea = UnitOfWork.Repository<AreaRepo>().GetAll();
-                foreach(var areaCode in lstArea)
-                {
+                //foreach(var areaCode in lstArea)
+                //{
                     //if(areaCode.CODE == "VT" || areaCode.CODE == "CQ")
                     //{
                     //    continue;
                     //}
-                    var itemParent = new T_MD_KHOAN_MUC_VAN_CHUYEN()
-                    {
-                        CODE = areaCode.TEXT,
-                        ValuesSL = dataCost.Where(x => x.CODE == "6001" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesCL = dataCost.Where(x => x.CODE == "6002" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesSC = dataCost.Where(x => x.CODE == "6003" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesT = dataCost.Where(x => x.CODE == "6005" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesM3 = dataCost.Where(x => x.CODE == "6006" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesTVTB = dataCost.Where(x => x.CODE == "6007" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesTVC = dataCost.Where(x => x.CODE == "6008" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesTVT = dataCost.Where(x => x.CODE == "6009" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesTN = dataCost.Where(x => x.CODE == "6010" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesLCT = dataCost.Where(x => x.CODE == "6012" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        ValuesLCM3 = dataCost.Where(x => x.CODE == "6013" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
-                        C_ORDER = order,
-                        ParentOrder = "-1",
-                        Isbold = true
-                    };
-                    data.Add(itemParent);
+                    //var itemParent = new T_MD_KHOAN_MUC_VAN_CHUYEN()
+                    //{
+                    //    CODE = areaCode.TEXT,
+                    //    ValuesSL = dataCost.Where(x => x.CODE == "6001" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesCL = dataCost.Where(x => x.CODE == "6002" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesSC = dataCost.Where(x => x.CODE == "6003" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesT = dataCost.Where(x => x.CODE == "6005" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesM3 = dataCost.Where(x => x.CODE == "6006" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesTVTB = dataCost.Where(x => x.CODE == "6007" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesTVC = dataCost.Where(x => x.CODE == "6008" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesTVT = dataCost.Where(x => x.CODE == "6009" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesTN = dataCost.Where(x => x.CODE == "6010" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesLCT = dataCost.Where(x => x.CODE == "6012" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    ValuesLCM3 = dataCost.Where(x => x.CODE == "6013" && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).Sum(x => x.Values[0]),
+                    //    C_ORDER = order,
+                    //    ParentOrder = "-1",
+                    //    Isbold = true
+                    //};
+                    //data.Add(itemParent);
                     var parentOrder = order;
-                    order++;
+                    //order++;
+
                     foreach (var detail in dataCost.Where(x => x.CENTER_CODE != null).Select(x => x.CENTER_CODE).Distinct())
                     {
                         
-                        var item = dataCost.Where(x => x.CENTER_CODE == detail && x.VanChuyenProfitCenter?.Route?.AREA_CODE == areaCode.CODE).ToList();
+                        var item = dataCost.Where(x => x.CENTER_CODE == detail).ToList();
                         var expertise = allExpertise.Any(x => x.ELEMENT_CODE == item.FirstOrDefault()?.VanChuyenProfitCenter.Route?.CODE);
                         if (item.Count() != 0)
                         {
@@ -1638,7 +1639,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                             continue;
                         }
                         
-                    }
+                    //}
                 }
                     return data;
             }
@@ -4393,7 +4394,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                     rowCur.Cells[6].SetCellValue(item.ValuesM3.ToStringVN());
                     rowCur.Cells[7].SetCellValue(item.ValuesTN.ToStringVN());
                     rowCur.Cells[8].SetCellValue((item.ValuesCL * item.ValuesT).ToStringVN());
-                    rowCur.Cells[9].SetCellValue((item.ValuesM3 * item.ValuesM3).ToStringVN());
+                    rowCur.Cells[9].SetCellValue((item.ValuesCL * item.ValuesM3).ToStringVN());
                     ;
                     for (int i = 0; i < NUM_CELL; i++)
                     {
@@ -4416,7 +4417,7 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                     rowCur.Cells[6].SetCellValue(item.ValuesM3.ToStringVN());
                     rowCur.Cells[7].SetCellValue("");
                     rowCur.Cells[8].SetCellValue((item.ValuesCL * item.ValuesT).ToStringVN());
-                    rowCur.Cells[9].SetCellValue((item.ValuesM3 * item.ValuesM3).ToStringVN());
+                    rowCur.Cells[9].SetCellValue((item.ValuesCL * item.ValuesM3).ToStringVN());
                     ;
                     for (int i = 0; i < NUM_CELL; i++)
                     {
