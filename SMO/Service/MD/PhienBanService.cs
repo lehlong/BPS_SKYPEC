@@ -1732,7 +1732,7 @@ namespace SMO.Service.MD
                 var SC04 = data.SuaChuaLon.Where(x => x.code == "SC04").Sum(x => x.valueKP);
                 var SC05 = data.SuaChuaLon.Where(x => x.code == "SC05").Sum(x => x.valueKP);
                 var SC06 = data.SuaChuaLon.Where(x => x.code == "SC06").Sum(x => x.valueKP);
-                var TOTAL = data.SuaChuaLon.Where(x => x.IsBold==true).Sum(x => x.valueKP);
+                var TOTAL = data.SuaChuaLon.Where(x => x.IsBold==true&& string.IsNullOrEmpty(x.stt)).Sum(x => x.valueKP);
                 void InsertSuaChuaLon(List<SuaChuaLon> dataList, string name, decimal valueKP)
                 {
                     dataList.Insert(0, new SuaChuaLon { name = name, valueKP = valueKP });
@@ -1756,13 +1756,49 @@ namespace SMO.Service.MD
                 var dataCP = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && dataHeaderCP.Contains(x.TEMPLATE_CODE)).ToList();
                
                 var firstCode = area == "CQ" ? "CQ" : area == "MB" ? "B" : area == "MT" ? "T" : area == "MN" ? "N" : area == "VT" ? "VT" : "";
-                string[] ListKMB = { $"{firstCode}6273C001B", $"{firstCode}6273C002B", $"{firstCode}6273C003B", $"{firstCode}6273C004B", $"{firstCode}6273C005B", $"{firstCode}6273C006B", $"{firstCode}6273C007B" };
+                string[] ListKMB = { "C001B", "C002B", "C003B", "C004B", "C005B", "C006B", "C007B" };
                 string[] LisTCostYear = { "C001C", "C002C", "C003C", "C004C", "C005C", "C006C", "C009C" };
+
                 //cập nhật giá trị khoản mục B và khoản mục năm
                 foreach (var i in elements)
                 {
-                   
+                    string checkID = null;
+                    if (firstCode == "T")
+                    {
+                        checkID = i.IDMT;
+                    }
+                    else if (firstCode == "N")
+                    {
+                        checkID = i.IDMN;
+                    }
+                    else if (firstCode == "B")
+                    {
+                        checkID = i.IDMB;
+                    }
+                    else if (firstCode == "CQ")
+                    {
+                        checkID = i.IDCQ;
+                    }
+                    else if (firstCode == "VT")
+                    {
+                        checkID = i.IDVT;
+                    }
+                    else
+                    {
+                        checkID = null;
+                    };
                     var item = new ChiPhi {};
+                    item = new ChiPhi
+                    {
+
+                        parenCode = i.GROUP_1_ID,
+                        parentCode2 = i.GROUP_2_ID,
+                        code = i.GROUP_1_ID + i.GROUP_2_ID,
+                        Stt = i.STT,
+                        name = i.GROUP_NAME,
+                        valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : firstCode + i.GROUP_1_ID + i.GROUP_2_ID) && (firstCode == "" || x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(firstCode)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                        IsBold = i.IS_BOLD,
+                    };
                     if (i.GROUP_1_ID == "6273") 
                        
                     {
@@ -1781,7 +1817,7 @@ namespace SMO.Service.MD
                                 IsBold = i.IS_BOLD,
                             };
                         }
-                        else
+                        if (ListKMB.Contains(i.GROUP_2_ID))
                         {
                             item = new ChiPhi
                             {
@@ -1791,33 +1827,58 @@ namespace SMO.Service.MD
                                 code = i.GROUP_1_ID + i.GROUP_2_ID,
                                 Stt = i.STT,
                                 name = i.GROUP_NAME,
-                                valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(firstCode + i.GROUP_1_ID + i.GROUP_2_ID) && (firstCode == "" || x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(firstCode)))?.Sum(x => x.QUANTITY * ((ListKMB.Any(y => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(y)) && x.PRICE > 10000000) ? x.PRICE / 2 : x.PRICE)) ?? 0,
+                                valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(firstCode + i.GROUP_1_ID + i.GROUP_2_ID) && (firstCode == "" || x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(firstCode)))?.Sum(x => x.QUANTITY>10000000?x.QUANTITY/2:x.QUANTITY  * x.PRICE) ?? 0,
                                 IsBold = i.IS_BOLD,
                             };
-
-                        }
+                        };
+                        
                      
                           
 
                     }
                     else
                     {
-                       item = new ChiPhi
+                        if (string.IsNullOrEmpty(firstCode))
                         {
-                            parenCode = i.GROUP_1_ID,
-                            parentCode2 = i.GROUP_2_ID,
-                            code = i.GROUP_1_ID + i.GROUP_2_ID,
-                            Stt = i.STT,
-                            name = i.GROUP_NAME,
-                            valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(firstCode + i.GROUP_1_ID + i.GROUP_2_ID) && (firstCode == "" || x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(firstCode)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
-                            IsBold = i.IS_BOLD,
-                        };
+                            var CPMB = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMB != null ? i.IDMB :"B"+ i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x=>x.QUANTITY*x.PRICE)??0;
+                            var CPMT = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith("T") && x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMT != null ? i.IDMT: "T"+ i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x=>x.QUANTITY*x.PRICE)??0;
+                            var CPMN = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMN != null ? i.IDMN : "N"+ i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE)??0;
+                            var CPVT = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMN != null ? i.IDVT :"VT"+ i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE)??0;
+                            var CPCQ = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMN != null ? i.IDCQ :"CQ"+ i.GROUP_1_ID + i.GROUP_2_ID))?.Sum(x => x.QUANTITY * x.PRICE)??0;
+                            var CPMTa = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith("T") && x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMT != null ? i.IDMT : "T" + i.GROUP_1_ID + i.GROUP_2_ID));
+                            item = new ChiPhi
+                            {
+                                parenCode = i.GROUP_1_ID,
+                                parentCode2 = i.GROUP_2_ID,
+                                code = i.GROUP_1_ID + i.GROUP_2_ID,
+                                Stt = i.STT,
+                                name = i.GROUP_NAME,
+                                valueCP = CPCQ+CPMB+CPMN+CPMT+CPVT,
+                                IsBold = i.IS_BOLD,
+                            };
+
+                        }
+                        else
+                        {
+                            item = new ChiPhi
+                            {
+                                parenCode = i.GROUP_1_ID,
+                                parentCode2 = i.GROUP_2_ID,
+                                code = i.GROUP_1_ID + i.GROUP_2_ID,
+                                Stt = i.STT,
+                                name = i.GROUP_NAME,
+                                valueCP = dataCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(!string.IsNullOrEmpty(checkID) ? checkID : firstCode + i.GROUP_1_ID + i.GROUP_2_ID) && (firstCode == "" || x.KHOAN_MUC_HANG_HOA_CODE.StartsWith(firstCode)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0,
+                                IsBold = i.IS_BOLD,
+                            };
+                        }
+                       
                     }
 
-                  
                     data.ChiPhi.Add(item);
+
                     
                 }
+
               
                 #endregion
 
@@ -1889,9 +1950,20 @@ namespace SMO.Service.MD
                 //data = ReportUtilities.ProcessData(data);
 
                 List<string> CodePB = new List<string> { "6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB" };
+                List<string> CodeB2 = new List<string> { "6277G002B2", "6277G003AB2", "6277G004AB2", "6277G005AB2", "6277G006AB2", "6277G007AB2" };
                 List<string> ParrentPB = new List<string> { "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
                 // them cong tuc vao phan dich vu mua ngoai
-                data.ChiPhi.ForEach(x =>
+                // thêm công thức vào đaays
+
+                data.ChiPhi.ForEach(x => {
+                    
+                    if (CodeB2.Contains(x.code))
+                    {
+                        var lencode = x.code.Length - 1;
+                        x.valueCP = data.ChiPhi.Where(y => y.code==x.code.Substring(0,lencode)+"3").Sum(z => z.valueCP/2);
+                    }
+                });
+               data.ChiPhi.ForEach(x =>
                 {
                     if (CodePB.Contains(x.code))
                     {
@@ -1911,7 +1983,18 @@ namespace SMO.Service.MD
                     }
 
                 });
-              
+                // Công tổng công cụ dụng cụ
+                List<string> ListchildCode = new List<string> { "G001", "G002", "G003", "G004", "G005", "G006", "G007", "G008", "G009", "G010", "G011", "G012", "G019" };
+                data.ChiPhi.ForEach(x =>
+                {
+                    var a = data.ChiPhi.Where(y => ListchildCode.Contains(y.parentCode2));
+                    if (x.code == "6277")
+                    {
+                        x.valueCP = data.ChiPhi.Where(y => ListchildCode.Contains(y.parentCode2)).Sum(z => z.valueCP);
+                    }
+                    
+
+                });
                 return data;
             }
             catch (Exception ex)
@@ -3280,9 +3363,10 @@ namespace SMO.Service.MD
                     }
                 });
                 // cộng dòng tổng
-                List<string> ListchildCode = new List<string> { "G002", "G003", "G004", "G005", "G006", "G007", "6277G008", "G009", "G010", "G011", "G012", "G019" };
+                List<string> ListchildCode = new List<string> { "G001","G002", "G003", "G004", "G005", "G006", "G007", "G008", "G009", "G010", "G011", "G012", "G019" };
                 data.ChiPhi.ForEach(x =>
                 {
+                    var a = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID));
                     if (x.Group_1_ID == "6277" && string.IsNullOrEmpty(x.Group_2_ID))
                     {
                         x.Col1 = data.ChiPhi.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.Col1 );
@@ -5171,6 +5255,7 @@ namespace SMO.Service.MD
                     var ValueCNMT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.StartsWith("T")&& x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMT != null ? i.IDMT : ("T" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                     var ValueCNMN = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDMN != null ? i.IDMN : ("N" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                     var ValueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDVT != null ? i.IDVT : ("VT" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                    
                     // cong cu dung cu chia 2
                     if (i.GROUP_1_ID == "6273" && i.GROUP_2_ID.EndsWith("B"))
                     {
@@ -5181,9 +5266,10 @@ namespace SMO.Service.MD
                         ValueCNVT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(i.IDVT != null ? i.IDVT : ("VT" + i.GROUP_1_ID + i.GROUP_2_ID)))?.Sum(x => x.QUANTITY * (x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE)) ?? 0;
 
                     }
+                    //cộng hạng mục C
                     if (LisTCostYear.Contains(i.GROUP_1_ID + i.GROUP_2_ID))
                     {
-                        //cộng hạng mục C
+                     
 
                         ValueCQCT = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains( ("CQ" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0,4)+"B")))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                         ValueCNMB = dataInHeaderCP.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(("B" + i.GROUP_1_ID + i.GROUP_2_ID.Substring(0, 4) + "B")))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
@@ -5263,7 +5349,7 @@ namespace SMO.Service.MD
                 // công dòng tổng
                 data.chiPhiInReports.ForEach(x =>
                 {
-                    List<string> ListchildCode = new List<string> { "6277G002", "6277G003", "6277G004", "6277G005", "6277G006", "6277G007", "6277G008", "6277G009", "6277G010", "6277G011", "6277G012", "6277G019" };
+                    List<string> ListchildCode = new List<string> { "6277G001", "6277G002", "6277G003", "6277G004", "6277G005", "6277G006", "6277G007", "6277G008", "6277G009", "6277G010", "6277G011", "6277G012", "6277G019" };
                     if (x.code == "6277")
                     {
                   

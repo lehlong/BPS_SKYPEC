@@ -87,29 +87,29 @@
                                 </div>
                             </div>
 
-                            <label>Loại đầu tư</label>
-                            <div class="form-group">
+                            <label>Loại đầu tư </label>
+                            <div class="form-group" >
                                 @Html.MyDropDownListFor(m => m.ObjDetail.LOAI_HINH, SelectListUtilities.SelectLoaiHinhDauTu(false), new { @class = "selectpicker show-tick", @data_val = false })
                             </div>
 
                             <label>Loại</label>
-                            <div class="form-group">
+                            <div class="form-group" >
                                 @Html.MyDropDownListFor(m => m.ObjDetail.TYPE, SelectListUtilities.GetSelectTypeTtb(), new { @class = "selectpicker show-tick", @data_val = false })
                             </div>
 
 
                             <label>Ngành nghề</label>
-                            <div class="form-group">
-                                @Html.MyDropDownListFor(m => m.ObjDetail.NGANH_NGHE, SelectListUtilities.SelectNganhNgheDauTu(), new { @class = "selectpicker show-tick", @data_val = false })
+                            <div class="form-group" >
+                                @Html.MyDropDownListFor(m => m.ObjDetail.NGANH_NGHE, SelectListUtilities.SelectNganhNgheDauTu(), new { @class = "selectpicker show-tick", @data_val = false})
                             </div>
 
                             <label>Phân loại</label>
-                            <div class="form-group">
-                                @Html.MyDropDownListFor(m => m.ObjDetail.PHAN_LOAI, SelectListUtilities.SelectPhanLoaiDauTu(), new { @class = "selectpicker show-tick", @data_val = false })
+                            <div class="form-group" >
+                                @Html.MyDropDownListFor(m => m.ObjDetail.PHAN_LOAI, SelectListUtilities.SelectPhanLoaiDauTu(), new { @class = "selectpicker show-tick", @data_val = false  })
                             </div>
 
                             <label>Khu vực</label>
-                            <div class="form-group">
+                            <div class="form-group" >
                                 @Html.MyDropDownListFor(m => m.ObjDetail.AREA_CODE, SelectListUtilities.GetAllArea(), new { @class = "selectpicker show-tick", @data_val = false })
                             </div>
                         </div>
@@ -121,7 +121,10 @@
     <script type="text/javascript">
         $(function () {
             Forms.CompleteUI();
+            $(".dropdown bootstrap-select form-control show-tick").css("z-index","")
         });
+
+ 
     </script>
 </div>
 

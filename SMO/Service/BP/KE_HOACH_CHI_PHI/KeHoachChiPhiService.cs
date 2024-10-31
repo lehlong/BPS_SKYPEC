@@ -4576,8 +4576,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             var dataCurrent = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
             if (KeHoachChiPhiCurrent != null)
             {
-                dataCurrent = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode
-                    && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).ToList();
+                //dataCurrent = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode
+                //    && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).ToList();
+
+                var strSQL = "DELETE T_BP_KE_HOACH_CHI_PHI_DATA WHERE ORG_CODE = :ORG_CODE and TIME_YEAR=:TIME_YEAR and TEMPLATE_CODE=:TEMPLATE_CODE ";
+                UnitOfWork.GetSession().CreateSQLQuery(strSQL).SetParameter("ORG_CODE", orgCode)
+                                                               .SetParameter("TIME_YEAR", ObjDetail.TIME_YEAR)
+                                                               .SetParameter("TEMPLATE_CODE", ObjDetail.TEMPLATE_CODE)
+                                                               .ExecuteUpdate();
             }
 
             //Insert dữ liệu
@@ -4657,10 +4663,12 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     ACTION_USER = currentUser,
                     CREATE_BY = currentUser
                 });
-                foreach (var item in dataCurrent)
-                {
-                    UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Delete(item);
-                }
+
+              
+                //foreach (var item in dataCurrent)
+                //{
+                //    UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Delete(item);
+                //}
                 UnitOfWork.Commit();
 
                 //Insert data vào history
@@ -4675,7 +4683,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 daAdapterhistory.Fill(dataSethistory, tableNamehistory);
                 DataTable dataTablehistory;
                 dataTablehistory = dataSethistory.Tables[tableNamehistory];
-              
+                var allChiPhiProfitCenters = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().GetAll();
+
                 foreach (var item in dataCurrent)
                 {
 
@@ -4708,7 +4717,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 daAdapterhistory.Update(dataSethistory, tableNamehistory);
            
 
-                var allChiPhiProfitCenters = UnitOfWork.Repository<ChiPhiProfitCenterRepo>().GetAll();
+                
 
                
                 DataTable tableKHCP = new DataTable();
@@ -5764,11 +5773,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["STATUS"] = Approve_Status.ChuaTrinhDuyet;
                             row1["VERSION"] = versionNext;
                             row1["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][2].ToString());
+                            row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString());
                             row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString());
                             row1["DESCRIPTION"] = tableData.Rows[i][15].ToString();
                             row1["CREATE_BY"] = currentUser;
-                            row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
+                            row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                             tableKHCP.Rows.Add(row1);
 
 
@@ -5836,11 +5845,11 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row5["STATUS"] = Approve_Status.ChuaTrinhDuyet;
                             row5["VERSION"] = versionNext;
                             row5["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row5["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][6].ToString());
+                            row5["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString());
                             row5["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString());
                             row5["DESCRIPTION"] = tableData.Rows[i][15].ToString();
                             row5["CREATE_BY"] = currentUser;
-                            row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
+                            row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                             tableKHCP.Rows.Add(row5);
 
                         }
