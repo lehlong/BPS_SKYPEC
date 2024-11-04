@@ -1924,7 +1924,7 @@ namespace SMO.Service.BP
                         Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                         Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
                         Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
-                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5*x.VALUE_6 ) ,
                         Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
                         Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                     });
@@ -1941,7 +1941,7 @@ namespace SMO.Service.BP
                     IsBold = true,
                 });
                 var orderAI2 = 1;
-                var d = projects.Where(x => x.LOAI_HINH == "TTB" && x.THUC_HIEN_DAU_TU == true && x.CHUYEN_TIEP == true && x.TYPE == "TTB-LON");
+              
                 foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.THUC_HIEN_DAU_TU == true && x.CHUYEN_TIEP == true && x.TYPE == "TTB-LON"))
                 {
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
@@ -1958,7 +1958,7 @@ namespace SMO.Service.BP
                         Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                         Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
                         Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
-                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5*x.VALUE_6) ,
                         Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
                         Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                     });
@@ -1992,7 +1992,7 @@ namespace SMO.Service.BP
                         Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                         Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
                         Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
-                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5* x.VALUE_6),
                         Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
                         Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                     });
@@ -2181,7 +2181,7 @@ namespace SMO.Service.BP
                         Col3 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                         Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
                         Col6 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
-                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_6),
+                        Col7 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5*x.VALUE_6) ,
                         Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_8))?.VALUE_8,
                         Col9 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                     });
@@ -2254,7 +2254,7 @@ namespace SMO.Service.BP
                         Col3 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_3))?.VALUE_3,
                         Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5),
                         //Col6 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_6),
-                        Col7 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) * DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD).Sum(x => x.VALUE_6),
+                        //Col7 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5 ),
                         Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_6))?.VALUE_6,
                         Col9 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.DESCRIPTION))?.DESCRIPTION,
                     });
@@ -4337,21 +4337,136 @@ namespace SMO.Service.BP
 
                 foreach (var e in elements)
                 {
-                    var i = new ReportModel
+                    string checkID = null;
+                    if (area == "MT")
                     {
-                        Stt = e.STT,
-                        Name = e.GROUP_NAME,
-                        IsBold = e.IS_BOLD,
-                        Col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
-                        Col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID)).Sum(x => x.QUANTITY * x.PRICE),
-                        Col4 = string.IsNullOrEmpty(e.GROUP_2_ID) ? dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID).Sum(x => x.VALUE) :
-                        dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID && x.GROUP_2_ID.Contains(e.GROUP_2_ID)).Sum(x => x.VALUE),
+                        checkID = e.IDMT;
+                    }
+                    else if (area == "MN")
+                    {
+                        checkID = e.IDMN;
+                    }
+                    else if (area == "MB")
+                    {
+                        checkID = e.IDMB;
+                    }
+                    else if (area == "CQ")
+                    {
+                        checkID = e.IDCQ;
+                    }
+                    else if (area == "VT")
+                    {
+                        checkID = e.IDVT;
+                    }
+                    else
+                    {
+                        checkID = null;
                     };
-                    i.Col3 = i.Col1 + i.Col2;
-                    i.Col5 = i.Col4 == 0 || i.Col1 == 0 ? 0 : (i.Col4 / i.Col1) * 100;
-                    data.Add(i);
+                    if (string.IsNullOrEmpty(area))
+                    {
+                        var SumMB = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMB) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMB) && x.ORG_CODE.Contains("100002"))?.Sum(x => x.QUANTITY * x.PRICE) ??0;
+                        var SumMT = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMT) && x.ORG_CODE.Contains("100003"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var SumMN = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMN) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMN) && x.ORG_CODE.Contains("100004"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var SumVT = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDVT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDVT) && x.ORG_CODE.Contains("100005"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var SumCQ = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDCQ) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDCQ) && x.ORG_CODE.Contains("100001"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var SumMBcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMB) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMB) && x.ORG_CODE.Contains("100002"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var SumMTcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMT) && x.ORG_CODE.Contains("100003"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var SumMNcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMN) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMN) && x.ORG_CODE.Contains("100004"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var SumVTcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDVT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDVT) && x.ORG_CODE.Contains("100005"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var SumCQcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDCQ) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDCQ) && x.ORG_CODE.Contains("100001"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var i = new ReportModel
+                        {
+                            Group1 = e.GROUP_1_ID,
+                            Group2=e.GROUP_2_ID,
+                            Stt = e.STT,
+                            Name = e.GROUP_NAME,
+                            IsBold = e.IS_BOLD,
+                            Col1 = SumMB+SumMN+SumMT+SumVT+SumCQ,
+                            Col2 = SumMBcol3 + SumMNcol3 + SumMTcol3 + SumVTcol3 + SumCQcol3,
+                            Col4 = string.IsNullOrEmpty(e.GROUP_2_ID) ? dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID).Sum(x => x.VALUE) :dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID && x.GROUP_2_ID.Contains(e.GROUP_2_ID)).Sum(x => x.VALUE),
+                        };
+                        i.Col3 = i.Col1 + i.Col2;
+                        i.Col5 = i.Col4 == 0 || i.Col1 == 0 ? 0 : (i.Col4 / i.Col1) * 100;
+                        data.Add(i);
+                    }
+                    else
+                    {
+                        var i = new ReportModel
+                        {
+                            Group1 = e.GROUP_1_ID,
+                            Group2 = e.GROUP_2_ID,
+                            Stt = e.STT,
+                            Name = e.GROUP_NAME,
+                            IsBold = e.IS_BOLD,
+                            Col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID:checkID)).Sum(x => x.QUANTITY * x.PRICE),
+                            Col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID : checkID)).Sum(x => x.QUANTITY * x.PRICE),
+                            Col4 = string.IsNullOrEmpty(e.GROUP_2_ID) ? dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID).Sum(x => x.VALUE) : dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID && x.GROUP_2_ID.Contains(e.GROUP_2_ID)).Sum(x => x.VALUE),
+                        };
+                        i.Col3 = i.Col1 + i.Col2;
+                        i.Col5 = i.Col4 == 0 || i.Col1 == 0 ? 0 : (i.Col4 / i.Col1) * 100;
+                        data.Add(i);
+                    };
+                   
                 }
+                List<string> CodeB2 = new List<string> { "G002B2", "G003AB2", "G004AB2", "G005AB2", "G006AB2", "G007AB2" };
+                List<string> CodePB = new List<string> { "G002B", "G003AB", "G004AB", "G005AB", "G006AB", "G007AB" };
+                List<string> ParrentPB = new List<string> { "G003", "G004", "G005", "G006", "G007" };
 
+                data.ForEach(x =>
+                {
+                    if(x.Group1=="6277"&& CodeB2.Contains(x.Group2))
+                    {
+                        var lencode = x.Group2.Length - 1;
+                        x.Col1 = data.Where(y => y.Group1 == "6277" && y.Group2 == x.Group2.Substring(0, lencode) + "3").Sum(y => y.Col1 / 2);
+                        x.Col2 = data.Where(y => y.Group1 == "6277" && y.Group2 == x.Group2.Substring(0, lencode) + "3").Sum(y => y.Col2 / 2);
+                        x.Col3 = x.Col1 + x.Col2;
+
+                    }
+                });
+                data.ForEach(x =>
+                {
+                    if (x.Group1 == "6277" && CodePB.Contains(x.Group2))
+                    {
+                        var lencode = x.Group2.Length - 1;
+                      
+                        var a = data.Where(y => y.Group1 == "6277" && (y.Group2 == x.Group2 + "1" || y.Group2 == x.Group2 + "2"));
+                        x.Col1 = data.Where(y => y.Group1 == "6277" && (y.Group2 == x.Group2 + "1"|| y.Group2 == x.Group2+ "2")).Sum(y => y.Col1 );
+                        x.Col2 = data.Where(y => y.Group1 == "6277" && (y.Group2 == x.Group2+ "2"|| y.Group2 == x.Group2 + "1")).Sum(y => y.Col2 );
+                        x.Col3 = x.Col1 + x.Col2;
+
+                    }
+                });
+                data.ForEach(x =>
+                {
+                    if (x.Group1 == "6277" && x.Group2== "G002")
+                    {
+                        var lencode = x.Group2.Length - 1;
+                        x.Col1 = data.Where(y => y.Group1 == "6277" && (y.Group2 == x.Group2+ "A" || y.Group2 == x.Group2 + "B")).Sum(y => y.Col1);
+                        x.Col2 = data.Where(y => y.Group1 == "6277" && (y.Group2 == x.Group2+ "A" || y.Group2 == x.Group2 + "B")).Sum(y => y.Col2);
+                        x.Col3 = x.Col1 + x.Col2;
+                    };
+                    if (x.Group1 == "6277" && ParrentPB.Contains(x.Group2))
+                    {
+                        var lencode = x.Group2.Length - 1;
+                        x.Col1 = data.Where(y => y.Group1 == "6277" && (y.Group2 == x.Group2 + "AA" || y.Group2 == x.Group2 + "AB")).Sum(y => y.Col1);
+                        x.Col2 = data.Where(y => y.Group1 == "6277" && (y.Group2 == x.Group2+ "AA" || y.Group2 == x.Group2 + "AB")).Sum(y => y.Col2);
+                        x.Col3 = x.Col1 + x.Col2;
+                    }
+
+                });
+                
+                List<string> ListchildCode = new List<string> { "G001", "G002", "G003", "G004", "G005", "G006", "G007", "G008", "G009", "G010", "G011", "G012", "G019" };
+                data.ForEach(x =>
+                {
+                    if (x.Group1 == "6277" && string.IsNullOrEmpty(x.Group2))
+                    {
+    
+                        x.Col1 = data.Where(y => y.Group1 == "6277" && ListchildCode.Contains(y.Group2)).Sum(y => y.Col1);
+                        x.Col2 = data.Where(y => y.Group1 == "6277" && ListchildCode.Contains(x.Group2)).Sum(y => y.Col2);
+                        x.Col3 = x.Col1 + x.Col2;
+
+                    }
+                });
                 return data;
 
             }
@@ -5129,6 +5244,8 @@ namespace SMO.Service.BP
     }
     public class ReportModel
     {
+        public string Group1 { get; set; }
+        public string Group2 { get; set; }
         public string Code { get; set; }
         public string ElementCode { get; set; }
         public string Unit { get; set; }

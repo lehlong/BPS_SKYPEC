@@ -5201,9 +5201,11 @@ namespace SMO.Service.MD
 
             ICellStyle styleNumber = templateWorkbook.CreateCellStyle();
             styleNumber.CloneStyleFrom(sheet.GetRow(9).Cells[1].CellStyle);
+            styleNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
 
             ICellStyle styleNumberBold = templateWorkbook.CreateCellStyle();
             styleNumberBold.CloneStyleFrom(sheet.GetRow(9).Cells[2].CellStyle);
+            styleNumberBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0");
             styleNumberBold.Alignment = HorizontalAlignment.Right;
 
             ICellStyle styleBody = templateWorkbook.CreateCellStyle();
@@ -5217,7 +5219,7 @@ namespace SMO.Service.MD
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
                 rowCur.Cells[0].SetCellValue(item.stt);
                 rowCur.Cells[1].SetCellValue(item.name);
-                rowCur.Cells[2].SetCellValue(item.valueKP.ToStringVN());
+                rowCur.Cells[2].SetCellValue((double)item.valueKP);
                 rowCur.Cells[3].SetCellValue(item.valueQM);
                 rowCur.Cells[4].SetCellValue(item.des);
                 if (item.IsBold)
