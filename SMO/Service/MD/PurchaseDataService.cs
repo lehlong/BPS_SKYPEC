@@ -28,7 +28,7 @@ namespace SMO.Service.MD
                 DataTable tableData = new DataTable();
                 using (SqlConnection con = new SqlConnection(connection))
                 {
-                    SqlCommand cmd = new SqlCommand($"SELECT * FROM LGS_KH_NHAPHANG", con);
+                    SqlCommand cmd = new SqlCommand($"SELECT * FROM LGS_KH_NHAPHANG WHERE NAM={year}", con);
                     cmd.CommandType = CommandType.Text;
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     try
