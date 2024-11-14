@@ -88,7 +88,7 @@ namespace SMO.Service.MD
                     sumThueNK = sumThueNK + thueNK * sl;
                     sumThueUD = sumThueUD + thueUD * sl * item.S0008;
                 }
-                decimal tnkBQ = (decimal)sumThueUD / sumThueNK;
+                decimal tnkBQ = sumThueNK==0?0 :(decimal)sumThueUD / sumThueNK ;
 
 
                 var objVN = UnitOfWork.Repository<SharedDataRepo>().Get("TNK-VN");
