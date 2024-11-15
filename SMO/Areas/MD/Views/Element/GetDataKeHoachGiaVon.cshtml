@@ -86,9 +86,11 @@
         Value11 = Math.Round(x.Value11).ToStringVN(),
         Value12 = Math.Round(x.Value12).ToStringVN(),
         Value13 = Math.Round(x.SumGV).ToStringVN()
-    });
+    }); ;
+    var Valuecondition = Model.KeHoachGiaThanhData.Where(x => x.DeliveryConditionsCode != "TN").Sum(x => x.S0002);
 
-    var pre_bh = Model.KeHoachGiaThanhData.Sum(x => x.S0002 * Math.Round(x.U0008,3)) / Model.KeHoachGiaThanhData.Where(x => x.DeliveryConditionsCode != "TN").Sum(x => x.S0002);
+
+    var pre_bh = Valuecondition==0 ?0 :  Model.KeHoachGiaThanhData.Sum(x => x.S0002 * Math.Round(x.U0008,3)) / Model.KeHoachGiaThanhData.Where(x => x.DeliveryConditionsCode != "TN").Sum(x => x.S0002);
 }
 
 <style>
