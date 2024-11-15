@@ -81,7 +81,12 @@ namespace SMO.Service.MD
             {
                 var analysisFormula = "";
                 var stringFormula = Regex.Replace(formula, @"\s", "");
-                string spacedFormula = AddSpacesToFormula("x=" + formula);
+                if (stringFormula == "S0003+S0004+S0006/S0005" && data.S0005 == 0)
+                {
+                    stringFormula = "S0003+S0004";
+                }
+                
+                string spacedFormula = AddSpacesToFormula("x=" + stringFormula);
 
                 string[] stringArray = spacedFormula.Replace("x = ", "").Split(' ');
                 foreach (var str in stringArray)
@@ -145,6 +150,7 @@ namespace SMO.Service.MD
                     }
                 }
                 System.Data.DataTable table = new System.Data.DataTable();
+               
                 object result = table.Compute(analysisFormula, "");
                 return Convert.ToDecimal(result);
             }
@@ -190,6 +196,7 @@ namespace SMO.Service.MD
                                 data.S0007 = Convert.ToDecimal(value);
                                 break;
                         }
+                     
                     }
                     catch
                     {
