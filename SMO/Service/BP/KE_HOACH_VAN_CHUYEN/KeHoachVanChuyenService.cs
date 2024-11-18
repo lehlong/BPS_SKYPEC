@@ -4338,7 +4338,8 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
         private ICellStyle GetCellStyleNumber(IWorkbook templateWorkbook)
         {
             ICellStyle styleCellNumber = templateWorkbook.CreateCellStyle();
-            styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,#");
+            //styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,#");
+            styleCellNumber.Alignment = HorizontalAlignment.Right;
             return styleCellNumber;
         }
         public void GenerateDataVC(ref MemoryStream outFileStream, string path, ViewDataCenterModel model, IList<T_MD_KHOAN_MUC_VAN_CHUYEN> lstData, IList<T_MD_TEMPLATE_DETAIL_KE_HOACH_VAN_CHUYEN> lstProject)
@@ -4405,13 +4406,13 @@ namespace SMO.Service.BP.KE_HOACH_VAN_CHUYEN
                     rowCur.Cells[1].SetCellValue(item.NAME);
                     rowCur.Cells[2].SetCellValue((double)item.ValuesSL);
                    
-                    rowCur.Cells[3].SetCellValue((double)item.ValuesCL);
-                    rowCur.Cells[4].SetCellValue((double)item.ValuesSC);
-                    rowCur.Cells[5].SetCellValue((double)item.ValuesT);
-                    rowCur.Cells[6].SetCellValue((double)item.ValuesM3);
-                    rowCur.Cells[7].SetCellValue((double)item.ValuesTN);
-                    rowCur.Cells[8].SetCellValue(((double)item.ValuesCL * (double)item.ValuesT));
-                    rowCur.Cells[9].SetCellValue(((double)item.ValuesCL * (double)item.ValuesM3));
+                    rowCur.Cells[3].SetCellValue(item.ValuesCL.ToStringVN());
+                    rowCur.Cells[4].SetCellValue(item.ValuesSC.ToStringVN());
+                    rowCur.Cells[5].SetCellValue(item.ValuesT.ToStringVN());
+                    rowCur.Cells[6].SetCellValue(item.ValuesM3.ToStringVN());
+                    rowCur.Cells[7].SetCellValue(item.ValuesTN.ToStringVN());
+                    rowCur.Cells[8].SetCellValue((item.ValuesCL * item.ValuesT).ToStringVN());
+                    rowCur.Cells[9].SetCellValue((item.ValuesCL * item.ValuesM3).ToStringVN());
                    
                     
                     //for (int i = 0; i < NUM_CELL; i++)
