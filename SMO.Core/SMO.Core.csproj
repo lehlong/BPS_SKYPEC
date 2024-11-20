@@ -262,6 +262,7 @@
     <Compile Include="Entities\BP\T_BP_BASE.cs" />
     <Compile Include="Entities\BP\T_BP_BUDGET_PERIOD.cs" />
     <Compile Include="Entities\BP\T_BP_BUDGET_PERIOD_HISTORY.cs" />
+    <Compile Include="Entities\BP\T_BP_KE_HOACH_VAN_TAI.cs" />
     <Compile Include="Entities\BP\T_BP_PERIOD.cs" />
     <Compile Include="Entities\BP\T_BP_REGISTER.cs" />
     <Compile Include="Entities\BP\T_BP_STEPPER_BUDGET.cs" />

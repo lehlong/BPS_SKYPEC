@@ -138,6 +138,7 @@
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\DauTuXayDungDataBaseHistoryRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DAU_TU_XAY_DUNG_DATA_BASE\DauTuXayDungDataBaseRepo.cs" />
     <Compile Include="Implement\BP\DAU_TU_XAY_DUNG\DauTuXayDungEditHistoryRepo.cs" />
+    <Compile Include="Implement\BP\KeHoachVanTaiRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiCommentRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDataHistoryRepo.cs" />
     <Compile Include="Implement\BP\KE_HOACH_CHI_PHI\KeHoachChiPhiDataRepo.cs" />
@@ -421,6 +422,7 @@
     <Compile Include="Interface\BP\DAU_TU_XAY_DUNG\IDauTuXayDungVersionRepo.cs" />
     <Compile Include="Interface\BP\IBudgetPeriodHistoryRepo.cs" />
     <Compile Include="Interface\BP\IBudgetPeriodRepo.cs" />
+    <Compile Include="Interface\BP\IKeHoachVanTaiRepo.cs" />
     <Compile Include="Interface\BP\IPeriodRepo.cs" />
     <Compile Include="Interface\BP\IRegisterRepo.cs" />
     <Compile Include="Interface\BP\IStepperBudgetRepo.cs" />
@@ -779,6 +781,7 @@
     <Compile Include="Mapping\BP\SUA_CHUA_THUONG_XUYEN\T_BP_SUA_CHUA_THUONG_XUYEN_VERSION_Map.cs" />
     <Compile Include="Mapping\BP\T_BP_BUDGET_PERIOD_HISTORY_Mapping.cs" />
     <Compile Include="Mapping\BP\T_BP_BUDGET_PERIOD_Mapping.cs" />
+    <Compile Include="Mapping\BP\T_BP_KE_HOACH_VAN_TAI_Map.cs" />
     <Compile Include="Mapping\BP\T_BP_PERIOD_Mapping.cs" />
     <Compile Include="Mapping\BP\T_BP_REGISTER_Mapping.cs" />
     <Compile Include="Mapping\BP\T_BP_STEPPER_BUDGET_Mapping.cs" />

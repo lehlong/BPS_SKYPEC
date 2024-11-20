@@ -224,7 +224,7 @@
                 </ul>
 
                 <div class="p-t-10 p-b-5">
-                    <div class="row" style="margin-bottom: 24px;">
+                    <div class="row" style="margin-bottom: 0px;">
                         @if (AuthorizeUtilities.CheckUserRight("R2.10") || AuthorizeUtilities.CheckUserRight("R0"))
                         {
                             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
@@ -288,4 +288,32 @@
             </div>
         </div>
     }
+    <div class="card  m-t-10" style="margin-top:0px">
+        <div class="body" style="padding: 0px 22px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-top: 0px !important;" class="text-uppercase"><i class="material-icons col-fecon">clear_all</i>KẾ HOẠCH VẬN TẢI</a>
+                </li>
+            </ul>
+
+            <div class="p-t-10 p-b-5">
+                <div class="row" style="margin-bottom: 24px;">
+
+
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                        <div class="info-box-3  hover-zoom-effect"
+                             onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachVanTai")')">
+                            <div class="icon">
+                                <i class="material-icons col-skypec">local_shipping</i>
+                            </div>
+                            <div class="content">
+                                <div class="text" style="margin-top: 16px;">KẾ HOẠCH VẬN TẢI</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

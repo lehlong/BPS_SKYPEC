@@ -520,6 +520,7 @@
     <Compile Include="Areas\BP\Controllers\KeHoachVanChuyenController.cs" />
     <Compile Include="Areas\BP\Controllers\KeHoachVanChuyenReviewCommentController.cs" />
     <Compile Include="Areas\BP\Controllers\KeHoachVanChuyenReviewController.cs" />
+    <Compile Include="Areas\BP\Controllers\KeHoachVanTaiController.cs" />
     <Compile Include="Areas\BP\Controllers\RegisterController.cs" />
     <Compile Include="Areas\BP\Controllers\ReportController.cs" />
     <Compile Include="Areas\BP\Controllers\SuaChuaLonController.cs" />
@@ -2115,6 +2116,9 @@
     <Content Include="Areas\BP\Views\Report\GenDataCKP.cshtml" />
     <Content Include="Areas\MD\Views\Template\ViewDataDauTu.cshtml" />
     <Content Include="Areas\BP\Views\KeHoachVanChuyen\GetCommentElement.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachVanTai\Index.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachVanTai\ImportView.cshtml" />
+    <Content Include="Areas\BP\Views\KeHoachVanTai\GenDataVT.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

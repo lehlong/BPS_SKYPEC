@@ -1,0 +1,111 @@
+﻿@model SMO.Service.AD.UserService
+@{
+    var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+    var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+}
+<style>
+    .tab-content {
+        position: relative;
+        z-index: 1001;
+    }
+</style>
+<div id="@Model.ViewId">
+    @using (Ajax.BeginForm("ImportFile", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId, @enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.YEAR)
+        <div class="container-fluid child-content">
+            <div class="card border-grey">
+                <div class="body" style="padding-top: 0px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> KẾ HOẠCH VẬN TẢI</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" style="padding-bottom: 0">
+                        <div class="page-function" style="width:100%">
+                            <div class="page-function-button m-r-20" style="float:left">
+                                @Html.MyButton("cmdBack", "Quay lại", "Close();", "Alt+N", "arrow_back")
+                                @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
+                                @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
+                                <a class="waves-effect btn-default btn" href="@Url.Action("DownloadTemplateData", "KeHoachVanTai", new { @area = "BP" })" target="_blank">
+                                    <i class="material-icons col-fecon">file_download</i> Tải file mẫu
+                                </a>
+                                @Html.MyButton("cmdAdd", "Upload", "ShowModalImport()", "Alt+N", "file_upload")
+                            </div>
+                            <div class="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px">
+                                <div class="col-md-2">
+                                    <select class="form-control selectpicker show-tick" id="time-year" name="@Html.NameFor(m => m.YEAR)">
+                                        @foreach (var temp in lstTimeYear)
+                                        {
+                                            if (temp.Value == yearDefault)
+                                            {
+                                                <option value="@temp.Value" selected>@temp.Text</option>
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                <option value="@temp.Value">@temp.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="divReport">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+
+<script>
+    $(function () {
+        Forms.CompleteUI();
+        setTimeout(function () { ViewData() }, 200)
+    });
+    function ViewData() {
+        $("#divReport").empty();
+        var ajaxParams = {
+            url: "@Url.Action("GetDataVTByYear")",
+            data: {
+                year: $("#time-year").val(),
+            },
+            htmlTarget:'#divReport',
+        };
+        Forms.LoadAjax(ajaxParams);
+    }
+
+    function Close() {
+        Forms.Close('@Model.ViewId')
+    }
+
+    function ShowModalImport() {
+        var formData = new FormData($('#@Model.FormId')[0]);
+        var param = {
+            url: '@Url.Action("ImportView")',
+            data: formData,
+            contentType: false,
+            processData: false,
+        }
+        Forms.LoadAjaxModal(param);
+    }
+
+    function ExportData() {
+        var year = $("#time-year").val()
+        var phienBan = $("#phien-ban").val()
+        var kichBan = $("#kich-ban").val()
+        var hangHangKhong = $("#hang-hang-khong").val()
+        window.open(`/BP/Report/ExportExcelDataSanLuong?year=${year}&phienBan=${phienBan}&kichBan=${kichBan}&hangHangKhong=${hangHangKhong}`, '_blank');
+    }
+</script>
+
+
+
+
