@@ -1,0 +1,56 @@
+﻿@model  SMO.Models.ReportQT21Model
+@using System.Text;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
+    var gridId = Guid.NewGuid().ToString("N");
+    var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var formIdExportExcel = Guid.NewGuid();
+    var data = Model.chiPhiQT21InReports;
+
+}
+
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<div class="hidden">
+    <form id="@formIdExportExcel" target="_blank" method="post" action="@Url.Action("ExportExcelGridData")">
+        @Html.Hidden("Treedata")
+        @Html.Hidden("Template")
+    </form>
+</div>
+<script type="text/javascript">
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.chiPhiQT21InReports));
+    console.log(rawData)
+    const treeGrid = new dhx.Grid("@gridId", {
+        columns: [
+            { id: "Stt", header: [{ text: "Số thứ tự", align: "center", }], adjust: true },
+            { id: "name", header: [{ text: "Danh mục chi phí", align: "center",  }], adjust: true },
+            { id: "ValueQt", header: [{ text: "Giá trị quyết toán năm trước", align: "center",  }], adjust: true ,format:"#.#"},
+            { id: "ValuePlanYear", header: [{ text: "Kế hoạch năm", align: "center",  }], adjust: true, format: "#.#" },
+            { id: "ValueAdditionPlan", header: [{ text: "Kế hoạch bổ xung điều chỉnh", align: "center",  }], adjust: true, format: "#.#" },
+            { id: "ValueAfterAdditionPlan", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center",  }], adjust: true, format: "#.#" },
+            { id: "ValueUocThucHien", header: [{ text: "Ước thực hiện", align: "center",  }], adjust: true, format: "#.#" },
+            { id: "ValueTH9T", header: [{ text: "TH9T",  }], adjust: true, format: "#.#" },
+            { id: "ValuePercentPlant", header: [{ text: "% so kế hoạch", align: "center", }], adjust: true, format: "#.#" },
+            { id: "ValuePlantNextYear", header: [{ text: "Kế hoạch năm tới", align: "center", }], adjust: true, format: "#.#" },
+            { id: "des", header: [{ text: "Ghi chú", align: "center",  }], adjust: true },
+
+        ],
+        data: rawData,
+        rowCss: function ({ IsBold }) { return IsBold == true ? "row-bold" : "" },
+
+        rowHeight: 30,
+    });
+
+     function ExportData() {
+        var Treedata = JSON.stringify(treeGrid.data.serialize());
+        var template = "BM_QT21";
+        $('#@formIdExportExcel #Treedata').val(Treedata);
+        $('#@formIdExportExcel #Template').val(template);
+         $('#@formIdExportExcel').submit();
+
+    }
+
+</script>
+
+
+

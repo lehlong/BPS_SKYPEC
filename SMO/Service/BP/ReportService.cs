@@ -6,6 +6,7 @@ using NHibernate.Criterion;
 using NPOI.HSSF.Record.Chart;
 using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
+using NPOI.SS.Formula.PTG;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
@@ -29,6 +30,7 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Web;
+using static iTextSharp.text.pdf.AcroFields;
 
 namespace SMO.Service.BP
 {
@@ -99,6 +101,10 @@ namespace SMO.Service.BP
                 case "BM_2110":
                     startRow = 4;
                     InsertDataToTableBM_2110(templateWorkbook, sheet, lstData, startRow, NUMCELL);
+                    break;
+                case "BM_QT21":
+                    startRow = 7;
+                    InsertDataToTableBM_QT21(templateWorkbook, sheet, lstData, startRow, NUMCELL);
                     break;
                 default:
                     InsertDataToTableBM_02B(templateWorkbook, sheet, lstData, startRow, NUMCELL);
@@ -1442,6 +1448,7 @@ namespace SMO.Service.BP
             fontBold.Boldweight = (short)FontBoldWeight.Bold;
             fontBold.FontHeightInPoints = 13;
             fontBold.FontName = "Times New Roman";
+          
 
             ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
             styleCellName.CloneStyleFrom(sheet.GetRow(4).Cells[1].CellStyle);
@@ -1489,6 +1496,7 @@ namespace SMO.Service.BP
                         else
                         {
                             rowCur.Cells[i].CellStyle = styleBody;
+                              
 
                         }
                     }
@@ -1500,7 +1508,309 @@ namespace SMO.Service.BP
             IRow rowEnd2 = ReportUtilities.CreateRow(ref sheet, startRow + 3, NUM_CELL);
             rowEnd2.Cells[NUM_CELL - 3].SetCellValue("Người đại diện ký, ghi rõ họ tên");
             rowEnd2.Cells[NUM_CELL - 3].CellStyle.SetFont(fontBold);
+        }
+        public void InsertDataToTableBM_QT21(IWorkbook templateWorkbook, ISheet sheet, IList<ReportModel> dataDetails, int startRow, int NUM_CELL)
+        {
+            ICellStyle styleCellBold = templateWorkbook.CreateCellStyle(); // chữ in đậm
+            styleCellBold.CloneStyleFrom(sheet.GetRow(8).Cells[0].CellStyle);
+            var fontBold = templateWorkbook.CreateFont();
+            fontBold.Boldweight = (short)FontBoldWeight.Bold;
+            fontBold.FontHeightInPoints = 13;
+            fontBold.FontName = "Times New Roman";
 
+            ICellStyle styleCellName = templateWorkbook.CreateCellStyle();
+            styleCellName.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+
+            ICellStyle styleBody = templateWorkbook.CreateCellStyle();
+            styleBody.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBody.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+            ICellStyle styleBodyBold = templateWorkbook.CreateCellStyle();
+            styleBodyBold.CloneStyleFrom(sheet.GetRow(7).Cells[1].CellStyle);
+            styleBodyBold.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,###");
+
+            foreach (var item in dataDetails)
+            {
+                IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUM_CELL);
+                rowCur.Cells[0].SetCellValue(item.Stt);
+                rowCur.Cells[1].SetCellValue(item.Name);
+                rowCur.Cells[2].SetCellValue(item.ValueQt == null ? 0 : Convert.ToDouble(item.ValueQt));
+                rowCur.Cells[3].SetCellValue(item.ValuePlanYear == null ? 0 : Convert.ToDouble(item.ValuePlanYear));
+                rowCur.Cells[4].SetCellValue(item.ValueAdditionPlan == null ? 0 : Convert.ToDouble(item.ValueAdditionPlan));
+                rowCur.Cells[5].SetCellValue(item.ValueAfterAdditionPlan == null ? 0 : Convert.ToDouble(item.ValueAfterAdditionPlan));
+                rowCur.Cells[6].SetCellValue(item.ValueTH9T == null ? 0 : Convert.ToDouble(item.ValueTH9T));
+                rowCur.Cells[7].SetCellValue(item.ValueUocThucHien == null ? 0 : Convert.ToDouble(item.ValueUocThucHien));
+                rowCur.Cells[8].SetCellValue(item.ValuePercentPlant == null ? 0 : Convert.ToDouble(item.ValuePercentPlant));
+                rowCur.Cells[9].SetCellValue(item.ValuePlantNextYear == null ? 0 : Convert.ToDouble(item.ValuePlantNextYear));
+                rowCur.Cells[10].SetCellValue(item.Des);
+
+                for (int i = 0; i < NUM_CELL; i++)
+                {
+                    if (item.IsBold)
+                    {
+                        if (i == 0 || i ==1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBodyBold;
+                            rowCur.Cells[i].CellStyle.SetFont(fontBold);
+                        }
+                    }
+                    else
+                    {
+                        if (i == 0 || i ==1)
+                        {
+                            rowCur.Cells[i].CellStyle = styleCellName;
+                        }
+                        else
+                        {
+                            rowCur.Cells[i].CellStyle = styleBody;
+
+
+                        }
+                    }
+                }
+
+
+            }
+
+            IRow rowEnd = ReportUtilities.CreateRow(ref sheet, startRow + 2, NUM_CELL);
+            rowEnd.Cells[NUM_CELL - 3].SetCellValue("Ngày  .......... tháng ........... năm..............");
+            IRow rowEnd2 = ReportUtilities.CreateRow(ref sheet, startRow + 3, NUM_CELL);
+            rowEnd2.Cells[NUM_CELL - 3].SetCellValue("Người đại diện ký, ghi rõ họ tên");
+            rowEnd2.Cells[NUM_CELL - 3].CellStyle.SetFont(fontBold);
+
+        }
+
+        internal ReportQT21Model GetReportDataQT21(int year, string phienBan, string kichBan, string area ,int month)
+        {
+            //
+            try
+            {
+                var data = new ReportQT21Model();
+                var headerCP_PB1 = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_PB1 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_PB1.Contains(x.TEMPLATE_CODE)).ToList();
+                var headerCP_PB1_next = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year +1 && x.PHIEN_BAN == "PB1" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_PB1_next = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_PB1_next.Contains(x.TEMPLATE_CODE)).ToList();
+                var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+                var headerCP_BS = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataCP_BS = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_BS.Contains(x.TEMPLATE_CODE)).ToList();
+                var valueUTH = UnitOfWork.Repository<InputChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year);
+                Dictionary<string, string> OrgArea =
+                     new Dictionary<string, string>()
+                 {
+                  {"CQ","100001"},
+                  {"MB","100002"},
+                  {"MT","100003"},
+                  {"MN","100004"},
+                  {"VT","100005"},
+                     };
+                // list mã 
+              
+                string[] LisTCostYear = { "6273C001C", "6273C002C", "6273C003C", "6273C004C", "6273C005C", "6273C006C", "6273C009C" };
+                var item = new ChiPhiQT21InReport { };
+                foreach (var e in elements)
+                {
+                    var dataUTH = valueUTH.FirstOrDefault(x => x.ID_CENTER == e.ID);
+                    //var dataTH9T = valueUTH.Where(x => x.ID_CENTER == e.ID).FirstOrDefault(x=>x.th);
+                    string checkID = null;
+                    switch (area)
+                    {
+                        case "MT":
+                            checkID = e.IDMT;
+                            break;
+                        case "MN":
+                            checkID = e.IDMN;
+                            break;
+                        case "MB":
+                            checkID = e.IDMB;
+                            break;
+                        case "CQ":
+                            checkID = e.IDCQ;
+                            break;
+                        case "VT":
+                            checkID = e.IDVT;
+                            break;
+                        default:
+                            checkID = null;
+                            break;
+                    };
+                    if (string.IsNullOrEmpty(area))
+                    {
+                        var PlanYearMB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanYearMT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanYearMN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanYearCQ = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanYearVT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var AdditionMB = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var AdditionMT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var AdditionMN = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var AdditionVT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var AdditionCQ = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+
+                        var PlanNextYearMB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearMT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearMN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearCQ = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearVT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("B"))
+                        {
+                            PlanYearMB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanYearMT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanYearMN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanYearCQ = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanYearVT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            AdditionMB = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            AdditionMT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            AdditionMN = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            AdditionVT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            AdditionCQ = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanNextYearMB = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanNextYearMT = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanNextYearMN = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanNextYearCQ = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                            PlanNextYearVT = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
+                        }
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("C"))
+                        {
+                            PlanYearMB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanYearMT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanYearMN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanYearCQ = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanYearVT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            AdditionMB = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            AdditionMT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            AdditionMN = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            AdditionVT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            AdditionCQ = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanNextYearMB = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanNextYearMT = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanNextYearMN = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanNextYearCQ = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            PlanNextYearVT = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+
+                        }
+
+                       
+                        item = new ChiPhiQT21InReport
+                        {
+                            Group_1_ID = e.GROUP_1_ID,
+                            Group_2_ID = e.GROUP_2_ID,
+                            Stt = e.STT,
+                            name = e.GROUP_NAME,
+                            ValuePlanYear=PlanYearCQ+PlanYearMB+PlanYearMN+PlanYearMT+PlanYearVT,
+                            ValueAdditionPlan= AdditionMB + AdditionMT+ AdditionMN + AdditionVT + AdditionCQ,
+                            ValuePlantNextYear=PlanNextYearCQ+ PlanNextYearMB+PlanNextYearMN+PlanNextYearMT+PlanNextYearVT,
+                            IsBold=e.IS_BOLD,
+                            ValueUocThucHien = dataUTH?.UOC_THUC_HIEN ?? 0,
+                            ValueTH9T = dataUTH?.TH9T ?? 0,
+                        };
+                       
+                     
+
+                    }
+                    else
+                    {
+                        var Col1data = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                        var Col1dataNext = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                        var Col2data = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("B"))
+                        {
+                            Col1data = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE);
+                            Col1dataNext = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE);
+                            Col2data = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID) && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE);
+                        }
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("C"))
+                        {
+                            Col1data = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                            Col1dataNext = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                            Col2data = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(checkID != null ? checkID : e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B") && (OrgArea.ContainsKey(area) ? x.ORG_CODE.Contains(OrgArea[area]) : true)).Sum(x => x.QUANTITY * x.PRICE);
+                        }
+
+                        item = new ChiPhiQT21InReport
+                        {
+                            Group_1_ID = e.GROUP_1_ID,
+                            Group_2_ID = e.GROUP_2_ID,
+                            Stt = e.STT,
+                            name = e.GROUP_NAME,
+                            ValuePlanYear = Col1data??0,
+                            ValueAdditionPlan = Col2data??0,
+                            ValuePlantNextYear = Col1dataNext??0,
+                            IsBold = e.IS_BOLD,
+                            ValueUocThucHien = dataUTH?.UOC_THUC_HIEN ?? 0,
+                            ValueTH9T = dataUTH?.TH9T ?? 0,
+                        };
+                       
+                    }
+
+                    data.chiPhiQT21InReports.Add(item);
+                }
+                data.chiPhiQT21InReports.ForEach(x =>
+                {
+                    if (x.Group_1_ID == "6277" && x.Group_2_ID.EndsWith("B2"))
+                    {
+                        var Codelen = x.Group_2_ID.Length - 1; ;
+                        x.ValueAdditionPlan = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.ValueAdditionPlan / 2);
+                        x.ValuePlanYear = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.ValuePlanYear / 2);
+                        x.ValuePlantNextYear = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && y.Group_2_ID == (x.Group_2_ID.Substring(0, Codelen) + "3")).Sum(y => y.ValuePlantNextYear / 2);
+                    }
+                });
+                data.chiPhiQT21InReports.ForEach(x =>
+                {
+                    if (x.Group_1_ID == "6277" && x.Group_2_ID.EndsWith("B"))
+                    {
+                        x.ValueAdditionPlan = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.ValueAdditionPlan);
+                        x.ValuePlanYear = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.ValuePlanYear);
+                        x.ValuePlantNextYear = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "1" || y.Group_2_ID == x.Group_2_ID + "2")).Sum(y => y.ValuePlantNextYear);
+                    }
+                });
+                List<string> listParrent = new List<string> { "G002", "G003", "G004", "G005", "G006", "G007" };
+                data.chiPhiQT21InReports.ForEach(x =>
+                {
+                    if (x.Group_1_ID == "6277" && listParrent.Contains(x.Group_2_ID))
+                    {
+
+                        x.ValueAdditionPlan = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.ValueAdditionPlan);
+                        x.ValuePlantNextYear = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.ValuePlantNextYear);
+                        x.ValuePlanYear=data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.ValuePlantNextYear);
+
+                    }
+                });
+                data.chiPhiQT21InReports.ForEach(x =>
+                {
+                    x.ValueAfterAdditionPlan = x.ValuePlanYear + x.ValueAdditionPlan;
+                    x.ValuePercentPlant = x.ValueAfterAdditionPlan == 0 ? 0 : x.ValueUocThucHien / x.ValueAfterAdditionPlan;
+                });
+
+                var boldReports = data.chiPhiQT21InReports.Where(x => x.IsBold == true).ToList();
+                var SumtotalValueAfterAdditionPlan = boldReports.Sum(x => x.ValueAfterAdditionPlan);
+                var SumTotalValuePlantNextYear = boldReports.Sum(x => x.ValuePlantNextYear);
+                var SumtotalValuePlanYear = boldReports.Sum(x => x.ValuePlanYear);
+                var SumValueAdditionPlan = boldReports.Sum(x => x.ValueAdditionPlan);
+                var SumtotalValuePercentPlant = boldReports.Sum(x => x.ValuePercentPlant);
+                var sumUTH = boldReports.Sum(x => x.ValueUocThucHien);
+                var sumTH9T = boldReports.Sum(x => x.ValueTH9T);
+                data.chiPhiQT21InReports.Insert(0, new ChiPhiQT21InReport
+                {
+                    name = "Tổng chi Phí",
+                    ValuePlanYear = SumtotalValuePlanYear ,
+                    ValueAdditionPlan = SumValueAdditionPlan ,
+                    ValuePlantNextYear = SumTotalValuePlantNextYear ,
+                    ValueAfterAdditionPlan=SumtotalValueAfterAdditionPlan,
+                    IsBold = true,
+                    ValueUocThucHien = sumUTH ,
+                    ValueTH9T = sumTH9T ,
+                });
+
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         public ReportDataCenter GenDataBM01D(int year, string kichBan)
         {
@@ -5279,6 +5589,21 @@ namespace SMO.Service.BP
         public string Tdth { get; set; }
         public string Tdtk { get; set; }
         public string Des { get; set; }
+       
+        public string Group_1_ID { get; set; }
+        public string Group_2_ID { get; set; }
+      
+    
+        public decimal ValueQt { get; set; }
+        public decimal ValuePlanYear { get; set; }
+        public decimal ValueAdditionPlan { get; set; }
+        public decimal ValueAfterAdditionPlan { get; set; }
+
+        public decimal ValueUocThucHien { get; set; }
+        public decimal ValuePercentPlant { get; set; }
+        public decimal ValuePlantNextYear { get; set; }
+        public decimal ValueTH9T { get; set; }
+        public int Level { get; set; }
     }
 
     public class ReportModel2B

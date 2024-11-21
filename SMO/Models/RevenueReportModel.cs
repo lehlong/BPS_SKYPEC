@@ -378,6 +378,11 @@ namespace SMO.Models
         public List<ChiPhiInReport> chiPhiInReports { get; set; } = new List<ChiPhiInReport>();
     }
 
+    public class ReportQT21Model
+    {
+        public List<ChiPhiQT21InReport> chiPhiQT21InReports { get; set; } = new List<ChiPhiQT21InReport>();
+    }
+
     public class ChiPhiInReport
     {
         public string Stt { get; set; }
@@ -396,6 +401,28 @@ namespace SMO.Models
         public bool IsBold { get; set; } = false;
         public int Order { get; set; }
         public int Level { get; set; }
+    }
+    public class ChiPhiQT21InReport
+    {
+        public string Stt { get; set; }
+        public string Group_1_ID { get; set; }
+        public string Group_2_ID { get; set; }
+        public string code { get; set; }
+        public string name { get; set; }
+        public decimal ValueQt { get; set; }
+        public decimal ValuePlanYear { get; set; }
+        public decimal ValueAdditionPlan { get; set; }
+        public decimal ValueAfterAdditionPlan { get; set; }
+        
+        public decimal ValueUocThucHien { get; set; }
+        public decimal ValuePercentPlant { get; set; }
+        public decimal ValuePlantNextYear { get; set; }
+        public decimal ValueTH9T { get; set; }
+        public string des { get; set; }
+        public bool IsBold { get; set; } = false;
+        public int Order { get; set; }
+        public int Level { get; set; }
+      
     }
 
     // Bác cái TH Đầu tư

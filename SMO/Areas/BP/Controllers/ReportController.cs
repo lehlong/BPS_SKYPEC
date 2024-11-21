@@ -448,9 +448,22 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
+       
         public ActionResult GenDataBM2107(int year, string phienBan, string kichBan, int month, string area)
         {
             var data = _service.GenDataBM2107(year, month, phienBan, kichBan, area);
+            return PartialView(data);
+        }
+        #endregion
+        #region BMQT21
+        public ActionResult IndexQT21()
+        {
+            return PartialView();
+        }
+
+        public ActionResult GenDataQT21(int year, string phienBan, string kichBan, int month, string area)
+        {
+            var data = _service.GetReportDataQT21(year, phienBan, kichBan,area, month);
             return PartialView(data);
         }
         #endregion
@@ -580,6 +593,11 @@ namespace SMO.Areas.BP.Controllers
                     NUMCELL = 7;
                     _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
                     fileName = "Tổng hợp kế hoạch chi phí";
+                    break;
+                case "BM_QT21":
+                    NUMCELL = 11;
+                    _service.ExportExcelGridData(ref outFileStream, data, path, NUMCELL, Template);
+                    fileName = "Báo cáo tổng hợp kế hoạch chi phí theo năm";
                     break;
                 default:
                     break;

@@ -36,8 +36,8 @@
         //rawData[i].col10 = allIds.length == 0 ? rawData[i].col10 : _.sumBy(allIds, 'col10');
         //rawData[i].col11 = allIds.length == 0 ? rawData[i].col11 : _.sumBy(allIds, 'col11');
         //rawData[i].col12 = allIds.length == 0 ? rawData[i].col12 : _.sumBy(allIds, 'col12');
-  /*  }*/
-    const treeGrid = new dhx.Grid("@gridId", {
+    /*  }*/
+    const treeGrid = new dhx.treeGrid("@gridId", {
         columns: [
             { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], minWidth: 100, align: "center" },
             { id: "name", header: [{ text: "DANH MỤC ĐẦU TƯ", align: "center" }, { content: "inputFilter" }], minWidth: 500 },

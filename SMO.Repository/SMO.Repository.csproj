@@ -287,6 +287,7 @@
     <Compile Include="Implement\MD\FrequentlyAskedRepo.cs" />
     <Compile Include="Implement\MD\GiaiDoanDauTuRepo.cs" />
     <Compile Include="Implement\MD\HangHangKhongRepo.cs" />
+    <Compile Include="Implement\MD\InputChiPhiRepo.cs" />
     <Compile Include="Implement\MD\InternalOrderRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucHangHoaRepo.cs" />
     <Compile Include="Implement\MD\NhomSanBayRepo.cs" />
@@ -559,6 +560,7 @@
     <Compile Include="Interface\MD\IFrequentlyAskedRepo.cs" />
     <Compile Include="Interface\MD\IGiaiDoanDauTuRepo.cs" />
     <Compile Include="Interface\MD\IHangHangKhongRepo.cs" />
+    <Compile Include="Interface\MD\IInputChiPhiRepo.cs" />
     <Compile Include="Interface\MD\IInternalOrderRepo.cs" />
     <Compile Include="Interface\MD\IKhoanMucChiPhiRepo.cs" />
     <Compile Include="Interface\MD\IKhoanMucChungRepo.cs" />
@@ -842,6 +844,7 @@
     <Compile Include="Mapping\MD\T_MD_DOMAIN_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_GIAI_DOAN_DAU_TU_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_HANG_HANG_KHONG_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_INPUT_CHI_PHI_map.cs" />
     <Compile Include="Mapping\MD\T_MD_INTERNAL_ORDER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_KHOAN_MUC_CHI_PHI_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_KHOAN_MUC_CHUNG_Map.cs" />

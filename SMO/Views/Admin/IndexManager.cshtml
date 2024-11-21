@@ -252,17 +252,20 @@
         {
             <div class="col-md-4" style="margin-top: 3px; padding: 6px">
                 <div class="card">
-                    <div class="body" style="padding: 12px 22px; height: 290px;">
+                    <div class="body scroll_bc" style="padding: 12px 22px; height: 290px; overflow-y:scroll; overflow-x:hidden;">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
                                 <a style="padding-top: 0px !important;" class="text-uppercase">BÁO CÁO SO SÁNH THỰC HIỆN - KẾ HOẠCH</a>
                             </li>
                         </ul>
 
-                        <div class="p-t-10 p-b-5">
+                        <div class="p-t-10 p-b-6">
                             <div class="row">
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM2107", "BP/Report")')">
                                     <i class="material-icons">notes</i> (BM.21.07) Báo cáo tình hình thực hiện đầu tư có xây dựng
+                                </div>
+                                <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexQT21", "BP/Report")')">
+                                    <i class="material-icons">notes</i> (QT21) Báo cáo Tổng hợp chi phí theo năm
                                 </div>
                                 <div class="btn btn-default col-md-12" style="text-align: left;" onclick="Forms.LoadAjax('@Url.Action("IndexBM2108", "BP/Report")')">
                                     <i class="material-icons">notes</i> (BM.21.08) Báo cáo tình hình thực hiện đầu tư không có xây dựng
