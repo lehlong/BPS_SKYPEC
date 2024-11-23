@@ -5,6 +5,7 @@
 @{
     var data = Model.Select(x => new
     {
+        idTH=x.ID,
         Group_1_id= x.GROUP_1_ID,
         Group_2_id = x.GROUP_2_ID,
         id_Center = x.ID_CENTER,
@@ -12,23 +13,27 @@
         th9t=x.TH9T,
         uth=x.UOC_THUC_HIEN,
         stt = x.STT,
-        isBold = x.IS_BOLD
+        isBold = x.IS_BOLD,
+        AREA_CODE=x.AREA_CODE
     }
         );
-    var gridId = Guid.NewGuid().ToString();
 
+    var gridId = Guid.NewGuid().ToString();
+    var edit = string.IsNullOrEmpty(ViewBag.areacode) ? false : true;
 
 }
+
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
-<p>Test</p>
 <script>
     const rawData =  @Html.Raw(JsonConvert.SerializeObject(data));
-    /* console.log(rawData*/
+    const editcell = @Html.Raw(JsonConvert.SerializeObject(edit));
+  
+    
     let columns = [
         { id: "stt", header: [{ text: "Stt", align: "center" }], minWidth: 220 },
         { id: "groupName", header: [{ text: "Hạng mục", align: "center" }], minWidth: 500 },
-        { id: "th9t", header: [{ text: "TH9T", align: "center" }], minWidth: 500, editable: true, },
-        { id: "uth", header: [{ text: "Ước Thực hiện", align: "center" }], minWidth: 500, editable: true, },
+        { id: "th9t", header: [{ text: "TH9T", align: "center" }], minWidth: 500, editable: editcell, },
+        { id: "uth", header: [{ text: "Ước Thực hiện", align: "center" }], minWidth: 500, editable: editcell, },
     ];
     const Gird = new dhx.Grid("@gridId", {
         columns,
@@ -45,6 +50,7 @@
         if (index !== -1) {
             // Nếu hàng đã tồn tại, cập nhật giá trị
             valuechange[index] = {
+                ID:row.idTH,
                 IS_BOLD: row.isBold,
                 GROUP_1_ID: row.Group_1_id,
                 GROUP_2_ID: row.Group_2_id,
@@ -57,6 +63,7 @@
         } else {
             // Nếu hàng chưa tồn tại, thêm mới
             valuechange.push({
+                ID: row.idTH,
                 IS_BOLD: row.isBold,
                 GROUP_1_ID: row.Group_1_id,
                 GROUP_2_ID: row.Group_2_id,
@@ -67,19 +74,32 @@
                 STT: row.stt
             });
         }
-
-        console.log(valuechange);
         console.log(valuechange);
     });
- 
+    Gird.events.on("cellClick", (row, column, editorType) => {
+        if (editcell==true) {
+            if (row.isBold == true) {
+                column.editable = false
+
+            } else {
+                column.editable = true
+
+            }
+        }
+      
+
+    });
+
        function saveIPutData() {
-           var year = $("#TIME_YEAR").val();
-     var ajaxParams = {
+           var year = $("#time-year").val();
+           var area = $("#area").val();
+            var ajaxParams = {
          url: "@Url.Action("Update")",
          type: "POST",
          data: {
              data: JSON.stringify(valuechange),
-             year: year
+             year: year,
+             area: area
          },
          dataType: 'json',
          success: function (response) {

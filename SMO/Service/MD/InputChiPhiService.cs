@@ -16,16 +16,30 @@ namespace SMO.Service.MD
         {
             
         }
-        public IList<T_MD_INPUT_CHI_PHI>GetDataChiPhi(int year)
+        public IList<T_MD_INPUT_CHI_PHI>GetDataChiPhi(int year,string area)
         {
             try
             {
                var  data= new List<T_MD_INPUT_CHI_PHI>();
                 var listCP = UnitOfWork.Repository<ReportChiPhiCodeRepo>().Queryable().ToList();
-                var listIP=UnitOfWork.Repository<InputChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+
+                var listIP=UnitOfWork.Repository<InputChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year&& x.AREA_CODE==area).ToList();
+                var ListAll = UnitOfWork.Repository<InputChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year).GroupBy(x=>x.ID_CENTER).Select(g => new T_MD_INPUT_CHI_PHI
+                {
+                    ID_CENTER = g.Key,
+                    UOC_THUC_HIEN = g.Sum(x => x.UOC_THUC_HIEN),
+                    TH9T = g.Sum(x => x.TH9T)
+                }).ToList();
+                var TB2 = string.IsNullOrEmpty(area) ? ListAll : listIP;
+             
+
                 var listData = from table1 in listCP
-                               join table2 in listIP
-                               on table1.ID equals table2.ID_CENTER into table3 from col in table3.DefaultIfEmpty() select new {table1,col} ;
+                               join table2 in TB2
+                               on table1.ID equals table2.ID_CENTER into table3
+                               from col in table3.DefaultIfEmpty()
+                               select new { table1, col };
+                
+                 
 
                 foreach (var i in listData)
                 {
@@ -58,7 +72,7 @@ namespace SMO.Service.MD
                 return new List<T_MD_INPUT_CHI_PHI>();
             }
         }
-        public void UpdateData(List<T_MD_INPUT_CHI_PHI> data, int year)
+        public void UpdateData(List<T_MD_INPUT_CHI_PHI> data, int year, string area)
         {
             try
             {
@@ -66,7 +80,7 @@ namespace SMO.Service.MD
                 UnitOfWork.BeginTransaction();
                 foreach (var item in data)
                 {
-                        var chexexist = databytime.FirstOrDefault(x => x.ID_CENTER == item.ID_CENTER&& x.TIME_YEAR==year);
+                        var chexexist = databytime.FirstOrDefault(x => x.ID_CENTER == item.ID_CENTER&& x.TIME_YEAR==year && x.ID==item.ID);
                     if(chexexist== null)
                     {
                         var pdata = new T_MD_INPUT_CHI_PHI
@@ -81,7 +95,8 @@ namespace SMO.Service.MD
                             C_ORDER = item.C_ORDER,
                             STT = item.STT,
                             TIME_YEAR = year,
-                            IS_BOLD = item.IS_BOLD
+                            IS_BOLD = item.IS_BOLD,
+                            AREA_CODE=area
                         };
                         UnitOfWork.Repository<InputChiPhiRepo>().Create(pdata);
                             }

@@ -22,12 +22,13 @@ namespace SMO.Areas.MD.Controllers
         {
             return PartialView(_service);
         }
-        public ActionResult GenDataChiPhiReport(int year)
+        public ActionResult GenDataChiPhiReport(int year,string area)
         {
-            var data = _service.GetDataChiPhi(year);
+            ViewBag.areacode = area;
+            var data = _service.GetDataChiPhi(year,area);
             return PartialView(data);
         }
-        public ActionResult Update(string data, int year)
+        public ActionResult Update(string data, int year, string area)
         {
             var jsonData = JsonConvert.DeserializeObject<List<T_MD_INPUT_CHI_PHI>>(data);
           
@@ -37,7 +38,7 @@ namespace SMO.Areas.MD.Controllers
                 Type = TransferType.AlertSuccessAndJsCommand
             };
 
-            _service.UpdateData(jsonData, year);
+            _service.UpdateData(jsonData, year, area);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

@@ -1597,7 +1597,13 @@ namespace SMO.Service.BP
                 var elements = UnitOfWork.Repository<ReportChiPhiCodeRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
                 var headerCP_BS = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB3" && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataCP_BS = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_BS.Contains(x.TEMPLATE_CODE)).ToList();
-                var valueUTH = UnitOfWork.Repository<InputChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year);
+                var valueUTH = UnitOfWork.Repository<InputChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year&& string.IsNullOrEmpty(area) ? true :x.AREA_CODE== area).GroupBy(x=>x.ID_CENTER).Select(x=> new
+                {
+                    ID_CENTER=x.Key,
+                    UOC_THUC_HIEN=x.Sum(y=>y.UOC_THUC_HIEN),
+                    TH9T=x.Sum(y=>y.TH9T)
+
+                });
                 Dictionary<string, string> OrgArea =
                      new Dictionary<string, string>()
                  {
@@ -1614,7 +1620,7 @@ namespace SMO.Service.BP
                 foreach (var e in elements)
                 {
                     var dataUTH = valueUTH.FirstOrDefault(x => x.ID_CENTER == e.ID);
-                    //var dataTH9T = valueUTH.Where(x => x.ID_CENTER == e.ID).FirstOrDefault(x=>x.th);
+                    
                     string checkID = null;
                     switch (area)
                     {
@@ -1650,11 +1656,11 @@ namespace SMO.Service.BP
                         var AdditionVT = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                         var AdditionCQ = dataCP_BS.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
 
-                        var PlanNextYearMB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
-                        var PlanNextYearMT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
-                        var PlanNextYearMN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
-                        var PlanNextYearCQ = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
-                        var PlanNextYearVT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearMB = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearMT = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearMN = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearCQ = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        var PlanNextYearVT = dataCP_PB1_next.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDVT != null ? e.IDVT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["VT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                         if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("B"))
                         {
                             PlanYearMB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE) ?? 0;
@@ -1774,7 +1780,7 @@ namespace SMO.Service.BP
 
                         x.ValueAdditionPlan = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.ValueAdditionPlan);
                         x.ValuePlantNextYear = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.ValuePlantNextYear);
-                        x.ValuePlanYear=data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.ValuePlantNextYear);
+                        x.ValuePlanYear=data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && (y.Group_2_ID == x.Group_2_ID + "AA" || y.Group_2_ID == x.Group_2_ID + "AB" || y.Group_2_ID == x.Group_2_ID + "A" || y.Group_2_ID == x.Group_2_ID + "B")).Sum(y => y.ValuePlanYear);
 
                     }
                 });
@@ -4684,7 +4690,35 @@ namespace SMO.Service.BP
                         var SumMNcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMN) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMN) && x.ORG_CODE.Contains("100004"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                         var SumVTcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDVT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDVT) && x.ORG_CODE.Contains("100005"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                         var SumCQcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDCQ) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDCQ) && x.ORG_CODE.Contains("100001"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
-                        var i = new ReportModel
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("B"))
+                        {
+                             SumMB = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMB) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMB) && x.ORG_CODE.Contains("100002"))?.Sum(x => x.PRICE>10000000 ? x.QUANTITY * x.PRICE /2:x.QUANTITY*x.PRICE) ?? 0;
+                             SumMT = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMT) && x.ORG_CODE.Contains("100003"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+                             SumMN = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMN) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMN) && x.ORG_CODE.Contains("100004"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+                             SumVT = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDVT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDVT) && x.ORG_CODE.Contains("100005"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+                             SumCQ = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDCQ) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDCQ) && x.ORG_CODE.Contains("100001"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+                             SumMBcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMB) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMB) && x.ORG_CODE.Contains("100002"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+                             SumMTcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMT) && x.ORG_CODE.Contains("100003"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+                             SumMNcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMN) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDMN) && x.ORG_CODE.Contains("100004"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+                             SumVTcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDVT) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDVT) && x.ORG_CODE.Contains("100005"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+                             SumCQcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDCQ) ? e.GROUP_1_ID + e.GROUP_2_ID : e.IDCQ) && x.ORG_CODE.Contains("100001"))?.Sum(x => x.PRICE > 10000000 ? x.QUANTITY * x.PRICE / 2 : x.QUANTITY * x.PRICE) ?? 0;
+
+                        }
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("C"))
+                        {
+                            SumMB = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMB) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0,4)+"B" : e.IDMB) && x.ORG_CODE.Contains("100002"))?.Sum(x =>  x.QUANTITY * x.PRICE) ?? 0;
+                            SumMT = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMT) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDMT) && x.ORG_CODE.Contains("100003"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            SumMN = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMN) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDMN) && x.ORG_CODE.Contains("100004"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            SumVT = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDVT) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDVT) && x.ORG_CODE.Contains("100005"))?.Sum(x =>  x.QUANTITY * x.PRICE) ?? 0;
+                            SumCQ = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDCQ) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDCQ) && x.ORG_CODE.Contains("100001"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            SumMBcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMB) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDMB) && x.ORG_CODE.Contains("100002"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            SumMTcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMT) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDMT) && x.ORG_CODE.Contains("100003"))?.Sum(x =>  x.QUANTITY * x.PRICE) ?? 0;
+                            SumMNcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDMN) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDMN) && x.ORG_CODE.Contains("100004"))?.Sum(x =>  x.QUANTITY * x.PRICE) ?? 0;
+                            SumVTcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDVT) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDVT) && x.ORG_CODE.Contains("100005"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                            SumCQcol3 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(e.IDCQ) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0, 4) + "B" : e.IDCQ) && x.ORG_CODE.Contains("100001"))?.Sum(x => x.QUANTITY * x.PRICE) ?? 0;
+                        }
+
+                            var i = new ReportModel
                         {
                             Group1 = e.GROUP_1_ID,
                             Group2=e.GROUP_2_ID,
@@ -4701,6 +4735,18 @@ namespace SMO.Service.BP
                     }
                     else
                     {
+                        var col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID : checkID)).Sum(x => x.QUANTITY * x.PRICE);
+                        var col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID : checkID)).Sum(x => x.QUANTITY * x.PRICE);
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("B"))
+                        {
+                            col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID : checkID)).Sum(x => x.QUANTITY * x.PRICE > 10000000?x.PRICE/2:x.PRICE) ;
+                            col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID : checkID)).Sum(x => x.QUANTITY * x.PRICE > 10000000 ? x.PRICE / 2 : x.PRICE);
+                        }
+                        if (e.GROUP_1_ID.Contains("6273") && e.GROUP_2_ID.EndsWith("C"))
+                        {
+                            col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0,4)+"B": checkID)).Sum(x => x.QUANTITY *  x.PRICE);
+                            col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID.Substring(0,4)+"B" : checkID)).Sum(x => x.QUANTITY * x.PRICE);
+                        }
                         var i = new ReportModel
                         {
                             Group1 = e.GROUP_1_ID,
@@ -4708,8 +4754,8 @@ namespace SMO.Service.BP
                             Stt = e.STT,
                             Name = e.GROUP_NAME,
                             IsBold = e.IS_BOLD,
-                            Col1 = details1_1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID:checkID)).Sum(x => x.QUANTITY * x.PRICE),
-                            Col2 = details3.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(string.IsNullOrEmpty(checkID) ? e.GROUP_1_ID + e.GROUP_2_ID : checkID)).Sum(x => x.QUANTITY * x.PRICE),
+                            Col1 = col1,
+                            Col2 = col2,
                             Col4 = string.IsNullOrEmpty(e.GROUP_2_ID) ? dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID).Sum(x => x.VALUE) : dataTH.Where(x => x.GROUP_1_ID == e.GROUP_1_ID && x.GROUP_2_ID.Contains(e.GROUP_2_ID)).Sum(x => x.VALUE),
                         };
                         i.Col3 = i.Col1 + i.Col2;

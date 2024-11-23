@@ -20,6 +20,7 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.TIME_YEAR);
             Map(x => x.IS_BOLD).CustomType<YesNoType>();
             Map(x => x.ACTIVE).CustomType<YesNoType>();
+            Map(x => x.AREA_CODE);
 
         }
     }
