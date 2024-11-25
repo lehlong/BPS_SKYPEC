@@ -1,0 +1,72 @@
+﻿@model SMO.Service.MD.InputKhService
+@{
+    Model.ViewId = Guid.NewGuid().ToString();
+    Model.FormId = Guid.NewGuid().ToString();
+    var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+    var yearDefault = Convert.ToString(lstTimeYear.SelectedValue);
+    var lstArea = SelectListUtilities.GetAllArea();
+}
+<div id='@Model.ViewId' class="container-fluid child-content">
+    <div class="card border-grey">
+        <div class="body" style="padding-top: 0px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a style="padding-left:0px"><i class="material-icons col-fecon">clear_all</i> DỮ LIỆU</a>
+                </li>
+            </ul>
+
+            <div class="tab-content" >
+                <div class="page-function">
+                    <div class="page-function-button m-r-20" style="float:left">
+                        @Html.MyButton("cmdBack", "Quay lại", "window.location.reload()", "Alt+N", "arrow_back")
+                        @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
+                        @Html.MyButton("cmdAdd", "Lưu dữ liệu", "saveIPutData();", "Alt+N", "done_all")
+                    </div>
+                    <divclass ="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px">
+                        <div class="col-md-2">
+                            <select class="form-control selectpicker show-tick" id="time-year">
+                                @foreach (var temp in lstTimeYear)
+                                {
+                                    if (temp.Value == yearDefault)
+                                    {
+                                        <option value="@temp.Value" selected>@temp.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                     
+                        </div>
+                </div>
+
+                <div id="divResult">
+
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+    function ViewData() {
+    $("#divReport").empty();
+    var ajaxParams = {
+        url: "@Url.Action("GenDataChiPhiKH")",
+        data: {
+            year: $("#time-year").val(),
+
+        },
+        htmlTarget: '#divResult',
+        htmlTarget: '#divResult',
+    };
+    Forms.LoadAjax(ajaxParams);
+}
+$(function () {
+    Forms.CompleteUI();
+    setTimeout(function () { ViewData() }, 100)
+});
+</script>
+
+
+

@@ -26,7 +26,7 @@
                         @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
                     </div>
                     <div class="input-group page-function-search row" style="margin-bottom: 7px !important">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <select class="form-control selectpicker show-tick" id="time-year">
                                 @foreach (var temp in lstTimeYear)
                                 {
@@ -42,7 +42,23 @@
                                 }
                             </select>
                         </div>
-                        <div class="col-md-6">
+                         <div class="col-md-4">
+                            <select class="form-control selectpicker show-tick" id="time-year-th">
+                                @foreach (var temp in lstTimeYear)
+                                {
+                                    if (temp.Value == yearDefault)
+                                    {
+                                        <option value="@temp.Value" selected>@temp.Text</option>
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
                             <select class="form-control selectpicker show-tick" id="kich-ban">
                                 @foreach (var item in lstKichBan)
                                 {
@@ -76,6 +92,7 @@
             url: "@Url.Action("GenDataKichBan")",
             data: {
                 year: $("#time-year").val(),
+    yearTH :$("#time-year-th").val(),
                 kichBan: $("#kich-ban").val()
             },
             htmlTarget:'#divReport',

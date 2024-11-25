@@ -16,6 +16,9 @@ using NHibernate.Linq;
 using SMO.Models;
 using SMO.Repository.Implement.MD;
 using SMO.Core.Entities.BP;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using SMO.Service.BP;
 
 namespace SMO.Service.AD
 {
@@ -725,7 +728,17 @@ namespace SMO.Service.AD
                 this.Exception = ex;
             }
         }
-        public static DataTable ReadData(string filePath)
+        public void ExportExcelGridData(ref MemoryStream outFileStream, string path, string Template)
+        {
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            IWorkbook templateWorkbook;
+            templateWorkbook = new XSSFWorkbook(fs);
+            //templateWorkbook.SetSheetName(0, ModulType.GetTextSheetName(ModulType.KeHoachSanLuong));
+            fs.Close();
+            ISheet sheet = templateWorkbook.GetSheetAt(0);
+            var startRow =7;
+        }
+            public static DataTable ReadData(string filePath)
         {
             using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
             {

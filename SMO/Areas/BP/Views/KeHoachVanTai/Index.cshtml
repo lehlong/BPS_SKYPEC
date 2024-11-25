@@ -12,8 +12,7 @@
     }
 </style>
 <div id="@Model.ViewId">
-    @using (Ajax.BeginForm("ImportFile", null, FormDataUtils.GetAjaxOptions(Model.ViewId), new { @id = Model.FormId, @enctype = "multipart/form-data" }))
-    {
+  
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.YEAR)
         <div class="container-fluid child-content">
@@ -62,7 +61,7 @@
                 </div>
             </div>
         </div>
-    }
+ 
     </div>
 
 <script>

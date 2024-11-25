@@ -1,105 +1,102 @@
 ﻿
-@model List<SMO.Core.Entities.MD.T_MD_INPUT_CHI_PHI>
+@model List<SMO.Core.Entities.MD.T_MD_INPUT_KH>
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
 @{
     var data = Model.Select(x => new
     {
-        idTH=x.ID,
-        Group_1_id= x.GROUP_1_ID,
-        Group_2_id = x.GROUP_2_ID,
-        id_Center = x.ID_CENTER,
-        groupName = x.GROUP_NAME,
-        th9t=x.TH9T,
-        uth=x.UOC_THUC_HIEN,
+        idTH = x.ID,
+        Parent = x.PARENT,
+        cOrder=x.C_ORDER,
+      
+        Name = x.NAME,
+        Dvt = x.DVT,
+        khv2=x.KH_V2,
         stt = x.STT,
         isBold = x.IS_BOLD,
-        AREA_CODE=x.AREA_CODE
+        
     }
         );
 
     var gridId = Guid.NewGuid().ToString();
-    var edit = string.IsNullOrEmpty(ViewBag.areacode) ? false : true;
+    
 
 }
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
 <script>
     const rawData =  @Html.Raw(JsonConvert.SerializeObject(data));
-    const editcell = @Html.Raw(JsonConvert.SerializeObject(edit));
-  
-    
+ 
+
+
     let columns = [
         { id: "stt", header: [{ text: "Stt", align: "center" }], minWidth: 220 },
-        { id: "groupName", header: [{ text: "Hạng mục", align: "center" }], minWidth: 500 },
-        { id: "th9t", header: [{ text: "TH9T", align: "center" }], minWidth: 500, editable: editcell, },
-        { id: "uth", header: [{ text: "Ước Thực hiện", align: "center" }], minWidth: 500, editable: editcell, },
+        { id: "Name", header: [{ text: "Hạng mục", align: "center" }], minWidth: 500 },
+        { id: "Dvt", header: [{ text: "DVT", align: "center" }], minWidth: 500, },
+        { id: "khv2", header: [{ text: "KH(V2)", align: "center" }], minWidth: 500, editable: true },
     ];
-    const Gird = new dhx.Grid("@gridId", {
+    const Gird = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
         selection: "row",
         resizable: true,
-
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
     let valuechange = [];
     Gird.events.on("afterEditEnd", (value, row, column) => {
-        const index = valuechange.findIndex(item => item.ID_CENTER === row.id_Center);
+        const index = valuechange.findIndex(item => item.ID === row.idTH);
 
         if (index !== -1) {
             // Nếu hàng đã tồn tại, cập nhật giá trị
             valuechange[index] = {
-                ID:row.idTH,
+
+                ID_CENTER: row.idTH,
                 IS_BOLD: row.isBold,
-                GROUP_1_ID: row.Group_1_id,
-                GROUP_2_ID: row.Group_2_id,
-                ID_CENTER: row.id_Center,
-                GROUP_NAME: row.groupName,
-                TH9T: row.th9t,
-                UOC_THUC_HIEN: row.uth,
-                STT: row.stt
+                NAME: row.Name,
+                PARENT: row.Parent,
+                STT: row.stt,
+                C_ORDER:row.cOrder,
+                KH_V2: row.khv2,
+                DVT: row.Dvt
             };
         } else {
             // Nếu hàng chưa tồn tại, thêm mới
             valuechange.push({
-                ID: row.idTH,
+                ID_CENTER: row.idTH,
                 IS_BOLD: row.isBold,
-                GROUP_1_ID: row.Group_1_id,
-                GROUP_2_ID: row.Group_2_id,
-                ID_CENTER: row.id_Center,
-                GROUP_NAME: row.groupName,
-                TH9T: row.th9t,
-                UOC_THUC_HIEN: row.uth,
-                STT: row.stt
+                NAME: row.Name,
+                PARENT: row.Parent,
+                STT: row.stt,
+                C_ORDER:row.cOrder,
+                KH_V2: row.khv2,
+                DVT: row.Dvt
             });
         }
         console.log(valuechange);
     });
+
     Gird.events.on("cellClick", (row, column, editorType) => {
-        if (editcell == true) {
-            if (row.isBold == true && row.stt!="VIII") {
+   
+            if (row.isBold == true) {
                 column.editable = false
 
             } else {
                 column.editable = true
 
             }
-        }
-      
-
     });
+
 
        function saveIPutData() {
            var year = $("#time-year").val();
-           var area = $("#area").val();
+
             var ajaxParams = {
          url: "@Url.Action("Update")",
          type: "POST",
          data: {
              data: JSON.stringify(valuechange),
              year: year,
-             area: area
+     
          },
          dataType: 'json',
          success: function (response) {

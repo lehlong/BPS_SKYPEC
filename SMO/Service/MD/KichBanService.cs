@@ -53,6 +53,7 @@ namespace SMO.Service.MD
             var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
             foreach(var e in elements)
             {
+                //var a = ($"{e.TH_2.Replace("[YEAR]", (year - 2).ToString()).Replace("[KICH_BAN]", kichBan)}"); 
                 var i = new SynthesisReportModel
                 {
                     PId = e.ID,
@@ -62,9 +63,9 @@ namespace SMO.Service.MD
                     UnitName = e.DVT,
                     IsBold = e.IS_BOLD,
                     Order = e.C_ORDER,
+                    Value1 = string.IsNullOrEmpty(e.TH_2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TH_2.Replace("[YEAR]", (year-2).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value2 = string.IsNullOrEmpty(e.KH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value4 = string.IsNullOrEmpty(e.UTH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.UTH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
-
                     Value5 = string.IsNullOrEmpty(e.KH_V1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V1.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]",kichBan)}").List()[0]),
                     Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                 };
@@ -85,6 +86,48 @@ namespace SMO.Service.MD
                 d.Value7 = d.Value5 == 0 || d.Value1 == 0 ? 0 : d.Value5 / d.Value1;
                 d.Value8 = d.Value5 == 0 || d.Value4 == 0 ? 0 : d.Value5 / d.Value4;
                 d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0: d.Value4 / d.Value2;
+            }
+            return data;
+        }
+        public IList<SynthesisReportModel> GetDataTH(int year, string kichBan, int yearTH)
+        {
+            var data = new List<SynthesisReportModel>();
+            var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+            foreach (var e in elements)
+            {
+                //var a = ($"{e.TH_2.Replace("[YEAR]", (year - 2).ToString()).Replace("[KICH_BAN]", kichBan)}"); 
+                var i = new SynthesisReportModel
+                {
+                    PId = e.ID,
+                    Parent = e.PARENT,
+                    Stt = e.STT,
+                    Name = e.NAME,
+                    UnitName = e.DVT,
+                    IsBold = e.IS_BOLD,
+                    Order = e.C_ORDER,
+                    Value1 = string.IsNullOrEmpty(e.TH_2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TH_2.Replace("[YEAR]", (yearTH).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                    Value2 = string.IsNullOrEmpty(e.KH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                    Value4 = string.IsNullOrEmpty(e.UTH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.UTH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                    Value5 = string.IsNullOrEmpty(e.KH_V1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V1.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                    Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                };
+                data.Add(i);
+            }
+            foreach (var d in data.OrderByDescending(x => x.Order))
+            {
+                var childs = data.Where(x => x.Parent == d.PId).ToList();
+                d.Value1 = childs.Sum(x => x.Value1) == 0 || d.Value1 != 0 ? d.Value1 : childs.Sum(x => x.Value1);
+                d.Value2 = childs.Sum(x => x.Value2) == 0 || d.Value2 != 0 ? d.Value2 : childs.Sum(x => x.Value2);
+                d.Value3 = childs.Sum(x => x.Value3) == 0 || d.Value3 != 0 ? d.Value3 : childs.Sum(x => x.Value3);
+                d.Value4 = childs.Sum(x => x.Value4) == 0 || d.Value4 != 0 ? d.Value4 : childs.Sum(x => x.Value4);
+                d.Value5 = childs.Sum(x => x.Value5) == 0 || d.Value5 != 0 ? d.Value5 : childs.Sum(x => x.Value5);
+                d.Value6 = childs.Sum(x => x.Value6) == 0 || d.Value6 != 0 ? d.Value6 : childs.Sum(x => x.Value6);
+            }
+            foreach (var d in data)
+            {
+                d.Value7 = d.Value5 == 0 || d.Value1 == 0 ? 0 : d.Value5 / d.Value1;
+                d.Value8 = d.Value5 == 0 || d.Value4 == 0 ? 0 : d.Value5 / d.Value4;
+                d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0 : d.Value4 / d.Value2;
             }
             return data;
         }

@@ -41,9 +41,9 @@ namespace SMO.Areas.BP.Controllers
             }
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_KICH_BAN.xlsx");
         }
-        public ActionResult GenDataKichBan(int year, string kichBan)
+        public ActionResult GenDataKichBan(int year, string kichBan, int yearTH)
         {
-            var data = _serviceKichBan.GetData(year, kichBan);
+            var data = _serviceKichBan.GetDataTH(year, kichBan, yearTH);
             ViewBag.KichBan = kichBan;
             ViewBag.Year = year;
             return PartialView(data);

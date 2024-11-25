@@ -292,6 +292,7 @@
     <Compile Include="Implement\MD\KhoanMucHangHoaRepo.cs" />
     <Compile Include="Implement\MD\NhomSanBayRepo.cs" />
     <Compile Include="Implement\MD\ReportChiPhiCodeRepo.cs" />
+    <Compile Include="Implement\MD\InputKh.cs" />
     <Compile Include="Implement\MD\ReportSXKDElementRepo.cs" />
     <Compile Include="Implement\MD\SuaChuaThuongXuyenProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucChiPhiRepo.cs" />
@@ -589,6 +590,7 @@
     <Compile Include="Interface\MD\IProvinceRepo.cs" />
     <Compile Include="Interface\MD\IPurchaseDataRepo.cs" />
     <Compile Include="Interface\MD\IReportChiPhiCodeRepo.cs" />
+    <Compile Include="Interface\MD\IInputKH.cs" />
     <Compile Include="Interface\MD\IReportSXKDElementRepo.cs" />
     <Compile Include="Interface\MD\IRouteRepo.cs" />
     <Compile Include="Interface\MD\ISanBayRepo.cs" />
@@ -870,6 +872,7 @@
     <Compile Include="Mapping\MD\T_MD_PROVINCE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_PURCHASE_DATA_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_REPORT_CHI_PHI_CODE_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_INPUT_KH_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_REPORT_SXKD_ELEMENT_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_ROUTE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_SAN_BAY_Map.cs" />
