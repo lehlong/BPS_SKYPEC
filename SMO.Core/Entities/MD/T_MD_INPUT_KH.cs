@@ -7,7 +7,7 @@ namespace SMO.Core.Entities.MD
     {
         public virtual Guid ID { get; set; }
         public virtual Guid PARENT { get; set; }
-        public virtual string ID_CENTER { get; set; }
+        public virtual Guid ID_CENTER { get; set; }
         public virtual int C_ORDER { get; set; }
         public virtual bool IS_BOLD { get; set; }
         public virtual string STT { get; set; }
