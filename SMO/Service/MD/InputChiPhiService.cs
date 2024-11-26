@@ -80,7 +80,7 @@ namespace SMO.Service.MD
                 UnitOfWork.BeginTransaction();
                 foreach (var item in data)
                 {
-                        var chexexist = databytime.FirstOrDefault(x => x.ID_CENTER == item.ID_CENTER);
+                        var chexexist = databytime.FirstOrDefault(x => x.ID_CENTER == item.ID_CENTER && x.AREA_CODE==area);
                     if(chexexist== null)
                     {
                         var pdata = new T_MD_INPUT_CHI_PHI

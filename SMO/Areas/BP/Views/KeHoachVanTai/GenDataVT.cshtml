@@ -126,7 +126,8 @@
      function ExportData() {
         var Treedata = JSON.stringify(grid.data.serialize());
         var template = "BM_02C";
-		var template = "KeHoachVanTai";
+         var template = "KeHoachVanTai";
+         console.log(Treedata)
 		$('#@formIdExportExcel #Treedata').val(Treedata);
 		$('#@formIdExportExcel #Template').val(template);
          $('#@formIdExportExcel').submit();
