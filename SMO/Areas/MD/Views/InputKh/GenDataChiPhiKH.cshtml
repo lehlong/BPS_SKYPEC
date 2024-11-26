@@ -14,7 +14,8 @@
         khv2=x.KH_V2,
         stt = x.STT,
         isBold = x.IS_BOLD,
-        
+        DN9T=x.DN9T,
+        UTH=x.UTH,
     }
         );
 
@@ -31,9 +32,12 @@
 
     let columns = [
         { id: "stt", header: [{ text: "Stt", align: "center" }], minWidth: 220 },
-        { id: "Name", header: [{ text: "Hạng mục", align: "center" }], minWidth: 500 },
-        { id: "Dvt", header: [{ text: "DVT", align: "center" }], minWidth: 500, },
-        { id: "khv2", header: [{ text: "KH(V2)", align: "center" }], minWidth: 500, editable: true },
+        { id: "Name", header: [{ text: "Hạng mục", align: "center" }], minWidth: 200 },
+        { id: "Dvt", header: [{ text: "DVT", align: "center" }], minWidth: 200, },
+        { id: "khv2", header: [{ text: "KH(V2)", align: "center" }], minWidth: 200, editable: true },
+        { id: "DN9T", header: [{ text: "9TDN", align: "center" }], minWidth: 200, editable: true },
+        { id: "UTH", header: [{ text: "UTh", align: "center" }], minWidth: 200, editable: true },
+        
     ];
     const Gird = new dhx.TreeGrid("@gridId", {
         columns,
@@ -57,7 +61,9 @@
                 STT: row.stt,
                 C_ORDER:row.cOrder,
                 KH_V2: row.khv2,
-                DVT: row.Dvt
+                DVT: row.Dvt,
+                UTH: row.UTH,
+                DN9T: row.DN9T,
             };
         } else {
             // Nếu hàng chưa tồn tại, thêm mới
@@ -69,7 +75,9 @@
                 STT: row.stt,
                 C_ORDER:row.cOrder,
                 KH_V2: row.khv2,
-                DVT: row.Dvt
+                DVT: row.Dvt,
+                UTH: row.UTH,
+                DN9T: row.DN9T,
             });
         }
         console.log(valuechange);

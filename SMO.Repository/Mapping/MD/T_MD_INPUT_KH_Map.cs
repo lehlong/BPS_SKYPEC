@@ -20,6 +20,8 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.DVT);
             Map(x => x.KH_V2);
             Map(x => x.YEAR);
+            Map(x => x.DN9T);
+            Map(x => x.UTH);    
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
         }
     }

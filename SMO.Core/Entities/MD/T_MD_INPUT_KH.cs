@@ -15,6 +15,8 @@ namespace SMO.Core.Entities.MD
         public virtual string KH_V2 { get; set; }
         public virtual string DVT { get; set; }
         public virtual int YEAR { get; set; }
+        public virtual decimal?  DN9T { get; set; }
+        public virtual decimal? UTH { get; set; }
 
     }
 }

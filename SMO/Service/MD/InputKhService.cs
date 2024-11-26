@@ -42,6 +42,8 @@ namespace SMO.Service.MD
                         NAME = e.table1.NAME,
                         DVT = e.table1.DVT,
                         KH_V2 = e.col?.KH_V2,
+                        DN9T = e.col?.DN9T,
+                        UTH = e.col?.UTH,
                     };
                     data.Add(temp);
                 }
@@ -79,13 +81,16 @@ namespace SMO.Service.MD
                             IS_BOLD = item.IS_BOLD,
                             KH_V2=item.KH_V2,
                             ID_CENTER = item.ID_CENTER,
-
+                            UTH = item.UTH,
+                            DN9T = item.DN9T,
 
                         };
                         UnitOfWork.Repository<InputKhRepo>().Create(pdata);
                     }
                     else
                     {
+                        chexexist.DN9T = item.DN9T;
+                        chexexist.UTH = item.UTH;   
                         chexexist.KH_V2 = item.KH_V2;
                         UnitOfWork.Repository<InputKhRepo>().Update(chexexist);
                     }
