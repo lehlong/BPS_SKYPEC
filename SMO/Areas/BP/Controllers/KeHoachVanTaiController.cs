@@ -67,7 +67,7 @@ namespace SMO.Areas.BP.Controllers
            
             MemoryStream outFileStream = new MemoryStream();
             var path = Server.MapPath("~/TemplateExcel/" + "KeHoachVanTai.xlsx");
-            //_service.ExportExcelGridData(ref outFileStream, dataTab1, dataTab2, dataTab3, dataTab4, path);
+            //_service.ExportExcelGridData(ref outFileStream,treedata path);
             var fileName = "Kế_Hoạch_Vận_Tải";
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
 

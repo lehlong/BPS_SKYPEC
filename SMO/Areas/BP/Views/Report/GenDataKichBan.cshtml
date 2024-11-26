@@ -4,6 +4,7 @@
 @using Newtonsoft.Json.Serialization;
 @{
     var year = ViewBag.Year as int?;
+    var yearTH = ViewBag.Yth as int?;
     var gridId = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
@@ -16,7 +17,7 @@
             { id: "name", header: [{ text: "DIỄN GIẢI", align: "center" }, {content: 'inputFilter'}], adjust: true },
             { id: "unitName", header: [{ text: "ĐVT", align: "center", rowspan: 2 }], align: "center" },
 
-            { id: "value1", header: [{ text: "TH @(year - 2)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value1", header: [{ text: "TH @(yearTH)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
             { id: "value2", header: [{ text: "NĂM @(year - 1)", align: "center", colspan: 4 }, { text: "KH (V2)", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
 
             { id: "value3", header: ['', { text: "9T ĐN", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },

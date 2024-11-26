@@ -46,6 +46,7 @@ namespace SMO.Areas.BP.Controllers
             var data = _serviceKichBan.GetDataTH(year, kichBan, yearTH);
             ViewBag.KichBan = kichBan;
             ViewBag.Year = year;
+            ViewBag.Yth = yearTH;
             return PartialView(data);
         }
         public ActionResult IndexPhienBan()

@@ -758,5 +758,90 @@ namespace SMO.Service.AD
                 }
             }
         }
+        public  class VtData
+        {
+            public  Guid ID { get; set; }
+            public  int YEAR { get; set; }
+            public  string COL1 { get; set; }
+            public  string COL2 { get; set; }
+            public  decimal? COL3 { get; set; }
+            public  decimal? COL4 { get; set; }
+            public  string COL5 { get; set; }
+            public  decimal? COL6 { get; set; }
+            public  decimal? COL7 { get; set; }
+            public  decimal? COL8 { get; set; }
+            public  decimal? COL9 { get; set; }
+            public  decimal? COL10 { get; set; }
+            public  decimal? COL11 { get; set; }
+            public  decimal? COL12 { get; set; }
+            public  decimal? COL13 { get; set; }
+            public  decimal? COL14 { get; set; }
+            public  decimal? COL15 { get; set; }
+            public  decimal? COL16 { get; set; }
+            public  decimal? COL17 { get; set; }
+            public  decimal? COL18 { get; set; }
+            public  decimal? COL19 { get; set; }
+            public  decimal? COL20 { get; set; }
+            public  decimal? COL21 { get; set; }
+            public  decimal? COL22 { get; set; }
+            public  decimal? COL23 { get; set; }
+            public  decimal? COL24 { get; set; }
+            public  decimal? COL25 { get; set; }
+            public  decimal? COL26 { get; set; }
+            public  decimal? COL27 { get; set; }
+            public  decimal? COL28 { get; set; }
+            public  decimal? COL29 { get; set; }
+            public  decimal? COL30 { get; set; }
+            public  decimal? COL31 { get; set; }
+            public  decimal? COL32 { get; set; }
+            public  decimal? COL33 { get; set; }
+            public  decimal? COL34 { get; set; }
+            public  decimal? COL35 { get; set; }
+            public  decimal? COL36 { get; set; }
+            public  decimal? COL37 { get; set; }
+            public  decimal? COL38 { get; set; }
+            public  decimal? COL39 { get; set; }
+            public  decimal? COL40 { get; set; }
+            public  decimal? COL41 { get; set; }
+            public  decimal? COL42 { get; set; }
+            public  decimal? COL43 { get; set; }
+            public  decimal? COL44 { get; set; }
+            public  decimal? COL45 { get; set; }
+            public  decimal? COL46 { get; set; }
+            public  decimal? COL47 { get; set; }
+            public  decimal? COL48 { get; set; }
+            public  decimal? COL49 { get; set; }
+            public  decimal? COL50 { get; set; }
+            public  decimal? COL51 { get; set; }
+            public  decimal? COL52 { get; set; }
+            public  decimal? COL53 { get; set; }
+            public  decimal? COL54 { get; set; }
+            public  decimal? COL55 { get; set; }
+            public  decimal? COL56 { get; set; }
+            public  decimal? COL57 { get; set; }
+            public  decimal? COL58 { get; set; }
+            public  decimal? COL59 { get; set; }
+            public  decimal? COL60 { get; set; }
+            public  decimal? COL61 { get; set; }
+            public  decimal? COL62 { get; set; }
+            public  decimal? COL63 { get; set; }
+            public  decimal? COL64 { get; set; }
+            public  decimal? COL65 { get; set; }
+            public  decimal? COL66 { get; set; }
+            public  decimal? COL67 { get; set; }
+            public  decimal? COL68 { get; set; }
+            public  decimal? COL69 { get; set; }
+            public  decimal? COL70 { get; set; }
+            public  decimal? COL71 { get; set; }
+            public  decimal? COL72 { get; set; }
+            public  decimal? COL73 { get; set; }
+            public  decimal? COL74 { get; set; }
+            public  decimal? COL75 { get; set; }
+            public  decimal? COL76 { get; set; }
+            public  decimal? COL77 { get; set; }
+            public  decimal? COL78 { get; set; }
+            public  int C_ORDER { get; set; }
+
+        }
     }
 }
