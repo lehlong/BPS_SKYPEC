@@ -8,7 +8,7 @@
         idTH = x.ID,
         Parent = x.PARENT,
         cOrder=x.C_ORDER,
-      
+        ID_CENTER=x.ID_CENTER,  
         Name = x.NAME,
         Dvt = x.DVT,
         khv2=x.KH_V2,
@@ -48,8 +48,9 @@
     });
     let valuechange = [];
     Gird.events.on("afterEditEnd", (value, row, column) => {
-        const index = valuechange.findIndex(item => item.ID === row.idTH);
-
+        console.log(row);
+        const index = valuechange.findIndex(item => item.ID_CENTER == row.idTH);
+        console.log(index);
         if (index !== -1) {
             // Nếu hàng đã tồn tại, cập nhật giá trị
             valuechange[index] = {

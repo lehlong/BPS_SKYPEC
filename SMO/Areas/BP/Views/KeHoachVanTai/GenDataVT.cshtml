@@ -123,8 +123,11 @@
         rowHeight: 30,
     });
 
-     function ExportData() {
-        var Treedata = JSON.stringify(grid.data.serialize());
+    function ExportData() {
+
+        var listData = grid.data.serialize()
+        var Dataexceptd = listData.map(({ id, ...rest }) => rest);
+        var Treedata = JSON.stringify(Dataexceptd);
         var template = "BM_02C";
          var template = "KeHoachVanTai";
          console.log(Treedata)

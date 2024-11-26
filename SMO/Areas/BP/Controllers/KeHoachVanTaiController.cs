@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using NPOI.XSSF.Streaming.Values;
 using SMO.Core.Entities.BP;
+using SMO.Core.Entities.BP.KE_HOACH_VAN_CHUYEN;
+using SMO.Repository.Mapping.BP;
 using SMO.Service.AD;
 using SMO.Service.BP.KE_HOACH_DOANH_THU;
 using SMO.Service.BP.KE_HOACH_SAN_LUONG;
@@ -12,6 +14,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using static SMO.Service.AD.UserService;
 
 namespace SMO.Areas.BP.Controllers
 {
@@ -62,15 +65,14 @@ namespace SMO.Areas.BP.Controllers
             var data = _service.GetDataVT(year);
             return PartialView("GenDataVT", data);
         }
-        public FileContentResult ExportExcelGridData(List<T_BP_KE_HOACH_VAN_TAI> Treedata , string template)
+        public FileContentResult ExportExcelGridData(string Treedata , string template)
         {
-           
+            var dataTab1 = JsonConvert.DeserializeObject<List<T_BP_KE_HOACH_VAN_TAI>>(Treedata);
             MemoryStream outFileStream = new MemoryStream();
             var path = Server.MapPath("~/TemplateExcel/" + "KeHoachVanTai.xlsx");
-            //_service.ExportExcelGridData(ref outFileStream,treedata path);
+            _service.ExportExcelGridData(ref outFileStream , path, dataTab1);
             var fileName = "Kế_Hoạch_Vận_Tải";
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
-
         }
     }
 }
