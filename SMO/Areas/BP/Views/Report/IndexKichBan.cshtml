@@ -106,6 +106,7 @@
     function ExportData() {
         var year = $("#time-year").val();
         var kichBan = $("#kich-ban").val();
-        window.open(`/BP/Report/ExportExcelDataKichBan?year=${year}&kichBan=${kichBan}`, '_blank');
+        var yearTH = $("#time-year-th").val();
+        window.open(`/BP/Report/ExportExcelDataKichBan?year=${year}&kichBan=${kichBan}&yearTH=${yearTH}`, '_blank');
     }
 </script>

@@ -85,7 +85,7 @@ namespace SMO.Service.MD
             {
                 d.Value7 = d.Value5 == 0 || d.Value1 == 0 ? 0 : d.Value5 / d.Value1;
                 d.Value8 = d.Value5 == 0 || d.Value4 == 0 ? 0 : d.Value5 / d.Value4;
-                d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0: d.Value4 / d.Value2;
+                d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0: (d.Value4 / d.Value2) *100;
             }
             return data;
         }
@@ -93,9 +93,11 @@ namespace SMO.Service.MD
         {
             var data = new List<SynthesisReportModel>();
             var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+
+           
             foreach (var e in elements)
             {
-                //var a = ($"{e.TH_2.Replace("[YEAR]", (year - 2).ToString()).Replace("[KICH_BAN]", kichBan)}"); 
+               
                 var i = new SynthesisReportModel
                 {
                     PId = e.ID,
@@ -109,6 +111,7 @@ namespace SMO.Service.MD
                     Value2 = string.IsNullOrEmpty(e.KH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value4 = string.IsNullOrEmpty(e.UTH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.UTH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value5 = string.IsNullOrEmpty(e.KH_V1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V1.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                    Value3 = string.IsNullOrEmpty(e.TDN_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TDN_1.Replace("[YEAR]", (year-1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                 };
                 data.Add(i);
@@ -133,7 +136,7 @@ namespace SMO.Service.MD
         }
 
         internal void ExportExcel(ref MemoryStream outFileStream,
-                                        string path, int year, string kichBan)
+                                        string path, int year, string kichBan,int yearTH)
         {
             try
             {
@@ -142,11 +145,21 @@ namespace SMO.Service.MD
                 templateWorkbook = new XSSFWorkbook(fs);
                 fs.Close();
                 ISheet sheet = templateWorkbook.GetSheetAt(0);
-                //var styleCellNumber = GetCellStyleNumber(templateWorkbook);
-                //var styleCellNumberDecimal = GetCellStyleNumberDecimal(templateWorkbook);
-
-                var data = GetData(year, kichBan);
-
+                //Fill data into merge cell in header
+                IRow rowHeader = sheet.GetRow(6);
+                ICell cellTH = rowHeader.GetCell(3);
+                cellTH.SetCellValue($"TH{yearTH}");
+                ICell cellKH = rowHeader.GetCell(4);
+                cellKH.SetCellValue($"KH{year-1}");
+                ICell cellV1 = rowHeader.GetCell(8);
+                cellV1.SetCellValue($"KH{year} V1");
+                ICell cellV2 = rowHeader.GetCell(9);
+                cellV2.SetCellValue($"KH{year} V2");
+                ICell CellKHTH= rowHeader.GetCell(10);
+                CellKHTH.SetCellValue($"KH{year}/TH{yearTH}(%)");
+                ICell CellKHUTH = rowHeader.GetCell(11);
+                CellKHUTH.SetCellValue($"KH{year}/UTH{year-1}%");
+                var data =  GetDataTH(year,kichBan,yearTH);
                 if (data.Count <= 1)
                 {
                     this.State = false;
@@ -164,10 +177,11 @@ namespace SMO.Service.MD
                     rowCur.Cells[4].SetCellValue(data[i]?.Value2 == null ? 0 : (double)data[i]?.Value2);
                     rowCur.Cells[5].SetCellValue(data[i]?.Value3 == null ? 0 : (double)data[i]?.Value3);
                     rowCur.Cells[6].SetCellValue(data[i]?.Value4 == null ? 0 : (double)data[i]?.Value4);
-                    rowCur.Cells[7].SetCellValue(data[i]?.Value5 == null ? 0 : (double)data[i]?.Value5);
-                    rowCur.Cells[8].SetCellValue(data[i]?.Value6 == null ? 0 : (double)data[i]?.Value6);
-                    rowCur.Cells[9].SetCellValue(data[i]?.Value7 == null ? 0 : (double)data[i]?.Value7);
-                    rowCur.Cells[10].SetCellValue(data[i]?.Value8 == null ? 0 : (double)data[i]?.Value8);
+                    rowCur.Cells[7].SetCellValue(data[i]?.Value9 == null ? 0 : (double)data[i]?.Value9);
+                    rowCur.Cells[8].SetCellValue(data[i]?.Value5 == null ? 0 : (double)data[i]?.Value5);
+                    rowCur.Cells[9].SetCellValue(data[i]?.Value6 == null ? 0 : (double)data[i]?.Value6);
+                    rowCur.Cells[10].SetCellValue(data[i]?.Value7 == null ? 0 : (double)data[i]?.Value7);
+                    rowCur.Cells[11].SetCellValue(data[i]?.Value8 == null ? 0 : (double)data[i]?.Value8);
                 }
                 templateWorkbook.Write(outFileStream);
             }

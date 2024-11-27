@@ -30,11 +30,11 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult ExportExcelDataKichBan(int year, string kichBan)
+        public ActionResult ExportExcelDataKichBan(int year, string kichBan,int yearTH)
         {
             MemoryStream outFileStream = new MemoryStream();
             var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_KICH_BAN.xlsx");
-            _serviceKichBan.ExportExcel(ref outFileStream, path, year, kichBan);
+            _serviceKichBan.ExportExcel(ref outFileStream, path, year, kichBan, yearTH);
             if (!_serviceKichBan.State)
             {
                 return Content(_serviceKichBan.ErrorMessage);

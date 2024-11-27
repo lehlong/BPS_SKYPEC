@@ -7,6 +7,22 @@
     var yearTH = ViewBag.Yth as int?;
     var gridId = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+    var data = Model.Select(x => new
+    {
+        stt = x.Stt,
+        name = x.Name,
+        unitName = x.UnitName,
+        value1 = x.Value1,
+        value2 = x.Value2,
+        value3 = x.Value3,
+        value4 = x.Value4,
+        value5 = x.Value5/1000000,
+        value6 = x.Value6/1000000,
+        value7 =$"{Math.Round((double)x.Value7,2)}%",
+        value8 =$"{Math.Round((double)x.Value8,2)}%" ,
+        value9 = $"{Math.Round((double)x.Value9*100,0)}%",
+        isBold = x.IsBold
+    });
 }
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
@@ -20,17 +36,17 @@
             { id: "value1", header: [{ text: "TH @(yearTH)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
             { id: "value2", header: [{ text: "NĂM @(year - 1)", align: "center", colspan: 4 }, { text: "KH (V2)", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
 
-            { id: "value3", header: ['', { text: "9T ĐN", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value3", header: ['', { text: "9T ĐN", align: "center" }], align: "right", type: "number", format: "#.#", width: 200 },
             { id: "value4", header: ['', { text: "ƯỚC TH NĂM", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
-            { id: "value9", header: ['', { text: "% TH/KH", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value9", header: ['', { text: "% UTH/KH(V2)", align: "center" }], align: "right", width: 200 },
 
             { id: "value5", header: [{ text: "KH @year (V1)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
             { id: "value6", header: [{ text: "KH @year (V2)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
-            { id: "value7", header: [{ text: "KH @year / TH @(year -2) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value7", header: [{ text: "KH @year / TH @(yearTH) (%)", align: "center", rowspan: 2 }], align: "right",width: 146 },
             { id: "value8", header: [{ text: "KH @year / ƯTH @(year - 1) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
 
         ],
-        data: @Html.Raw(JsonConvert.SerializeObject(Model, jsonSerializeSettings)),
+        data: @Html.Raw(JsonConvert.SerializeObject(data, jsonSerializeSettings)),
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
