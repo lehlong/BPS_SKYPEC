@@ -1688,6 +1688,20 @@ namespace SMO.Service.MD
                     }
                     orderArea += 1;
                 }
+                // insert item  to 1th in data.Sanluong
+                data.SanLuong.Insert(0, new SanLuong
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Code = "TỔNG CỘNG TOÀN CÔNG TY",
+                    Value1 = data.SanLuong.Where(x => x.IsBold == true).Sum(x => x.Value1),
+                    Value2 = data.SanLuong.Where(x => x.IsBold == true).Sum(x => x.Value2),
+                    Value3 = data.SanLuong.Where(x => x.IsBold == true).Sum(x => x.Value3),
+                    Value4=data.SanLuong.Where(x=>x.IsBold==true).Sum(x=>x.Value4),
+                    Value5 = data.SanLuong.Where(x => x.IsBold == true).Sum(x => x.Value5),
+                    IsBold=true
+                });
+
+
                 #endregion
 
                 #region KẾ HOẠCH ĐẦU TƯ XDCB, TTB
@@ -1704,8 +1718,14 @@ namespace SMO.Service.MD
                 {
                     data.DauTu.AddRange(GetDauTuKHTHByArea(area, year, phienBan, kichBan));
                 }
-
-
+                
+                data.DauTu.Insert(0, new DauTu
+                {
+                    Name= "TỔNG CỘNG TOÀN CÔNG TY",
+                    Value2 = data.DauTu.Where(x => x.IsBold == true && string.IsNullOrEmpty(x.Stt)).Sum(x => x.Value2),
+                    Value5= data.DauTu.Where(x => x.IsBold == true && string.IsNullOrEmpty(x.Stt)).Sum(x => x.Value5), 
+                    IsBold=true
+                });
                 #endregion
 
                 #region KẾ HOẠCH SỬA CHỮA LỚN
@@ -5480,7 +5500,7 @@ namespace SMO.Service.MD
                     Stt = "1",
                     name = "Đầu tư xây dựng cơ bản",
                     Col2 = dataXDCB.Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataXDCB.Sum(x => x.VALUE_8),
+                    Col3 = dataXDCB.Sum(x => x.VALUE_5),
 
                 });
                 data.Add(new ReportDauTuModel

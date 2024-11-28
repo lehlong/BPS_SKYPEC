@@ -6,8 +6,22 @@
     var gridId = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var formIdExportExcel = Guid.NewGuid();
-    var data = Model.chiPhiQT21InReports;
-
+    var data = Model.chiPhiQT21InReports.Select(x=> new
+    {
+        Stt = x.Stt,
+        name = x.name,
+        ValueQt = x.ValueQt,
+        ValuePlanYear = x.ValuePlanYear,
+        ValueAdditionPlan = x.ValueAdditionPlan,
+        ValueAfterAdditionPlan = x.ValueAfterAdditionPlan,
+        ValueTH9T = x.ValueTH9T,
+        ValueUocThucHien = x.ValueUocThucHien,
+        ValuePercentPlant = $"{Math.Round(x.ValuePercentPlant*100,2)} %",
+        ValuePlantNextYear = x.ValuePlantNextYear,
+        des = x.des,
+        IsBold = x.IsBold
+    });
+    
 }
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
@@ -18,26 +32,25 @@
     </form>
 </div>
 <script type="text/javascript">
-    const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.chiPhiQT21InReports));
+    const rawData = @Html.Raw(JsonConvert.SerializeObject(data));
     console.log(rawData)
     const treeGrid = new dhx.Grid("@gridId", {
         columns: [
-            { id: "Stt", header: [{ text: "Số thứ tự", align: "center", }], adjust: true },
+            { id: "Stt", header: [{ text: "STT", align: "center", }], adjust: true, minWidth: 100, },
             { id: "name", header: [{ text: "Danh mục chi phí", align: "center",  }], adjust: true },
             { id: "ValueQt", header: [{ text: "Giá trị quyết toán năm trước", align: "center",  }], adjust: true ,format:"#.#"},
             { id: "ValuePlanYear", header: [{ text: "Kế hoạch năm", align: "center",  }], adjust: true, format: "#.#" },
-            { id: "ValueAdditionPlan", header: [{ text: "Kế hoạch bổ xung điều chỉnh", align: "center",  }], adjust: true, format: "#.#" },
-            { id: "ValueAfterAdditionPlan", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center",  }], adjust: true, format: "#.#" },
+            { id: "ValueAdditionPlan", header: [{ text: "Kế hoạch bổ sung, điều chỉnh (theo CV đã được phê duyệt)", align: "center",  }], adjust: true, format: "#.#" },
+            { id: "ValueAfterAdditionPlan", header: [{ text: "KH sau bổ sung, điều chỉnh", align: "center", }], adjust: true, format: "#.#" },
+            { id: "ValueTH9T", header: [{ text: "TH9T", }], adjust: true, format: "#.#", minWidth: 200 },
             { id: "ValueUocThucHien", header: [{ text: "Ước thực hiện", align: "center",  }], adjust: true, format: "#.#" },
-            { id: "ValueTH9T", header: [{ text: "TH9T",  }], adjust: true, format: "#.#" },
-            { id: "ValuePercentPlant", header: [{ text: "% so kế hoạch", align: "center", }], adjust: true, format: "#.#" },
+            { id: "ValuePercentPlant", header: [{ text: "% so kế hoạch", align: "center", }], adjust: true },
             { id: "ValuePlantNextYear", header: [{ text: "Kế hoạch năm tới", align: "center", }], adjust: true, format: "#.#" },
             { id: "des", header: [{ text: "Ghi chú", align: "center",  }], adjust: true },
-
         ],
         data: rawData,
         rowCss: function ({ IsBold }) { return IsBold == true ? "row-bold" : "" },
-
+        adjust: true,
         rowHeight: 30,
     });
 

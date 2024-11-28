@@ -61,6 +61,8 @@
             })
         }
     });
+   
+   /* _.sumBy(objects, 'n');*/
     const gridTab1 = new dhx.Grid("@gridTab1", {
         columns: [
             { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
@@ -84,6 +86,7 @@
         adjust: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
+    let dataDT = @Html.Raw(JsonConvert.SerializeObject(data.DauTu, jsonSerializeSettings))
 
     const gridTab2 = new dhx.Grid("@gridTab2", {
         columns: [
@@ -95,7 +98,7 @@
             { id: "value4", header: [{ text: "Tiến độ triển khai giai đoạn đầu tư", align: "center" }], width: 180 },
             { id: "des", header: [{ text: "Ghi chú", align: "center" }], adjust: true },
         ],
-        data: @Html.Raw(JsonConvert.SerializeObject(data.DauTu, jsonSerializeSettings)),
+        data: dataDT,
         resizable: true,
         selection: "row",
         rowHeight: 30,

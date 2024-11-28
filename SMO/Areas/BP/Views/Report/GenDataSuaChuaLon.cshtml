@@ -18,9 +18,9 @@
     };
     let columnsTab1 = [
         { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2}, ''], align: "center", minWidth: 100 },
-        { id: "name", header: [{ text: "Danh mục", align: "center" }, { content: 'inputFilter' }, { text: "TỔNG CỘNG" }], width: 500 },
+        { id: "name", header: [{ text: "Danh mục", align: "center" }, { content: 'inputFilter' }], width: 500 },
 
-        { id: "valueKP", header: [{ text: "Kế hoạch", align: "center", colspan: 3 }, { text: "Giá trị", align: "center" }, { text: _.sumBy(data.filter(x => x.stt == null && x.isBold==true), "valueKP").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+        { id: "valueKP", header: [{ text: "Kế hoạch", align: "center", colspan: 3 }, { text: "Giá trị", align: "center" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
         { id: "valueQM", header: ["",{ text: "Quy mô", align: "center" },''], minWidth: 160 },
         { id: "des", header: ["",{ text: "Ghi chú", align: "center" },''], minWidth: 160 },
 

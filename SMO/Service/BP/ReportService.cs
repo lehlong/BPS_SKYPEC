@@ -1599,6 +1599,7 @@ namespace SMO.Service.BP
                 var dataCP_BS = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_BS.Contains(x.TEMPLATE_CODE)).ToList();
                 var valueUTH = UnitOfWork.Repository<InputChiPhiRepo>().Queryable().Where(x => x.TIME_YEAR == year&& string.IsNullOrEmpty(area) ? true :x.AREA_CODE== area).GroupBy(x=>x.ID_CENTER).Select(x=> new
                 {
+                    
                     ID_CENTER=x.Key,
                     UOC_THUC_HIEN=x.Sum(y=>y.UOC_THUC_HIEN),
                     TH9T=x.Sum(y=>y.TH9T)
@@ -1784,11 +1785,34 @@ namespace SMO.Service.BP
 
                     }
                 });
+                List<string> ListchildCode = new List<string> { "G001", "G002", "G003", "G004", "G005", "G006", "G007", "G008", "G009", "G010", "G011", "G012", "G019" };
                 data.chiPhiQT21InReports.ForEach(x =>
                 {
-                    x.ValueAfterAdditionPlan = x.ValuePlanYear + x.ValueAdditionPlan;
-                    x.ValuePercentPlant = x.ValueAfterAdditionPlan == 0 ? 0 : x.ValueUocThucHien / x.ValueAfterAdditionPlan;
+                    if (x.Group_1_ID == "6277" && string.IsNullOrEmpty(x.Group_2_ID))
+                    {
+                        x.ValueAdditionPlan = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID) ).Sum(y => y.ValueAdditionPlan);
+                        x.ValuePlantNextYear = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.ValuePlantNextYear);
+                        x.ValuePlanYear = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == "6277" && ListchildCode.Contains(y.Group_2_ID)).Sum(y => y.ValuePlanYear);
+                    }
                 });
+              
+                data.chiPhiQT21InReports.ForEach(x =>
+                {
+                    if (x.IsBold == true)
+                    {
+                        x.ValueTH9T=data.chiPhiQT21InReports.Where(y => y.Group_1_ID == x.Group_1_ID).Sum(y => y.ValueTH9T);
+                        x.ValueUocThucHien = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == x.Group_1_ID).Sum(y => y.ValueUocThucHien);
+                    }
+                });
+                data.chiPhiQT21InReports.ForEach(x =>
+                {
+                    if (x.IsBold == true)
+                    {
+                        x.ValueUocThucHien = data.chiPhiQT21InReports.Where(y => y.Group_1_ID == x.Group_1_ID).Sum(y => y.ValueUocThucHien);
+                    }
+                }
+
+                );
 
                 var boldReports = data.chiPhiQT21InReports.Where(x => x.IsBold == true).ToList();
                 var SumtotalValueAfterAdditionPlan = boldReports.Sum(x => x.ValueAfterAdditionPlan);
@@ -1808,6 +1832,12 @@ namespace SMO.Service.BP
                     IsBold = true,
                     ValueUocThucHien = sumUTH ,
                     ValueTH9T = sumTH9T ,
+                });
+
+                data.chiPhiQT21InReports.ForEach(x =>
+                {
+                    x.ValueAfterAdditionPlan = x.ValuePlanYear + x.ValueAdditionPlan;
+                    x.ValuePercentPlant = x.ValueAfterAdditionPlan == 0 ? 0 : x.ValueUocThucHien / x.ValueAfterAdditionPlan;
                 });
 
 
