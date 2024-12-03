@@ -1,4 +1,5 @@
-﻿using iTextSharp.text;
+﻿using Humanizer;
+using iTextSharp.text;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SMO.Core.Entities;
@@ -21,9 +22,11 @@ namespace SMO.Service.MD
 {
     public class KichBanService : GenericService<T_MD_KICH_BAN, KichBanRepo>
     {
+        private ElementService elementService;
+
         public KichBanService() : base()
         {
-
+            elementService = new ElementService();
         }
 
         public override void Create()
@@ -51,9 +54,9 @@ namespace SMO.Service.MD
         {
             var data = new List<SynthesisReportModel>();
             var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
-            foreach(var e in elements)
+
+            foreach (var e in elements)
             {
-                //var a = ($"{e.TH_2.Replace("[YEAR]", (year - 2).ToString()).Replace("[KICH_BAN]", kichBan)}"); 
                 var i = new SynthesisReportModel
                 {
                     PId = e.ID,
@@ -63,15 +66,15 @@ namespace SMO.Service.MD
                     UnitName = e.DVT,
                     IsBold = e.IS_BOLD,
                     Order = e.C_ORDER,
-                    Value1 = string.IsNullOrEmpty(e.TH_2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TH_2.Replace("[YEAR]", (year-2).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                    Value1 = string.IsNullOrEmpty(e.TH_2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TH_2.Replace("[YEAR]", (year - 2).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value2 = string.IsNullOrEmpty(e.KH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value4 = string.IsNullOrEmpty(e.UTH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.UTH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
-                    Value5 = string.IsNullOrEmpty(e.KH_V1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V1.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]",kichBan)}").List()[0]),
+                    Value5 = string.IsNullOrEmpty(e.KH_V1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V1.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                 };
                 data.Add(i);
             }
-            
+
             foreach (var d in data.OrderByDescending(x => x.Order))
             {
                 var childs = data.Where(x => x.Parent == d.PId).ToList();
@@ -82,11 +85,11 @@ namespace SMO.Service.MD
                 d.Value5 = childs.Sum(x => x.Value5) == 0 || d.Value5 != 0 ? d.Value5 : childs.Sum(x => x.Value5);
                 d.Value6 = childs.Sum(x => x.Value6) == 0 || d.Value6 != 0 ? d.Value6 : childs.Sum(x => x.Value6);
             }
-            foreach(var d in data)
+            foreach (var d in data)
             {
                 d.Value7 = d.Value5 == 0 || d.Value1 == 0 ? 0 : d.Value5 / d.Value1;
                 d.Value8 = d.Value5 == 0 || d.Value4 == 0 ? 0 : d.Value5 / d.Value4;
-                d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0: (d.Value4 / d.Value2) *100;
+                d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0 : (d.Value4 / d.Value2) * 100;
             }
             return data;
         }
@@ -94,11 +97,12 @@ namespace SMO.Service.MD
         {
             var data = new List<SynthesisReportModel>();
             var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().Distinct().OrderBy(x => x.C_ORDER).ToList();
-
-           
+            string area = "";
+            var dataGV= elementService.GetDataKeHoachGiaVon(year, area);
+            var Sumgv = dataGV.KeHoachGiaVonTheoThang.FirstOrDefault(x => x.Name == "Tổng cộng").SumGV;
             foreach (var e in elements)
             {
-               
+
                 var i = new SynthesisReportModel
                 {
                     PId = e.ID,
@@ -112,11 +116,16 @@ namespace SMO.Service.MD
                     Value2 = string.IsNullOrEmpty(e.KH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value4 = string.IsNullOrEmpty(e.UTH_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.UTH_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value5 = string.IsNullOrEmpty(e.KH_V1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V1.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
-                    Value3 = string.IsNullOrEmpty(e.TDN_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TDN_1.Replace("[YEAR]", (year-1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
+                    Value3 = string.IsNullOrEmpty(e.TDN_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TDN_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                 };
+                if (e.C_ORDER == 40)
+                {
+                    i.Value5 = Sumgv;
+                }
                 data.Add(i);
             }
+            
             foreach (var d in data.OrderByDescending(x => x.Order))
             {
                 var childs = data.Where(x => x.Parent == d.PId).ToList();
@@ -137,7 +146,7 @@ namespace SMO.Service.MD
         }
 
         internal void ExportExcel(ref MemoryStream outFileStream,
-                                        string path, int year, string kichBan,int yearTH)
+                                        string path, int year, string kichBan, int yearTH)
         {
             try
             {
@@ -151,16 +160,16 @@ namespace SMO.Service.MD
                 ICell cellTH = rowHeader.GetCell(3);
                 cellTH.SetCellValue($"TH{yearTH}");
                 ICell cellKH = rowHeader.GetCell(4);
-                cellKH.SetCellValue($"KH{year-1}");
+                cellKH.SetCellValue($"KH{year - 1}");
                 ICell cellV1 = rowHeader.GetCell(8);
                 cellV1.SetCellValue($"KH{year} V1");
                 ICell cellV2 = rowHeader.GetCell(9);
                 cellV2.SetCellValue($"KH{year} V2");
-                ICell CellKHTH= rowHeader.GetCell(10);
+                ICell CellKHTH = rowHeader.GetCell(10);
                 CellKHTH.SetCellValue($"KH{year}/TH{yearTH}(%)");
                 ICell CellKHUTH = rowHeader.GetCell(11);
-                CellKHUTH.SetCellValue($"KH{year}/UTH{year-1}%");
-                var data =  GetDataTH(year,kichBan,yearTH);
+                CellKHUTH.SetCellValue($"KH{year}/UTH{year - 1}%");
+                var data = GetDataTH(year, kichBan, yearTH);
                 if (data.Count <= 1)
                 {
                     this.State = false;

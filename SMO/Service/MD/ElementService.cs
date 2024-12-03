@@ -983,7 +983,7 @@ namespace SMO.Service.MD
                         Parent = 6.ToString()
                     };
                     var sumSLQN = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-
+                    var test = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP");
                     //Tính chi phí
                     var TLXe = lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE;
                     var TLNg = lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE;
