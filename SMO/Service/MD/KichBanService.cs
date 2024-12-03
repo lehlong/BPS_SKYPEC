@@ -71,6 +71,7 @@ namespace SMO.Service.MD
                 };
                 data.Add(i);
             }
+            
             foreach (var d in data.OrderByDescending(x => x.Order))
             {
                 var childs = data.Where(x => x.Parent == d.PId).ToList();
@@ -92,7 +93,7 @@ namespace SMO.Service.MD
         public IList<SynthesisReportModel> GetDataTH(int year, string kichBan, int yearTH)
         {
             var data = new List<SynthesisReportModel>();
-            var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
+            var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().Distinct().OrderBy(x => x.C_ORDER).ToList();
 
            
             foreach (var e in elements)

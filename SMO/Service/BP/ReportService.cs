@@ -1646,6 +1646,7 @@ namespace SMO.Service.BP
                     };
                     if (string.IsNullOrEmpty(area))
                     {
+                        var a = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDCQ != null ? e.IDCQ : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["CQ"])));
                         var PlanYearMB = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMB != null ? e.IDMB : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MB"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                         var PlanYearMT = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMT != null ? e.IDMT : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MT"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;
                         var PlanYearMN = dataCP_PB1.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains(e.IDMN != null ? e.IDMN : e.GROUP_1_ID + e.GROUP_2_ID) && (x.ORG_CODE.Contains(OrgArea["MN"]))).Sum(x => x.QUANTITY * x.PRICE) ?? 0;

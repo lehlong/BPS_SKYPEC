@@ -750,7 +750,7 @@ namespace SMO.Service.MD
                     });
                     foreach (var item in data.KeHoachGiaVonData)
                     {
-                        var value12 = (item.Value2 + item.Value3 + item.Value5 + item.Value7 + item.Value10) * item.Value11 + item.Value6;
+                        var value12 = item.Value2 + item.Value3 + item.Value5 + item.Value6 + item.Value7 + item.Value10;
                         item.Value12 = value12;
                         item.Value14 = item.Value1 * item.Value11 * item.Value2;
                         item.Value15 = item.Value1 * item.Value11 * item.Value3;

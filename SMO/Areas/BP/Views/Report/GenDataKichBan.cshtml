@@ -16,11 +16,11 @@
         value2 = x.Value2,
         value3 = x.Value3,
         value4 = x.Value4,
-        value5 = x.Value5/1000000,
-        value6 = x.Value6/1000000,
-        value7 =$"{Math.Round((double)x.Value7,2)}%",
-        value8 =$"{Math.Round((double)x.Value8,2)}%" ,
-        value9 = $"{Math.Round((double)x.Value9*100,0)}%",
+        value5 = x.Value5,
+        value6 = x.Value6,
+        value7 =x.Value7*100,
+        value8 =x.Value8 ,
+        value9 = x.Value9,
         isBold = x.IsBold
     });
 }
@@ -38,12 +38,21 @@
 
             { id: "value3", header: ['', { text: "9T ĐN", align: "center" }], align: "right", type: "number", format: "#.#", width: 200 },
             { id: "value4", header: ['', { text: "ƯỚC TH NĂM", align: "center" }], align: "right", type: "number", format: "#.#", width: 146 },
-            { id: "value9", header: ['', { text: "% UTH/KH(V2)", align: "center" }], align: "right", width: 200 },
+            {
+                id: "value9", header: ['', { text: "% UTH/KH(V2)", align: "center" }], template: (value, row, col) => {
+                    return value ? `${(value*100 ).toFixed(0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }).replace(" ₫","")}%` : 0;
+            }, align: "right", width: 200  },
 
             { id: "value5", header: [{ text: "KH @year (V1)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
-            { id: "value6", header: [{ text: "KH @year (V2)", align: "center", rowspan: 2 }], align: "right", width: 146 },
-            { id: "value7", header: [{ text: "KH @year / TH @(yearTH) (%)", align: "center", rowspan: 2 }], align: "right",width: 146 },
-            { id: "value8", header: [{ text: "KH @year / ƯTH @(year - 1) (%)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
+            { id: "value6", header: [{ text: "KH @year (V2)", align: "center", rowspan: 2 }], align: "right", type: "number", format: "#.#", width: 146 },
+            {
+                id: "value7", header: [{ text: "KH @year / TH @(yearTH) (%)", align: "center", rowspan: 2 }], template: (value, row, col) => {
+                    return value ? `${(value ).toFixed(0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }).replace(" ₫", "")}%` : 0;
+                }, align: "right",width: 146 },
+            {
+                id: "value8", header: [{ text: "KH @year / ƯTH @(year - 1) (%)", align: "center", rowspan: 2 }], template: (value, row, col) => {
+                    return value ? `${(value ).toFixed(0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }).replace(" ₫", "")}%` : 0;
+                }, align: "right", width: 146 },
 
         ],
         data: @Html.Raw(JsonConvert.SerializeObject(data, jsonSerializeSettings)),
