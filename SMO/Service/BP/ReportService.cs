@@ -2221,8 +2221,8 @@ namespace SMO.Service.BP
             {
                 var data = new List<ReportModel2B>();
                 var projects = UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x => x.YEAR == year).ToList();
-                var DataTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
-                var DataXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+                var DataTTB = UnitOfWork.Repository<DauTuTrangThietBiDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS=="03").ToList();
+                var DataXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03").ToList();
                 var DataTTBcenter = UnitOfWork.Repository<DauTuTrangThietBiProfitCenterRepo>().GetAll().ToList();
                 var DataXDcenter = UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().GetAll().ToList();
 

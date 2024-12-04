@@ -5491,7 +5491,7 @@ namespace SMO.Service.MD
                     IsBold = true,
                     name = "TỔNG CỘNG TOÀN CÔNG TY",
                     Col2 = dataXDCB.Sum(x => x.VALUE_1) + dataTTB.Sum(x => x.VALUE_1) ?? 0,
-                    Col3 = dataXDCB.Sum(x => x.VALUE_8) + dataTTB.Sum(x => x.VALUE_6*x.VALUE_5),
+                    Col3 = dataXDCB.Sum(x => x.VALUE_5) + dataTTB.Sum(x => x.VALUE_6*x.VALUE_5),
 
 
                 });

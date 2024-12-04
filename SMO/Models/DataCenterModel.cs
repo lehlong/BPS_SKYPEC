@@ -59,7 +59,9 @@ namespace SMO.Models
         public string Name { get; set; }
         public string DVT { get; set; }
         public decimal ValueDG { get; set; }
-
+        public string desMonth { get; set; }
+        public string destotal { get; set; }
+        public string desDG { get; set; }
         public string ParentCode { get; set; }
         public decimal Value1 { get; set; }
         public decimal Value2 { get; set; }

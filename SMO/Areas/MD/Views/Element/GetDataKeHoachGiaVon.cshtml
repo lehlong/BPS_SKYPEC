@@ -37,6 +37,7 @@
            U0008 = x.U0008.ToStringVN(),
            U0009 = x.U0009.ToStringVN(),
            U0010 = x.U0010.ToStringVN(),
+         
        });
 
     var jsonDataTab2 = Model.KeHoachGiaVonData.OrderBy(x => x.Order).Select(x => new
@@ -85,7 +86,10 @@
         Value10 = Math.Round(x.Value10).ToStringVN(),
         Value11 = Math.Round(x.Value11).ToStringVN(),
         Value12 = Math.Round(x.Value12).ToStringVN(),
-        Value13 = Math.Round(x.SumGV).ToStringVN()
+        Value13 = Math.Round(x.SumGV).ToStringVN(),
+        DesMonth = x.desMonth,
+        DesTotal=x.destotal,
+        DesDg=x.desDG,
     }); ;
     var Valuecondition = Model.KeHoachGiaThanhData.Where(x => x.DeliveryConditionsCode != "TN").Sum(x => x.S0002);
 
@@ -106,6 +110,9 @@
     .bootstrap-select.form-control {
         position: relative;
         z-index: 1000;
+    }
+    .custom-tooltip{
+        width:300px;
     }
 </style>
 <div class="export_data">
@@ -209,25 +216,152 @@
     let columnsTab3 = [
         { id: "name", header: [{ text: "KHÁCH HÀNG", align: "center", rowspan: 2 }], minWidth: 240 },
         { id: "dvt", header: [{ text: "ĐVT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
-        { id: "valueDG", header: [{ text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], align: "right", minWidth: 120 },
-        { id: "value1", header: [{ text: "CHI TIẾT GIÁ VỐN(USD/TẤN)", align: "center", colspan: 12 }, { text: "THÁNG 1", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value2", header: [{ text: "", align: "center" }, { text: "THÁNG 2", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value3", header: [{ text: "", align: "center" }, { text: "THÁNG 3", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value4", header: [{ text: "", align: "center" }, { text: "THÁNG 4", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value5", header: [{ text: "", align: "center" }, { text: "THÁNG 5", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value6", header: [{ text: "", align: "center" }, { text: "THÁNG 6", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value7", header: [{ text: "", align: "center" }, { text: "THÁNG 7", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value8", header: [{ text: "", align: "center" }, { text: "THÁNG 8", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value9", header: [{ text: "", align: "center" }, { text: "THÁNG 9", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value10", header: [{ text: "", align: "center" }, { text: "THÁNG 10", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value11", header: [{ text: "", align: "center" }, { text: "THÁNG 11", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value12", header: [{ text: "", align: "center" }, { text: "THÁNG 12", align: "center" }], align: "right", minWidth: 160 },
-        { id: "value13", header: [{ text: "CỘNG GIÁ VỐN", align: "center", rowspan: 2 }], align: "right", minWidth: 180 },
+        {
+            id: "valueDG", header: [{ text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], align: "right", minWidth: 120,
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+              <span><br/>${row.desDg}</span> 
+                </div>`;
+            }
+},
+        {
+            id: "value1", header: [{ text: "CHI TIẾT GIÁ VỐN(USD/TẤN)", align: "center", colspan: 12 }, { text: "THÁNG 1", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value2", header: [{ text: "", align: "center" }, { text: "THÁNG 2", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value3", header: [{ text: "", align: "center" }, { text: "THÁNG 3", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value4", header: [{ text: "", align: "center" }, { text: "THÁNG 4", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value5", header: [{ text: "", align: "center" }, { text: "THÁNG 5", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value6", header: [{ text: "", align: "center" }, { text: "THÁNG 6", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                 </div>`;
+            },
+
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value7", header: [{ text: "", align: "center" }, { text: "THÁNG 7", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value8", header: [{ text: "", align: "center" }, { text: "THÁNG 8", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                 <span><br/>${row.desMonth}</span> 
+                 </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value9", header: [{ text: "", align: "center" }, { text: "THÁNG 9", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value10", header: [{ text: "", align: "center" }, { text: "THÁNG 10", align: "center" }],
+
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value11", header: [{ text: "", align: "center" }, { text: "THÁNG 11", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                 </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value12", header: [{ text: "", align: "center" }, { text: "THÁNG 12", align: "center" }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desMonth}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 160
+        },
+        {
+            id: "value13", header: [{ text: "CỘNG GIÁ VỐN", align: "center", rowspan: 2 }],
+            htmlEnable: true,
+            tooltipTemplate: function (value, row, column) {
+                return `<div className="custom-tooltip"> 
+                <span><br/>${row.desTotal}</span> 
+                </div>`;
+            },
+            align: "right", minWidth: 180
+        },
     ];
     const widthMap = new Map(columns.map(({ minWidth, id }) => ([id, minWidth])));
     const widthMapTab2 = new Map(columnsTab2.map(({ minWidth, id }) => ([id, minWidth])));
     const widthMapTab3 = new Map(columnsTab3.map(({ minWidth, id }) => ([id, minWidth])));
-
+  
 
     rawDataTab2.forEach((item) => {
         if (item.parent == null) {
@@ -270,8 +404,9 @@
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
         data: rawDataTab3,
         selection: 'row',
-        rowHeight: 30
+        rowHeight: 30,
     });
+    console.log(rawDataTab3)
 
     const MAIN_FONT_SIZE = 14;
     var FONT_SIZE_CHANGE = 14;

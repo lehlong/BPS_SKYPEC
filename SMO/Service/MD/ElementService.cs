@@ -830,6 +830,9 @@ namespace SMO.Service.MD
                         Value11 = month11 * value2 * value11,
                         Value12 = month12 * value2 * value11,
                         SumGV = sum * value2 * value11,
+                        desMonth = "Dữ liệu kế hoạch Sản lượng theo tháng * Giá Platts (USD/thùng) * Hệ số quy đổi thùng/tấn * tỷ giá  ",
+                        desDG= "Giá Platts (USD/thùng)* Hệ số quy đổi thùng/tấn",
+                        destotal= "Tổng giá trị sản lượng tháng * Giá Platts (USD/thùng) * Hệ số quy đổi thùng/tấn * tỷ giá  ",
                         Order = 1,
                         Level = 0,
                         Parent = orderTC.ToString()
@@ -857,7 +860,11 @@ namespace SMO.Service.MD
                         SumGV = sum * value3 * value11,
                         Order = 2,
                         Level = 0,
-                        Parent = orderTC.ToString()
+                        Parent = orderTC.ToString(),
+                        desDG= "Pre bình quân (nhập + mua)*Hệ số quy đổi thùng/tấn",
+                        desMonth= "Dữ liệu kế hoạch Sản lượng theo tháng * Pre bình quân (nhập + mua)*Hệ số quy đổi thùng/tấn",
+                        destotal= "Tổng giá trị kế hoạch Sản lượng theo tháng * Pre bình quân (nhập + mua)*Hệ số quy đổi thùng/tấn",
+
                     };
                     data.KeHoachGiaVonTheoThang.Add(Pre);
 
@@ -881,7 +888,8 @@ namespace SMO.Service.MD
                         Value12 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SEP) ?? 0,
                         Order = 4,
                         Level = 1,
-
+                        desMonth = "Dữ liệu khoản mục theo tháng lấy theo sản lượng nội địa",
+                        destotal = "Tổng giá trị sản lượng nội địa theo tháng lấy theo san lượng nội địa",
                         Parent = 3.ToString()
                     };
 
@@ -906,6 +914,9 @@ namespace SMO.Service.MD
                         Value11 = value5 * SLND.Value11 * value11,
                         Value12 = value5 * SLND.Value12 * value11,
                         SumGV = sumSL * value5 * value11,
+                        desMonth = "Giá Platts (USD/thùng)*Hệ số quy đổi thùng/tấn*Thuế suất thuế nhập khẩu-VN *dữ liệu khoản mục theo tháng lấy theo sản lượng nội địa *Tỷ giá",
+                        desDG = "Giá Platts (USD/thùng)*Hệ số quy đổi thùng/tấn*Thuế suất thuế nhập khẩu-VN",
+                        destotal = "Giá Platts (USD/thùng)*Hệ số quy đổi thùng/tấn*Thuế suất thuế nhập khẩu-VN * Tổng giá trị sản lượng nội địa theo tháng lấy theo sản lượng nội địa *tỷ giá",
                         Order = 3,
                         Level = 0,
                         Parent = orderTC.ToString()
@@ -932,6 +943,9 @@ namespace SMO.Service.MD
                         Value11 = value6 * month11,
                         Value12 = value6 * month12,
                         SumGV = value6 * sum,
+                        desMonth = "Đơn giá CP mua hàng * dự liệu kế hoạch sản lượng theo tháng",
+                        desDG = "Đơn giá CP mua hàng",
+                        destotal = "Đơn giá CP mua hàng * Tổng giá trị sản lượng theo tháng",
                         Order = 5,
                         Parent = orderTC.ToString()
                     };
@@ -954,6 +968,9 @@ namespace SMO.Service.MD
                         Value10 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE != "NAF" && x.SanLuongProfitCenter.SAN_BAY_CODE != "TAP").Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE != "NAF" && x.SanLuongProfitCenter.SAN_BAY_CODE != "TAP").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE != "NAF" && x.SanLuongProfitCenter.SAN_BAY_CODE != "TAP").Sum(x => x.VALUE_SEP) ?? 0,
+                        desMonth = "Dữ liệu kế hoạch Sản lượng theo tháng lấy khác tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
+                        destotal = "Tổng dữ liệu kế hoạch Sản lượng theo tháng lấy khác tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
+
                         Level = 1,
 
                         Order = 9,
@@ -977,6 +994,8 @@ namespace SMO.Service.MD
                         Value10 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SEP) ?? 0,
+                        desMonth = "Dữ liệu kế hoạch Sản lượng theo tháng lấy  tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
+                        destotal = "Tổng dữ liệu kế hoạch Sản lượng lấy  tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         Order = 10,
                         Level = 1,
 
@@ -1009,6 +1028,9 @@ namespace SMO.Service.MD
                         Value11 = valueDGTLXe * SLQX.Value11,
                         Value12 = valueDGTLXe * SLQX.Value12,
                         SumGV = valueDGTLXe * sumSLQX,
+                        desDG = "Tỷ lệ hao hụt tra nạp xe * tỷ giá *( đơn giá Mops +đơn giá pre +đơn giá thuế)",
+                        desMonth = "Tỷ lệ hao hụt tra nạp xe * tỷ giá *( đơn giá Mops +đơn giá pre +đơn giá thuế) *dữ liệu kế hoạch Sản lượng theo tháng lấy khác tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
+                        destotal= "Tỷ lệ hao hụt tra nạp xe * tỷ giá *( đơn giá Mops +đơn giá pre +đơn giá thuế)* Tổng dữ liệu kế hoạch Sản lượng lấy khác tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         Order = 7,
                         Level = 1,
 
@@ -1034,6 +1056,9 @@ namespace SMO.Service.MD
                         Value11 = valueDGTLNg * SLQN.Value11,
                         Value12 = valueDGTLNg * SLQN.Value12,
                         SumGV = valueDGTLNg * sumSLQN,
+                        desDG = "Tỷ lệ hao hụt tra nạp ngầm * tỷ giá *( đơn giá Mops +đơn giá pre +đơn giá thuế)",
+                        desMonth = "Tỷ lệ hao hụt tra nạp ngầm * tỷ giá *( đơn giá Mops +đơn giá pre +đơn giá thuế)* dữ liệu kế hoạch Sản lượng theo tháng lấy  tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
+                        destotal = "Tỷ lệ hao hụt tra nạp ngầm * tỷ giá *( đơn giá Mops +đơn giá pre +đơn giá thuế)*Tổng dữ liệu kế hoạch Sản lượng theo tháng lấy  tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         Order = 8,
                         Level = 1,
 
@@ -1060,7 +1085,8 @@ namespace SMO.Service.MD
                         SumGV = CPXe.SumGV + CPQN.SumGV ,
                         Order = 6,
                         Level = 0,
-
+                        desMonth= "Chi phí HH qua xe+Chi phí HH qua ngầm",
+                        destotal= "Tổng chi phí HH qua xe+Tổng chi phí HH qua ngầm",
                         Parent = orderTC.ToString()
                     };
                     data.KeHoachGiaVonTheoThang.Add(CPHH);
@@ -1074,7 +1100,7 @@ namespace SMO.Service.MD
                     {
                         var FHS_NBA = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-NBA-" + hhk.GROUP_ITEM)?.VALUE;
                         var FHS_TNS = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-TNS-" + hhk.GROUP_ITEM)?.VALUE;
-
+                        // lấy phí fsh theo hãng hàng không
                         var valueSLNBA1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JAN) ?? 0;
                         var valueSLNBA2 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_FEB) ?? 0;
                         var valueSLNBA3 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_MAR) ?? 0;
@@ -1120,6 +1146,8 @@ namespace SMO.Service.MD
                         fhs.Value11 =fhs.Value11 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA11  +  FHS_TNS * value11 * valueSLTNS11  );
                         fhs.Value12 =fhs.Value12 + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBA12  +  FHS_TNS * value11 * valueSLTNS12  );
                         fhs.SumGV = fhs.SumGV + Convert.ToDecimal(FHS_NBA * value11 * valueSLNBASum + FHS_TNS * value11 * valueSLTNSSum);
+                        fhs.desMonth = "Phí FHS-NBA theo hãng hàng không * tỷ giá * dữ liệu sản lượng quốc tế tra nạp ngầm Nội Bài + phí FSH_TNS theo hãng hàng không* tỷ giá* dữ liệu sản lượng quốc tế tra nạp ngầm Tân sơn nhất";
+                        fhs.destotal = "Tổng Phí FHS-NBA theo hãng hàng không * tỷ giá * dữ liệu sản lượng quốc tế tra nạp ngầm Nội Bài + Tổng phí FSH_TNS theo hãng hàng không* tỷ giá* dữ liệu sản lượng quốc tế tra nạp ngầm Tân sơn nhất";
                     }
                     fhs.Order = 11;
                     fhs.Parent = orderTC.ToString();
@@ -1150,6 +1178,8 @@ namespace SMO.Service.MD
                         Value12 = Mops.Value12 + Pre.Value12 + thue.Value12 + dvmn.Value12 + CPHH.Value12 + fhs.Value12,
                         SumGV = Mops.SumGV + Pre.SumGV + thue.SumGV + dvmn.SumGV + CPHH.SumGV + fhs.SumGV,
                         Level = 0,
+                        desMonth = "Tổng cộng theo tháng ",
+                        destotal= "Tổng cộng",
                     };
                     data.KeHoachGiaVonTheoThang.Add(Tong);
 
