@@ -30,20 +30,20 @@ namespace SMO.Areas.BP.Controllers
         {
             return PartialView();
         }
-        public ActionResult ExportExcelDataKichBan(int year, string kichBan,int yearTH)
+        public async Task <ActionResult> ExportExcelDataKichBan(int year, string kichBan,int yearTH)
         {
             MemoryStream outFileStream = new MemoryStream();
             var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_KICH_BAN.xlsx");
-            _serviceKichBan.ExportExcel(ref outFileStream, path, year, kichBan, yearTH);
+             await _serviceKichBan.ExportExcel(  outFileStream, path, year, kichBan, yearTH);
             if (!_serviceKichBan.State)
             {
                 return Content(_serviceKichBan.ErrorMessage);
             }
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_KICH_BAN.xlsx");
         }
-        public ActionResult GenDataKichBan(int year, string kichBan, int yearTH)
+        public async Task<ActionResult> GenDataKichBan(int year, string kichBan, int yearTH)
         {
-            var data = _serviceKichBan.GetDataTH(year, kichBan, yearTH);
+            var data = await _serviceKichBan.GetDataTH(year, kichBan, yearTH);
             ViewBag.KichBan = kichBan;
             ViewBag.Year = year;
             ViewBag.Yth = yearTH;

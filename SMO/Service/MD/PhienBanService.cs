@@ -3715,6 +3715,125 @@ namespace SMO.Service.MD
                 return new RevenueByFeeReportModel();
             }
         }
+        public RevenueByFeeReportModel GetDataDoanhThuTheoPhiBM01(int year, string phienBan, string kichBan, string hangHangKhong)
+        {
+            try
+            {
+                var data = new RevenueByFeeReportModel();
+                var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).ToList();
+                lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
+                lstHangHangKhong = lstHangHangKhong.Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)).ToList();
+
+                var s1 = UnitOfWork.Repository<SharedDataRepo>().Get("1").VALUE;
+                var s2 = UnitOfWork.Repository<SharedDataRepo>().Get("2").VALUE;
+                var s3 = UnitOfWork.Repository<SharedDataRepo>().Get("3").VALUE;
+
+                var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                if (dataHeaderDoanhThu.Count() == 0)
+                {
+                    return new RevenueByFeeReportModel();
+                }
+
+                var dataInHeader = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM != null && x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM != "" && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
+
+                var headerSL = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+                var dataSL = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM != null && x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM != "" && headerSL.Contains(x.TEMPLATE_CODE)).ToList();
+
+
+                var dataDetailsTab1 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002").ToList();
+              
+
+
+                var shareData = UnitOfWork.Repository<SharedDataRepo>().Get("18").VALUE;
+
+                var sumTab1 = new RevenueReportModel
+                {
+                    Name = "TỔNG CỘNG",
+                    Value1 = dataDetailsTab1.Sum(x => x.VALUE_JAN) ?? 0,
+                    Value2 = dataDetailsTab1.Sum(x => x.VALUE_FEB) ?? 0,
+                    Value3 = dataDetailsTab1.Sum(x => x.VALUE_MAR) ?? 0,
+                    Value4 = dataDetailsTab1.Sum(x => x.VALUE_APR) ?? 0,
+                    Value5 = dataDetailsTab1.Sum(x => x.VALUE_MAY) ?? 0,
+                    Value6 = dataDetailsTab1.Sum(x => x.VALUE_JUN) ?? 0,
+                    Value7 = dataDetailsTab1.Sum(x => x.VALUE_JUL) ?? 0,
+                    Value8 = dataDetailsTab1.Sum(x => x.VALUE_AUG) ?? 0,
+                    Value9 = dataDetailsTab1.Sum(x => x.VALUE_SEP) ?? 0,
+                    Value10 = dataDetailsTab1.Sum(x => x.VALUE_OCT) ?? 0,
+                    Value11 = dataDetailsTab1.Sum(x => x.VALUE_NOV) ?? 0,
+                    Value12 = dataDetailsTab1.Sum(x => x.VALUE_SEP) ?? 0,
+                    Order = -1,
+                    IsBold = true,
+                };
+                sumTab1.ValueSumYear = sumTab1.Value1 + sumTab1.Value2 + sumTab1.Value3 + sumTab1.Value4 + sumTab1.Value5 + sumTab1.Value6 + sumTab1.Value7 + sumTab1.Value8 + sumTab1.Value9 + sumTab1.Value10 + sumTab1.Value11 + sumTab1.Value12;
+                data.Tab1.Add(sumTab1);
+
+               
+               
+
+                var order = 0;
+                foreach (var hhk in lstHangHangKhong)
+                {
+                    var shareDataCode = "TNK" + "-" + hhk.GROUP_ITEM;
+                    var shareDataCodeNBA = "FHS-NBA-" + hhk.GROUP_ITEM;
+                    var shareDataCodeTNS = "FHS-TNS-" + hhk.GROUP_ITEM;
+                    var priceTNK = UnitOfWork.Repository<SharedDataRepo>().Get(shareDataCode).VALUE;
+                    var priceNBA = UnitOfWork.Repository<SharedDataRepo>().Get(shareDataCodeNBA).VALUE;
+                    var priceTNS = UnitOfWork.Repository<SharedDataRepo>().Get(shareDataCodeTNS).VALUE;
+
+                    var tab1 = new RevenueReportModel
+                    {
+                        Name = hhk.GROUP_ITEM,
+                        Value1 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JAN) ?? 0,
+                        Value2 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_FEB) ?? 0,
+                        Value3 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAR) ?? 0,
+                        Value4 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_APR) ?? 0,
+                        Value5 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_MAY) ?? 0,
+                        Value6 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUN) ?? 0,
+                        Value7 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_JUL) ?? 0,
+                        Value8 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_AUG) ?? 0,
+                        Value9 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) ?? 0,
+                        Value10 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_OCT) ?? 0,
+                        Value11 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_NOV) ?? 0,
+                        Value12 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) ?? 0,
+                        Order = order,
+                    };
+                    tab1.ValueSumYear = tab1.Value1 + tab1.Value2 + tab1.Value3 + tab1.Value4 + tab1.Value5 + tab1.Value6 + tab1.Value7 + tab1.Value8 + tab1.Value9 + tab1.Value10 + tab1.Value11 + tab1.Value12;
+                    data.Tab1.Add(tab1);
+
+
+
+                    order++;
+                }
+                var discount = UnitOfWork.Repository<SharedDataRepo>().Get("24").VALUE;
+                data.Tab1.Add(new RevenueReportModel
+                {
+                    Name = "GIẢM GIÁ",
+                    IsBold = true,
+                    Value1 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value1) * discount,
+                    Value2 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value2) * discount,
+                    Value3 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value3) * discount,
+                    Value4 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value4) * discount,
+                    Value5 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value5) * discount,
+                    Value6 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value6) * discount,
+                    Value7 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value7) * discount,
+                    Value8 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value8) * discount,
+                    Value9 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value9) * discount,
+                    Value10 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value10) * discount,
+                    Value11 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value11) * discount,
+                    Value12 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value12) * discount,
+                    ValueSumYear = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.ValueSumYear) * discount,
+                    Order = 100
+                });
+                return data;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+                return new RevenueByFeeReportModel();
+            }
+        }
         public IList<SynthesisReportModel> GetData(int year, string phienBan)
         {
             var data = new List<SynthesisReportModel>();

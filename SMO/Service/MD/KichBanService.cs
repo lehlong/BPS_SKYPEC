@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using iTextSharp.text;
+using NPOI.OpenXmlFormats.Dml.Chart;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SMO.Core.Entities;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace SMO.Service.MD
@@ -94,17 +96,19 @@ namespace SMO.Service.MD
             }
             return data;
         }
-        public IList<SynthesisReportModel> GetDataTH(int year, string kichBan, int yearTH)
+        public  async Task<IList<SynthesisReportModel>> GetDataTH(int year, string kichBan, int yearTH)
         {
             var phienBan = "PB1";
-           
-            var doanhthudata = PhienBanService.GetDataTraNapCungUng(year,phienBan,kichBan,""); 
+            var hhk = "";
+            var doanhthudata = await PhienBanService.GetDataTraNapCungUng(year, phienBan, kichBan, hhk);
             var data = new List<SynthesisReportModel>();
             var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
             string area = "";
-            var dataGV= elementService.GetDataKeHoachGiaVon(year, area);
+            var dataGV = elementService.GetDataKeHoachGiaVon(year, area);
+            var kehoachTC = elementService.GetDataKeHoachTaiChinh(year);
             var sumGVElement = dataGV?.KeHoachGiaVonTheoThang.FirstOrDefault(x => x.Name == "Tổng cộng");
             var Sumgv = sumGVElement?.SumGV ?? 0;
+            var CKGG = PhienBanService.GetDataDoanhThuTheoPhiBM01(year, phienBan, kichBan, hhk);
 
             foreach (var e in elements)
             {
@@ -125,13 +129,52 @@ namespace SMO.Service.MD
                     Value3 = string.IsNullOrEmpty(e.TDN_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TDN_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                 };
+                if (e.C_ORDER == 15)
+                {
+                    i.Value5=doanhthudata.Where(x=>x.Name=="VN"|| x.Name=="BL"||x.Name=="0V").Sum(x => x.ValueDT);
+                }
+                if (e.C_ORDER == 16)
+                {
+                    i.Value5 = doanhthudata.Where(x => x.Name == "VN").Sum(x => x.ValueDT);
+                }
+                if (e.C_ORDER==17)
+                {
+                    i.Value5 = CKGG.Tab1.Where(x => x.Name == "GIẢM GIÁ").Sum(x => x.ValueSumYear);
+                }
+                if (e.C_ORDER == 28)
+                {
+                    i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu chênh lệch tỷ giá").Sum(x => x.Value)??0;
+                }
+                if (e.C_ORDER == 29)
+                {
+                    i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu HĐTC khác").Sum(x => x.Value) ?? 0;
+                }
+                if (e.C_ORDER==22)
+                {
+                    i.Value5 = doanhthudata.Where(x => x.Name != "VN" || x.Name != "BL" || x.Name != "0V").Sum(x => x.ValueDT);
+                }
                 if (e.C_ORDER == 40)
                 {
                     i.Value5 = Sumgv;
                 }
+                if (e.C_ORDER == 51)
+                {
+                    i.Value5=kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "4.2. Chi hoạt động tài chính").Sum(x => x.Value) ?? 0;
+                }
                 data.Add(i);
             }
-            
+            foreach (var d in data)
+            {
+                if (d.Order == 54)
+                {
+                    d.Value5 = data.Where(x => x.Order == 13).Sum(x => x.Value5) - data.Where(x => x.Order == 31).Sum(x => x.Value5);
+                }
+                if (d.Order == 55)
+                {
+                    d.Value5 = data.Where(x => x.Order == 20).Sum(x => x.Value5) - data.Where(x => x.Order == 38).Sum(x => x.Value5);
+                }
+
+            }
             foreach (var d in data.OrderByDescending(x => x.Order))
             {
                 var childs = data.Where(x => x.Parent == d.PId).ToList();
@@ -151,8 +194,7 @@ namespace SMO.Service.MD
             return data;
         }
 
-        internal void ExportExcel(ref MemoryStream outFileStream,
-                                        string path, int year, string kichBan, int yearTH)
+        internal async Task ExportExcel( MemoryStream outFileStream, string path, int year, string kichBan, int yearTH)
         {
             try
             {
@@ -175,7 +217,7 @@ namespace SMO.Service.MD
                 CellKHTH.SetCellValue($"KH{year}/TH{yearTH}(%)");
                 ICell CellKHUTH = rowHeader.GetCell(11);
                 CellKHUTH.SetCellValue($"KH{year}/UTH{year - 1}%");
-                var data = GetDataTH(year, kichBan, yearTH);
+                var data = await GetDataTH(year, kichBan, yearTH);
                 if (data.Count <= 1)
                 {
                     this.State = false;
@@ -188,7 +230,7 @@ namespace SMO.Service.MD
                 for (int i = 0; i < data.Count(); i++)
                 {
                     var dataRow = data[i];
-                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, 11);
+                    IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, 12);
                     rowCur.Cells[3].SetCellValue(data[i]?.Value1 == null ? 0 : (double)data[i]?.Value1);
                     rowCur.Cells[4].SetCellValue(data[i]?.Value2 == null ? 0 : (double)data[i]?.Value2);
                     rowCur.Cells[5].SetCellValue(data[i]?.Value3 == null ? 0 : (double)data[i]?.Value3);
