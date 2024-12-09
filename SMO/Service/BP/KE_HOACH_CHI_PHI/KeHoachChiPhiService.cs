@@ -21,7 +21,8 @@ using SMO.Repository.Implement.MD;
 using SMO.Service.Class;
 using SMO.Service.Common;
 using SMO.ServiceInterface.BP.KeHoachChiPhi;
-
+using SMO.Core.Entities.BP.KE_HOACH_SAN_LUONG;
+using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -38,6 +39,7 @@ using System.Web;
 using System.Xml.Linq;
 using static NHibernate.Engine.Query.CallableParser;
 using static SMO.SelectListUtilities;
+using static iTextSharp.text.pdf.AcroFields;
 
 namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 {
@@ -4555,6 +4557,18 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
             var template = UnitOfWork.Repository<TemplateRepo>().Get(ObjDetail.TEMPLATE_CODE);
 
+            // gọi dl chung
+            var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == ObjDetail.TIME_YEAR && x.PHIEN_BAN == "PB1" && x.KICH_BAN == "TB" && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
+            var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == ObjDetail.TIME_YEAR && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
+            var dataDetails = dataInHeader.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020").ToList();
+            var DLCHUN = UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
+            var DMDNMB = DLCHUN.FirstOrDefault(x => x.CODE == "ĐMDN_CNMB").VALUE;
+            var DMNAPXA_CNMB_HAN = DLCHUN.FirstOrDefault(x => x.CODE == "DMNAPXA_CNMB_HAN").VALUE;
+            var DMNAPXA_CNMB_TDH = DLCHUN.FirstOrDefault(x => x.CODE == "DMNAPXA_CNMB_TDH").VALUE;
+            var DMNAPXA_CNMB_VII = DLCHUN.FirstOrDefault(x => x.CODE == "DMNAPXA_CNMB_VII").VALUE;
+            var DMNAPXA_CNMB_VDH = DLCHUN.FirstOrDefault(x => x.CODE == "DMNAPXA_CNMB_VDH").VALUE;
+            var DMNAPXA_CNMB_VDO = DLCHUN.FirstOrDefault(x => x.CODE == "DMNAPXA_CNMB_VDO").VALUE;
+            var DMNAPXA_CNMB_HPH = DLCHUN.FirstOrDefault(x => x.CODE == "DMNAPXA_CNMB_HPH").VALUE;
             // Xác định version dữ liệu
             var KeHoachChiPhiCurrent = CurrentRepository.Queryable().FirstOrDefault(x => x.ORG_CODE == orgCode
                 && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE);
@@ -5938,6 +5952,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
                             row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString());
                             row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
+                            
                             row1["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row1["CREATE_BY"] = currentUser;
                             row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
@@ -5958,6 +5973,21 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row2["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
                             row2["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row2["CREATE_BY"] = currentUser;
+                            if (elementCode == "B621A004")
+                            {
+                                row2["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
+                                row2["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A003")
+                            {
+                                row2["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_HAN );
+                                row2["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A001")
+                            {
+                                row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                row2["PRICE"] = 0;
+                            }
                             row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
                             tableKHCP.Rows.Add(row2);
 
@@ -5977,6 +6007,21 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row3["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row3["CREATE_BY"] = currentUser;
                             row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                            if (elementCode == "B621A004")
+                            {
+                                row3["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
+                                row3["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A003")
+                            {
+                                row3["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_HPH);
+                                row3["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A001")
+                            {
+                                row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                row3["PRICE"] = 0;
+                            }
                             tableKHCP.Rows.Add(row3);
 
 
@@ -5995,6 +6040,21 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row4["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row4["CREATE_BY"] = currentUser;
                             row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                            if (elementCode == "B621A004")
+                            {
+                                row3["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
+                                row3["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A003")
+                            {
+                                row3["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_TDH);
+                                row3["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A001")
+                            {
+                                row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TDH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                row3["PRICE"] = 0;
+                            }
                             tableKHCP.Rows.Add(row4);
 
 
@@ -6013,6 +6073,21 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row5["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row5["CREATE_BY"] = currentUser;
                             row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                            if (elementCode == "B621A004")
+                            {
+                                row5["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
+                                row5["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A003")
+                            {
+                                row5["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_VII);
+                                row5["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A001")
+                            {
+                                row5["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VII").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                row5["PRICE"] = 0;
+                            }
                             tableKHCP.Rows.Add(row5);
 
 
@@ -6031,6 +6106,21 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row6["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row6["CREATE_BY"] = currentUser;
                             row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                            if (elementCode == "B621A004")
+                            {
+                                row6["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
+                                row6["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A003")
+                            {
+                                row6["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_VDH);
+                                row6["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A001")
+                            {
+                                row6["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                row6["PRICE"] = 0;
+                            }
                             tableKHCP.Rows.Add(row6);
 
 
@@ -6049,6 +6139,21 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row7["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row7["CREATE_BY"] = currentUser;
                             row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                            if (elementCode == "B621A004")
+                            {
+                                row7["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
+                                row7["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A003")
+                            {
+                                row7["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_VDO);
+                                row7["PRICE"] = 0;
+                            }
+                            if (elementCode == "B621A001")
+                            {
+                                row7["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDO").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                row7["PRICE"] = 0;
+                            }
                             tableKHCP.Rows.Add(row7);
 
 

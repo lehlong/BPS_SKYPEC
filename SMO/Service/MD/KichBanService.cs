@@ -23,10 +23,11 @@ namespace SMO.Service.MD
     public class KichBanService : GenericService<T_MD_KICH_BAN, KichBanRepo>
     {
         private ElementService elementService;
-
+        private PhienBanService PhienBanService;
         public KichBanService() : base()
         {
             elementService = new ElementService();
+            PhienBanService = new PhienBanService();
         }
 
         public override void Create()
@@ -95,11 +96,16 @@ namespace SMO.Service.MD
         }
         public IList<SynthesisReportModel> GetDataTH(int year, string kichBan, int yearTH)
         {
+            var phienBan = "PB1";
+           
+            var doanhthudata = PhienBanService.GetDataTraNapCungUng(year,phienBan,kichBan,""); 
             var data = new List<SynthesisReportModel>();
-            var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().Distinct().OrderBy(x => x.C_ORDER).ToList();
+            var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
             string area = "";
             var dataGV= elementService.GetDataKeHoachGiaVon(year, area);
-            var Sumgv = dataGV.KeHoachGiaVonTheoThang.FirstOrDefault(x => x.Name == "Tổng cộng").SumGV;
+            var sumGVElement = dataGV?.KeHoachGiaVonTheoThang.FirstOrDefault(x => x.Name == "Tổng cộng");
+            var Sumgv = sumGVElement?.SumGV ?? 0;
+
             foreach (var e in elements)
             {
 
