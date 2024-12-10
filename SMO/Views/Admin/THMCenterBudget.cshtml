@@ -311,7 +311,20 @@
                             </div>
                         </div>
                     </div>
-
+                    @if (AuthorizeUtilities.CheckUserRight("R2.4") || AuthorizeUtilities.CheckUserRight("R0"))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-bottom:0px">
+                            <div class="info-box-3  hover-zoom-effect"
+                                 onclick="Forms.LoadAjax('@Url.Action("Index", "BP/KeHoachVanChuyen")')">
+                                <div class="icon">
+                                    <i class="material-icons col-skypec">local_shipping</i>
+                                </div>
+                                <div class="content">
+                                    <div class="text" style="margin-top: 25px;">KẾ HOẠCH VẬN CHUYỂN</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
