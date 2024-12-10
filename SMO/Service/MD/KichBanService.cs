@@ -109,7 +109,7 @@ namespace SMO.Service.MD
             var sumGVElement = dataGV?.KeHoachGiaVonTheoThang.FirstOrDefault(x => x.Name == "Tổng cộng");
             var Sumgv = sumGVElement?.SumGV ?? 0;
             var CKGG = PhienBanService.GetDataDoanhThuTheoPhiBM01(year, phienBan, kichBan, hhk);
-
+          
             foreach (var e in elements)
             {
 
@@ -129,38 +129,37 @@ namespace SMO.Service.MD
                     Value3 = string.IsNullOrEmpty(e.TDN_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TDN_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                 };
-                if (e.C_ORDER == 15)
+                switch (e.C_ORDER)
                 {
-                    i.Value5=doanhthudata.Where(x=>x.Name=="VN"|| x.Name=="BL"||x.Name=="0V").Sum(x => x.ValueDT);
+                    case 15:
+                        i.Value5 = doanhthudata.Where(x => x.Name == "VN" || x.Name == "BL" || x.Name == "0V").Sum(x => x.ValueDT);
+                        break;
+                    case 16:
+                        i.Value5 = doanhthudata.Where(x => x.Name == "VN").Sum(x => x.ValueDT);
+                        break;
+                    case 17:
+                        i.Value5 = CKGG.Tab1.Where(x => x.Name == "GIẢM GIÁ").Sum(x => x.ValueSumYear);
+                        break;
+                    case 28:
+                        i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu chênh lệch tỷ giá").Sum(x => x.Value) ?? 0;
+                        break;
+                    case 29:
+                        i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu HĐTC khác").Sum(x => x.Value) ?? 0;
+                        break;
+                    case 22:
+                        i.Value5 = doanhthudata.Where(x => x.Name != "VN" && x.Name != "BL" && x.Name != "0V" && x.Name != "DOANH THU BÁN TẠI HÀN QUỐC" && x.Name != "GIẢM GIÁ" && x.IsBold==true && x.Name != "Qua xe" && x.Name != "Qua FHS" && x.Name!= "Quốc tế" && x.Name!= "Nội địa" && x.Name != "DOANH THU JET HK").Sum(x => x.ValueDT);
+                        break;
+                    case 40:
+                        i.Value5 = Sumgv;
+                        break;
+                    case 51:
+                        i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "4.2. Chi hoạt động tài chính").Sum(x => x.Value) ?? 0;
+                        break;
+                    case 19:
+                        i.Value5 = doanhthudata.Where(x => x.Name == "DOANH THU BÁN TẠI HÀN QUỐC").Sum(x => x.ValueDT);
+                        break;
                 }
-                if (e.C_ORDER == 16)
-                {
-                    i.Value5 = doanhthudata.Where(x => x.Name == "VN").Sum(x => x.ValueDT);
-                }
-                if (e.C_ORDER==17)
-                {
-                    i.Value5 = CKGG.Tab1.Where(x => x.Name == "GIẢM GIÁ").Sum(x => x.ValueSumYear);
-                }
-                if (e.C_ORDER == 28)
-                {
-                    i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu chênh lệch tỷ giá").Sum(x => x.Value)??0;
-                }
-                if (e.C_ORDER == 29)
-                {
-                    i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu HĐTC khác").Sum(x => x.Value) ?? 0;
-                }
-                if (e.C_ORDER==22)
-                {
-                    i.Value5 = doanhthudata.Where(x => x.Name != "VN" || x.Name != "BL" || x.Name != "0V").Sum(x => x.ValueDT);
-                }
-                if (e.C_ORDER == 40)
-                {
-                    i.Value5 = Sumgv;
-                }
-                if (e.C_ORDER == 51)
-                {
-                    i.Value5=kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "4.2. Chi hoạt động tài chính").Sum(x => x.Value) ?? 0;
-                }
+
                 data.Add(i);
             }
             foreach (var d in data)
@@ -173,6 +172,34 @@ namespace SMO.Service.MD
                 {
                     d.Value5 = data.Where(x => x.Order == 20).Sum(x => x.Value5) - data.Where(x => x.Order == 38).Sum(x => x.Value5);
                 }
+
+            }
+            foreach (var d in data)
+            {
+                if (d.Order == 54)
+                {
+                    d.Value5 = data.Where(x => x.Order == 19).Sum(x => x.Value5) - data.Where(x => x.Order == 37).Sum(x => x.Value5);
+                }
+                if (d.Order == 55)
+                {
+                    d.Value5 = data.Where(x => x.Order == 20).Sum(x => x.Value5) - data.Where(x => x.Order == 38).Sum(x => x.Value5);
+                }
+
+            }
+            var data54 = data.Where(x => x.Order == 54).Sum(x => x.Value5);
+            var data64 = data.Where(x => x.Order == 64).Sum(x => x.Value5);
+            var ct = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu HĐTC khác").Sum(x => x.Value) ??0;
+            foreach (var d in data)
+            {
+                if (d.Order == 55)
+                {
+                    d.Value5 = data54 - (data54 - ct * 20 / 100);
+                }
+                if (d.Order== 65 )
+                {
+                    d.Value5 = data64 == 0 ? 0 : data54 / data64;
+                }
+                
 
             }
             foreach (var d in data.OrderByDescending(x => x.Order))
@@ -191,6 +218,8 @@ namespace SMO.Service.MD
                 d.Value8 = d.Value5 == 0 || d.Value4 == 0 ? 0 : d.Value5 / d.Value4;
                 d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0 : d.Value4 / d.Value2;
             }
+           
+
             return data;
         }
 

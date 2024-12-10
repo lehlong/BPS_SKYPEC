@@ -15,8 +15,22 @@
     </form>
 </div>
 <script type="text/javascript">
-    let dataraw =@Html.Raw(JsonConvert.SerializeObject(Model.BM02B, jsonSerializeSettings))
-        console.log(dataraw)
+    let dataraw =@Html.Raw(JsonConvert.SerializeObject(Model.BM02B, jsonSerializeSettings));
+    for (var i = 0; i < dataraw.length; i++) {
+        var item = dataraw[i];
+        if (item.Order == 53 || item.Order == 58 || item.Order == 61 || item.Order == 65 || item.Order == 66 || item.Order == 67) {
+            item.col1 = "";
+            item.col2 = "";
+            item.col3 = "";
+            item.col4 = "";
+            item.col5 = "";
+            item.col6 = "";
+            item.col7 = "";
+            item.col8 = "";
+            item.col9 = "";
+            item.col10 = "";
+        }
+    }
     const treeGrid = new dhx.Grid("@gridId", {
         columns: [
             { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }],align:"center", minWidth: 100 },
@@ -52,8 +66,6 @@
         var template = "BM_02A";
         $('#@formIdExportExcel #Treedata').val(Treedata);
         $('#@formIdExportExcel #Template').val(template);
-    $('#@formIdExportExcel').submit();
+        $('#@formIdExportExcel').submit();
 }
-
 </script>
-

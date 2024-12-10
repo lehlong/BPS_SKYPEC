@@ -2268,6 +2268,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "A.I.1" + p.CODE,
                         Stt = "1." + orderAI1.ToString(),
                         Name = p.NAME,
@@ -2302,6 +2303,7 @@ namespace SMO.Service.BP
 
                     data.Add(new ReportModel2B
                     {
+                        Code= p.CODE,
                         Id = "A.I.2" + p.CODE,
                         Stt = "2." + orderAI2.ToString(),
                         Name = p.NAME,
@@ -2336,6 +2338,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "A.I.3" + p.CODE,
                         Stt = "3." + orderAI3.ToString(),
                         Name = p.NAME,
@@ -2378,6 +2381,7 @@ namespace SMO.Service.BP
                     var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "A.II.1" + p.CODE,
                         Stt = "1." + orderAII1.ToString(),
                         Name = p.NAME,
@@ -2409,6 +2413,7 @@ namespace SMO.Service.BP
                     var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code= p.CODE,
                         Id = "A.II.2" + p.CODE,
                         Stt = "2." + orderAII2.ToString(),
                         Name = p.NAME,
@@ -2459,6 +2464,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code = p.CODE,
                         Id = "B.I.1" + p.CODE,
                         Stt = "1." + orderBI1.ToString(),
                         Name = p.NAME,
@@ -2492,6 +2498,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code = p.CODE,
                         Id = "B.I.2" + p.CODE,
                         Stt = "2." + orderBI2.ToString(),
                         Name = p.NAME,
@@ -2525,6 +2532,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "B.I.3" + p.CODE,
                         Stt = "3." + orderBI3.ToString(),
                         Name = p.NAME,
@@ -2566,6 +2574,7 @@ namespace SMO.Service.BP
                     var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE ,
                         Id = "B.II.1" + p.CODE,
                         Stt = "1." + orderBII1.ToString(),
                         Name = p.NAME,
@@ -2598,6 +2607,7 @@ namespace SMO.Service.BP
                     var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code = p.CODE,
                         Id = "B.II.2" + p.CODE,
                         Stt = "2." + orderBII2.ToString(),
                         Name = p.NAME,
