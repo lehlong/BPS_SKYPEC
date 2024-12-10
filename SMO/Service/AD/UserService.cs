@@ -668,52 +668,53 @@ namespace SMO.Service.AD
                         COL25 = tableData.Rows[i][24].ToString() == "" || tableData.Rows[i][24].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][24].ToString() ?? "0"),
                         COL26 = tableData.Rows[i][25].ToString() == "" || tableData.Rows[i][25].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][25].ToString() ?? "0"),
                         COL27 = tableData.Rows[i][26].ToString() == "" || tableData.Rows[i][26].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][26].ToString() ?? "0"),
-                        COL28 = tableData.Rows[i][27].ToString() == "" || tableData.Rows[i][27].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][27].ToString() ?? "0"),
-                        COL29 = tableData.Rows[i][28].ToString() == "" || tableData.Rows[i][28].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][28].ToString() ?? "0"),
-                        COL30 = tableData.Rows[i][29].ToString() == "" || tableData.Rows[i][29].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][29].ToString() ?? "0"),
-                        COL31 = tableData.Rows[i][30].ToString() == "" || tableData.Rows[i][30].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][30].ToString() ?? "0"),
-                        COL32 = tableData.Rows[i][31].ToString() == "" || tableData.Rows[i][31].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][31].ToString() ?? "0"),
-                        COL33 = tableData.Rows[i][32].ToString() == "" || tableData.Rows[i][32].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][32].ToString() ?? "0"),
-                        COL34 = tableData.Rows[i][33].ToString() == "" || tableData.Rows[i][33].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][33].ToString() ?? "0"),
-                        COL35 = tableData.Rows[i][34].ToString() == "" || tableData.Rows[i][34].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][34].ToString() ?? "0"),
-                        COL36 = tableData.Rows[i][35].ToString() == "" || tableData.Rows[i][35].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][35].ToString() ?? "0"),
-                        COL37 = tableData.Rows[i][36].ToString() == "" || tableData.Rows[i][36].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][36].ToString() ?? "0"),
-                        COL38 = tableData.Rows[i][37].ToString() == "" || tableData.Rows[i][37].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][37].ToString() ?? "0"),
-                        COL39 = tableData.Rows[i][38].ToString() == "" || tableData.Rows[i][38].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][38].ToString() ?? "0"),
-                        COL40 = tableData.Rows[i][39].ToString() == "" || tableData.Rows[i][39].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][39].ToString() ?? "0"),
-                        COL41 = tableData.Rows[i][40].ToString() == "" || tableData.Rows[i][40].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][40].ToString() ?? "0"),
-                        COL42 = tableData.Rows[i][41].ToString() == "" || tableData.Rows[i][41].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][41].ToString() ?? "0"),
-                        COL43 = tableData.Rows[i][42].ToString() == "" || tableData.Rows[i][42].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][42].ToString() ?? "0"),
-                        COL44 = tableData.Rows[i][43].ToString() == "" || tableData.Rows[i][43].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][43].ToString() ?? "0"),
-                        COL45 = tableData.Rows[i][44].ToString() == "" || tableData.Rows[i][44].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][44].ToString() ?? "0"),
-                        COL46 = tableData.Rows[i][45].ToString() == "" || tableData.Rows[i][45].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][45].ToString() ?? "0"),
-                        COL47 = tableData.Rows[i][46].ToString() == "" || tableData.Rows[i][46].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][46].ToString() ?? "0"),
-                        COL48 = tableData.Rows[i][47].ToString() == "" || tableData.Rows[i][47].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][47].ToString() ?? "0"),
-                        COL49 = tableData.Rows[i][48].ToString() == "" || tableData.Rows[i][48].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][48].ToString() ?? "0"),
-                        COL50 = tableData.Rows[i][49].ToString() == "" || tableData.Rows[i][49].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][49].ToString() ?? "0"),
-                        COL51 = tableData.Rows[i][50].ToString() == "" || tableData.Rows[i][50].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][50].ToString() ?? "0"),
-                        COL52 = tableData.Rows[i][51].ToString() == "" || tableData.Rows[i][51].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][51].ToString() ?? "0"),
-                        COL53 = tableData.Rows[i][52].ToString() == "" || tableData.Rows[i][52].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][52].ToString() ?? "0"),
-                        COL54 = tableData.Rows[i][53].ToString() == "" || tableData.Rows[i][53].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][53].ToString() ?? "0"),
-                        COL55 = tableData.Rows[i][54].ToString() == "" || tableData.Rows[i][54].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][54].ToString() ?? "0"),
-                        COL56 = tableData.Rows[i][55].ToString() == "" || tableData.Rows[i][55].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][55].ToString() ?? "0"),
-                        COL57 = tableData.Rows[i][56].ToString() == "" || tableData.Rows[i][56].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][56].ToString() ?? "0"),
-                        COL58 = tableData.Rows[i][57].ToString() == "" || tableData.Rows[i][57].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][57].ToString() ?? "0"),
-                        COL59 = tableData.Rows[i][58].ToString() == "" || tableData.Rows[i][58].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][58].ToString() ?? "0"),
-                        COL60 = tableData.Rows[i][59].ToString() == "" || tableData.Rows[i][59].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][59].ToString() ?? "0"),
-                        COL61 = tableData.Rows[i][60].ToString() == "" || tableData.Rows[i][60].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][60].ToString() ?? "0"),
-                        COL62 = tableData.Rows[i][61].ToString() == "" || tableData.Rows[i][61].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][61].ToString() ?? "0"),
-                        COL63 = tableData.Rows[i][62].ToString() == "" || tableData.Rows[i][62].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][62].ToString() ?? "0"),
-                        COL64 = tableData.Rows[i][63].ToString() == "" || tableData.Rows[i][63].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][63].ToString() ?? "0"),
-                        COL65 = tableData.Rows[i][64].ToString() == "" || tableData.Rows[i][64].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][64].ToString() ?? "0"),
-                        COL66 = tableData.Rows[i][65].ToString() == "" || tableData.Rows[i][65].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][65].ToString() ?? "0"),
-                        COL67 = tableData.Rows[i][66].ToString() == "" || tableData.Rows[i][66].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][66].ToString() ?? "0"),
-                        COL68 = tableData.Rows[i][67].ToString() == "" || tableData.Rows[i][67].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][67].ToString() ?? "0"),
-                        COL69 = tableData.Rows[i][68].ToString() == "" || tableData.Rows[i][68].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][68].ToString() ?? "0"),
-                        COL70 = tableData.Rows[i][69].ToString() == "" || tableData.Rows[i][69].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][69].ToString() ?? "0"),
-                        COL71 = tableData.Rows[i][70].ToString() == "" || tableData.Rows[i][70].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][70].ToString() ?? "0"),
-                        COL72 = tableData.Rows[i][71].ToString() == "" || tableData.Rows[i][71].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][71].ToString() ?? "0"),
-                        COL73 = tableData.Rows[i][72].ToString() == "" || tableData.Rows[i][72].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][72].ToString() ?? "0"),
+                        COL79 = tableData.Rows[i][27].ToString() == "" || tableData.Rows[i][27].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][27].ToString() ?? "0"),
+                        COL28 = tableData.Rows[i][28].ToString() == "" || tableData.Rows[i][28].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][28].ToString() ?? "0"),
+                        COL29 = tableData.Rows[i][29].ToString() == "" || tableData.Rows[i][29].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][29].ToString() ?? "0"),
+                        COL30 = tableData.Rows[i][30].ToString() == "" || tableData.Rows[i][30].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][30].ToString() ?? "0"),
+                        COL31 = tableData.Rows[i][31].ToString() == "" || tableData.Rows[i][31].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][31].ToString() ?? "0"),
+                        COL32 = tableData.Rows[i][32].ToString() == "" || tableData.Rows[i][32].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][32].ToString() ?? "0"),
+                        COL33 = tableData.Rows[i][33].ToString() == "" || tableData.Rows[i][33].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][33].ToString() ?? "0"),
+                        COL34 = tableData.Rows[i][34].ToString() == "" || tableData.Rows[i][34].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][34].ToString() ?? "0"),
+                        COL35 = tableData.Rows[i][35].ToString() == "" || tableData.Rows[i][35].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][35].ToString() ?? "0"),
+                        COL36 = tableData.Rows[i][36].ToString() == "" || tableData.Rows[i][36].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][36].ToString() ?? "0"),
+                        COL37 = tableData.Rows[i][37].ToString() == "" || tableData.Rows[i][37].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][37].ToString() ?? "0"),
+                        COL38 = tableData.Rows[i][38].ToString() == "" || tableData.Rows[i][38].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][38].ToString() ?? "0"),
+                        COL39 = tableData.Rows[i][39].ToString() == "" || tableData.Rows[i][39].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][39].ToString() ?? "0"),
+                        COL40 = tableData.Rows[i][40].ToString() == "" || tableData.Rows[i][40].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][40].ToString() ?? "0"),
+                        COL41 = tableData.Rows[i][41].ToString() == "" || tableData.Rows[i][41].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][41].ToString() ?? "0"),
+                        COL42 = tableData.Rows[i][42].ToString() == "" || tableData.Rows[i][42].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][42].ToString() ?? "0"),
+                        COL43 = tableData.Rows[i][43].ToString() == "" || tableData.Rows[i][43].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][43].ToString() ?? "0"),
+                        COL44 = tableData.Rows[i][44].ToString() == "" || tableData.Rows[i][44].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][44].ToString() ?? "0"),
+                        COL45 = tableData.Rows[i][45].ToString() == "" || tableData.Rows[i][45].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][45].ToString() ?? "0"),
+                        COL46 = tableData.Rows[i][46].ToString() == "" || tableData.Rows[i][46].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][46].ToString() ?? "0"),
+                        COL47 = tableData.Rows[i][47].ToString() == "" || tableData.Rows[i][47].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][47].ToString() ?? "0"),
+                        COL48 = tableData.Rows[i][48].ToString() == "" || tableData.Rows[i][48].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][48].ToString() ?? "0"),
+                        COL49 = tableData.Rows[i][49].ToString() == "" || tableData.Rows[i][49].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][49].ToString() ?? "0"),
+                        COL50 = tableData.Rows[i][50].ToString() == "" || tableData.Rows[i][50].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][50].ToString() ?? "0"),
+                        COL51 = tableData.Rows[i][51].ToString() == "" || tableData.Rows[i][51].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][51].ToString() ?? "0"),
+                        COL52 = tableData.Rows[i][52].ToString() == "" || tableData.Rows[i][55].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][52].ToString() ?? "0"),
+                        COL53 = tableData.Rows[i][53].ToString() == "" || tableData.Rows[i][53].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][53].ToString() ?? "0"),
+                        COL54 = tableData.Rows[i][54].ToString() == "" || tableData.Rows[i][54].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][54].ToString() ?? "0"),
+                        COL55 = tableData.Rows[i][55].ToString() == "" || tableData.Rows[i][55].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][55].ToString() ?? "0"),
+                        COL56 = tableData.Rows[i][56].ToString() == "" || tableData.Rows[i][56].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][56].ToString() ?? "0"),
+                        COL57 = tableData.Rows[i][57].ToString() == "" || tableData.Rows[i][57].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][57].ToString() ?? "0"),
+                        COL58 = tableData.Rows[i][58].ToString() == "" || tableData.Rows[i][58].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][58].ToString() ?? "0"),
+                        COL59 = tableData.Rows[i][59].ToString() == "" || tableData.Rows[i][59].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][59].ToString() ?? "0"),
+                        COL60 = tableData.Rows[i][60].ToString() == "" || tableData.Rows[i][60].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][60].ToString() ?? "0"),
+                        COL61 = tableData.Rows[i][61].ToString() == "" || tableData.Rows[i][61].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][61].ToString() ?? "0"),
+                        COL62 = tableData.Rows[i][62].ToString() == "" || tableData.Rows[i][62].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][62].ToString() ?? "0"),
+                        COL63 = tableData.Rows[i][63].ToString() == "" || tableData.Rows[i][63].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][63].ToString() ?? "0"),
+                        COL64 = tableData.Rows[i][64].ToString() == "" || tableData.Rows[i][64].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][64].ToString() ?? "0"),
+                        COL65 = tableData.Rows[i][65].ToString() == "" || tableData.Rows[i][65].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][65].ToString() ?? "0"),
+                        COL66 = tableData.Rows[i][66].ToString() == "" || tableData.Rows[i][66].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][66].ToString() ?? "0"),
+                        COL67 = tableData.Rows[i][67].ToString() == "" || tableData.Rows[i][67].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][67].ToString() ?? "0"),
+                        COL68 = tableData.Rows[i][68].ToString() == "" || tableData.Rows[i][68].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][68].ToString() ?? "0"),
+                        COL69 = tableData.Rows[i][69].ToString() == "" || tableData.Rows[i][69].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][69].ToString() ?? "0"),
+                        COL70 = tableData.Rows[i][70].ToString() == "" || tableData.Rows[i][70].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][70].ToString() ?? "0"),
+                        COL71 = tableData.Rows[i][71].ToString() == "" || tableData.Rows[i][71].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][71].ToString() ?? "0"),
+                        COL72 = tableData.Rows[i][72].ToString() == "" || tableData.Rows[i][72].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][72].ToString() ?? "0"),
+                        COL73 = tableData.Rows[i][73].ToString() == "" || tableData.Rows[i][73].ToString() == null ? 0 : Convert.ToDecimal(tableData.Rows[i][73].ToString() ?? "0"),
                     });
                     order++;
                 }
@@ -742,7 +743,7 @@ namespace SMO.Service.AD
             styleCellNumber.Alignment = HorizontalAlignment.Right;
             ICellStyle styleCellText = templateWorkbook.CreateCellStyle();
             styleCellText.Alignment = HorizontalAlignment.Left;
-            var NUMCELL = 73;
+            var NUMCELL = 74;
             foreach (var item in TreeData)
             {
                 IRow rowCur = ReportUtilities.CreateRow(ref sheet, startRow++, NUMCELL);
@@ -797,98 +798,100 @@ namespace SMO.Service.AD
                 rowCur.Cells[25].CellStyle = styleCellNumber;
                 rowCur.Cells[26].SetCellValue(Convert.ToDouble(item.COL27));
                 rowCur.Cells[26].CellStyle = styleCellNumber;
-                rowCur.Cells[27].SetCellValue(Convert.ToDouble(item.COL28));
+                rowCur.Cells[27].SetCellValue(Convert.ToDouble(item.COL79));
                 rowCur.Cells[27].CellStyle = styleCellNumber;
-                rowCur.Cells[28].SetCellValue(Convert.ToDouble(item.COL29));
+                rowCur.Cells[28].SetCellValue(Convert.ToDouble(item.COL28));
                 rowCur.Cells[28].CellStyle = styleCellNumber;
-                rowCur.Cells[29].SetCellValue(Convert.ToDouble(item.COL30));
+                rowCur.Cells[29].SetCellValue(Convert.ToDouble(item.COL29));
                 rowCur.Cells[29].CellStyle = styleCellNumber;
-                rowCur.Cells[30].SetCellValue(Convert.ToDouble(item.COL31));
+                rowCur.Cells[30].SetCellValue(Convert.ToDouble(item.COL30));
                 rowCur.Cells[30].CellStyle = styleCellNumber;
-                rowCur.Cells[31].SetCellValue(Convert.ToDouble(item.COL32));
+                rowCur.Cells[31].SetCellValue(Convert.ToDouble(item.COL31));
                 rowCur.Cells[31].CellStyle = styleCellNumber;
-                rowCur.Cells[32].SetCellValue(Convert.ToDouble(item.COL33));
+                rowCur.Cells[32].SetCellValue(Convert.ToDouble(item.COL32));
                 rowCur.Cells[32].CellStyle = styleCellNumber;
-                rowCur.Cells[33].SetCellValue(Convert.ToDouble(item.COL34));
+                rowCur.Cells[33].SetCellValue(Convert.ToDouble(item.COL33));
                 rowCur.Cells[33].CellStyle = styleCellNumber;
-                rowCur.Cells[34].SetCellValue(Convert.ToDouble(item.COL35));
+                rowCur.Cells[34].SetCellValue(Convert.ToDouble(item.COL34));
                 rowCur.Cells[34].CellStyle = styleCellNumber;
-                rowCur.Cells[35].SetCellValue(Convert.ToDouble(item.COL36));
+                rowCur.Cells[35].SetCellValue(Convert.ToDouble(item.COL35));
                 rowCur.Cells[35].CellStyle = styleCellNumber;
-                rowCur.Cells[36].SetCellValue(Convert.ToDouble(item.COL37));
+                rowCur.Cells[36].SetCellValue(Convert.ToDouble(item.COL36));
                 rowCur.Cells[36].CellStyle = styleCellNumber;
-                rowCur.Cells[37].SetCellValue(Convert.ToDouble(item.COL38));
+                rowCur.Cells[37].SetCellValue(Convert.ToDouble(item.COL37));
                 rowCur.Cells[37].CellStyle = styleCellNumber;
-                rowCur.Cells[38].SetCellValue(Convert.ToDouble(item.COL39));
+                rowCur.Cells[38].SetCellValue(Convert.ToDouble(item.COL38));
                 rowCur.Cells[38].CellStyle = styleCellNumber;
-                rowCur.Cells[39].SetCellValue(Convert.ToDouble(item.COL40));
+                rowCur.Cells[39].SetCellValue(Convert.ToDouble(item.COL39));
                 rowCur.Cells[39].CellStyle = styleCellNumber;
-                rowCur.Cells[40].SetCellValue(Convert.ToDouble(item.COL41));
+                rowCur.Cells[40].SetCellValue(Convert.ToDouble(item.COL40));
                 rowCur.Cells[40].CellStyle = styleCellNumber;
-                rowCur.Cells[41].SetCellValue(Convert.ToDouble(item.COL42));
+                rowCur.Cells[41].SetCellValue(Convert.ToDouble(item.COL41));
                 rowCur.Cells[41].CellStyle = styleCellNumber;
-                rowCur.Cells[42].SetCellValue(Convert.ToDouble(item.COL43));
+                rowCur.Cells[42].SetCellValue(Convert.ToDouble(item.COL42));
                 rowCur.Cells[42].CellStyle = styleCellNumber;
-                rowCur.Cells[43].SetCellValue(Convert.ToDouble(item.COL44));
+                rowCur.Cells[43].SetCellValue(Convert.ToDouble(item.COL43));
                 rowCur.Cells[43].CellStyle = styleCellNumber;
-                rowCur.Cells[44].SetCellValue(Convert.ToDouble(item.COL45));
+                rowCur.Cells[44].SetCellValue(Convert.ToDouble(item.COL44));
                 rowCur.Cells[44].CellStyle = styleCellNumber;
-                rowCur.Cells[45].SetCellValue(Convert.ToDouble(item.COL46));
+                rowCur.Cells[45].SetCellValue(Convert.ToDouble(item.COL45));
                 rowCur.Cells[45].CellStyle = styleCellNumber;
-                rowCur.Cells[46].SetCellValue(Convert.ToDouble(item.COL47));
+                rowCur.Cells[46].SetCellValue(Convert.ToDouble(item.COL46));
                 rowCur.Cells[46].CellStyle = styleCellNumber;
-                rowCur.Cells[47].SetCellValue(Convert.ToDouble(item.COL48));
+                rowCur.Cells[47].SetCellValue(Convert.ToDouble(item.COL47));
                 rowCur.Cells[47].CellStyle = styleCellNumber;
-                rowCur.Cells[48].SetCellValue(Convert.ToDouble(item.COL49));
+                rowCur.Cells[48].SetCellValue(Convert.ToDouble(item.COL48));
                 rowCur.Cells[48].CellStyle = styleCellNumber;
-                rowCur.Cells[49].SetCellValue(Convert.ToDouble(item.COL50));
+                rowCur.Cells[49].SetCellValue(Convert.ToDouble(item.COL49));
                 rowCur.Cells[49].CellStyle = styleCellNumber;
-                rowCur.Cells[50].SetCellValue(Convert.ToDouble(item.COL51));
+                rowCur.Cells[50].SetCellValue(Convert.ToDouble(item.COL50));
                 rowCur.Cells[50].CellStyle = styleCellNumber;
-                rowCur.Cells[51].SetCellValue(Convert.ToDouble(item.COL52));
+                rowCur.Cells[51].SetCellValue(Convert.ToDouble(item.COL51));
                 rowCur.Cells[51].CellStyle = styleCellNumber;
-                rowCur.Cells[52].SetCellValue(Convert.ToDouble(item.COL53));
+                rowCur.Cells[52].SetCellValue(Convert.ToDouble(item.COL52));
                 rowCur.Cells[52].CellStyle = styleCellNumber;
-                rowCur.Cells[53].SetCellValue(Convert.ToDouble(item.COL54));
+                rowCur.Cells[53].SetCellValue(Convert.ToDouble(item.COL53));
                 rowCur.Cells[53].CellStyle = styleCellNumber;
-                rowCur.Cells[54].SetCellValue(Convert.ToDouble(item.COL55));
+                rowCur.Cells[54].SetCellValue(Convert.ToDouble(item.COL54));
                 rowCur.Cells[54].CellStyle = styleCellNumber;
-                rowCur.Cells[55].SetCellValue(Convert.ToDouble(item.COL56));
+                rowCur.Cells[55].SetCellValue(Convert.ToDouble(item.COL55));
                 rowCur.Cells[55].CellStyle = styleCellNumber;
-                rowCur.Cells[56].SetCellValue(Convert.ToDouble(item.COL57));
+                rowCur.Cells[56].SetCellValue(Convert.ToDouble(item.COL56));
                 rowCur.Cells[56].CellStyle = styleCellNumber;
-                rowCur.Cells[57].SetCellValue(Convert.ToDouble(item.COL58));
+                rowCur.Cells[57].SetCellValue(Convert.ToDouble(item.COL57));
                 rowCur.Cells[57].CellStyle = styleCellNumber;
-                rowCur.Cells[58].SetCellValue(Convert.ToDouble(item.COL59));
+                rowCur.Cells[58].SetCellValue(Convert.ToDouble(item.COL58));
                 rowCur.Cells[58].CellStyle = styleCellNumber;
-                rowCur.Cells[59].SetCellValue(Convert.ToDouble(item.COL60));
+                rowCur.Cells[59].SetCellValue(Convert.ToDouble(item.COL59));
                 rowCur.Cells[59].CellStyle = styleCellNumber;
-                rowCur.Cells[60].SetCellValue(Convert.ToDouble(item.COL61));
+                rowCur.Cells[60].SetCellValue(Convert.ToDouble(item.COL60));
                 rowCur.Cells[60].CellStyle = styleCellNumber;
-                rowCur.Cells[61].SetCellValue(Convert.ToDouble(item.COL62));
+                rowCur.Cells[61].SetCellValue(Convert.ToDouble(item.COL61));
                 rowCur.Cells[61].CellStyle = styleCellNumber;
-                rowCur.Cells[62].SetCellValue(Convert.ToDouble(item.COL63));
+                rowCur.Cells[62].SetCellValue(Convert.ToDouble(item.COL62));
                 rowCur.Cells[62].CellStyle = styleCellNumber;
-                rowCur.Cells[63].SetCellValue(Convert.ToDouble(item.COL64));
+                rowCur.Cells[63].SetCellValue(Convert.ToDouble(item.COL63));
                 rowCur.Cells[63].CellStyle = styleCellNumber;
-                rowCur.Cells[64].SetCellValue(Convert.ToDouble(item.COL65));
+                rowCur.Cells[64].SetCellValue(Convert.ToDouble(item.COL64));
                 rowCur.Cells[64].CellStyle = styleCellNumber;
-                rowCur.Cells[65].SetCellValue(Convert.ToDouble(item.COL66));
+                rowCur.Cells[65].SetCellValue(Convert.ToDouble(item.COL65));
                 rowCur.Cells[65].CellStyle = styleCellNumber;
-                rowCur.Cells[66].SetCellValue(Convert.ToDouble(item.COL67));
+                rowCur.Cells[66].SetCellValue(Convert.ToDouble(item.COL66));
                 rowCur.Cells[66].CellStyle = styleCellNumber;
-                rowCur.Cells[67].SetCellValue(Convert.ToDouble(item.COL68));
+                rowCur.Cells[67].SetCellValue(Convert.ToDouble(item.COL67));
                 rowCur.Cells[67].CellStyle = styleCellNumber;
-                rowCur.Cells[68].SetCellValue(Convert.ToDouble(item.COL69));
+                rowCur.Cells[68].SetCellValue(Convert.ToDouble(item.COL68));
                 rowCur.Cells[68].CellStyle = styleCellNumber;
-                rowCur.Cells[69].SetCellValue(Convert.ToDouble(item.COL70));
+                rowCur.Cells[69].SetCellValue(Convert.ToDouble(item.COL69));
                 rowCur.Cells[69].CellStyle = styleCellNumber;
-                rowCur.Cells[70].SetCellValue(Convert.ToDouble(item.COL71));
+                rowCur.Cells[70].SetCellValue(Convert.ToDouble(item.COL70));
                 rowCur.Cells[70].CellStyle = styleCellNumber;
-                rowCur.Cells[71].SetCellValue(Convert.ToDouble(item.COL72));
+                rowCur.Cells[71].SetCellValue(Convert.ToDouble(item.COL71));
                 rowCur.Cells[71].CellStyle = styleCellNumber;
-                rowCur.Cells[72].SetCellValue(Convert.ToDouble(item.COL73));
+                rowCur.Cells[72].SetCellValue(Convert.ToDouble(item.COL72));
                 rowCur.Cells[72].CellStyle = styleCellNumber;
+                rowCur.Cells[73].SetCellValue(Convert.ToDouble(item.COL73));
+                rowCur.Cells[73].CellStyle = styleCellNumber;
             }
             templateWorkbook.Write(outFileStream);
         }
@@ -994,6 +997,7 @@ namespace SMO.Service.AD
             public  decimal? COL76 { get; set; }
             public  decimal? COL77 { get; set; }
             public  decimal? COL78 { get; set; }
+            public  decimal? COL79 { get; set; }
             public  int C_ORDER { get; set; }
 
         }

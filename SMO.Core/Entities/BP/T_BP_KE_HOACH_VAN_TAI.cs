@@ -85,6 +85,7 @@ namespace SMO.Core.Entities.BP
         public virtual decimal? COL76 { get; set; }
         public virtual decimal? COL77 { get; set; }
         public virtual decimal? COL78 { get; set; }
+        public virtual decimal? COL79 { get; set; }
         public virtual int C_ORDER { get; set; }
 
     }

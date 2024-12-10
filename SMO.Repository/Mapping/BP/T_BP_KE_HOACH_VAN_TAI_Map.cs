@@ -91,6 +91,7 @@ namespace SMO.Repository.Mapping.BP
             Map(x => x.COL76);
             Map(x => x.COL77);
             Map(x => x.COL78);
+            Map(x => x.COL79);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
            
         }
