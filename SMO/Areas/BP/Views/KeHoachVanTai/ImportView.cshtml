@@ -57,7 +57,9 @@
             success: function (response) {
                 Message.execute(response);
                 Forms.HideLoading();
-                Forms.Close('@Model.ViewId')
+                Forms.Close('@Model.ViewId');
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
             },
             error: Forms.AjaxErrorHandler
         });
