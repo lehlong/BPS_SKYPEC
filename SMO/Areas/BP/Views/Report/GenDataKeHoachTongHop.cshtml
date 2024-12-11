@@ -14,6 +14,16 @@
 
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
+<style>
+    .wrap-text {
+        white-space: normal !important;
+        line-height: 1.2;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
+    }
+    
+</style>
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
     <li role="presentation" class="active" style="cursor: pointer;">
         <a href="#tab1" title="Kế hoạch theo tháng" data-toggle="tab">I. KẾ HOẠCH SẢN LƯỢNG</a>
@@ -110,7 +120,7 @@
             { id: "stt", header: [{ text: "STT", align: "center" }], align: "center", width: 100 },
             { id: "name", header: [{ text: "Danh mục sửa chữa lớn", align: "center" }], width: 500 },
             { id: "valueKP", header: [{ text: "Kế hoạch kinh phí sửa chữa", align: "center" }] , width: 160, type: "number", format: "#.#" },
-            { id: "valueQM", header: [{ text: "Quy mô s/c", align: "center" }], adjust: true },
+            { id: "valueQM", header: [{ text: "Quy mô s/c", align: "center" }], htmlEnable: true, width: 500, css: "wrap-text" },
             { id: "des", header: [{ text: "Ghi chú", align: "center" }], adjust: true },
         ],
         data: @Html.Raw(JsonConvert.SerializeObject(data.SuaChuaLon, jsonSerializeSettings)),

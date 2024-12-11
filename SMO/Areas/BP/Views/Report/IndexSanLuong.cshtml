@@ -13,6 +13,15 @@
         position: relative;
         z-index: 1001;
     }
+/*
+    .selectpicker {
+        position: relative;
+        z-index: 1002 !important;
+    }
+
+    .bootstrap-select .dropdown-menu {
+        z-index: 1002 !important;
+    }*/
 </style>
 <div class="container-fluid child-content">
     <div class="card border-grey">
@@ -29,7 +38,7 @@
                         @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
                     </div>
-                    <div class="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px">
+                    <div class="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px; z-index: 1001">
                         <div class="col-md-2">
                             <select class="form-control selectpicker show-tick" id="time-year">
                                 @foreach (var temp in lstTimeYear)
