@@ -17,6 +17,7 @@
         U_VT=x.U_VT,
         U_MN=x.U_MN,
         isBold=x.IS_BOLD,
+        KH_TOTALKH=x.KH_TOTALKH,
     }
         );
 
@@ -33,17 +34,16 @@
 
 
     let columns = [
-        { id: "Stt", header: [{ text: "TT", align: "center" }], minWidth: 220 },
-        { id: "Name", header: [{ text: "Chỉ tiêu", align: "center" }], minWidth: 200 },
-        { id: "U_CBQL", header: [{ text: "CBQL", align: "center" }], minWidth: 200 },
-        { id: "U_CQCT", header: [{ text: "CQCT (không gồm kho dầu nguồn)", align: "center" }], minWidth: 200 },
-        { id: "U_OIL_SOUCE", header: [{ text: "Đội kho đầu nguồn", align: "center" }], minWidth: 200 },
-        { id: "U_MB", header: [{ text: "CNMB", align: "center" }], minWidth: 200 },
-        { id: "U_MT", header: [{ text: "CNMT", align: "center" }], minWidth: 200 },
-        { id: "U_VT", header: [{ text: "CNVT", align: "center" }], minWidth: 200 },
-        { id: "U_MN", header: [{ text: "CNMN", align: "center" }], minWidth: 200 },
-        
-        
+        { id: "Stt", header: [{ text: "TT", align: "center" }], minWidth: 220,},
+        { id: "Name", header: [{ text: "Chỉ tiêu", align: "center" }], minWidth: 400 },
+        { id: "TỔNG TH", header: [{ text: "KH_TOTALKH", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "U_CBQL", header: [{ text: "CBQL", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "U_CQCT", header: [{ text: "CQCT (không gồm kho dầu nguồn)", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "U_OIL_SOUCE", header: [{ text: "Đội kho đầu nguồn", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "U_MB", header: [{ text: "CNMB", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "U_MT", header: [{ text: "CNMT", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "U_MN", header: [{ text: "CNMN", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "U_VT", header: [{ text: "CNVT", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
 
     ];
     const Gird = new dhx.TreeGrid("@gridId", {

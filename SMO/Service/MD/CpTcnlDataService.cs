@@ -41,6 +41,7 @@ namespace SMO.Service.MD
                         U_MT = listData.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year)?.U_MT,
                         U_VT = listData.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year)?.U_VT,
                         U_MN = listData.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year)?.U_MN,
+                        KH_TOTALKH = listData.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year)?.KH_TOTALKH
 
                     };
                     data.Add(temp);
@@ -80,6 +81,7 @@ namespace SMO.Service.MD
                             U_VT = item.U_VT,
                             U_MN = item.U_MN,
                             YEAR = year,
+                            KH_TOTALKH = item.KH_TOTALKH
 
                         };
                         UnitOfWork.Repository<CptcnlDataRepo>().Create(pdata);
@@ -93,7 +95,7 @@ namespace SMO.Service.MD
                         chexexist.U_MT = item.U_MT;
                         chexexist.U_VT = item.U_VT;
                         chexexist.U_MN = item.U_MN;
-                        
+                        chexexist.KH_TOTALKH = item.KH_TOTALKH;
                         UnitOfWork.Repository<CptcnlDataRepo>().Update(chexexist);
                     }
 
@@ -123,7 +125,7 @@ namespace SMO.Service.MD
         public decimal? U_MT { get; set; }
         public decimal? U_VT { get; set; }
         public decimal? U_MN { get; set; }
-
+        public decimal? KH_TOTALKH { get; set; }
     }
 
 }
