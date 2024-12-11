@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace SMO.Service.MD
@@ -481,7 +482,7 @@ namespace SMO.Service.MD
             }
         }
 
-        public DataCenterModel GetDataKeHoachGiaVon(int year, string area)
+        public DataCenterModel  GetDataKeHoachGiaVon(int year, string area)
         {
             try
             {

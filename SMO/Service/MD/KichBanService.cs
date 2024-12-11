@@ -12,7 +12,7 @@ using SMO.Repository.Implement.BP.KE_HOACH_CHI_PHI;
 using SMO.Repository.Implement.BP.KE_HOACH_DOANH_THU;
 using SMO.Repository.Implement.BP.KE_HOACH_SAN_LUONG;
 using SMO.Repository.Implement.MD;
-
+using SMO.Service.BP;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,10 +26,12 @@ namespace SMO.Service.MD
     {
         private ElementService elementService;
         private PhienBanService PhienBanService;
+        private ReportService reportService;
         public KichBanService() : base()
         {
             elementService = new ElementService();
             PhienBanService = new PhienBanService();
+            reportService = new ReportService();
         }
 
         public override void Create()
@@ -96,6 +98,7 @@ namespace SMO.Service.MD
             }
             return data;
         }
+        private readonly object lockObject = new object();
         public  async Task<IList<SynthesisReportModel>> GetDataTH(int year, string kichBan, int yearTH)
         {
             var phienBan = "PB1";
@@ -104,12 +107,24 @@ namespace SMO.Service.MD
             var data = new List<SynthesisReportModel>();
             var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
             string area = "";
-            var dataGV = elementService.GetDataKeHoachGiaVon(year, area);
-            var kehoachTC = elementService.GetDataKeHoachTaiChinh(year);
+            var dataGV = new DataCenterModel();
+            var kehoachTC =new DataCenterModel();
+        
+            var CKGG = new RevenueByFeeReportModel();
+            var data02A = new ReportDataCenter();
+
+            Task task1=Task.Run(() => {
+                lock ((lockObject))
+               
+                { dataGV = elementService.GetDataKeHoachGiaVon(year, area); } });
+            Task task2 = Task.Run(() => { lock (lockObject) { kehoachTC = elementService.GetDataKeHoachTaiChinh(year); } });
+            Task task3 = Task.Run(() => { lock (lockObject) { CKGG = PhienBanService.GetDataDoanhThuTheoPhiBM01(year, phienBan, kichBan, hhk);} });
+            Task task4 = Task.Run(() => { lock (lockObject) { data02A = reportService.GenDataBM02A(year); } });
+            await Task.WhenAll(task1, task2, task3, task4);
             var sumGVElement = dataGV?.KeHoachGiaVonTheoThang.FirstOrDefault(x => x.Name == "Tổng cộng");
             var Sumgv = sumGVElement?.SumGV ?? 0;
-            var CKGG = PhienBanService.GetDataDoanhThuTheoPhiBM01(year, phienBan, kichBan, hhk);
-          
+            
+
             foreach (var e in elements)
             {
 
@@ -157,6 +172,12 @@ namespace SMO.Service.MD
                         break;
                     case 19:
                         i.Value5 = doanhthudata.Where(x => x.Name == "DOANH THU BÁN TẠI HÀN QUỐC").Sum(x => x.ValueDT);
+                        break;
+                    case 68:
+                        i.Value5=data02A.BM02B.Where(x => x.Name == "Tổng cộng").Sum(x => x.Col1) ??0;
+                        break;
+                    case 69:
+                        i.Value5 = data02A.BM02B.Where(x => x.Name == "Tổng cộng").Sum(x => x.Col5) ?? 0;
                         break;
                 }
 

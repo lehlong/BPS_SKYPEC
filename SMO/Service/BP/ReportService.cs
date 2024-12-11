@@ -1,4 +1,5 @@
-﻿using Microsoft.Ajax.Utilities;
+﻿using Hangfire.Annotations;
+using Microsoft.Ajax.Utilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Office.Interop.Excel;
@@ -1849,7 +1850,7 @@ namespace SMO.Service.BP
                 throw ex;
             }
         }
-        public ReportDataCenter GenDataBM01D(int year, string kichBan)
+        public ReportDataCenter GenDataBM01D(int year)
         {
             try
             {
@@ -1861,7 +1862,16 @@ namespace SMO.Service.BP
                
                     var child = data.BM01D.Where(x => x.Parent == d.Id).ToList();
                     d.Col1 = child.Count() == 0 ? d.Col1 : child.Sum(x => x.Col1);
-                 
+                    d.Col5 = child.Count() == 0 ? d.Col5 : child.Sum(x => x.Col5);
+
+                }
+                var da= data.BM01D.Where(x => x.Stt == "A" || x.Stt == "I" || x.Stt == "B" || x.Stt == "II");
+                foreach (var d in data.BM01D.Where(x=>x.Stt=="A"|| x.Stt=="I"||x.Stt=="B"||x.Stt=="II"))
+                {
+                    var Listchinld= Findnode1D(d.Id,data);
+                    d.Col1 = data.BM01D.Where(x => Listchinld.Contains(x.Id)).Select(x => new {x.Code ,x.Col1}).Distinct().Sum(x=>x.Col1);
+                    d.Col5= data.BM01D.Where(x => Listchinld.Contains(x.Id)).Select(x => new { x.Code, x.Col5 }).Distinct().Sum(x => x.Col5);
+
                 }
 
                 return data;
@@ -1918,6 +1928,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "A.I.1" + p.CODE,
                         Stt = "1." + orderAI1.ToString(),
                         Name = p.NAME,
@@ -1925,7 +1936,7 @@ namespace SMO.Service.BP
                         Parent = "A.I.1",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
                         Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
-                        
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5* x.VALUE_6)??0,
                     });
                     orderAI1 += 1;
                 }
@@ -1945,6 +1956,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "A.I.2" + p.CODE,
                         Stt = "2." + orderAI2.ToString(),
                         Name = p.NAME,
@@ -1952,6 +1964,7 @@ namespace SMO.Service.BP
                         Parent = "A.I.2",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
                         Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col5= DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
                     });
                     orderAI2 += 1;
                 }
@@ -1973,6 +1986,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "A.I.3" + p.CODE,
                         Stt = "3." + orderAI3.ToString(),
                         Name = p.NAME,
@@ -1980,6 +1994,7 @@ namespace SMO.Service.BP
                         Parent = "A.I.3",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
                         Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
                     });
                     orderAI3 += 1;
                 }
@@ -2009,13 +2024,15 @@ namespace SMO.Service.BP
                     var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code = p.CODE,
                         Id = "A.II.1" + p.CODE,
                         Stt = "1." + orderAII1.ToString(),
                         Name = p.NAME,
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "A.II.1",
-                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
-                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col2 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
 
                     });
                     orderAII1 += 1;
@@ -2037,19 +2054,23 @@ namespace SMO.Service.BP
                     var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code = p.CODE,
                         Id = "A.II.2" + p.CODE,
                         Stt = "2." + orderAII2.ToString(),
                         Name = p.NAME,
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "A.II.2",
-                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
-                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+
+                        Col2 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
                     });
                     orderAII2 += 1;
                 }
 
                 data.Add(new ReportModel2B
                 {
+                    
                     Id = "B",
                     Stt = "B",
                     Name = "Dự án đầu tư mới",
@@ -2081,6 +2102,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code = p.CODE,
                         Id = "B.I.1" + p.CODE,
                         Stt = "1." + orderBI1.ToString(),
                         Name = p.NAME,
@@ -2088,7 +2110,8 @@ namespace SMO.Service.BP
                         Parent = "B.I.1",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
                         Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
-                    }); ; ;
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
+                    }) ;
                     orderBI1 += 1;
                 }
 
@@ -2108,6 +2131,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "B.I.2" + p.CODE,
                         Stt = "2." + orderBI2.ToString(),
                         Name = p.NAME,
@@ -2115,6 +2139,7 @@ namespace SMO.Service.BP
                         Parent = "B.I.2",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
                         Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
                     });
                     orderBI2 += 1;
                 }
@@ -2135,6 +2160,7 @@ namespace SMO.Service.BP
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "B.I.3" + p.CODE,
                         Stt = "3." + orderBI3.ToString(),
                         Name = p.NAME,
@@ -2142,6 +2168,7 @@ namespace SMO.Service.BP
                         Parent = "A.I.3",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
                         Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
                     });
                     orderBI3 += 1;
                 }
@@ -2167,16 +2194,18 @@ namespace SMO.Service.BP
                 var orderBII1 = 1;
                 foreach (var p in projects.Where(x => x.LOAI_HINH == "XDCB" && x.DAU_TU_MOI == true && x.CHUAN_BI_DAU_TU == true))
                 {
-                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                    var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "B.II.1" + p.CODE,
                         Stt = "1." + orderBII1.ToString(),
                         Name = p.NAME,
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "B.II.1",
-                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
-                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col2 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
                     });
                     orderBII1 += 1;
                 }
@@ -2196,13 +2225,15 @@ namespace SMO.Service.BP
                     var codeDataXD = DataXDcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
                     data.Add(new ReportModel2B
                     {
+                        Code=p.CODE,
                         Id = "B.II.2" + p.CODE,
                         Stt = "2." + orderBII2.ToString(),
                         Name = p.NAME,
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "B.II.2",
-                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
-                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col2 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                        Col5= DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
 
                     });
                     orderBII2 += 1;
@@ -2225,6 +2256,7 @@ namespace SMO.Service.BP
                 var DataXD = UnitOfWork.Repository<DauTuXayDungDataRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.STATUS == "03").ToList();
                 var DataTTBcenter = UnitOfWork.Repository<DauTuTrangThietBiProfitCenterRepo>().GetAll().ToList();
                 var DataXDcenter = UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().GetAll().ToList();
+               
 
                 data.Add(new ReportModel2B
                 {
@@ -2632,6 +2664,43 @@ namespace SMO.Service.BP
                 return new List<ReportModel2B>();
             }
         }
+        public List<string> Findnode(string node, ReportDataCenter data)
+        {
+            List<string> nodeleave = new List<string>();
+
+            var child = data.BM02B.Where(x => x.Parent == node).ToList();
+            if (child.Count() == 0)
+            {
+                nodeleave.Add(node);
+            }
+            else
+            {
+                foreach (var i in child)
+                {
+                    nodeleave.AddRange(Findnode(i.Id, data));
+                }
+            }
+            return nodeleave;
+        }
+        public List<string> Findnode1D(string node, ReportDataCenter data)
+        {
+            List<string> nodeleave = new List<string>();
+
+            var child = data.BM01D.Where(x => x.Parent == node).ToList();
+            if (child.Count() == 0)
+            {
+                nodeleave.Add(node);
+            }
+            else
+            {
+                foreach (var i in child)
+                {
+                    nodeleave.AddRange(Findnode1D(i.Id, data));
+                }
+            }
+            return nodeleave;
+        }
+
         public ReportDataCenter GenDataBM02A(int year)
         {
             try
@@ -2649,6 +2718,16 @@ namespace SMO.Service.BP
                     i.Col7 = child.Count() == 0 ? i.Col7 : child.Sum(x => x.Col7);
                     //i.Col8 = child.Count() == 0 ? i.Col8 : child.Sum(x => x.Col8);
                 }
+             
+                foreach (var i in data.BM02B.Where(x => x.Stt=="A" || x.Stt=="B"||x.Stt=="I"||x.Stt=="II"))
+                {
+                   var Listchild = Findnode(i.Id, data);
+                   i.Col1= data.BM02B.Where(x => Listchild.Contains(x.Id)).Select(x => new {x.Code,x.Col1}).Distinct().Sum(x => x.Col1);
+                    i.Col4 = data.BM02B.Where(x => Listchild.Contains(x.Id)).Select(x => new { x.Code, x.Col4 }).Distinct().Sum(x => x.Col4);
+                    i.Col5 = data.BM02B.Where(x => Listchild.Contains(x.Id)).Select(x => new { x.Code, x.Col5 }).Distinct().Sum(x => x.Col5);
+                    i.Col7 = data.BM02B.Where(x => Listchild.Contains(x.Id)).Select(x => new { x.Code, x.Col7 }).Distinct().Sum(x => x.Col7);
+                }
+
                 foreach (var i in data.BM02B.Where(x=>x.Id== "Total"))
                 {
                    
