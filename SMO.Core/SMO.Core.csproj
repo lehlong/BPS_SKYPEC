@@ -306,6 +306,7 @@
     <Compile Include="Entities\MD\T_MD_CONTRACT_TYPE.cs" />
     <Compile Include="Entities\MD\T_MD_COST_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_COUNTRY.cs" />
+    <Compile Include="Entities\MD\T_MD_CP_TCNL_DATA.cs" />
     <Compile Include="Entities\MD\T_MD_CURRENCY.cs" />
     <Compile Include="Entities\MD\T_MD_CUSTOMER.cs" />
     <Compile Include="Entities\MD\T_MD_DATA.cs" />
@@ -318,6 +319,7 @@
     <Compile Include="Entities\MD\T_MD_DOMAIN.cs" />
     <Compile Include="Entities\MD\T_MD_GIAI_DOAN_DAU_TU.cs" />
     <Compile Include="Entities\MD\T_MD_HANG_HANG_KHONG.cs" />
+    <Compile Include="Entities\MD\T_MD_CP_TCNL.cs" />
     <Compile Include="Entities\MD\T_MD_INPUT_CHI_PHI.cs" />
     <Compile Include="Entities\MD\T_MD_INPUT_KH.cs" />
     <Compile Include="Entities\MD\T_MD_INTERNAL_ORDER.cs" />

@@ -273,6 +273,7 @@
     <Compile Include="Implement\MD\ContractTypeRepo.cs" />
     <Compile Include="Implement\MD\CostCenterRepo.cs" />
     <Compile Include="Implement\MD\CountryRepo.cs" />
+    <Compile Include="Implement\MD\CpTcnlDataRepo.cs" />
     <Compile Include="Implement\MD\CurrencyRepo.cs" />
     <Compile Include="Implement\MD\CustomerRepo.cs" />
     <Compile Include="Implement\MD\DataRepo.cs" />
@@ -288,6 +289,7 @@
     <Compile Include="Implement\MD\GiaiDoanDauTuRepo.cs" />
     <Compile Include="Implement\MD\HangHangKhongRepo.cs" />
     <Compile Include="Implement\MD\InputChiPhiRepo.cs" />
+    <Compile Include="Implement\MD\CpTcnlRepo.cs" />
     <Compile Include="Implement\MD\InternalOrderRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucHangHoaRepo.cs" />
     <Compile Include="Implement\MD\NhomSanBayRepo.cs" />
@@ -547,6 +549,7 @@
     <Compile Include="Interface\MD\IContractTypeRepo.cs" />
     <Compile Include="Interface\MD\ICostCenterRepo.cs" />
     <Compile Include="Interface\MD\ICountryRepo.cs" />
+    <Compile Include="Interface\MD\ICpTcnlData.cs" />
     <Compile Include="Interface\MD\ICurrencyRepo.cs" />
     <Compile Include="Interface\MD\ICustomerRepo.cs" />
     <Compile Include="Interface\MD\IDataRepo.cs" />
@@ -579,6 +582,7 @@
     <Compile Include="Interface\MD\IMdBidSpecDetailRepo.cs" />
     <Compile Include="Interface\MD\IMdBidSpecRepo.cs" />
     <Compile Include="Interface\MD\INganhNgheDauTuRepo.cs" />
+    <Compile Include="Interface\MD\ICpTcnl.cs" />
     <Compile Include="Interface\MD\INhomSanBay.cs" />
     <Compile Include="Interface\MD\IOtherProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\IPeriodTimeRepo.cs" />
@@ -834,6 +838,7 @@
     <Compile Include="Mapping\MD\T_MD_CONTRACT_TYPE_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_COST_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_COUNTRY_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_CP_TCNL_DATA_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_CURRENCY_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_CUSTOMER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_DATA_Map.cs" />
@@ -846,6 +851,7 @@
     <Compile Include="Mapping\MD\T_MD_DOMAIN_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_GIAI_DOAN_DAU_TU_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_HANG_HANG_KHONG_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_CP_TCNL_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_INPUT_CHI_PHI_map.cs" />
     <Compile Include="Mapping\MD\T_MD_INTERNAL_ORDER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_KHOAN_MUC_CHI_PHI_Map.cs" />

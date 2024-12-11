@@ -562,6 +562,7 @@
     <Compile Include="Areas\MD\Controllers\DomainController.cs" />
     <Compile Include="Areas\MD\Controllers\GiaiDoanDauTuController.cs" />
     <Compile Include="Areas\MD\Controllers\HangHangKhongController.cs" />
+    <Compile Include="Areas\MD\Controllers\CpTcnlDataController.cs" />
     <Compile Include="Areas\MD\Controllers\InputChiPhiController.cs" />
     <Compile Include="Areas\MD\Controllers\InputKhController.cs" />
     <Compile Include="Areas\MD\Controllers\InternalOrderController.cs" />
@@ -829,6 +830,7 @@
     <Compile Include="Service\MD\GiaiDoanDauTuService.cs" />
     <Compile Include="Service\MD\HangHangKhongService.cs" />
     <Compile Include="Service\MD\InputChiPhiService.cs" />
+    <Compile Include="Service\MD\CpTcnlDataService.cs" />
     <Compile Include="Service\MD\InputKhService.cs" />
     <Compile Include="Service\MD\KhoanMucChiPhiService.cs" />
     <Compile Include="Service\MD\KhoanMucChungService.cs" />
@@ -2127,6 +2129,8 @@
     <Content Include="Areas\MD\Views\InputChiPhi\GenDataChiPhiReport.cshtml" />
     <Content Include="Areas\MD\Views\InputKh\Index.cshtml" />
     <Content Include="Areas\MD\Views\InputKh\GenDataChiPhiKH.cshtml" />
+    <Content Include="Areas\MD\Views\CpTcnlData\Index.cshtml" />
+    <Content Include="Areas\MD\Views\CpTcnlData\GenDataCpTcnl.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

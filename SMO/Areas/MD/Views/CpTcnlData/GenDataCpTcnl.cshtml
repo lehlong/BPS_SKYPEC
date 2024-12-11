@@ -1,0 +1,126 @@
+﻿
+@model List<SMO.Service.MD.CpTcnlImport>
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
+    var data = Model.Select(x => new
+    {
+        idTH = x.ID,
+        Parent = x.PARENT,
+        Stt=x.STT,
+        Name=x.NAME,
+        U_CBQL=x.U_CBQL,
+        U_CQCT=x.U_CQCT,
+        U_OIL_SOUCE=x.U_OIL_SOUCE,
+        U_MB=x.U_MB,
+        U_MT=x.U_MT,
+        U_VT=x.U_VT,
+        U_MN=x.U_MN,
+        isBold=x.IS_BOLD,
+    }
+        );
+
+    var gridId = Guid.NewGuid().ToString();
+
+
+}
+
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+
+<script>
+    const rawData =  @Html.Raw(JsonConvert.SerializeObject(data));
+
+
+
+    let columns = [
+        { id: "Stt", header: [{ text: "TT", align: "center" }], minWidth: 220 },
+        { id: "Name", header: [{ text: "Chỉ tiêu", align: "center" }], minWidth: 200 },
+        { id: "U_CBQL", header: [{ text: "CBQL", align: "center" }], minWidth: 200 },
+        { id: "U_CQCT", header: [{ text: "CQCT (không gồm kho dầu nguồn)", align: "center" }], minWidth: 200 },
+        { id: "U_OIL_SOUCE", header: [{ text: "Đội kho đầu nguồn", align: "center" }], minWidth: 200 },
+        { id: "U_MB", header: [{ text: "CNMB", align: "center" }], minWidth: 200 },
+        { id: "U_MT", header: [{ text: "CNMT", align: "center" }], minWidth: 200 },
+        { id: "U_VT", header: [{ text: "CNVT", align: "center" }], minWidth: 200 },
+        { id: "U_MN", header: [{ text: "CNMN", align: "center" }], minWidth: 200 },
+        
+        
+
+    ];
+    const Gird = new dhx.TreeGrid("@gridId", {
+        columns,
+        data: rawData,
+        selection: "row",
+        resizable: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    });
+    let valuechange = [];
+    Gird.events.on("afterEditEnd", (value, row, column) => {
+       
+        const index = valuechange.findIndex(item => item.ID_CENTER == row.idTH);
+        
+        if (index !== -1) {
+            // Nếu hàng đã tồn tại, cập nhật giá trị
+            valuechange[index] = {
+                ID: row.idTH,
+                U_CBQL: row.U_CBQL,
+                U_CQCT: row.U_CQCT,
+                U_OIL_SOUCE: row.U_OIL_SOUCE,
+                U_MB: row.U_MB,
+                U_MT: row.U_MT,
+                U_VT: row.U_VT,
+                U_MN: row.U_MN,
+
+            };
+        } else {
+            // Nếu hàng chưa tồn tại, thêm mới
+            valuechange.push({
+            
+                ID: row.idTH,
+                U_CBQL: row.U_CBQL,
+                U_CQCT: row.U_CQCT,
+                U_OIL_SOUCE: row.U_OIL_SOUCE,
+                U_MB: row.U_MB,
+                U_MT: row.U_MT,
+                U_VT: row.U_VT,
+                U_MN: row.U_MN,
+               
+
+            });
+        }
+        console.log(valuechange);
+    });
+
+    Gird.events.on("cellClick", (row, column, editorType) => {
+
+            if (row.isBold == true) {
+                column.editable = false
+
+            } else {
+                column.editable = true
+
+            }
+    });
+
+
+       function saveIPutData() {
+           var year = $("#time-year").val();
+
+            var ajaxParams = {
+         url: "@Url.Action("Update")",
+         type: "POST",
+         data: {
+             data: JSON.stringify(valuechange),
+             year: year,
+
+         },
+         dataType: 'json',
+         success: function (response) {
+             Message.execute(response);
+         }
+     }
+           Forms.Ajax(ajaxParams)
+            valuechange = [];
+ }
+
+</script>
+
