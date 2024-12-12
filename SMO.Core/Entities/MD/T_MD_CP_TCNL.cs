@@ -9,8 +9,8 @@ namespace SMO.Core.Entities.MD
         public virtual string NAME { get; set; }
         public virtual bool IS_BOLD { get; set; }
         public virtual string STT { get; set; }
-        public virtual T_MD_CP_TCNL_DATA idcenter { get; set; }
-
+        //public virtual T_MD_CP_TCNL_DATA idcenter { get; set; }
+        public virtual int C_ORDER { get; set; }
 
     }
 }

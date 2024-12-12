@@ -23,7 +23,7 @@ namespace SMO.Core.Entities.MD
         public virtual decimal? KH_MN { get; set; }
         public virtual decimal? KH_VT { get; set; }
         public virtual int YEAR { get; set; }
-
+        public virtual T_MD_CP_TCNL idcenter { get; set; }
 
     }
 }

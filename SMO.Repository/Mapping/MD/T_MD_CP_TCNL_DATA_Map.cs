@@ -28,7 +28,8 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.KH_VT);
             Map(x => x.YEAR);
             Map(x => x.ACTIVE).CustomType<YesNoType>();
-            
+            References(x => x.idcenter, "ID_CENTER");
+
 
         }
     }

@@ -36,7 +36,7 @@
     let columns = [
         { id: "Stt", header: [{ text: "TT", align: "center" }], minWidth: 220,},
         { id: "Name", header: [{ text: "Chỉ tiêu", align: "center" }], minWidth: 400 },
-        { id: "TỔNG TH", header: [{ text: "KH_TOTALKH", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "KH_TOTALKH", header: [{ text: "TỔNG TH", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
         { id: "U_CBQL", header: [{ text: "CBQL", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
         { id: "U_CQCT", header: [{ text: "CQCT (không gồm kho dầu nguồn)", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
         { id: "U_OIL_SOUCE", header: [{ text: "Đội kho đầu nguồn", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
@@ -56,7 +56,7 @@
     let valuechange = [];
     Gird.events.on("afterEditEnd", (value, row, column) => {
        
-        const index = valuechange.findIndex(item => item.ID_CENTER == row.idTH);
+        const index = valuechange.findIndex(item => item.ID == row.idTH);
         
         if (index !== -1) {
             // Nếu hàng đã tồn tại, cập nhật giá trị
@@ -69,12 +69,11 @@
                 U_MT: row.U_MT,
                 U_VT: row.U_VT,
                 U_MN: row.U_MN,
-
+                KH_TOTALKH: row.KH_TOTALKH
             };
         } else {
             // Nếu hàng chưa tồn tại, thêm mới
             valuechange.push({
-            
                 ID: row.idTH,
                 U_CBQL: row.U_CBQL,
                 U_CQCT: row.U_CQCT,
@@ -83,7 +82,7 @@
                 U_MT: row.U_MT,
                 U_VT: row.U_VT,
                 U_MN: row.U_MN,
-               
+                KH_TOTALKH: row.KH_TOTALKH
 
             });
         }

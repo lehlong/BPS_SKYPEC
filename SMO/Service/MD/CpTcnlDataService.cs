@@ -20,7 +20,7 @@ namespace SMO.Service.MD
         {
             try
             {
-                var listDataHeader = UnitOfWork.Repository<CptcnlRepo>().GetAll();
+                var listDataHeader = UnitOfWork.Repository<CptcnlRepo>().GetAll().OrderBy(x=>x.C_ORDER);
                 var data = new List<CpTcnlImport>();
                 var listData = UnitOfWork.Repository<CptcnlDataRepo>().Queryable().Where(x => x.YEAR == year).ToList();
                 var a = UnitOfWork.Repository<CptcnlDataRepo>().GetAll();
