@@ -58,6 +58,44 @@ namespace SMO.Service.MD
             }
 
         }
+        public IList<dataDm> GetdataDm(int year)
+        {
+            try
+            {
+                var data = new List<dataDm>();
+                var listReport = UnitOfWork.Repository<HeaderDmRepo>().GetAll();
+                var listInput = UnitOfWork.Repository<DataDmRepo>().Queryable().Where(x => x.YEAR == year).ToList();
+
+                var listData = from table1 in listReport
+                               join table2 in listInput
+                               on table1.ID equals table2.ID_CENTER into table3
+                               from col in table3.DefaultIfEmpty()
+                               select new { table1, col };
+
+                foreach (var e in listData)
+                {
+                    var temp = new dataDm
+                    {
+
+                        ID = e.table1.ID,
+                        DVT = e.table1.DVT,
+                        STT = e.table1.STT,
+                        NAME = e.table1.NAME,
+                        Value = e.col.VALUE,
+                    };
+                    data.Add(temp);
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                this.State = false;
+                this.Exception = ex;
+                return new List<dataDm>();
+            }
+
+        }
         public void UpdateData(List<T_MD_INPUT_KH> data, int year)
         {
             try
@@ -106,4 +144,14 @@ namespace SMO.Service.MD
             }
         }
     }
+    public class dataDm
+    {
+        public string ID { get; set; }
+        public string NAME { get; set; }
+        public string NOTE { get; set; }
+        public int STT { get; set; }
+        public string DVT { get; set; }
+        public int YEAR { get; set; }
+        public decimal?  Value { get; set; }
     }
+}

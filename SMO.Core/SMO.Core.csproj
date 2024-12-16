@@ -306,6 +306,9 @@
     <Compile Include="Entities\MD\T_MD_CONTRACT_TYPE.cs" />
     <Compile Include="Entities\MD\T_MD_COST_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_COUNTRY.cs" />
+    <Compile Include="Entities\MD\T_MD_HEADER_DM.cs" />
+    <Compile Include="Entities\MD\T_MD_DATA_TRA_NAP.cs" />
+    <Compile Include="Entities\MD\T_MD_DATA_DM.cs" />
     <Compile Include="Entities\MD\T_MD_CP_TCNL_DATA.cs" />
     <Compile Include="Entities\MD\T_MD_CURRENCY.cs" />
     <Compile Include="Entities\MD\T_MD_CUSTOMER.cs" />

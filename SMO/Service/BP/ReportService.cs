@@ -1970,34 +1970,34 @@ namespace SMO.Service.BP
                 }
 
 
-                data.Add(new ReportModel2B
-                {
-                    Id = "A.I.3",
-                    Stt = "3",
-                    Name = "Đầu tư trang thiết bị lẻ",
-                    NameExcel = "Đầu tư trang thiết bị lẻ",
-                    Parent = "A.I",
-                    IsBold = true,
-                });
+                //data.Add(new ReportModel2B
+                //{
+                //    Id = "A.I.3",
+                //    Stt = "3",
+                //    Name = "Đầu tư trang thiết bị lẻ",
+                //    NameExcel = "Đầu tư trang thiết bị lẻ",
+                //    Parent = "A.I",
+                //    IsBold = true,
+                //});
 
-                var orderAI3 = 1;
-                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.TYPE == "TTB-LE" && x.CHUYEN_TIEP == true))
-                {
-                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
-                    data.Add(new ReportModel2B
-                    {
-                        Code=p.CODE,
-                        Id = "A.I.3" + p.CODE,
-                        Stt = "3." + orderAI3.ToString(),
-                        Name = p.NAME,
-                        NameExcel = "Các dự án chuẩn bị đầu tư",
-                        Parent = "A.I.3",
-                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
-                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
-                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
-                    });
-                    orderAI3 += 1;
-                }
+                //var orderAI3 = 1;
+                //foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.TYPE == "TTB-LE" && x.CHUYEN_TIEP == true))
+                //{
+                //    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                //    data.Add(new ReportModel2B
+                //    {
+                //        Code=p.CODE,
+                //        Id = "A.I.3" + p.CODE,
+                //        Stt = "3." + orderAI3.ToString(),
+                //        Name = p.NAME,
+                //        NameExcel = "Các dự án chuẩn bị đầu tư",
+                //        Parent = "A.I.3",
+                //        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                //        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                //        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
+                //    });
+                //    orderAI3 += 1;
+                //}
 
                 data.Add(new ReportModel2B
                 {
@@ -2144,34 +2144,34 @@ namespace SMO.Service.BP
                     orderBI2 += 1;
                 }
 
-                data.Add(new ReportModel2B
-                {
-                    Id = "B.I.3",
-                    Stt = "3",
-                    Name = "Đầu tư trang thiết bị lẻ",
-                    NameExcel = "Đầu tư trang thiết bị lẻ",
-                    Parent = "B.I",
-                    IsBold = true,
-                });
+                //data.Add(new ReportModel2B
+                //{
+                //    Id = "B.I.3",
+                //    Stt = "3",
+                //    Name = "Đầu tư trang thiết bị lẻ",
+                //    NameExcel = "Đầu tư trang thiết bị lẻ",
+                //    Parent = "B.I",
+                //    IsBold = true,
+                //});
 
-                var orderBI3 = 1;
-                foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.TYPE == "TTB-LE" && x.DAU_TU_MOI == true))
-                {
-                    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
-                    data.Add(new ReportModel2B
-                    {
-                        Code=p.CODE,
-                        Id = "B.I.3" + p.CODE,
-                        Stt = "3." + orderBI3.ToString(),
-                        Name = p.NAME,
-                        NameExcel = "Các dự án chuẩn bị đầu tư",
-                        Parent = "A.I.3",
-                        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
-                        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
-                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
-                    });
-                    orderBI3 += 1;
-                }
+                //var orderBI3 = 1;
+                //foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.TYPE == "TTB-LE" && x.DAU_TU_MOI == true))
+                //{
+                //    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
+                //    data.Add(new ReportModel2B
+                //    {
+                //        Code=p.CODE,
+                //        Id = "B.I.3" + p.CODE,
+                //        Stt = "3." + orderBI3.ToString(),
+                //        Name = p.NAME,
+                //        NameExcel = "Các dự án chuẩn bị đầu tư",
+                //        Parent = "A.I.3",
+                //        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                //        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
+                //        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
+                //    });
+                //    orderBI3 += 1;
+                //}
 
                 data.Add(new ReportModel2B
                 {
