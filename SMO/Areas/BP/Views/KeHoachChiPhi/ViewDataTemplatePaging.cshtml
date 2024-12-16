@@ -130,7 +130,7 @@
                 { text: "KẾ HOẠCH CHI TIẾT", colspan: rawData[0].lstCenter.length * 2 + 3, align: 'center' },
                 {id:"ID_HDSL", text: "SỐ LƯỢNG", colspan: rawData[0].lstCenter.length + 1, align: 'center' },
                 { text: idCol0, align: 'center', sortable: false, }
-            ], align: 'right', width: 150, type: "number", format: "#.#,00",
+            ], align: 'right', width: 150, type: "number", format: "#.#",
         },
     );
     const sortquantity = ["VPCN", "HAN", "HPH", "THD", "VII", "VDH", "VDO"];
@@ -141,7 +141,7 @@
     if (rawData[0].CODE.startsWith("B62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortquantity[i];
-            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00",  });
+            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#",  });
         };
 
     }
@@ -150,7 +150,7 @@
     {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortMT[i];
-            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
 
     }
@@ -158,7 +158,7 @@
         for (var i = 1; i < rawData[0].lstCenter.length; i++)
         {
             var idCol = sortVT[i];
-            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
 
     }
@@ -166,28 +166,28 @@
         for (var i = 1; i < rawData[0].lstCenter.length; i++)
         {
             var idCol = sortMN[i];
-            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
 
     }
     else if (rawData[0].CODE.startsWith("CQ62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortCQ[i];
-            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
 
     }
     else {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = rawData[0].lstCenter[i].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[i].SAN_BAY_CODE : rawData[0].lstCenter[i]._implementation.SAN_BAY_CODE;
-            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         };
 
     }
 
     columns.push(
-        { id: "sumQuantity", header: ["", "", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#,00",},
-        { id: "price", header: ["", { text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], width: 150, type: "number", format: "#.#,00",},
+        { id: "sumQuantity", header: ["", "", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#",},
+        { id: "price", header: ["", { text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], width: 150, type: "number", format: "#.#",},
     );
 
     columns.push(
@@ -196,19 +196,19 @@
                 "",
                 { text: "THÀNH TIỀN", colspan: rawData[0].lstCenter.length + 1, align: 'center' },
                 { text: idCol0, align: 'center' }
-            ], align: 'right', width: 150, type: "number", format: "#.#,00",
+            ], align: 'right', width: 150, type: "number", format: "#.#",
         },
     );
     if (rawData[0].CODE.startsWith("B62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortquantity[i]
-            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         };
     }
     else if (rawData[0].CODE.startsWith("T62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortMT[i];
-            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
 
     }
@@ -216,7 +216,7 @@
         for (var i = 1; i < rawData[0].lstCenter.length; i++)
         {
             var idCol = sortVT[i];
-            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
 
     }
@@ -224,7 +224,7 @@
         for (var i = 1; i < rawData[0].lstCenter.length; i++)
         {
             var idCol = sortMN[i];
-            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
 
     }
@@ -232,20 +232,20 @@
         for (var i = 1; i < rawData[0].lstCenter.length; i++)
         {
             var idCol = sortCQ[i];
-            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         }
 
     }
     else {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = rawData[0].lstCenter[i].hasOwnProperty("SAN_BAY_CODE") ? rawData[0].lstCenter[i].SAN_BAY_CODE : rawData[0].lstCenter[i]._implementation.SAN_BAY_CODE;
-            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#,00", });
+            columns.push({ id: `total_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
         };
     }
 
 
     columns.push(
-        { id: "sumTotal", header: ["","", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#,00", footer: [{ content: "sum" }] },
+        { id: "sumTotal", header: ["","", { text: "CỘNG", align: "center" }], width: 150, type: "number", format: "#.#", footer: [{ content: "sum" }] },
         { id: "notes", header: [{ text: "GHI CHÚ", align: "center", rowspan: 3 }], width: 150 }
     );
 

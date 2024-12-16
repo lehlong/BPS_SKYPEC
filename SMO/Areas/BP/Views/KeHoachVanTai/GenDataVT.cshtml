@@ -138,6 +138,55 @@
 		$('#@formIdExportExcel #Template').val(template);
          $('#@formIdExportExcel').submit();
 }
+
+    let oldValue;
+    grid.events.on("cellClick", function (row, column) {
+        let cellValue = grid.data.getItem(row.id)[column.id];
+        oldValue = cellValue;
+        
+        // Không cho phép edit các cột TT, Đội VT, Tuyến vận chuyển
+        if (column.id == "COL1" || column.id == "COL2" || column.id == "COL5") {
+            return;
+        }
+        
+        grid.editCell(row.id, column.id);
+    });
+
+    grid.events.on("afterEditEnd", function (value, row, column) {
+        if (value == oldValue) {
+            return;
+        }
+        // Lấy ID thực từ dữ liệu
+        const realId = grid.data.getItem(row.id).ID; // Giả sử ID là trường chứa id thực trong database
+        onEditCell(realId, column.id, value);
+    });
+
+    function onEditCell(id, column, value) {
+        if (value == null) {
+            return;
+        }
+        var year = $("#time-year").val();
+        
+        var ajaxParams = {
+            url: '@Url.Action("UpdateCellValue", "KeHoachVanTai")',
+            type: "POST",
+            data: {
+                id: id, // Đây sẽ là ID thực từ database
+                year: year,
+                column: column,
+                value: value
+            },
+            dataType: "json",
+            success: function (response) {
+                if (response.Type == "AlertSuccessAndJsCommand") {
+                    Message.execute(response);
+                } else {
+                    Message.execute(response);
+                }
+            }
+        };
+        Forms.Ajax(ajaxParams);
+    }
 </script>
 
 

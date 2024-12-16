@@ -74,5 +74,25 @@ namespace SMO.Areas.BP.Controllers
             var fileName = "Kế_Hoạch_Vận_Tải";
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + ".xlsx");
         }
+        [HttpPost]
+        [MyValidateAntiForgeryToken] 
+        public ActionResult UpdateCellValue(string id, int year, string column, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _service.UpdateCellValue(id, year, column, value);
+            if (_service.State)
+            {
+                SMOUtilities.GetMessage("1002", _service, result);
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _service, result);
+            }
+            return result.ToJsonResult();
+        }
     }
 }

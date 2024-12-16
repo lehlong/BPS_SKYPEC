@@ -1001,5 +1001,51 @@ namespace SMO.Service.AD
             public  int C_ORDER { get; set; }
 
         }
+
+        public void UpdateCellValue(string id, int year, string column, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+                
+                var data = UnitOfWork.Repository<KeHoachVanTaiRepo>()
+                    .GetFirstByExpression(x => x.ID.ToString() == id && x.YEAR == year);
+
+                if (data == null)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Không tìm thấy dữ liệu!";
+                    return;
+                }
+
+                // Cập nhật giá trị theo column
+                var prop = typeof(T_BP_KE_HOACH_VAN_TAI).GetProperty(column);
+                if (prop != null)
+                {
+                    // Chuyển đổi value sang kiểu dữ liệu phù hợp
+                    object convertedValue;
+                    if (prop.PropertyType == typeof(decimal?) || prop.PropertyType == typeof(decimal))
+                    {
+                        convertedValue = decimal.Parse(value);
+                    }
+                    else
+                    {
+                        convertedValue = value;
+                    }
+                    prop.SetValue(data, convertedValue);
+                }
+
+                UnitOfWork.Repository<KeHoachVanTaiRepo>().Update(data);
+                UnitOfWork.Commit();
+                
+                this.State = true;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
     }
 }
