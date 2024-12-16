@@ -2133,6 +2133,7 @@
     <Content Include="Areas\MD\Views\CpTcnlData\Index.cshtml" />
     <Content Include="Areas\MD\Views\CpTcnlData\GenDataCpTcnl.cshtml" />
     <Content Include="Areas\MD\Views\DataDm\Index.cshtml" />
+    <Content Include="Areas\BP\Views\Report\ImportView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

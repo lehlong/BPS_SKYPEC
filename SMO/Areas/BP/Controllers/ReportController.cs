@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using NHibernate.SqlCommand;
+using SMO.Service.AD;
 using SMO.Service.BP;
 using SMO.Service.BP.KE_HOACH_SAN_LUONG;
 using SMO.Service.MD;
@@ -346,12 +347,42 @@ namespace SMO.Areas.BP.Controllers
             var data = _service.GenDataBM01D(year);
             return PartialView(data);
         }
+        public ActionResult DownloadTemplateData()
+        {
+            byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/TemplateExcel/Template_BM_01E.xlsx"));
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Template_BM_01E.xlsx");
+
+        }
+        public ActionResult ImportView(ReportService service)
+        {
+            return PartialView(service);
+        }
         #endregion
 
         #region BM01E - Báo cáo ước tính hình đầu tư vốn ra ngoài doanh nghiệp ra trước kế hoạch
         public ActionResult IndexBM01E()
         {
             return PartialView();
+        }
+        public ActionResult ImportData01E(UserService service)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            var year = Request.Form.GetValues("YEAR")[0];
+            service.ImportDataVT(Request, Convert.ToInt32(year));
+
+            if (service.State)
+            {
+                SMOUtilities.GetMessage("1002", service, result);
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", service, result);
+            }
+            return result.ToJsonResult();
         }
         public ActionResult GenDataBM01E(int year, string phienBan, string kichBan, string hangHangKhong)
         {

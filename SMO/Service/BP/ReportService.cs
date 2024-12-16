@@ -35,7 +35,7 @@ using static iTextSharp.text.pdf.AcroFields;
 
 namespace SMO.Service.BP
 {
-    public class ReportService
+    public class ReportService 
     {
         public IUnitOfWork UnitOfWork { get; set; }
         public ReportService()

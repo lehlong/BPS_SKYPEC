@@ -666,7 +666,7 @@ namespace SMO.Service.MD
                             Value2 = value2,
                             Value3 = value3,
                             Value4 = value4,
-                            Value5 = value5,
+                            //Value5 = value5,
                             Value6 = value6,
                             Value8 = value8,
                             Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE,
@@ -697,7 +697,7 @@ namespace SMO.Service.MD
                             Value2 = value2,
                             Value3 = value3,
                             Value4 = value4,
-                            Value5 = value5,
+                            //Value5 = value5,
                             Value6 = value6,
                             Value8 = value8,
                             Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
@@ -716,7 +716,7 @@ namespace SMO.Service.MD
                             Value2 = value2,
                             Value3 = value3,
                             Value4 = value4,
-                            Value5 = value5,
+                            //Value5 = value5,
                             Value6 = value6,
                             Value8 = value8,
                             Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
@@ -738,7 +738,7 @@ namespace SMO.Service.MD
                         Value2 = value2,
                         Value3 = value3,
                         Value4 = value4,
-                        Value5 = value5,
+                        //Value5 = value5,
                         Value6 = value6,
                         Value8 = value8,
                         Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
@@ -751,7 +751,12 @@ namespace SMO.Service.MD
                     });
                     foreach (var item in data.KeHoachGiaVonData)
                     {
-                        var value12 = item.Value2 + item.Value3 + item.Value5 + item.Value6 + item.Value7 + item.Value10;
+                        var value12 = (item.Value2 + item.Value3 + item.Value5 + item.Value9 + item.Value8) * item.Value11 + (item.Value6 + item.Value10);
+                        if (!string.IsNullOrEmpty(item.ParentCode)&& item.ParentCode.Length >= 3&&item.ParentCode.Substring(item.ParentCode.Length-3)== "-09")
+                        {
+                            value12 = (item.Value2 + item.Value3 + item.Value9 + item.Value8 + item.Value10) * item.Value11 + item.Value6;
+                        }
+                      
                         item.Value12 = value12;
                         item.Value14 = item.Value1 * item.Value11 * item.Value2;
                         item.Value15 = item.Value1 * item.Value11 * item.Value3;

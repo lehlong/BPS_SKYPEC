@@ -1,12 +1,16 @@
-﻿@{
-    var viewId = Guid.NewGuid().ToString();
-    var lstTimeYear = SelectListUtilities.GetTimeYear(false);
-    var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
-    var lstPhienBan = SelectListUtilities.GetAllPhienBan();
-    var lstKichBan = SelectListUtilities.GetAllKichBan();
-    var lstArea = SelectListUtilities.GetAllArea();
-    var selectedValue = "TB";
-}
+﻿
+
+    @{
+        var viewId = Guid.NewGuid().ToString();
+        var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+        var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
+        var lstPhienBan = SelectListUtilities.GetAllPhienBan();
+        var lstKichBan = SelectListUtilities.GetAllKichBan();
+        var lstArea = SelectListUtilities.GetAllArea();
+        var selectedValue = "TB";
+        var FormId = Guid.NewGuid().ToString();
+    }
+
 <style>
     .tab-content {
         position: relative;
@@ -27,6 +31,10 @@
                         @Html.MyButton("cmdBack", "Quay lại", "window.location.reload()", "Alt+N", "arrow_back")
                         @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
+                        <a class="waves-effect btn-default btn" href="@Url.Action("DownloadTemplateData", "Report", new { @area = "BP" })" target="_blank">
+                            <i class="material-icons col-fecon">file_download</i> Tải file mẫu
+                        </a>
+                        @Html.MyButton("cmdAdd", "Upload", "ShowModalImport()", "Alt+N", "file_upload")
                     </div>
                     <div class="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px">
                         <div class="col-md-2">
@@ -79,7 +87,16 @@
         };
         Forms.LoadAjax(ajaxParams);
     }
-
+        function ShowModalImport() {
+    var formData = new FormData($('#@FormId')[0]);
+    var param = {
+        url: '@Url.Action("ImportView")',
+        data: formData,
+        contentType: false,
+        processData: false,
+    }
+    Forms.LoadAjaxModal(param);
+}
     $(function () {
         Forms.CompleteUI();
         setTimeout(function () { ViewData() }, 100)
