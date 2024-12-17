@@ -347,7 +347,7 @@ namespace SMO.Areas.BP.Controllers
             var data = _service.GenDataBM01D(year);
             return PartialView(data);
         }
-        public ActionResult DownloadTemplateData()
+        public ActionResult DownloadTemplateData1E()
         {
             byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/TemplateExcel/Template_BM_01E.xlsx"));
             return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Template_BM_01E.xlsx");

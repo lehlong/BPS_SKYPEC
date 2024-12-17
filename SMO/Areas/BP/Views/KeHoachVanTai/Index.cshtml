@@ -29,7 +29,7 @@
                                 @Html.MyButton("cmdBack", "Quay lại", "Close();", "Alt+N", "arrow_back")
                                 @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
                                 @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
-                                <a class="waves-effect btn-default btn" href="@Url.Action("DownloadTemplateData", "Report", new { @area = "BP" })" target="_blank">
+                                <a class="waves-effect btn-default btn" href="@Url.Action("DownloadTemplateData", "KeHoachVanTai", new { @area = "BP" })" target="_blank">
                                     <i class="material-icons col-fecon">file_download</i> Tải file mẫu
                                 </a>
                                 @Html.MyButton("cmdAdd", "Upload", "ShowModalImport()", "Alt+N", "file_upload")
