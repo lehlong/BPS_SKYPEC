@@ -3446,6 +3446,7 @@ namespace SMO.Service.MD
 
 
                 var dataDetailsTab1 = dataInHeader.Where(x => x.KHOAN_MUC_DOANH_THU_CODE == "2001" || x.KHOAN_MUC_DOANH_THU_CODE == "2002").ToList();
+               
                 var dataDetailsTab2 = dataSL.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020").ToList();
                 var dataDetailsTab3 = dataSL.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020").ToList();
                 var dataDetailsTab5 = dataSL.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").ToList();
@@ -3468,10 +3469,11 @@ namespace SMO.Service.MD
                     Value10 = dataDetailsTab1.Sum(x => x.VALUE_OCT) ?? 0,
                     Value11 = dataDetailsTab1.Sum(x => x.VALUE_NOV) ?? 0,
                     Value12 = dataDetailsTab1.Sum(x => x.VALUE_SEP) ?? 0,
+                   ValueSumYear= dataDetailsTab1.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                     Order = -1,
                     IsBold = true,
                 };
-                sumTab1.ValueSumYear = sumTab1.Value1 + sumTab1.Value2 + sumTab1.Value3 + sumTab1.Value4 + sumTab1.Value5 + sumTab1.Value6 + sumTab1.Value7 + sumTab1.Value8 + sumTab1.Value9 + sumTab1.Value10 + sumTab1.Value11 + sumTab1.Value12;
+              
                 data.Tab1.Add(sumTab1);
 
                 var sumTab3 = new RevenueReportModel
@@ -3488,7 +3490,7 @@ namespace SMO.Service.MD
                     Value9 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) * shareData ?? 0,
                     Value10 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_OCT) * shareData ?? 0,
                     Value11 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_NOV) * shareData ?? 0,
-                    Value12 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_SEP) * shareData ?? 0,
+                    Value12 = dataDetailsTab3.Where(x => !string.IsNullOrEmpty(x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM)).Sum(x => x.VALUE_DEC) * shareData ?? 0,
                     Order = -1,
                     IsBold = true,
                 };
@@ -3519,10 +3521,11 @@ namespace SMO.Service.MD
                         Value9 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) ?? 0,
                         Value10 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_NOV) ?? 0,
-                        Value12 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) ?? 0,
+                        Value12 = dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_DEC) ?? 0,
+                        ValueSumYear= dataDetailsTab1.Where(x => x.DoanhThuProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                         Order = order,
                     };
-                    tab1.ValueSumYear = tab1.Value1 + tab1.Value2 + tab1.Value3 + tab1.Value4 + tab1.Value5 + tab1.Value6 + tab1.Value7 + tab1.Value8 + tab1.Value9 + tab1.Value10 + tab1.Value11 + tab1.Value12;
+                   
                     data.Tab1.Add(tab1);
 
 
@@ -3561,7 +3564,7 @@ namespace SMO.Service.MD
                         Value9 = dataDetailsTab3.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * shareData ?? 0,
                         Value10 = dataDetailsTab3.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_OCT) * shareData ?? 0,
                         Value11 = dataDetailsTab3.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_NOV) * shareData ?? 0,
-                        Value12 = dataDetailsTab3.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * shareData ?? 0,
+                        Value12 = dataDetailsTab3.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_DEC) * shareData ?? 0,
                         Order = order,
                     };
                     tab3.ValueSumYear = tab3.Value1 + tab3.Value2 + tab3.Value3 + tab3.Value4 + tab3.Value5 + tab3.Value6 + tab3.Value7 + tab3.Value8 + tab3.Value9 + tab3.Value10 + tab3.Value11 + tab3.Value12;
@@ -3582,7 +3585,7 @@ namespace SMO.Service.MD
                         Value9 = dataDetailsTab5.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * priceTNK * s1 * s2 * s3 ?? 0,
                         Value10 = dataDetailsTab5.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_OCT) * priceTNK * s1 * s2 * s3 ?? 0,
                         Value11 = dataDetailsTab5.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_NOV) * priceTNK * s1 * s2 * s3 ?? 0,
-                        Value12 = dataDetailsTab5.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_SEP) * priceTNK * s1 * s2 * s3 ?? 0,
+                        Value12 = dataDetailsTab5.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM).Sum(x => x.VALUE_DEC) * priceTNK * s1 * s2 * s3 ?? 0,
 
                         Order = order,
                     };

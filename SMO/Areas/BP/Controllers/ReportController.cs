@@ -371,7 +371,7 @@ namespace SMO.Areas.BP.Controllers
                 Type = TransferType.AlertSuccessAndJsCommand
             };
             var year = Request.Form.GetValues("YEAR")[0];
-            service.ImportDataVT(Request, Convert.ToInt32(year));
+            service.ImportDatao1E(Request, Convert.ToInt32(year));
 
             if (service.State)
             {

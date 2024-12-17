@@ -9,7 +9,7 @@ namespace SMO.Repository.Mapping.MD
     {
         public T_MD_REPORT01D_Map()
         {
-            Table("T_MD_INPUT_KH");
+        
             Id(x => x.ID);
             Map(x => x.DN9T);
             Map(x => x.NAME1D);
@@ -17,7 +17,11 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.GTDN);
             Map(x => x.TH);
             Map(x => x.KH);
+            Map(x => x.C_ORDER);
             Map(x => x.GTGGDT);
+            Map(x=>x.TLGV);
+            Map(x => x.CT);
+            Map(x => x.TlLN);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
         }
     }
