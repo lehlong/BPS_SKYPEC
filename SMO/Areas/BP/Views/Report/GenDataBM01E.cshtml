@@ -1,4 +1,4 @@
-﻿@model SMO.Service.BP.ReportDataCenter
+﻿@model List<SMO.Core.Entities.MD.T_MD_REPORT01D>
 @using System.Text;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
@@ -6,6 +6,21 @@
     var gridId = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var formIdExportExcel = Guid.NewGuid();
+    var data = Model.OrderBy(x=>x.C_ORDER).Select(x => new { name=x.NAME1D,
+        col1=x.GTDN,
+        col2=x.KH,
+        col3=x.DN9T,
+        col4=x.TH,
+        col5= x.KH!=0? x.TH/x.KH:0,
+        col6=x.GTDN+x.TH,
+        col7=x.TLGV,
+        col8=x.CT,
+        col9=x.TlLN,
+        col10=x.GTGGDT,
+        TT=x.TT,
+        isBold=x.ISBOLD
+
+    });
 
 }
 <style>
@@ -30,12 +45,12 @@
     </form>
 </div>
 <script type="text/javascript">
-    var rawData = @Html.Raw(JsonConvert.SerializeObject(Model.BM02A, jsonSerializeSettings));
-rawData.forEach((item) => {
-    if (item.id == "A" || item.id == "B") delete item.parent;
-});
+    var rawData = @Html.Raw(JsonConvert.SerializeObject(data));
+    console.log(rawData);
+
     let columns = [
-        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 320 },
+        { id: "TT", header: [{ text: "TT", align: "center" }], minWidth: 320 },
+        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }], minWidth: 320 },
 
         { id: "col1", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM ĐẦU NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
 

@@ -565,6 +565,7 @@
     <Compile Include="Areas\MD\Controllers\CpTcnlDataController.cs" />
     <Compile Include="Areas\MD\Controllers\InputChiPhiController.cs" />
     <Compile Include="Areas\MD\Controllers\DataDmController.cs" />
+    <Compile Include="Areas\MD\Controllers\InputGtdnController.cs" />
     <Compile Include="Areas\MD\Controllers\InputKhController.cs" />
     <Compile Include="Areas\MD\Controllers\InternalOrderController.cs" />
     <Compile Include="Areas\MD\Controllers\KhoanMucChiPhiController.cs" />
@@ -2134,6 +2135,8 @@
     <Content Include="Areas\MD\Views\CpTcnlData\GenDataCpTcnl.cshtml" />
     <Content Include="Areas\MD\Views\DataDm\Index.cshtml" />
     <Content Include="Areas\BP\Views\Report\ImportView.cshtml" />
+    <Content Include="Areas\MD\Views\InputGtdn\Index.cshtml" />
+    <Content Include="Areas\MD\Views\InputGtdn\GenDataGtdn.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

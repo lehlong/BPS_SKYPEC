@@ -16,7 +16,7 @@ namespace SMO.Core.Entities.MD
         public virtual decimal ? TLGV { get; set; }
         public virtual decimal ? CT {  get; set; }
         public virtual decimal ? TlLN { get; set; }
-
         public virtual int YEAR { get; set; }
+        public virtual bool ISBOLD { get; set; }
     }
 }

@@ -21,6 +21,7 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.PHAN_LOAI);
             Map(x => x.AREA_CODE);
             Map(x => x.TYPE);
+            Map(x => x.CAPITAL);
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
             References(x => x.LoaiHinh).Column("LOAI_HINH").Not.Insert().Not.Update().LazyLoad();
             References(x => x.NganhNghe).Column("NGANH_NGHE").Not.Insert().Not.Update().LazyLoad();

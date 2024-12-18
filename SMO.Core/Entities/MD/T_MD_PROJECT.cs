@@ -21,6 +21,7 @@ namespace SMO.Core.Entities
         public virtual string PHAN_LOAI { get; set; }
         public virtual string AREA_CODE { get; set; }
         public virtual string TYPE { get; set; }
+        public virtual decimal CAPITAL { get; set; }
 
         public virtual bool IsCheck { get; set; } = false;
 

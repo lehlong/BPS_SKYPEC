@@ -306,6 +306,7 @@
     <Compile Include="Entities\MD\T_MD_CONTRACT_TYPE.cs" />
     <Compile Include="Entities\MD\T_MD_COST_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_COUNTRY.cs" />
+    <Compile Include="Entities\MD\T_MD_INPUT_GTDN.cs" />
     <Compile Include="Entities\MD\T_MD_REPORT01D.cs" />
     <Compile Include="Entities\MD\T_MD_HEADER_DM.cs" />
     <Compile Include="Entities\MD\T_MD_DATA_TRA_NAP.cs" />

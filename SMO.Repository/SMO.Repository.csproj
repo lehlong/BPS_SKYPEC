@@ -293,6 +293,7 @@
     <Compile Include="Implement\MD\HangHangKhongRepo.cs" />
     <Compile Include="Implement\MD\InputChiPhiRepo.cs" />
     <Compile Include="Implement\MD\CpTcnlRepo.cs" />
+    <Compile Include="Implement\MD\IInputGtgnRepo.cs" />
     <Compile Include="Implement\MD\InternalOrderRepo.cs" />
     <Compile Include="Implement\MD\KhoanMucHangHoaRepo.cs" />
     <Compile Include="Implement\MD\NhomSanBayRepo.cs" />
@@ -572,6 +573,7 @@
     <Compile Include="Interface\MD\IHangHangKhongRepo.cs" />
     <Compile Include="Interface\MD\IInputChiPhiRepo.cs" />
     <Compile Include="Interface\MD\IDataDM.cs" />
+    <Compile Include="Interface\MD\IInputGtgnRepo.cs" />
     <Compile Include="Interface\MD\IReport01DRepo.cs" />
     <Compile Include="Interface\MD\IInternalOrderRepo.cs" />
     <Compile Include="Interface\MD\IKhoanMucChiPhiRepo.cs" />
@@ -864,6 +866,7 @@
     <Compile Include="Mapping\MD\T_MD_DATA_TRA_NAP_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_INPUT_CHI_PHI_map.cs" />
     <Compile Include="Mapping\MD\T_MD_HEADER_DM_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_INPUT_GTDN_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_REPORT01D_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_INTERNAL_ORDER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_KHOAN_MUC_CHI_PHI_Map.cs" />

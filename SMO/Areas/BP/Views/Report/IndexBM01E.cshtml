@@ -53,15 +53,7 @@
                                 }
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-control selectpicker show-tick" id="kich-ban">
-                                @foreach (var item in lstKichBan)
-                                {
-                                    var isSelected = item.Value == selectedValue ? "selected" : string.Empty;
-                                    <option value="@item.Value" @isSelected>@item.Text</option>
-                                }
-                            </select>
-                        </div>
+                       
                     </div>
                 </div>
             </div>

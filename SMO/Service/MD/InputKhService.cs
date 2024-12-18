@@ -20,7 +20,7 @@ namespace SMO.Service.MD
             try
             {
                 var data = new List<T_MD_INPUT_KH>();
-                var listReport = UnitOfWork.Repository<ReportSXKDElementRepo>().Queryable().OrderBy(x=>x.C_ORDER).ToList();
+                var listReport = UnitOfWork.Repository<ReportSXKDElementRepo>().Queryable().OrderBy(x => x.C_ORDER).ToList();
                 var listInput = UnitOfWork.Repository<InputKhRepo>().Queryable().Where(x => x.YEAR == year).ToList();
 
                 var listData = from table1 in listReport
@@ -33,7 +33,7 @@ namespace SMO.Service.MD
                 {
                     var temp = new T_MD_INPUT_KH
                     {
-                      
+
                         ID = e.table1.ID,
                         PARENT = e.table1.PARENT,
                         C_ORDER = e.table1.C_ORDER,
@@ -57,6 +57,46 @@ namespace SMO.Service.MD
                 return new List<T_MD_INPUT_KH>();
             }
 
+        }
+
+        public IList<dataGtgn> GetdataGtdn(int year)
+        {
+            try
+            {
+                var data = new List<dataGtgn>();
+               var project= UnitOfWork.Repository<ProjectRepo>().Queryable().Where(x=>x.YEAR==year).ToList();
+                var inputGn = UnitOfWork.Repository<InputGtgnRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+                for (int i = 0; i < project.Count; i++)
+                {
+                    var temp = new dataGtgn
+                    {
+                        CODE = project[i].CODE,
+                        NAME = project[i].NAME,
+                        UTH = inputGn.FirstOrDefault(x => x.PROJECT_CODE == project[i].CODE)?.UTH??0,
+                        KH = inputGn.FirstOrDefault(x => x.PROJECT_CODE == project[i].CODE)?.KH ??0,
+                        DN9T = inputGn.FirstOrDefault(x => x.PROJECT_CODE == project[i].CODE)?.DN9T??0,
+                    };
+                    data.Add(temp);
+                }
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                this.State = false;
+                this.Exception = ex;
+                return new List<dataGtgn>();
+            }
+
+        }
+        public class dataGtgn
+        {
+            public string CODE { get; set; }
+            public string NAME { get; set; }
+            public decimal? UTH { get; set; }
+            public decimal? KH { get; set; }
+            public decimal? DN9T { get; set; }
         }
         public IList<dataDm> GetdataDm(int year)
         {
@@ -131,6 +171,47 @@ namespace SMO.Service.MD
                         chexexist.UTH = item.UTH;   
                         chexexist.KH_V2 = item.KH_V2;
                         UnitOfWork.Repository<InputKhRepo>().Update(chexexist);
+                    }
+
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+        public void UpdateDataGtGn(List<T_MD_INPUT_GTDN> data, int year)
+        {
+            try
+            {
+                var databytime = UnitOfWork.Repository<InputGtgnRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
+                UnitOfWork.BeginTransaction();
+                foreach (var item in data)
+                {
+                    var chexexist = databytime.FirstOrDefault(x => x.PROJECT_CODE == item.PROJECT_CODE && x.TIME_YEAR == year);
+                    if (chexexist == null)
+                    {
+                        var pdata = new T_MD_INPUT_GTDN
+                        {
+                            ID = Guid.NewGuid(),
+                            PROJECT_CODE = item.PROJECT_CODE,
+                            UTH = item.UTH,
+                            KH = item.KH,
+                            DN9T = item.DN9T,
+                            TIME_YEAR = year,
+                        };
+                       
+                        UnitOfWork.Repository<InputGtgnRepo>().Create(pdata);
+                    }
+                    else
+                    {
+                        chexexist.DN9T = item.DN9T;
+                        chexexist.UTH = item.UTH;
+                        chexexist.KH = item.KH;
+                        UnitOfWork.Repository<InputGtgnRepo>().Update(chexexist);
                     }
 
                 }

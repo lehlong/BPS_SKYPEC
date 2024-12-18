@@ -1,0 +1,98 @@
+﻿
+@model List<SMO.Service.MD.InputKhService.dataGtgn>
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
+        var data = Model.Select(x => new { 
+        Code=x.CODE,
+        Name=x.NAME,
+        UTH=x.UTH,
+        DN9T=x.DN9T,
+        KH=x.KH,
+        });
+
+    var gridId = Guid.NewGuid().ToString();
+
+
+}
+
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<script>
+    const rawData =  @Html.Raw(JsonConvert.SerializeObject(data));
+ 
+
+
+    let columns = [
+     
+        { id: "Name", header: [{ text: "Hạng mục", align: "center" }], minWidth: 500, type: "number", format: "#.#" },
+        { id: "UTH", header: [{ text: "DVT", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
+        { id: "DN9T", header: [{ text: "KH(V2)", align: "center" }], minWidth: 200, editable: true, type: "number", format: "#.#" },
+        { id: "KH", header: [{ text: "9TDN", align: "center" }], minWidth: 200, editable: true, type: "number", format: "#.#" },
+      
+        
+    ];
+    const Gird = new dhx.TreeGrid("@gridId", {
+        columns,
+        data: rawData,
+        selection: "row",
+        resizable: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    });
+    let valuechange = [];
+    Gird.events.on("afterEditEnd", (value, row, column) => {
+        console.log(row);
+        const index = valuechange.findIndex(item => item.PROJECT_CODE == row.Code);
+        console.log(index);
+        if (index !== -1) {
+            // Nếu hàng đã tồn tại, cập nhật giá trị
+            valuechange[index] = {
+                PROJECT_CODE:row.Code,
+                UTH:row.UTH,
+                DN9T:row.DN9T,
+                KH:row.KH,
+            };
+        } else {
+            // Nếu hàng chưa tồn tại, thêm mới
+            valuechange.push({
+                PROJECT_CODE:row.Code,
+                UTH:row.UTH,
+                DN9T:row.DN9T,
+                KH:row.KH,
+            });
+        }
+        console.log(valuechange);
+    });
+
+    Gird.events.on("cellClick", (row, column, editorType) => {
+   
+            if (row.isBold == true) {
+                column.editable = false
+
+            } else {
+                column.editable = true
+
+            }
+    });
+
+
+       function saveIPutData() {
+           var year = $("#time-year").val();
+
+            var ajaxParams = {
+         url: "@Url.Action("Update")",
+         type: "POST",
+         data: {
+             data: JSON.stringify(valuechange),
+             year: year,
+     
+         },
+         dataType: 'json',
+         success: function (response) {
+             Message.execute(response);
+         }
+     }
+           Forms.Ajax(ajaxParams)
+            valuechange = [];
+ }
+
+</script>

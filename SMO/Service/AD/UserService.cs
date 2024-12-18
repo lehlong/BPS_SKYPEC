@@ -729,6 +729,58 @@ namespace SMO.Service.AD
                 this.Exception = ex;
             }
         }
+        public void ImportDatao1E(HttpRequestBase request, int year)
+        {
+            try
+            {
+                var fileName = Guid.NewGuid().ToString("N");
+                var pathSaveFile = Path.Combine(WebConfigurationManager.AppSettings["PathFileAttach"], DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
+                if (!new DirectoryInfo(pathSaveFile).Exists)
+                {
+                    Directory.CreateDirectory(pathSaveFile);
+                }
+                var pathFile = Path.Combine(pathSaveFile, $"{fileName}.xlsx");
+                request.Files[0].SaveAs(pathFile);
+                UnitOfWork.BeginTransaction();
+                if (UnitOfWork.Repository<Report01DRepo>().Queryable().Where(x => x.YEAR == year).Count() > 0)
+                {
+                    UnitOfWork.Repository<Report01DRepo>().Queryable().Where(x => x.YEAR == year).Delete();
+                }
+    
+                var tableData = ReadData(pathFile);
+                var order = 1;
+                var endRow = 40;
+                for (int i = 7; i < endRow; i++)
+                {
+                    UnitOfWork.Repository<Report01DRepo>().Create(new Core.Entities.MD.T_MD_REPORT01D
+                    {
+                        ID = Guid.NewGuid(),
+                        C_ORDER = order,
+                        YEAR = year,
+                        TT = tableData.Rows[i][0].ToString(),
+                        NAME1D = tableData.Rows[i][1].ToString(),
+                        GTDN = tableData.Rows[i][2].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][2].ToString()),
+                        KH = tableData.Rows[i][3].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][3].ToString()),
+                        DN9T = tableData.Rows[i][4].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][4].ToString()),
+                        TH = tableData.Rows[i][5].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][5].ToString()),
+                        TLGV = tableData.Rows[i][6].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][6].ToString()),
+                        CT = tableData.Rows[i][7].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][7].ToString()),
+                        TlLN = tableData.Rows[i][8].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][8].ToString()),
+                        GTGGDT = tableData.Rows[i][9].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][9].ToString()),
+                        ISBOLD= tableData.Rows[i][0].ToString() != "" ? true : false,
+
+                    });
+                    order++;
+                }
+                UnitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
         public void ExportExcelGridData(ref MemoryStream outFileStream, string path, List<T_BP_KE_HOACH_VAN_TAI> TreeData)
         {
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);

@@ -22,6 +22,8 @@ namespace SMO.Repository.Mapping.MD
             Map(x=>x.TLGV);
             Map(x => x.CT);
             Map(x => x.TlLN);
+            Map(x => x.YEAR);
+            Map(x => x.ISBOLD).CustomType<YesNoType>(); ;
             Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
         }
     }

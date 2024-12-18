@@ -72,7 +72,9 @@
         Parent = x.Parent,
         Name = x.Name,
         dvt = x.DVT,
+
         ValueDG = x.ValueDG == 0 ? "" : x.ValueDG.ToString("F2"),
+        Tg = x.ValueDG == 0 ? "" : x.TG.ToStringVN(),
         Value1 = Math.Round(x.Value1).ToStringVN(),
         Value2 = Math.Round(x.Value2).ToStringVN(),
         Value3 = Math.Round(x.Value3).ToStringVN(),
@@ -220,6 +222,7 @@
     let columnsTab3 = [
         { id: "name", header: [{ text: "KHÁCH HÀNG", align: "center", rowspan: 2 }], minWidth: 240 },
         { id: "dvt", header: [{ text: "ĐVT", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
+        { id: "tg", header: [{ text: "Tỷ giá ", align: "center", rowspan: 2 }], align: "center", minWidth: 100 },
         {
             id: "valueDG", header: [{ text: "ĐƠN GIÁ", align: "center", rowspan: 2 }], align: "right", minWidth: 120,
             htmlEnable: true,
