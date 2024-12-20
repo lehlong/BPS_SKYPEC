@@ -31,7 +31,8 @@
 
 <script type="text/javascript">
     const rawData = @Html.Raw(JsonConvert.SerializeObject(jsonData, jsonSerializeSettings));
-   debugger
+    const prgg = rawData.filter(x => x.name == "GIẢM GIÁ").map(x => x.id);
+    console.log(prgg);
     const columns = [
         { id: "name", header: [{ text: "DOANH THU", align: "center", rowspan: 2 }], width: 240 },
         { id: "value1", header: [{ text: "SL(TẤN) PA TRUNG", align: "center", rowspan: 2 }], align: "right", width: 120 },
@@ -47,7 +48,12 @@
         { id: "value5", header: ["", { text: "D (VND/TẤN)", align: "center" }], align: "right", width: 150 },
         { id: "value6", header: ["", { text: "FH (VND/TẤN)", align: "center" }], align: "right", width: 150 },
 
-        { id: "value7", header: [{ text: "THUẾ BVMT (TR. VNĐ) ", align: "center", rowspan: 2 }], align: "right", width: 180 },
+        {
+            id: "value7", header: [{ text: "THUẾ BVMT (TR. VNĐ) ", align: "center", rowspan: 2 }], align: "right", width: 180, template: (value, row, col) => {
+                return row.name == "GIẢM GIÁ" || row.parent == prgg[0] ? `<div>${value}% </div>` : `<div>${value} </div>` 
+            },
+            htmlEnable: true
+        },
         { id: "value8", header: [{ text: "DOANH THU (TR. VNĐ)", align: "center", rowspan: 2 }], align: "right", width: 180 },
 
         {

@@ -19,6 +19,7 @@ using SMO.Core.Entities.BP;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SMO.Service.BP;
+using SMO.Core.Entities.MD;
 
 namespace SMO.Service.AD
 {
@@ -750,7 +751,7 @@ namespace SMO.Service.AD
                 var tableData = ReadData(pathFile);
                 var order = 1;
                 var endRow = 40;
-                for (int i = 7; i < endRow; i++)
+                for (int i = 7; i < tableData.Rows.Count; i++)
                 {
                     UnitOfWork.Repository<Report01DRepo>().Create(new Core.Entities.MD.T_MD_REPORT01D
                     {
@@ -763,10 +764,12 @@ namespace SMO.Service.AD
                         KH = tableData.Rows[i][3].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][3].ToString()),
                         DN9T = tableData.Rows[i][4].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][4].ToString()),
                         TH = tableData.Rows[i][5].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][5].ToString()),
-                        TLGV = tableData.Rows[i][6].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][6].ToString()),
-                        CT = tableData.Rows[i][7].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][7].ToString()),
-                        TlLN = tableData.Rows[i][8].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][8].ToString()),
-                        GTGGDT = tableData.Rows[i][9].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][9].ToString()),
+                        PKH = tableData.Rows[i][6].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][6].ToString()),
+                        GTCN = tableData.Rows[i][7].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][7].ToString()),
+                        TLGV = tableData.Rows[i][8].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][8].ToString()),
+                        CT = tableData.Rows[i][9].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][9].ToString()),
+                        TlLN = tableData.Rows[i][10].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][10].ToString()),
+                        GTGGDT = tableData.Rows[i][11].ToString() == "" ? 0 : (decimal?)Convert.ToDecimal(tableData.Rows[i][11].ToString()),
                         ISBOLD= tableData.Rows[i][0].ToString() != "" ? true : false,
 
                     });
@@ -1090,6 +1093,51 @@ namespace SMO.Service.AD
                 UnitOfWork.Repository<KeHoachVanTaiRepo>().Update(data);
                 UnitOfWork.Commit();
                 
+                this.State = true;
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+        public void UpdateCellValue01D(string id, int year, string column, string value)
+        {
+            try
+            {
+                UnitOfWork.BeginTransaction();
+
+                var data = UnitOfWork.Repository<Report01DRepo>()
+                    .GetFirstByExpression(x => x.ID.ToString() == id && x.YEAR == year);
+
+                if (data == null)
+                {
+                    this.State = false;
+                    this.ErrorMessage = "Không tìm thấy dữ liệu!";
+                    return;
+                }
+
+                // Cập nhật giá trị theo column
+                var prop = typeof(T_MD_REPORT01D).GetProperty(column);
+                if (prop != null)
+                {
+                    // Chuyển đổi value sang kiểu dữ liệu phù hợp
+                    object convertedValue;
+                    if (prop.PropertyType == typeof(decimal?) || prop.PropertyType == typeof(decimal))
+                    {
+                        convertedValue = decimal.Parse(value);
+                    }
+                    else
+                    {
+                        convertedValue = value;
+                    }
+                    prop.SetValue(data, convertedValue);
+                }
+
+                UnitOfWork.Repository<Report01DRepo>().Update(data);
+                UnitOfWork.Commit();
+
                 this.State = true;
             }
             catch (Exception ex)

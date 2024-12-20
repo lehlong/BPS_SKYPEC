@@ -10,7 +10,9 @@
     var gridTab3 = Guid.NewGuid().ToString("N");
     var gridTab4 = Guid.NewGuid().ToString("N");
     var gridTab5 = Guid.NewGuid().ToString("N");
-
+    var discount = ViewBag.discount;
+    var discount0V= ViewBag.discount0V;
+    var discountBL = ViewBag.discountBL;
 
     var jsonDataTab1 = Model.Tab1.OrderBy(x => x.Order).Select(x => new
     {
@@ -150,11 +152,15 @@
     </div>
 </div>
 <script type="text/javascript">
+    var discount = @Html.Raw(JsonConvert.SerializeObject(discount, jsonSerializeSettings));
+    var discount0V = @Html.Raw(JsonConvert.SerializeObject(discount0V, jsonSerializeSettings));
+    var discountBL = @Html.Raw(JsonConvert.SerializeObject(discountBL, jsonSerializeSettings));
     const rawDataTab1 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab1, jsonSerializeSettings));
     const rawDataTab2 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab2, jsonSerializeSettings));
     const rawDataTab3 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab3, jsonSerializeSettings));
     const rawDataTab4 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab4, jsonSerializeSettings));
     const rawDataTab5 = @Html.Raw(JsonConvert.SerializeObject(jsonDataTab5, jsonSerializeSettings));
+    console.log(discount);
     const columns = [
         { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }], width: 180 },
         { id: "sumYear", header: [{ text: "TỔNG NĂM", align: "center" }], align: "right", width: 180, type:"number", format: "#.#" },
@@ -174,15 +180,7 @@
 
 
 
-    const treeGridTab1 = new dhx.Grid("@gridTab1", {
-        columns,
-        leftSplit: 1,
-        resizable: true,
-        keyNavigation: true,
-        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-        data: rawDataTab1,
-        rowHeight: 30,
-    });
+
 
     const treeGridTab2 = new dhx.Grid("@gridTab2", {
         columns,
@@ -207,7 +205,7 @@
     // Chuẩn bị dữ liệu cho TreeGrid
     const prepareTreeData = (rawDataTab1, rawDataTab2, rawDataTab3, rawDataTab4, rawDataTab5) => {
         const treeData = [];
-        
+
         // Xử lý dữ liệu
         rawDataTab4.forEach(parentRow => {
             if (parentRow.name === "TỔNG CỘNG") {
@@ -263,7 +261,7 @@
                     treeData.push({
                         id: parentRow.name + "Đơn giá dịch vụ",
                         parent: parentRow.name,
-                        name: "Đơn giá dịch vụ",
+                        name: "Doanh thu  dịch vụ",
                         sumYear: tab1Row.sumYear || 0,
                         jan: tab1Row.jan || 0,
                         feb: tab1Row.feb || 0,
@@ -277,6 +275,44 @@
                         oct: tab1Row.oct || 0,
                         nov: tab1Row.nov || 0,
                         dec: tab1Row.dec || 0,
+                        $level: 1
+                    });
+                    treeData.push({
+                        id: parentRow.name + "Thuế nhập khẩu",
+                        parent: parentRow.name,
+                        name: "Thuế nhập khẩu",
+                        sumYear: tab5Row?.sumYear || 0,
+                        jan: tab5Row?.jan || 0,
+                        feb: tab5Row?.feb || 0,
+                        mar: tab5Row?.mar || 0,
+                        apr: tab5Row?.apr || 0,
+                        may: tab5Row?.may || 0,
+                        jun: tab5Row?.jun || 0,
+                        jul: tab5Row?.jul || 0,
+                        aug: tab5Row?.aug || 0,
+                        sep: tab5Row?.sep || 0,
+                        oct: tab5Row?.oct || 0,
+                        nov: tab5Row?.nov || 0,
+                        dec: tab5Row?.dec || 0,
+                        $level: 1
+                    });
+                    treeData.push({
+                        id: parentRow.name + "Doanh thu tiền nhiên liệu",
+                        parent: parentRow.name,
+                        name: "Doanh thu tiền nhiên liệu",
+                        sumYear: tab3Row?.sumYear || 0,
+                        jan: tab3Row?.jan || 0,
+                        feb: tab3Row?.feb || 0,
+                        mar: tab3Row?.mar || 0,
+                        apr: tab3Row?.apr || 0,
+                        may: tab3Row?.may || 0,
+                        jun: tab3Row?.jun || 0,
+                        jul: tab3Row?.jul || 0,
+                        aug: tab3Row?.aug || 0,
+                        sep: tab3Row?.sep || 0,
+                        oct: tab3Row?.oct || 0,
+                        nov: tab3Row?.nov || 0,
+                        dec: tab3Row?.dec || 0,
                         $level: 1
                     });
 
@@ -300,58 +336,24 @@
                         $level: 1
                     });
 
-                    treeData.push({
-                        id: parentRow.name + "Doanh thu tiền nhiên liệu",
-                        parent: parentRow.name,
-                        name: "Doanh thu tiền nhiên liệu",
-                        sumYear: tab3Row?.sumYear || 0,
-                        jan: tab3Row?.jan || 0,
-                        feb: tab3Row?.feb || 0,
-                        mar: tab3Row?.mar || 0,
-                        apr: tab3Row?.apr || 0,
-                        may: tab3Row?.may || 0,
-                        jun: tab3Row?.jun || 0,
-                        jul: tab3Row?.jul || 0,
-                        aug: tab3Row?.aug || 0,
-                        sep: tab3Row?.sep || 0,
-                        oct: tab3Row?.oct || 0,
-                        nov: tab3Row?.nov || 0,
-                        dec: tab3Row?.dec || 0,
-                        $level: 1
-                    });
+                   
 
-                    treeData.push({
-                        id: parentRow.name + "Thuế nhập khẩu",
-                        parent: parentRow.name,
-                        name: "Thuế nhập khẩu",
-                        sumYear: tab5Row?.sumYear || 0,
-                        jan: tab5Row?.jan || 0,
-                        feb: tab5Row?.feb || 0,
-                        mar: tab5Row?.mar || 0,
-                        apr: tab5Row?.apr || 0,
-                        may: tab5Row?.may || 0,
-                        jun: tab5Row?.jun || 0,
-                        jul: tab5Row?.jul || 0,
-                        aug: tab5Row?.aug || 0,
-                        sep: tab5Row?.sep || 0,
-                        oct: tab5Row?.oct || 0,
-                        nov: tab5Row?.nov || 0,
-                        dec: tab5Row?.dec || 0,
-                        $level: 1
-                    });
+                   
                 }
             }
         });
-        
+
         return treeData;
     };
+
+
 
     const treeGridTab4 = new dhx.TreeGrid("@gridTab4", {
         columns,
         leftSplit: 1,
         resizable: true,
         keyNavigation: true,
-        rowCss: function ({ isBold, $level }) { 
+        rowCss: function ({ isBold, $level }) {
             if ($level === 0 || isBold === true) {
                 return "row-bold";
             }
@@ -372,6 +374,87 @@
         data: rawDataTab5,
         rowHeight: 30,
     });
+
+    rawDataTab1.forEach((item) => {
+        if (item.name == "GIẢM GIÁ")
+        {
+            item.id=69
+        }
+
+    })
+    var VN = rawDataTab1.find(x => x.name == "VN")
+    var V0 = rawDataTab1.find(x => x.name == "0V")
+    var BL = rawDataTab1.find(x => x.name == "BL")
+    
+    rawDataTab1.push({
+        id: 1,
+        parent:69,
+        name: "VN",
+        sumYear: VN.sumYear * discount,
+        jan: VN.jan * discount,
+        feb: VN.feb * discount,
+        mar: VN.mar * discount,
+        apr: VN.apr * discount,
+        may: VN.may * discount,
+        jun: VN.jun * discount,
+        jul: VN.jul * discount,
+        aug: VN.aug * discount,
+        sep: VN.sep * discount,
+        oct: VN.oct * discount,
+        nov: VN.nov * discount,
+        dec: VN.dec * discount,
+        isBold: false
+    },
+    {
+        id: 2,
+        parent: 69,
+        name: "0V",
+        sumYear: V0.sumYear * discount,
+        jan: V0.jan * discount0V,
+        feb: V0.feb * discount0V,
+        mar: V0.mar * discount0V,
+        apr: V0.apr * discount0V,
+        may: V0.may * discount0V,
+        jun: V0.jun * discount0V,
+        jul: V0.jul * discount0V,
+        aug: V0.aug * discount0V,
+        sep: V0.sep * discount0V,
+        oct: V0.oct * discount0V,
+        nov: V0.nov * discount0V,
+        dec: V0.dec * discount0V,
+        isBold: false
+        },
+        {
+            id: 3,
+            parent: 69,
+            name: "BL",
+            sumYear: BL.sumYear * discountBL,
+            jan: BL.jan * discountBL,
+            feb: BL.feb * discountBL,
+            mar: BL.mar * discountBL,
+            apr: BL.apr * discountBL,
+            may: BL.may * discountBL,
+            jun: BL.jun * discountBL,
+            jul: BL.jul * discountBL,
+            aug: BL.aug * discountBL,
+            sep: BL.sep * discountBL, 
+            oct: BL.oct * discountBL,
+            nov: BL.nov * discountBL,
+            dec: BL.dec * discountBL,
+            isBold: false
+        }
+
+    )
+    const treeGridTab1 = new dhx.TreeGrid("@gridTab1", {
+        columns,
+        leftSplit: 1,
+        resizable: true,
+        keyNavigation: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+        data: rawDataTab1,
+        rowHeight: 30,
+        });
+ 
 
     function formatNumber(num) {
         if (!num) return "0";

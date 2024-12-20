@@ -32,6 +32,10 @@
                     {
                         <td ondblclick="@vdbclickAction">@item.VALUE.ToString("N3", culture)</td>
                     }
+                    else if (item.CODE=="24" || item.CODE=="28" || item.CODE=="29")
+                {
+                <td ondblclick="@vdbclickAction">@item.VALUE.ToString("N3", culture)%</td>
+                }
                     else
                     {
                         <td ondblclick="@vdbclickAction">@item.VALUE.ToString("#,0", culture)</td>

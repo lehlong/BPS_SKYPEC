@@ -6,17 +6,19 @@
     var gridId = Guid.NewGuid().ToString("N");
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
     var formIdExportExcel = Guid.NewGuid();
-    var data = Model.OrderBy(x=>x.C_ORDER).Select(x => new { name=x.NAME1D,
-        col1=x.GTDN,
-        col2=x.KH,
-        col3=x.DN9T,
-        col4=x.TH,
-        col5= x.KH!=0? x.TH/x.KH:0,
-        col6=x.GTDN+x.TH,
-        col7=x.TLGV,
-        col8=x.CT,
-        col9=x.TlLN,
-        col10=x.GTGGDT,
+    var data = Model.OrderBy(x=>x.C_ORDER).Select(x => new {
+        ID = x.ID,
+        NAME1D = x.NAME1D,
+        GTDN = x.GTDN,
+        KH = x.KH,
+        DN9T = x.DN9T,
+        TH = x.TH,
+        PKH = x.PKH,
+        GTCN = x.GTCN,
+        TLGV = x.TLGV,
+        CT = x.CT,
+        TlLN = x.TlLN,
+        GTGGDT = x.GTGGDT,
         TT=x.TT,
         isBold=x.ISBOLD
 
@@ -50,24 +52,24 @@
 
     let columns = [
         { id: "TT", header: [{ text: "TT", align: "center" }], minWidth: 320 },
-        { id: "name", header: [{ text: "CHỈ TIÊU", align: "center" }], minWidth: 320 },
+        { id: "NAME1D", header: [{ text: "CHỈ TIÊU", align: "center" }], minWidth: 320 },
 
-        { id: "col1", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM ĐẦU NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "GTDN", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM ĐẦU NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
 
-        { id: "col2", header: [{ text: "PHÁT SINH", align: "center", colspan: 4 }, { text: "KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#.#" },
-        { id: "col3", header: ["", { text: "9T ĐN", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#.#" },
-        { id: "col4", header: ["", { text: "TH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#.#" },
-        { id: "col5", header: ["", { text: "%TH/KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "KH", header: [{ text: "PHÁT SINH", align: "center", colspan: 4 }, { text: "KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "DN9T", header: ["", { text: "9T ĐN", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "TH", header: ["", { text: "TH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "PKH", header: ["", { text: "%TH/KH", align: "center" }], align: "right", minWidth: 180, type: "number", format: "#.#" },
 
         { id: "col6", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
-        { id: "col7", header: [{ text: "TỶ LỆ VỐN GÓP (%) ĐẾN CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
-        { id: "col8", header: [{ text: "CỔ TỨC HOẶC LỢI NHUẬN ĐƯỢC CHIA", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
-        { id: "col9", header: [{ text: "TY LỆ LN ĐƯỢC CHIA TRÊN VỐN ĐẦU TƯ BÌNH QUÂN", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
-        { id: "col10", header: [{ text: "GIÁ TRỊ ĐÃ TRÍCH LẬP DỰ PHÒNG GIẢM GIÁ ĐT", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "GTCN", header: [{ text: "TỶ LỆ VỐN GÓP (%) ĐẾN CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "CT", header: [{ text: "CỔ TỨC HOẶC LỢI NHUẬN ĐƯỢC CHIA", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "TlLN", header: [{ text: "TY LỆ LN ĐƯỢC CHIA TRÊN VỐN ĐẦU TƯ BÌNH QUÂN", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
+        { id: "GTGGDT", header: [{ text: "GIÁ TRỊ ĐÃ TRÍCH LẬP DỰ PHÒNG GIẢM GIÁ ĐT", align: "center", rowspan: 2 }], align: "right", minWidth: 180, type: "number", format: "#.#" },
 
     ];
 
-    const treeGrid = new dhx.TreeGrid("@gridId", {
+    const grid = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
         leftSplit: 2,
@@ -84,5 +86,53 @@
         $('#@formIdExportExcel #Template').val(template);
         $('#@formIdExportExcel').submit();
     }
+    let oldValue;
+    grid.events.on("cellClick", function (row, column) {
+        let cellValue = grid.data.getItem(row.id)[column.id];
+        oldValue = cellValue;
+
+        // Không cho phép edit các cột TT, Đội VT, Tuyến vận chuyển
+        if (column.id == "COL1" || column.id == "COL2" || column.id == "COL5") {
+            return;
+        }
+
+        grid.editCell(row.id, column.id);
+    });
+     grid.events.on("afterEditEnd", function (value, row, column) {
+     if (value == oldValue) {
+         return;
+     }
+         // Lấy ID thực từ dữ liệu
+         const realId = grid.data.getItem(row.id).ID; // Giả sử ID là trường chứa id thực trong database
+         console.log(realId);
+         onEditCell(realId, column.id, value);
+ });
+
+ function onEditCell(id, column, value) {
+     if (value == null) {
+         return;
+     }
+     var year = $("#time-year").val();
+
+     var ajaxParams = {
+         url: '@Url.Action("UpdateCellValue", "Report")',
+         type: "POST",
+         data: {
+             id: id, // Đây sẽ là ID thực từ database
+             year: year,
+             column: column,
+             value: value
+         },
+         dataType: "json",
+         success: function (response) {
+             if (response.Type == "AlertSuccessAndJsCommand") {
+                 Message.execute(response);
+             } else {
+                 Message.execute(response);
+             }
+         }
+     };
+     Forms.Ajax(ajaxParams);
+ }
 </script>
 

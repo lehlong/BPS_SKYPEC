@@ -494,6 +494,13 @@ namespace SMO.Service.MD
                 var lstElement = UnitOfWork.Repository<ElementRepo>().GetAll().ToList();
 
                 var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).ToList();
+                var sortlist = new List<string> { "VN", "0V", "BL", "VJ", "QH", "VU", "HKTN#", "HKQT" };
+                var lishhkSort = lstHangHangKhong
+                    .OrderBy(x =>sortlist.IndexOf(x.GROUP_ITEM) >= 0
+                            ? sortlist.IndexOf(x.GROUP_ITEM)
+                            : int.MaxValue
+                    )
+                    .ToList();
                 var sanBayGroup = UnitOfWork.Repository<NhomSanBayRepo>().GetAll().ToList();
 
                 var puchaseData = UnitOfWork.Repository<PurchaseDataRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
@@ -545,7 +552,7 @@ namespace SMO.Service.MD
                         Level = 0
                     });
 
-                    foreach (var hhk in lstHangHangKhong.Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)))
+                    foreach (var hhk in lishhkSort.Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)))
                     {
                         var FHS_NBA = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-NBA-" + hhk.GROUP_ITEM)?.VALUE;
                         var FHS_TNS = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-TNS-" + hhk.GROUP_ITEM)?.VALUE;

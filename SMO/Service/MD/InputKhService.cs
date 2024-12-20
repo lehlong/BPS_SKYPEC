@@ -198,9 +198,9 @@ namespace SMO.Service.MD
                         {
                             ID = Guid.NewGuid(),
                             PROJECT_CODE = item.PROJECT_CODE,
-                            UTH = item.UTH,
+                         
                             KH = item.KH,
-                            DN9T = item.DN9T,
+                       
                             TIME_YEAR = year,
                         };
                        
@@ -208,8 +208,7 @@ namespace SMO.Service.MD
                     }
                     else
                     {
-                        chexexist.DN9T = item.DN9T;
-                        chexexist.UTH = item.UTH;
+                    
                         chexexist.KH = item.KH;
                         UnitOfWork.Repository<InputGtgnRepo>().Update(chexexist);
                     }

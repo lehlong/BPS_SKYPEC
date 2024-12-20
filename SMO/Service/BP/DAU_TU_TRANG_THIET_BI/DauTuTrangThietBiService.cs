@@ -2166,7 +2166,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             var value1 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
                             var value2 = tableData.Rows[i][4].ToString();
                             var value3 = tableData.Rows[i][5].ToString();
-                            var value4 = tableData.Rows[i][6].ToString();
+                            var value4 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
                             var value5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
                             var value6 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
                             var value7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
@@ -2212,7 +2212,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             var value1 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? 0 : tableData.Rows[i][3]);
                             var value2 = tableData.Rows[i][4].ToString();
                             var value3 = tableData.Rows[i][5].ToString();
-                            var value4 = tableData.Rows[i][6].ToString();
+                            var value4 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? 0 : tableData.Rows[i][6]);
                             var value5 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? 0 : tableData.Rows[i][7]);
                             var value6 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? 0 : tableData.Rows[i][8]);
                             var value7 = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? 0 : tableData.Rows[i][9]);
@@ -2320,7 +2320,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                     VALUETTB_1 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_1)),
                     VALUETTB_2 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_2,
                     VALUETTB_3 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_3,
-                    VALUETTB_4 = profit.Project.TYPE == "TTB-LON" ? string.Empty : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_4,
+                    VALUETTB_4 = profit.Project.TYPE == "TTB-LON" ? 0 : lstData.FirstOrDefault(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).VALUE_4,
                     VALUETTB_5 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_5)),
                     VALUETTB_6 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_6)),
                     VALUETTB_7 = lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7) == null ? 0 : Convert.ToDecimal(lstData.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == profit.CODE).Sum(x => x.VALUE_7)),
@@ -4454,7 +4454,7 @@ namespace SMO.Service.BP.DAU_TU_TRANG_THIET_BI
                             row.VALUE_3 = value;
                             break;
                         case "VALUE_4":
-                            row.VALUE_4 = value;
+                            row.VALUE_4 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);
                             break;
                         case "VALUE_5":
                             row.VALUE_5 = string.IsNullOrEmpty(value) ? 0 : Convert.ToDecimal(value);

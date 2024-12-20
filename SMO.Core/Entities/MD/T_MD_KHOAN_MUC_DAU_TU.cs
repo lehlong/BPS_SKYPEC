@@ -92,7 +92,7 @@ namespace SMO.Core.Entities.MD
 
         public virtual string VALUETTB_3 { get; set; }
 
-        public virtual string VALUETTB_4 { get; set; }
+        public virtual decimal VALUETTB_4 { get; set; }
         public virtual decimal VALUETTB_5 { get; set; }
         public virtual decimal VALUETTB_6 { get; set; }
         public virtual decimal VALUETTB_7 { get; set; }

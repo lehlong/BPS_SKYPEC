@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using NHibernate.SqlCommand;
+using SMO.Repository.Implement.MD;
 using SMO.Service.AD;
 using SMO.Service.BP;
 using SMO.Service.BP.KE_HOACH_SAN_LUONG;
@@ -21,15 +22,35 @@ namespace SMO.Areas.BP.Controllers
         private readonly PhienBanService _servicePhienBan;
         private readonly KichBanService _serviceKichBan;
         private readonly ReportService _service;
+        private readonly UserService _userService;
         public ReportController()
         {
             _service = new ReportService();
             _servicePhienBan = new PhienBanService();
             _serviceKichBan = new KichBanService();
+            _userService = new UserService();
         }
         public ActionResult IndexKichBan()
         {
             return PartialView();
+        }
+        public ActionResult UpdateCellValue(string id, int year, string column, string value)
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            _userService.UpdateCellValue01D (id, year, column, value);
+            if (_userService.State)
+            {
+                SMOUtilities.GetMessage("1002", _userService, result);
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _userService, result);
+            }
+            return result.ToJsonResult();
         }
         public async Task <ActionResult> ExportExcelDataKichBan(int year, string kichBan,int yearTH)
         {
@@ -152,9 +173,13 @@ namespace SMO.Areas.BP.Controllers
         }
         public ActionResult GenDataDoanhThuTheoPhi(int year, string phienBan, string kichBan, string hangHangKhong)
         {
+            
             var data = _servicePhienBan.GetDataDoanhThuTheoPhi(year, phienBan, kichBan, hangHangKhong);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
+            ViewBag.discount= data.Tab1.Where(x => x.Name == "GIẢM GIÁ").Sum(x => x.ValueSumYearAll);
+            ViewBag.discount0V = data.Tab5.Where(x => x.Name == "TỔNG CỘNG").Sum(x => x.ValueSumYearAll);
+            ViewBag.discountBL = data.Tab2.Where(x => x.Name == "TỔNG CỘNG").Sum(x => x.ValueSumYearAll);
             return PartialView(data);
         }
         public ActionResult ExportExcelDataDoanhThuTheoPhi(int year, string phienBan, string kichBan, string hangHangKhong)

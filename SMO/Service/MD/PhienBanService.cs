@@ -1218,7 +1218,9 @@ namespace SMO.Service.MD
                 sanBayGroup.RemoveAll(sanBay => sanBay.CODE == "NI-N");
                 var sanBayFHS = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.NHOM_SAN_BAY_CODE == "NI-N").ToList();
                 lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
+                var sortlist = new List<string> { "VN", "0V", "BL", "VJ", "QH", "VU", "HKTN#", "HKQT" };
                 lstHangHangKhong = lstHangHangKhong.Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)).ToList();
+                var lishhkSort = lstHangHangKhong.OrderBy(x => sortlist.IndexOf(x.GROUP_ITEM) >= 0 ? sortlist.IndexOf(x.GROUP_ITEM) : int.MaxValue).ToList();
 
                 var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 if (dataHeaderDoanhThu.Count() == 0)
@@ -1244,7 +1246,7 @@ namespace SMO.Service.MD
                     Parent = null,
                     Level = 0
                 };
-                foreach (var hhk in lstHangHangKhong)
+                foreach (var hhk in lishhkSort)
                 {
                     //Hãng hàng không
                     var valueHhk = new SupplyReportModel
@@ -1611,18 +1613,55 @@ namespace SMO.Service.MD
                 });
 
                 var discount = UnitOfWork.Repository<SharedDataRepo>().Get("24");
+                var discount0V = UnitOfWork.Repository<SharedDataRepo>().Get("28");
+                var discountBL = UnitOfWork.Repository<SharedDataRepo>().Get("29");
+                var pr = data.Count() + 2;
                 data.Add(new SupplyReportModel
                 {
                     Name = "GIẢM GIÁ",
                     IsBold = true,
-                    Order = data.Count() + 2,
+                    Order = pr,
                     Parent = null,
                     Level = 0,
                     ValueThue = discount.VALUE,
-                    ValueDT = (data.FirstOrDefault(x => x.Name == "VN").ValueDTD + data.FirstOrDefault(x => x.Name == "0V").ValueDTD) * discount.VALUE,
-                    ValueDTD = (data.FirstOrDefault(x => x.Name == "VN").ValueDTD + data.FirstOrDefault(x => x.Name == "0V").ValueDTD) * discount.VALUE,
+                    ValueDT = data.FirstOrDefault(x => x.Name == "VN").ValueDTD * discount.VALUE/100 + data.FirstOrDefault(x => x.Name == "0V").ValueDTD  *discount0V.VALUE/100 + data.FirstOrDefault(x => x.Name == "BL").ValueDTD* discountBL.VALUE/100,
+                    ValueDTD = data.FirstOrDefault(x => x.Name == "VN").ValueDTD * discount.VALUE/100 + data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount.VALUE/100+ data.FirstOrDefault(x => x.Name == "BL").ValueDTD * discountBL.VALUE / 100,
                 });
-
+                
+                      data.Add(new SupplyReportModel
+                {
+                    Name = "VN",
+                    IsBold = true,
+                    Order = data.Count() + 3,
+                    Parent = pr,
+                    Level = 1,
+                    ValueThue = discount.VALUE ,
+                    ValueDT = data.FirstOrDefault(x => x.Name == "VN").ValueDTD * discount.VALUE/100,
+                    ValueDTD = data.FirstOrDefault(x => x.Name == "VN").ValueDTD * discount.VALUE/100,
+                });
+                
+                data.Add(new SupplyReportModel
+                {
+                    Name = "0V",
+                    IsBold = true,
+                    Order = data.Count() + 4,
+                    Parent = pr,
+                    Level = 1,
+                    ValueThue = discount.VALUE ,
+                    ValueDT = data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount.VALUE/100,
+                    ValueDTD = data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount.VALUE/100,
+                });
+                data.Add(new SupplyReportModel
+                {
+                    Name = "BL",
+                    IsBold = true,
+                    Order = data.Count() + 5,
+                    Parent = pr,
+                    Level = 1,
+                    ValueThue = discount.VALUE ,
+                    ValueDT = data.FirstOrDefault(x => x.Name == "BL").ValueDTD ,
+                    ValueDTD = data.FirstOrDefault(x => x.Name == "BL").ValueDTD,
+                });
                 #endregion
                 return data;
             }
@@ -3634,6 +3673,9 @@ namespace SMO.Service.MD
                     Order = -1,
                     IsBold = true,
                 });
+                var discount = UnitOfWork.Repository<SharedDataRepo>().Get("24").VALUE / 100;
+                var discount0V = UnitOfWork.Repository<SharedDataRepo>().Get("28").VALUE / 100;
+                var discountBL = UnitOfWork.Repository<SharedDataRepo>().Get("29").VALUE / 100;
 
                 data.Tab5.Add(new RevenueReportModel
                 {
@@ -3652,7 +3694,9 @@ namespace SMO.Service.MD
                     Value12 = data.Tab5.Sum(x => x.Value12),
                     ValueSumYear = data.Tab5.Sum(x => x.ValueSumYear),
                     Order = -1,
-                    IsBold = true
+                    IsBold = true,
+                    ValueSumYearAll = discount0V
+
                 });
 
                 var sumTab2 = new RevenueReportModel
@@ -3672,30 +3716,33 @@ namespace SMO.Service.MD
                     Value12 = data.Tab2.Sum(x => x.Value12),
                     ValueSumYear = data.Tab2.Sum(x => x.ValueSumYear),
                     Order = -1,
-                    IsBold = true
+                    IsBold = true,
+                    ValueSumYearAll = discountBL
                 };
                 data.Tab2.Insert(0, sumTab2);
 
-                var discount = UnitOfWork.Repository<SharedDataRepo>().Get("24").VALUE;
+               
+
                 data.Tab1.Add(new RevenueReportModel
                 {
                     Name = "GIẢM GIÁ",
                     IsBold = true,
-                    Value1 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value1) * discount,
-                    Value2 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value2) * discount,
-                    Value3 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value3) * discount,
-                    Value4 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value4) * discount,
-                    Value5 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value5) * discount,
-                    Value6 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value6) * discount,
-                    Value7 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value7) * discount,
-                    Value8 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value8) * discount,
-                    Value9 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value9) * discount,
-                    Value10 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value10) * discount,
-                    Value11 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value11) * discount,
-                    Value12 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value12) * discount,
-                    ValueSumYear = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.ValueSumYear) * discount,
-                    Order = 100
-                });
+                    Value1 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value1) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value1) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value1)*discount0V,
+                    Value2 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value2) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value2)* discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value2) * discount0V,
+                    Value3 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value3) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value3) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value3) * discount0V,
+                    Value4 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value4) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value4) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value4) * discount0V,
+                    Value5 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value5) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value5) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value5) * discount0V,
+                    Value6 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value6) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value6) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value6) * discount0V,
+                    Value7 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value7) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value7) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value7) * discount0V,
+                    Value8 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value8) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value8) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value8) * discount0V,
+                    Value9 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value9) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value9) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value9) * discount0V,
+                    Value10 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value10) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value10) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value10) * discount0V,
+                    Value11 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value11) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value11) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value11) * discount0V,
+                    Value12 = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.Value12) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value12) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value12) * discount0V,
+                    ValueSumYear = data.Tab1.Where(x => x.Name == "VN" ).Sum(x => x.ValueSumYear) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.ValueSumYear)*discountBL+ data.Tab1.Where(x => x.Name == "0V").Sum(x => x.ValueSumYear) * discount0V,
+                    Order = 100,
+                    ValueSumYearAll = discount
+                }) ;
 
                 UnitOfWork.BeginTransaction();
                 var u = UnitOfWork.Repository<SharedDataRepo>().Get("26");
@@ -3807,25 +3854,28 @@ namespace SMO.Service.MD
 
                     order++;
                 }
-                var discount = UnitOfWork.Repository<SharedDataRepo>().Get("24").VALUE;
+                var discount = UnitOfWork.Repository<SharedDataRepo>().Get("24").VALUE/100;
+                var discount0V = UnitOfWork.Repository<SharedDataRepo>().Get("28").VALUE / 100;
+                var discountBL = UnitOfWork.Repository<SharedDataRepo>().Get("29").VALUE / 100;
                 data.Tab1.Add(new RevenueReportModel
                 {
                     Name = "GIẢM GIÁ",
                     IsBold = true,
-                    Value1 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value1) * discount,
-                    Value2 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value2) * discount,
-                    Value3 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value3) * discount,
-                    Value4 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value4) * discount,
-                    Value5 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value5) * discount,
-                    Value6 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value6) * discount,
-                    Value7 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value7) * discount,
-                    Value8 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value8) * discount,
-                    Value9 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value9) * discount,
-                    Value10 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value10) * discount,
-                    Value11 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value11) * discount,
-                    Value12 = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.Value12) * discount,
-                    ValueSumYear = data.Tab1.Where(x => x.Name == "VN" || x.Name == "0V").Sum(x => x.ValueSumYear) * discount,
-                    Order = 100
+                    Value1 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value1) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value1) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value1) * discount0V,
+                    Value2 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value2) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value2) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value2) * discount0V,
+                    Value3 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value3) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value3) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value3) * discount0V,
+                    Value4 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value4) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value4) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value4) * discount0V,
+                    Value5 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value5) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value5) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value5) * discount0V,
+                    Value6 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value6) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value6) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value6) * discount0V,
+                    Value7 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value7) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value7) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value7) * discount0V,
+                    Value8 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value8) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value8) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value8) * discount0V,
+                    Value9 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value9) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value9) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value9) * discount0V,
+                    Value10 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value10) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value10) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value10) * discount0V,
+                    Value11 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value11) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value11) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value11) * discount0V,
+                    Value12 = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.Value12) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.Value12) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.Value12) * discount0V,
+                    ValueSumYear = data.Tab1.Where(x => x.Name == "VN").Sum(x => x.ValueSumYear) * discount + data.Tab1.Where(x => x.Name == "BL").Sum(x => x.ValueSumYear) * discountBL + data.Tab1.Where(x => x.Name == "0V").Sum(x => x.ValueSumYear) * discount0V,
+                    Order = 100,
+                    ValueSumYearAll = discount
                 });
                 return data;
             }

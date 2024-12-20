@@ -11,10 +11,12 @@ using NPOI.SS.Formula.PTG;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
+using SMO.Core.Entities.BP;
 using SMO.Core.Entities.BP.SUA_CHUA_LON;
 using SMO.Core.Entities.MD;
 using SMO.Models;
 using SMO.Repository.Common;
+using SMO.Repository.Implement.BP;
 using SMO.Repository.Implement.BP.DAU_TU_NGOAI_DOANH_NGHIEP;
 using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
@@ -126,6 +128,7 @@ namespace SMO.Service.BP
             styleCellNumber.DataFormat = templateWorkbook.CreateDataFormat().GetFormat("#,##0.000");
             return styleCellNumber;
         }
+        
         public void ExportExcelTHKHDT(ref MemoryStream outFileStream, List<ReportDauTuModel> data, string path)
         {
 
@@ -1869,6 +1872,9 @@ namespace SMO.Service.BP
                     d.Col10 = child.Count() == 0 ? d.Col10 : child.Sum(x => x.Col10);
                     d.Col11= child.Count() == 0 ? d.Col11 : child.Sum(x => x.Col11);
                     d.Col12 = child.Count() == 0 ? d.Col12 : child.Sum(x => x.Col12);
+                    d.Col13 = child.Count() == 0 ? d.Col13 : child.Sum(x => x.Col13);
+                    d.Col4 = child.Count() == 0 ? d.Col4 : child.Sum(x => x.Col4);
+                    d.Col5 = child.Count() == 0 ? d.Col5 : child.Sum(x => x.Col5);
 
                 }
                 var da= data.BM01D.Where(x => x.Stt == "A" || x.Stt == "I" || x.Stt == "B" || x.Stt == "II");
@@ -1882,6 +1888,9 @@ namespace SMO.Service.BP
                     d.Col10 = data.BM01D.Where(x => Listchinld.Contains(x.Id)).Select(x => new { x.Code, x.Col10 }).Distinct().Sum(x => x.Col10);
                     d.Col11 = data.BM01D.Where(x => Listchinld.Contains(x.Id)).Select(x => new { x.Code, x.Col11 }).Distinct().Sum(x => x.Col11);
                     d.Col12 = data.BM01D.Where(x => Listchinld.Contains(x.Id)).Select(x => new { x.Code, x.Col12 }).Distinct().Sum(x => x.Col12);
+                    d.Col13 = data.BM01D.Where(x => Listchinld.Contains(x.Id)).Select(x => new { x.Code, x.Col13 }).Distinct().Sum(x => x.Col13);
+                    d.Col4 = data.BM01D.Where(x => Listchinld.Contains(x.Id)).Select(x => new { x.Code, x.Col4 }).Distinct().Sum(x => x.Col4);
+                    d.Col5 = data.BM01D.Where(x => Listchinld.Contains(x.Id)).Select(x => new { x.Code, x.Col5 }).Distinct().Sum(x => x.Col5);
 
                 }
 
@@ -1906,7 +1915,8 @@ namespace SMO.Service.BP
                 var DataTTBcenter = UnitOfWork.Repository<DauTuTrangThietBiProfitCenterRepo>().GetAll().ToList();
                 var DataXDcenter = UnitOfWork.Repository<DauTuXayDungProfitCenterRepo>().GetAll().ToList();
                 var DataGn=UnitOfWork.Repository<InputGtgnRepo>().Queryable().Where(x => x.TIME_YEAR == year).ToList();
-
+                var BM2107 = GenDataBM2107(year, 1, "PB1", "TB", "");
+                var BM2108 = GenDataBM2108(year, 1, "PB1", "TB", "");
                 data.Add(new ReportModel1D
                 {
                     Id = "A",
@@ -1938,25 +1948,29 @@ namespace SMO.Service.BP
                 foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.CHUAN_BI_DAU_TU == true && x.CHUYEN_TIEP == true && x.TYPE == "TTB-LON"))
                 {
                     var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
-                   
+
                     data.Add(new ReportModel1D
                     {
-                        
-                        Code =p.CODE,
+
+                        Code = p.CODE,
                         Id = "A.I.1" + p.CODE,
                         Stt = "1." + orderAI1.ToString(),
                         Name = p.NAME,
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "A.I.1",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
-                        Col20 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1) * (p.CAPITAL!=0? p.CAPITAL/100:1),
-                        //Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5* x.VALUE_6)??0,
-                        Col8=DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ??0,
-                        Col9=DataGn.Where(x=> x.PROJECT_CODE == p.CODE).Sum(x => x.DN9T)??0,
-                        Col10=DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH)??0,
-                        Col11= DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col12= (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) !=0 ? (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH)??0) / (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) : 0,
+                        Col5= DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
+                        Col20 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1) * (p.CAPITAL != 0 ? p.CAPITAL / 100 : 1),
+                        Col4 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB).Sum(x=>x.VALUE_4),
+
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_9),
+                        Col9 = 0,
+                        Col10=0,
+                        Col11=0,
+                        Col12=0,
+                        Col13 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
                     });
+                    
                     orderAI1 += 1;
                 }
 
@@ -1982,13 +1996,15 @@ namespace SMO.Service.BP
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "A.I.2",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
                         Col20 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1)* (p.CAPITAL!=0? p.CAPITAL/100:1),
-                        //Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
-                        Col8 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
-                        Col9 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.DN9T) ?? 0,
-                        Col10 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col11 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col12 = (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) != 0 ? (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0) / (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) : 0,
+                        Col4 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB).Sum(x=>x.VALUE_4),
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_9),
+                        Col9 = 0,
+                        Col10 = 0,
+                        Col11 = 0,
+                        Col12 = 0,
+                        Col13 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
                     });
                     orderAI2 += 1;
                 }
@@ -2055,14 +2071,16 @@ namespace SMO.Service.BP
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "A.II.1",
                         Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5),
                         Col20 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1)*(p.CAPITAL!=0? p.CAPITAL/100:1),
-                        //Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
-                        Col8 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
-                        Col9 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.DN9T) ?? 0,
-                        Col10 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col11= DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col12 = (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) != 0 ? (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0) / (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) : 0,
-
+                        Col4 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_4) ?? 0,
+                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_7),
+                        Col9 = BM2107.Where(x=>x.Code==codeDataXD).Sum(x=>x.Col7)+ BM2108.Where(x=>x.Code==codeDataXD).Sum(x=>x.Col10),
+                        Col10 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9),
+                        Col11 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9),
+               
+                        Col12= (BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9)) != 0 ? BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9)/ DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_7):0,
+                        Col13 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
                     });
                     orderAII1 += 1;
                 }
@@ -2090,14 +2108,17 @@ namespace SMO.Service.BP
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "A.II.2",
                         Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
-
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5),
+                        Col4 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_4) ?? 0,
                         Col20 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1)*(p.CAPITAL!=0? p.CAPITAL/100:1),
-                        //Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
-                        Col8 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
-                        Col9 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.DN9T) ?? 0,
-                        Col10 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col11 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col12 = (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) != 0 ? (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0) / (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) : 0,
+          
+                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_7),
+                        Col9 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col7) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col10),
+                        Col10 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9),
+                        Col11 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9),
+
+                        Col12 = (BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9)) != 0 ? BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9) / DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_7) : 0,
+                        Col13 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
                     });
                     orderAII2 += 1;
                 }
@@ -2143,13 +2164,17 @@ namespace SMO.Service.BP
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "B.I.1",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
+                        Col4 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB).Sum(x=>x.VALUE_4),
+
                         Col20 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1)*(p.CAPITAL!=0? p.CAPITAL/100:1),
                         //Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
-                        Col8 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
-                        Col9 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.DN9T) ?? 0,
-                        Col10 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col11 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col12 = (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) != 0 ? (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0) / (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) : 0,
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_9),
+                        Col9 = 0,
+                        Col10 = 0,
+                        Col11 = 0,
+                        Col12 = 0,
+                        Col13 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
                     }) ;
                     orderBI1 += 1;
                 }
@@ -2177,45 +2202,19 @@ namespace SMO.Service.BP
                         NameExcel = "Các dự án thực hiện đầu tư",
                         Parent = "B.I.2",
                         Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
+                        Col4 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_4),
+                        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5),
                         Col20 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1)* (p.CAPITAL!=0? p.CAPITAL/100:1),
                         //Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
-                        Col8 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
-                        Col9 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.DN9T) ?? 0,
-                        Col10 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col11 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col12 = (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) != 0 ? (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0) / (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) : 0,
+                        Col8 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_9),
+                        Col9 = 0,
+                        Col10 = 0,
+                        Col11 = 0,
+                        Col12 = 0,
+                        Col13 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
                     });
                     orderBI2 += 1;
                 }
-
-                //data.Add(new ReportModel2B
-                //{
-                //    Id = "B.I.3",
-                //    Stt = "3",
-                //    Name = "Đầu tư trang thiết bị lẻ",
-                //    NameExcel = "Đầu tư trang thiết bị lẻ",
-                //    Parent = "B.I",
-                //    IsBold = true,
-                //});
-
-                //var orderBI3 = 1;
-                //foreach (var p in projects.Where(x => x.LOAI_HINH == "TTB" && x.TYPE == "TTB-LE" && x.DAU_TU_MOI == true))
-                //{
-                //    var codeTTB = DataTTBcenter.FirstOrDefault(x => x.PROJECT_CODE == p.CODE)?.CODE;
-                //    data.Add(new ReportModel2B
-                //    {
-                //        Code=p.CODE,
-                //        Id = "B.I.3" + p.CODE,
-                //        Stt = "3." + orderBI3.ToString(),
-                //        Name = p.NAME,
-                //        NameExcel = "Các dự án chuẩn bị đầu tư",
-                //        Parent = "A.I.3",
-                //        Col1 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_1),
-                //        Col2 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.FirstOrDefault(x => !string.IsNullOrEmpty(x.VALUE_2))?.VALUE_2,
-                //        Col5 = DataTTB.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeTTB)?.Sum(x => x.VALUE_5 * x.VALUE_6) ?? 0,
-                //    });
-                //    orderBI3 += 1;
-                //}
 
                 data.Add(new ReportModel1D
                 {
@@ -2248,13 +2247,18 @@ namespace SMO.Service.BP
                         NameExcel = "Các dự án chuẩn bị đầu tư",
                         Parent = "B.II.1",
                         Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5),
+                        Col4 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_4),
                         Col20 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x=>x.VALUE_1)*(p.CAPITAL!=0? p.CAPITAL/100:1),
                         //Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
-                        Col8 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
-                        Col9 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.DN9T) ?? 0,
-                        Col10 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col11 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col12 = (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) != 0 ? (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0) / (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) : 0,
+                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_7),
+                        Col9 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col7) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col10),
+                        Col10 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9),
+                        Col11 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9),
+                        // Col12= Col10/Col8
+                        Col12 = (BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9)) != 0 ? (BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9)) / (BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col7) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col10)) : 0,
+
+                        Col13 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
                     });
                     orderBII1 += 1;
                 }
@@ -2282,12 +2286,15 @@ namespace SMO.Service.BP
                         Parent = "B.II.2",
                         Col1 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1),
                         Col20 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_1) * (p.CAPITAL!=0? p.CAPITAL/100:1),
-                        //Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
-                        Col8 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
-                        Col9 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.DN9T) ?? 0,
-                        Col10 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col11 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0,
-                        Col12 = (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) != 0 ? (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.UTH) ?? 0) / (DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0) : 0,
+                        Col5 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_5) ?? 0,
+                        Col4 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_4) ?? 0,
+                        Col8 = DataXD.Where(x => x.DAU_TU_PROFIT_CENTER_CODE == codeDataXD)?.Sum(x => x.VALUE_7),
+                        Col9 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col7) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col10),
+                        Col10 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9),
+                        Col11 = BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9),
+                        // Col12= Col10/Col8
+                        Col12 = (BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9)) != 0 ? (BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col6) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col9)) / (BM2107.Where(x => x.Code == codeDataXD).Sum(x => x.Col7) + BM2108.Where(x => x.Code == codeDataXD).Sum(x => x.Col10)) : 0,
+                        Col13 = DataGn.Where(x => x.PROJECT_CODE == p.CODE).Sum(x => x.KH) ?? 0,
 
                     });
                     orderBII2 += 1;
@@ -3315,7 +3322,7 @@ namespace SMO.Service.BP
                 var dataCP_KH_1 = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_KH_1.Contains(x.TEMPLATE_CODE)).ToList();
                 var headerCP_KH = UnitOfWork.Repository<KeHoachChiPhiRepo>().Queryable().Where(x => x.KICH_BAN == kichBan && x.PHIEN_BAN == "PB1" && x.TIME_YEAR == year && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataCP_KH = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => headerCP_KH.Contains(x.TEMPLATE_CODE)).ToList();
-
+            
 
                 data.BM02D = new List<ReportModel>(){
             new ReportModel()
@@ -3914,11 +3921,12 @@ namespace SMO.Service.BP
                 foreach (var project in projects)
                 {
                     var i = new ReportModel
-                    {
+                    { 
                         Stt = order.ToString(),
                         Name = project.NAME,
                         Col1 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_1) ?? 0,
-                        Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5)
+                        Col2 = details1_1.Where(x => x.DauTuXayDungProfitCenter.PROJECT_CODE == project.CODE).Sum(x => x.VALUE_5),
+                        Code= project.CODE
                     };
                     data.Add(i);
 
@@ -4003,6 +4011,7 @@ namespace SMO.Service.BP
 
                     var i = new ReportModel
                     {
+                        Code= project.CODE,
                         Stt = order.ToString(),
                         Name = project.NAME,
                         Col1 = detail1_1.Sum(x => x.VALUE_1) ?? 0,
@@ -5489,6 +5498,7 @@ namespace SMO.Service.BP
         public decimal? Col18 { get; set; }
         public decimal? Col19 { get; set; }
         public decimal? Col20 { get; set; }
+        public string Col21 { get; set; } 
         public string Tdth { get; set; }
         public string Tdtk { get; set; }
         public string Des { get; set; }
