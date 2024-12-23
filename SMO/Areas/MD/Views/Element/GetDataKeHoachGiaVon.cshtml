@@ -174,7 +174,11 @@
         { id: "warehouse", header: [{ text: "KHO ĐN", align: "center", rowspan: 2 }], minWidth: 120 },
         { id: "areaCode", header: [{ text: "KHU VỰC", align: "center", rowspan: 2 }], minWidth: 120 },
         { id: "delivery", header: [{ text: "ĐK GIAO HÀNG", align: "center", rowspan: 2 }], minWidth: 140 },
-        { id: "s0001", header: [{ text: "TỶ LỆ NHẬP", align: "center", colspan: 2 }, { text: "TỶ LỆ NHẬP THEO KHO", align: "center" }], align: "right", minWidth: 160 },
+        {
+            id: "s0001", header: [{ text: "TỶ LỆ NHẬP", align: "center", colspan: 2 }, { text: "TỶ LỆ NHẬP THEO KHO", align: "center" }], align: "right", minWidth: 160, template: (value, r, c) => {
+                return `<div>${value}% </div>`
+            }, htmlEnable: true
+        },
         { id: "s0002", header: [{ text: "", align: "center" }, { text: "SL NHẬP THEO KHO", align: "center" }], align: "right", minWidth: 160 },
         { id: "u0001", header: [{ text: "PLATT'S ($/THÙNG)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 136 },
         { id: "s0003", header: [{ text: "PREMIUM", align: "center", colspan: 2 }, { text: "HÀNG (THÙNG)", align: "center" }], align: "right", minWidth: 124 },
@@ -185,7 +189,10 @@
         { id: "s0006", header: [{ text: "BẢO HIỂM ($/TẤN)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 140 },
         { id: "s0008", header: [{ text: "THUẾ NK", align: "center", colspan: 2 }, { text: "THUẾ SUẤT", align: "center" }], align: "right", minWidth: 120, htmlEnable: true, template: function(text) { return text; } },
         { id: "thueSuat", header: [{ text: "", align: "center"}, { text: "THUẾ ($/TẤN)", align: "center" }], align: "right", minWidth: 120 },
-        { id: "s0007", header: [{ text: "THUẾ ƯU ĐÃI", align: "center", colspan: 2 }, { text: "THUẾ SUẤT", align: "center" }], align: "right", minWidth: 120 },
+        {
+            id: "s0007", header: [{ text: "THUẾ ƯU ĐÃI", align: "center", colspan: 2 }, { text: "THUẾ SUẤT", align: "center" }], align: "right", minWidth: 120, template: (value, r, c) => {
+                return `<div>${value}% </div>`
+            }, htmlEnable: true },
         { id: "u0004", header: [{ text: "", align: "center" }, { text: "THUẾ ($/TẤN)", align: "center" }], align: "right", minWidth: 120 },
         { id: "u0005", header: [{ text: "CIF + TẤN ($/TẤN)", align: "center", rowspan: 2 }, { text: "", align: "center" }], align: "right", minWidth: 140 },
         { id: "u0006", header: [{ text: "CIF + TẤN ($/TẤN) BQ", align: "center", rowspan: 2 }], align: "right", minWidth: 140 },

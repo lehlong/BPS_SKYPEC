@@ -530,6 +530,7 @@ namespace SMO.Service.MD
                 var value6 = lstSharedData.FirstOrDefault(x => x.CODE == "22").VALUE;
                 var value8 = (value2 + value3 + value5) * lstSharedData.FirstOrDefault(x => x.CODE == "19").VALUE;
                 var value9 = (value2 + value3 + value5);
+                var thue5 = lstSharedData.FirstOrDefault(x => x.CODE == "TNK-VN").VALUE * value4;
                 var value11 = lstSharedData.FirstOrDefault(x => x.CODE == "2").VALUE;
 
                 var dataHeaderSanLuong = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == "PB1" && x.KICH_BAN == "TB" && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
@@ -589,7 +590,7 @@ namespace SMO.Service.MD
                             Value2 = value2,
                             Value3 = value3,
                             Value4 = value4,
-                            Value5 = value5,
+                            Value5 = thue5,
                             Value6 = value6,
                             Value8 = value8,
                             Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE,
@@ -621,7 +622,7 @@ namespace SMO.Service.MD
                             Value2 = value2,
                             Value3 = value3,
                             Value4 = value4,
-                            Value5 = value5,
+                            Value5 = thue5,
                             Value6 = value6,
                             Value8 = value8,
                             Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
@@ -640,7 +641,7 @@ namespace SMO.Service.MD
                             Value2 = value2,
                             Value3 = value3,
                             Value4 = value4,
-                            Value5 = value5,
+                            Value5 = thue5,
                             Value6 = value6,
                             Value8 = value8,
                             Value9 = value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
@@ -1007,10 +1008,10 @@ namespace SMO.Service.MD
                         desMonth = "Dữ liệu kế hoạch Sản lượng theo tháng lấy khác tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         destotal = "Tổng dữ liệu kế hoạch Sản lượng theo tháng lấy khác tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
 
-                        Level = 1,
+                        Level = 2,
 
                         Order = 9,
-                        Parent = 6.ToString()
+                        Parent = 7.ToString()
                     };
                     var sumSLQX = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE != "NAF" && x.SanLuongProfitCenter.SAN_BAY_CODE != "TAP").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
                     var SLQN = new KeHoachGiaVonTheoThang
@@ -1034,9 +1035,9 @@ namespace SMO.Service.MD
                         desMonth = "Dữ liệu kế hoạch Sản lượng theo tháng lấy  tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         destotal = "Tổng dữ liệu kế hoạch Sản lượng lấy  tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         Order = 10,
-                        Level = 1,
+                        Level = 2,
 
-                        Parent = 6.ToString()
+                        Parent = 8.ToString()
                     };
                     var sumSLQN = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
                     var test = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP");
@@ -1052,7 +1053,7 @@ namespace SMO.Service.MD
                         Name = "Chi phí HH qua xe",
                         DVT = "USD/tấn",
                         TG = value11,
-                        ValueDG = valueDGTLXe,
+                        ValueDG = value8+value9*lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE,
                         Value1 = valueDGTLXe * SLQX.Value1,
                         Value2 = valueDGTLXe * SLQX.Value2,
                         Value3 = valueDGTLXe * SLQX.Value3,
@@ -1081,7 +1082,7 @@ namespace SMO.Service.MD
                         Name = "Chi phí HH qua ngầm",
                         DVT = "USD/tấn",
                         TG = value11,
-                        ValueDG = valueDGTLNg,
+                        ValueDG = value8 + value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
                         Value1 = valueDGTLNg * SLQN.Value1,
                         Value2 = valueDGTLNg * SLQN.Value2,
                         Value3 = valueDGTLNg * SLQN.Value3,
@@ -1196,7 +1197,7 @@ namespace SMO.Service.MD
                     fhs.Level = 0;
                     data.KeHoachGiaVonTheoThang.Add(fhs);
 
-                    // Tính toorng
+                   
 
                     var Tong = new KeHoachGiaVonTheoThang
                     {
@@ -1222,12 +1223,213 @@ namespace SMO.Service.MD
                         destotal= "Tổng cộng",
                     };
                     data.KeHoachGiaVonTheoThang.Add(Tong);
+                    order = 12;
+                    foreach (var hhk in lishhkSort.Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)))
+                    {
+                        var FHS_NBA = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-NBA-" + hhk.GROUP_ITEM)?.VALUE;
+                        var FHS_TNS = lstSharedData.FirstOrDefault(x => x.CODE == "FHS-TNS-" + hhk.GROUP_ITEM)?.VALUE;
+                        // lấy phí fsh theo hãng hàng không
+                        var valueSLNBA1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JAN) ?? 0;
+                        var valueSLNBA2 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_FEB) ?? 0;
+                        var valueSLNBA3 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_MAR) ?? 0;
+                        var valueSLNBA4 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_APR) ?? 0;
+                        var valueSLNBA5 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_MAY) ?? 0;
+                        var valueSLNBA6 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JUN) ?? 0;
+                        var valueSLNBA7 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_JUL) ?? 0;
+                        var valueSLNBA8 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_AUG) ?? 0;
+                        var valueSLNBA9 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_SEP) ?? 0;
+                        var valueSLNBA10 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_OCT) ?? 0;
+                        var valueSLNBA11 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_NOV) ?? 0;
+                        var valueSLNBA12 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_DEC) ?? 0;
+                        var valueSLNBASum = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
 
+
+
+                        var valueSLTNS1 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JAN) ?? 0;
+                        var valueSLTNS2 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_FEB) ?? 0;
+                        var valueSLTNS3 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_MAR) ?? 0;
+                        var valueSLTNS4 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_APR) ?? 0;
+                        var valueSLTNS5 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_MAY) ?? 0;
+                        var valueSLTNS6 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JUN) ?? 0;
+                        var valueSLTNS7 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_JUL) ?? 0;
+                        var valueSLTNS8 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_AUG) ?? 0;
+                        var valueSLTNS9 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SEP) ?? 0;
+                        var valueSLTNS10 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_OCT) ?? 0;
+                        var valueSLTNS11 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_NOV) ?? 0;
+                        var valueSLTNS12 = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_DEC) ?? 0;
+                        var valueSLTNSSum = dataInHeader.Where(x => x.SanLuongProfitCenter.HangHangKhong.GROUP_ITEM == hhk.GROUP_ITEM && x.KHOAN_MUC_SAN_LUONG_CODE == "10020" && x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+
+
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-01",
+                            ParentCode = "11",
+                            Name = hhk.GROUP_ITEM,
+                            Value1 = Convert.ToDecimal(valueSLNBA1 * value11 * FHS_NBA + valueSLTNS1 * value11 * FHS_TNS),
+                            Value2 = Convert.ToDecimal(valueSLNBA2 * value11 * FHS_NBA + valueSLTNS2 * value11 * FHS_TNS),
+                            Value3 = Convert.ToDecimal(valueSLNBA3 * value11 * FHS_NBA + valueSLTNS3 * value11 * FHS_TNS),
+                            Value4 = Convert.ToDecimal(valueSLNBA4 * value11 * FHS_NBA + valueSLTNS4 * value11 * FHS_TNS),
+                            Value5 = Convert.ToDecimal(valueSLNBA5 * value11 * FHS_NBA + valueSLTNS5 * value11 * FHS_TNS),
+                            Value6 = Convert.ToDecimal(valueSLNBA6 * value11 * FHS_NBA + valueSLTNS6 * value11 * FHS_TNS),
+                            Value7 = Convert.ToDecimal(valueSLNBA7 * value11 * FHS_NBA + valueSLTNS7 * value11 * FHS_TNS),
+                            Value8 = Convert.ToDecimal(valueSLNBA8 * value11 * FHS_NBA + valueSLTNS8 * value11 * FHS_TNS),
+                            Value9 = Convert.ToDecimal(valueSLNBA9 * value11 * FHS_NBA + valueSLTNS9 * value11 * FHS_TNS),
+                            Value10 = Convert.ToDecimal(valueSLNBA10 * value11 * FHS_NBA + valueSLTNS10 * value11 * FHS_TNS),
+                            Value11 = Convert.ToDecimal(valueSLNBA11 * value11 * FHS_NBA + valueSLTNS11 * value11 * FHS_TNS),
+                            Value12 = Convert.ToDecimal(valueSLNBA12 * value11 * FHS_NBA + valueSLTNS12 * value11 * FHS_TNS),
+                            SumGV = Convert.ToDecimal(valueSLNBASum * value11 * FHS_NBA + valueSLTNSSum * value11 * FHS_TNS),
+                            IsBold = true,
+                            Order = order,
+                            Parent = "11",
+                            Level = 1
+                        });
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-02",
+                            ParentCode = hhk.GROUP_ITEM + "-01",
+                            Name = "Nội địa",
+                            IsBold = true,
+                            Order = order + 1,
+                            Parent = order.ToString(),
+                            Level = 1
+                        });
+
+                 
+
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-04",
+                            ParentCode = hhk.GROUP_ITEM + "-02",
+                            Name = "Qua FHS",
+       
+                            IsBold = true,
+                            Order = order + 3,
+                            Parent = (order + 1).ToString(),
+                            Level = 2
+                        });
+
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-05",
+                            ParentCode = hhk.GROUP_ITEM + "-04",
+                            Name = "FHS NBA",
+                           
+                            Order = order + 4,
+                            Parent = (order + 3).ToString(),
+                            Level = 3
+                        });
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-06",
+                            ParentCode = hhk.GROUP_ITEM + "-04",
+                            Name = "FHS TNS",
+                       
+                            Order = order + 5,
+                            Parent = (order + 3).ToString(),
+                            Level = 3
+                        });
+
+
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-07",
+                            ParentCode = hhk.GROUP_ITEM + "-01",
+                            Name = "Quốc tế",
+                            Value1 = Convert.ToDecimal(valueSLNBA1 * value11 * FHS_NBA + valueSLTNS1 * value11 * FHS_TNS),
+                            Value2 = Convert.ToDecimal(valueSLNBA2 * value11 * FHS_NBA + valueSLTNS2 * value11 * FHS_TNS),
+                            Value3 = Convert.ToDecimal(valueSLNBA3 * value11 * FHS_NBA + valueSLTNS3 * value11 * FHS_TNS),
+                            Value4 = Convert.ToDecimal(valueSLNBA4 * value11 * FHS_NBA + valueSLTNS4 * value11 * FHS_TNS),
+                            Value5 = Convert.ToDecimal(valueSLNBA5 * value11 * FHS_NBA + valueSLTNS5 * value11 * FHS_TNS),
+                            Value6 = Convert.ToDecimal(valueSLNBA6 * value11 * FHS_NBA + valueSLTNS6 * value11 * FHS_TNS),
+                            Value7 = Convert.ToDecimal(valueSLNBA7 * value11 * FHS_NBA + valueSLTNS7 * value11 * FHS_TNS),
+                            Value8 = Convert.ToDecimal(valueSLNBA8 * value11 * FHS_NBA + valueSLTNS8 * value11 * FHS_TNS),
+                            Value9 = Convert.ToDecimal(valueSLNBA9 * value11 * FHS_NBA + valueSLTNS9 * value11 * FHS_TNS),
+                            Value10 = Convert.ToDecimal(valueSLNBA10 * value11 * FHS_NBA + valueSLTNS10 * value11 * FHS_TNS),
+                            Value11 = Convert.ToDecimal(valueSLNBA11 * value11 * FHS_NBA + valueSLTNS11 * value11 * FHS_TNS),
+                            Value12 = Convert.ToDecimal(valueSLNBA12 * value11 * FHS_NBA + valueSLTNS12 * value11 * FHS_TNS),
+                            SumGV = Convert.ToDecimal(valueSLNBASum * value11 * FHS_NBA + valueSLTNSSum * value11 * FHS_TNS),
+                            IsBold = true,
+                            Order = order + 6,
+                            Parent = order.ToString(),
+                            Level = 1
+                        });
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-09",
+                            ParentCode = hhk.GROUP_ITEM + "-07",
+                            Name = "Qua FHS",
+                            Value1 = Convert.ToDecimal(valueSLNBA1 * value11 * FHS_NBA + valueSLTNS1 * value11 * FHS_TNS),
+                            Value2 = Convert.ToDecimal(valueSLNBA2 * value11 * FHS_NBA + valueSLTNS2 * value11 * FHS_TNS),
+                            Value3 = Convert.ToDecimal(valueSLNBA3 * value11 * FHS_NBA + valueSLTNS3 * value11 * FHS_TNS),
+                            Value4 = Convert.ToDecimal(valueSLNBA4 * value11 * FHS_NBA + valueSLTNS4 * value11 * FHS_TNS),
+                            Value5 = Convert.ToDecimal(valueSLNBA5 * value11 * FHS_NBA + valueSLTNS5 * value11 * FHS_TNS),
+                            Value6 = Convert.ToDecimal(valueSLNBA6 * value11 * FHS_NBA + valueSLTNS6 * value11 * FHS_TNS),
+                            Value7 = Convert.ToDecimal(valueSLNBA7 * value11 * FHS_NBA + valueSLTNS7 * value11 * FHS_TNS),
+                            Value8 = Convert.ToDecimal(valueSLNBA8 * value11 * FHS_NBA + valueSLTNS8 * value11 * FHS_TNS),
+                            Value9 = Convert.ToDecimal(valueSLNBA9 * value11 * FHS_NBA + valueSLTNS9 * value11 * FHS_TNS),
+                            Value10 = Convert.ToDecimal(valueSLNBA10 * value11 * FHS_NBA + valueSLTNS10 * value11 * FHS_TNS),
+                            Value11 = Convert.ToDecimal(valueSLNBA11 * value11 * FHS_NBA + valueSLTNS11 * value11 * FHS_TNS),
+                            Value12 = Convert.ToDecimal(valueSLNBA12 * value11 * FHS_NBA + valueSLTNS12 * value11 * FHS_TNS),
+                            SumGV = Convert.ToDecimal(valueSLNBASum * value11 * FHS_NBA + valueSLTNSSum * value11 * FHS_TNS),
+                            IsBold = true,
+                            Order = order + 8,
+                            Parent = (order + 6).ToString(),
+                            Level = 2
+                        });
+
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-10",
+                            ParentCode = hhk.GROUP_ITEM + "-09",
+                            Name = "FHS NBA",
+                            Value1 = Convert.ToDecimal(valueSLNBA1 * value11 * FHS_NBA),
+                            Value2 = Convert.ToDecimal(valueSLNBA2 * value11 * FHS_NBA),
+                            Value3 = Convert.ToDecimal(valueSLNBA3 * value11 * FHS_NBA),
+                            Value4 = Convert.ToDecimal(valueSLNBA4 * value11 * FHS_NBA),
+                            Value5 = Convert.ToDecimal(valueSLNBA5 * value11 * FHS_NBA),
+                            Value6 = Convert.ToDecimal(valueSLNBA6 * value11 * FHS_NBA),
+                            Value7 = Convert.ToDecimal(valueSLNBA7 * value11 * FHS_NBA),
+                            Value8 = Convert.ToDecimal(valueSLNBA8 * value11 * FHS_NBA),
+                            Value9 = Convert.ToDecimal(valueSLNBA9 * value11 * FHS_NBA),
+                            Value10 = Convert.ToDecimal(valueSLNBA10 * value11 * FHS_NBA),
+                            Value11 = Convert.ToDecimal(valueSLNBA11 * value11 * FHS_NBA),
+                            Value12 = Convert.ToDecimal(valueSLNBA12 * value11 * FHS_NBA),
+                            SumGV = Convert.ToDecimal(valueSLNBASum * value11 * FHS_NBA),
+
+                            Order = order + 9,
+                            Parent = (order + 8).ToString(),
+                            Level = 3
+                        });
+                        data.KeHoachGiaVonTheoThang.Add(new KeHoachGiaVonTheoThang
+                        {
+                            Code = hhk.GROUP_ITEM + "-11",
+                            ParentCode = hhk.GROUP_ITEM + "-09",
+                            Name = "FHS TSN",
+                            Value1 = Convert.ToDecimal(valueSLTNS1 * value11 * FHS_TNS),
+                            Value2 = Convert.ToDecimal(valueSLTNS2 * value11 * FHS_TNS),
+                            Value3 = Convert.ToDecimal(valueSLTNS3 * value11 * FHS_TNS),
+                            Value4 = Convert.ToDecimal(valueSLTNS4 * value11 * FHS_TNS),
+                            Value5 = Convert.ToDecimal(valueSLTNS5 * value11 * FHS_TNS),
+                            Value6 = Convert.ToDecimal(valueSLTNS6 * value11 * FHS_TNS),
+                            Value7 = Convert.ToDecimal(valueSLTNS7 * value11 * FHS_TNS),
+                            Value8 = Convert.ToDecimal(valueSLTNS8 * value11 * FHS_TNS),
+                            Value9 = Convert.ToDecimal(valueSLTNS9 * value11 * FHS_TNS),
+                            Value10 = Convert.ToDecimal(valueSLTNS10 * value11 * FHS_TNS),
+                            Value11 = Convert.ToDecimal(valueSLTNS11 * value11 * FHS_TNS),
+                            Value12 = Convert.ToDecimal(valueSLTNS12 * value11 * FHS_TNS),
+                            SumGV = Convert.ToDecimal(valueSLTNSSum * value11 * FHS_TNS),
+
+                            Parent = (order + 8).ToString(),
+                            Order = order + 10,
+                            Level = 3
+                        });
+
+                        order += 11;
+                    }
                 }
+               
 
-
-
-                return data;
+                    return data;
             }
             catch (Exception ex)
             {

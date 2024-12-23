@@ -83,6 +83,13 @@ namespace SMO.Service.MD
                 var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)).ToList();
                 var sanBayGroup = UnitOfWork.Repository<NhomSanBayRepo>().GetAll().ToList();
                 lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
+                var sortlist = new List<string> { "VN", "0V", "BL", "VJ", "QH", "VU", "HKTN#", "HKQT" };
+                var lishhkSort = lstHangHangKhong
+                    .OrderBy(x => sortlist.IndexOf(x.GROUP_ITEM) >= 0
+                            ? sortlist.IndexOf(x.GROUP_ITEM)
+                            : int.MaxValue
+                    )
+                    .ToList();
 
                 var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 if (dataHeaderDoanhThu.Count() == 0)
@@ -1647,9 +1654,9 @@ namespace SMO.Service.MD
                     Order = data.Count() + 4,
                     Parent = pr,
                     Level = 1,
-                    ValueThue = discount.VALUE ,
-                    ValueDT = data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount.VALUE/100,
-                    ValueDTD = data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount.VALUE/100,
+                    ValueThue = discount0V.VALUE ,
+                    ValueDT = data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount0V.VALUE/100,
+                    ValueDTD = data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount0V.VALUE/100,
                 });
                 data.Add(new SupplyReportModel
                 {
@@ -1658,9 +1665,9 @@ namespace SMO.Service.MD
                     Order = data.Count() + 5,
                     Parent = pr,
                     Level = 1,
-                    ValueThue = discount.VALUE ,
-                    ValueDT = data.FirstOrDefault(x => x.Name == "BL").ValueDTD ,
-                    ValueDTD = data.FirstOrDefault(x => x.Name == "BL").ValueDTD,
+                    ValueThue = discountBL.VALUE ,
+                    ValueDT = data.FirstOrDefault(x => x.Name == "BL").ValueDTD *discountBL.VALUE/100,
+                    ValueDTD = data.FirstOrDefault(x => x.Name == "BL").ValueDTD * discountBL.VALUE / 100,
                 });
                 #endregion
                 return data;
