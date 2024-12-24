@@ -1334,6 +1334,7 @@ namespace SMO.Service.MD
                         {
                             Code = hhk.GROUP_ITEM + "-07",
                             ParentCode = hhk.GROUP_ITEM + "-01",
+                        
                             Name = "Quốc tế",
                             Value1 = Convert.ToDecimal(valueSLNBA1 * value11 * FHS_NBA + valueSLTNS1 * value11 * FHS_TNS),
                             Value2 = Convert.ToDecimal(valueSLNBA2 * value11 * FHS_NBA + valueSLTNS2 * value11 * FHS_TNS),
@@ -1382,6 +1383,7 @@ namespace SMO.Service.MD
                             Code = hhk.GROUP_ITEM + "-10",
                             ParentCode = hhk.GROUP_ITEM + "-09",
                             Name = "FHS NBA",
+                            ValueDG= FHS_NBA??0,
                             Value1 = Convert.ToDecimal(valueSLNBA1 * value11 * FHS_NBA),
                             Value2 = Convert.ToDecimal(valueSLNBA2 * value11 * FHS_NBA),
                             Value3 = Convert.ToDecimal(valueSLNBA3 * value11 * FHS_NBA),
@@ -1395,8 +1397,9 @@ namespace SMO.Service.MD
                             Value11 = Convert.ToDecimal(valueSLNBA11 * value11 * FHS_NBA),
                             Value12 = Convert.ToDecimal(valueSLNBA12 * value11 * FHS_NBA),
                             SumGV = Convert.ToDecimal(valueSLNBASum * value11 * FHS_NBA),
-
-                            Order = order + 9,
+                            TG=value11,
+                            DVT = "VND/tấn",
+                        Order = order + 9,
                             Parent = (order + 8).ToString(),
                             Level = 3
                         });
@@ -1405,6 +1408,7 @@ namespace SMO.Service.MD
                             Code = hhk.GROUP_ITEM + "-11",
                             ParentCode = hhk.GROUP_ITEM + "-09",
                             Name = "FHS TSN",
+                            ValueDG= FHS_TNS??0,
                             Value1 = Convert.ToDecimal(valueSLTNS1 * value11 * FHS_TNS),
                             Value2 = Convert.ToDecimal(valueSLTNS2 * value11 * FHS_TNS),
                             Value3 = Convert.ToDecimal(valueSLTNS3 * value11 * FHS_TNS),
@@ -1418,8 +1422,9 @@ namespace SMO.Service.MD
                             Value11 = Convert.ToDecimal(valueSLTNS11 * value11 * FHS_TNS),
                             Value12 = Convert.ToDecimal(valueSLTNS12 * value11 * FHS_TNS),
                             SumGV = Convert.ToDecimal(valueSLTNSSum * value11 * FHS_TNS),
-
-                            Parent = (order + 8).ToString(),
+                            TG=value11,
+                            DVT = "VND/tấn",
+                        Parent = (order + 8).ToString(),
                             Order = order + 10,
                             Level = 3
                         });

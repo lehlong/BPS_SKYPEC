@@ -10,7 +10,7 @@ namespace SMO.Core.Entities.MD
 
         public virtual int STT { get; set; }
         public virtual string DVT { get; set; }
-
+        public virtual decimal? VALUE { get; set; }
 
         public virtual int YEAR { get; set; }
 

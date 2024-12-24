@@ -10,11 +10,11 @@ using SMO.Service.MD;
 
 namespace SMO.Areas.MD.Controllers
 {
-    public class DataDmController : Controller
+    public class DataTraNapController : Controller
     {
         private readonly InputKhService _service;
         // GET: MD/InputKh
-        public DataDmController()
+        public DataTraNapController()
         {
             _service = new InputKhService();
 
@@ -24,15 +24,15 @@ namespace SMO.Areas.MD.Controllers
         {
             return PartialView(_service);
         }
-        public ActionResult GenDataDm(int year)
+        public ActionResult GenDataTraNap(int year)
         {
-            var data= _service.GetdataDm(year);
+            var data= _service.GetdataTraNapIP(year);
 
             return PartialView(data);
         }
         public ActionResult Update(string data, int year)
         {
-            var jsonData = JsonConvert.DeserializeObject<List<T_MD_HEADER_DM>>(data);
+            var jsonData = JsonConvert.DeserializeObject<List<T_MD_DATA_TRA_NAP>>(data);
 
 
             var result = new TransferObject
@@ -40,7 +40,7 @@ namespace SMO.Areas.MD.Controllers
                 Type = TransferType.AlertSuccessAndJsCommand
             };
 
-            _service.UpdateDM(jsonData, year);
+            _service.UpdateTraNap(jsonData, year);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

@@ -9,7 +9,6 @@ namespace SMO.Repository.Mapping.MD
     {
         public T_MD_HEADER_DM_Map()
         {
-            Table("T_MD_INPUT_KH");
             Id(x => x.ID);
             Map(x => x.NAME);
             Map(x => x.NOTE);

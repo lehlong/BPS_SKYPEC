@@ -1,0 +1,93 @@
+﻿
+@model List<SMO.Core.Entities.MD.T_MD_DATA_TRA_NAP>
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@{
+    var data = Model.Select(x => new
+    {
+     
+        ID_CENTER=x.ID_CENTER,
+        VALUE= x.VALUE,
+    });
+
+    var gridId = Guid.NewGuid().ToString();
+
+
+}
+
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<script>
+    const rawData =  @Html.Raw(JsonConvert.SerializeObject(data));
+
+
+
+    let columns = [
+
+        { id: "ID_CENTER", header: [{ text: "Mã sân bay", align: "center" }], minWidth: 500, type: "number", format: "#.#" },
+
+        { id: "VALUE", header: [{ text: "Giá trị tra nạp", align: "center" }], minWidth: 200, editable: true, type: "number", format: "#.#" },
+
+
+    ];
+    const Gird = new dhx.TreeGrid("@gridId", {
+        columns,
+        data: rawData,
+        selection: "row",
+        resizable: true,
+        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    });
+    let valuechange = [];
+    Gird.events.on("afterEditEnd", (value, row, column) => {
+        console.log(row);
+        const index = valuechange.findIndex(item => item.ID_CENTER == row.ID_CENTER);
+        console.log(index);
+        if (index !== -1) {
+            // Nếu hàng đã tồn tại, cập nhật giá trị
+            valuechange[index] = {
+                ID_CENTER:row.ID_CENTER,
+                VALUE:row.VALUE,
+            };
+        } else {
+            // Nếu hàng chưa tồn tại, thêm mới
+            valuechange.push({
+                ID_CENTER:row.ID_CENTER,
+                VALUE:row.VALUE,
+            });
+        }
+        console.log(valuechange);
+    });
+
+    Gird.events.on("cellClick", (row, column, editorType) => {
+
+            if (row.isBold == true) {
+                column.editable = false
+
+            } else {
+                column.editable = true
+
+            }
+    });
+
+
+       function saveIPutData() {
+           var year = $("#time-year").val();
+
+            var ajaxParams = {
+         url: "@Url.Action("Update")",
+         type: "POST",
+         data: {
+             data: JSON.stringify(valuechange),
+             year: year,
+
+         },
+         dataType: 'json',
+         success: function (response) {
+             Message.execute(response);
+         }
+     }
+           Forms.Ajax(ajaxParams)
+            valuechange = [];
+ }
+
+</script>
+

@@ -551,6 +551,7 @@
     <Compile Include="Areas\MD\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\CustomerController.cs" />
     <Compile Include="Areas\MD\Controllers\DataController.cs" />
+    <Compile Include="Areas\MD\Controllers\DataTraNapController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuNgoaiDoanhNghiepProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuTrangThietBiProfitCenterController.cs" />
     <Compile Include="Areas\MD\Controllers\DauTuXayDungProfitCenterController.cs" />
@@ -2137,6 +2138,9 @@
     <Content Include="Areas\BP\Views\Report\ImportView.cshtml" />
     <Content Include="Areas\MD\Views\InputGtdn\Index.cshtml" />
     <Content Include="Areas\MD\Views\InputGtdn\GenDataGtdn.cshtml" />
+    <Content Include="Areas\MD\Views\DataTraNap\Index.cshtml" />
+    <Content Include="Areas\MD\Views\DataTraNap\GenDataTraNap.cshtml" />
+    <Content Include="Areas\MD\Views\DataDm\GenDataDm.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

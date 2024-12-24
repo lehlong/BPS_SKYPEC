@@ -9,12 +9,11 @@ namespace SMO.Repository.Mapping.MD
     {
         public T_MD_DATA_TRA_NAP_Map()
         {
-            Table("T_MD_INPUT_KH");
             Id(x => x.ID);
             Map(x => x.VALUE);
             Map(x => x.YEAR);
-
-            Map(x => x.ACTIVE).Not.Nullable().CustomType<YesNoType>();
+            Map(x => x.ID_CENTER);
+         
         }
     }
 }
