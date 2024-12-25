@@ -299,6 +299,7 @@
     <Compile Include="Entities\MD\T_MD_BID_SPEC.cs" />
     <Compile Include="Entities\MD\T_MD_BID_SPEC_DETAIL.cs" />
     <Compile Include="Entities\MD\T_MD_BID_TYPE.cs" />
+    <Compile Include="Entities\MD\T_MD_BM02B.cs" />
     <Compile Include="Entities\MD\T_MD_CHI_PHI_PROFIT_CENTER.cs" />
     <Compile Include="Entities\MD\T_MD_COMPANY.cs" />
     <Compile Include="Entities\MD\T_MD_CONTRACT_ALERT.cs" />

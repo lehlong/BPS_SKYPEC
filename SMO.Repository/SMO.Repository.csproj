@@ -266,6 +266,7 @@
     <Compile Include="Implement\CM\SmsRepo.cs" />
     <Compile Include="Implement\MD\AreaRepo.cs" />
     <Compile Include="Implement\MD\BidTypeRepo.cs" />
+    <Compile Include="Implement\MD\Bm02bRepo.cs" />
     <Compile Include="Implement\MD\ChiPhiProfitCenterRepo.cs" />
     <Compile Include="Implement\MD\CompanyRepo.cs" />
     <Compile Include="Implement\MD\ContractAlertRepo.cs" />
@@ -547,6 +548,7 @@
     <Compile Include="Interface\CM\ISmsRepo.cs" />
     <Compile Include="Interface\MD\IAreaRepo.cs" />
     <Compile Include="Interface\MD\IBidTypeRepo.cs" />
+    <Compile Include="Interface\MD\IBm02bRepo.cs" />
     <Compile Include="Interface\MD\IChiPhiProfitCenterRepo.cs" />
     <Compile Include="Interface\MD\ICompanyRepo.cs" />
     <Compile Include="Interface\MD\IContractAlertRepo.cs" />
@@ -841,6 +843,7 @@
     <Compile Include="Mapping\MD\T_MD_BID_SPEC_DETAIL_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_BID_SPEC_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_BID_TYPE_Map.cs" />
+    <Compile Include="Mapping\MD\T_MD_BM02B_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_CHI_PHI_PROFIT_CENTER_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_COMPANY_Map.cs" />
     <Compile Include="Mapping\MD\T_MD_CONTRACT_ALERT_Map.cs" />

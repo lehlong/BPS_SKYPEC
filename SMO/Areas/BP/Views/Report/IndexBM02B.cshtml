@@ -2,6 +2,7 @@
     var viewId = Guid.NewGuid().ToString();
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
     var yearDefault = Convert.ToString(lstTimeYear?.SelectedValue);
+    var formId = Guid.NewGuid().ToString();
 }
 <style>
     .tab-content {
@@ -23,6 +24,10 @@
                         @Html.MyButton("cmdBack", "Quay lại", "window.location.reload()", "Alt+N", "arrow_back")
                         @Html.MyButton("cmdAdd", "Kết xuất", "ViewData();", "Alt+N", "search")
                         @Html.MyButton("cmdAdd", "Xuất Excel", "ExportData()", "Alt+N", "file_download")
+                        <a class="waves-effect btn-default btn" href="@Url.Action("DownloadTemplate02B", "Report", new {@area="BP"})" target="_blank">
+                            <i class="col-fecon material-icons">file_download</i> Tải template
+                        </a>
+                        @Html.MyButton("cmdAdd", "Nhập Excel", "$('#file').click()", "Alt+N", "file_upload")
                     </div>
                     <div class="input-group page-function-search row" style="margin-bottom: 7px !important; max-width:920px">
                         <div class="col-md-2">
@@ -44,7 +49,11 @@
                     </div>
                 </div>
             </div>
-
+            @using (Ajax.BeginForm("ImportFile", null, FormDataUtils.GetAjaxOptions(viewId), new { @id = formId, @enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="file" accept=".xlsx,.xls" id="file" name="file" style="display: none"/>
+            }
             <div id="divReport">
 
             </div>
@@ -69,7 +78,32 @@
 
     $(function () {
         Forms.CompleteUI();
-        setTimeout(function () { ViewData() }, 100)
+        setTimeout(function () { ViewData() }, 100);
+    });
+
+    var file = document.getElementById('file');
+
+    file.addEventListener('change', function (event) {
+        if ($('#file').val() == '' || $('#file').val() == null) {
+            alert("Vui lòng chọn 1 file import!")
+            return;
+        }
+        var formData = new FormData($('#@formId')[0]);
+        formData.set('YEAR', $("#time-year").val());
+        Forms.ShowLoading();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Import02B")',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                Message.execute(response);
+                Forms.HideLoading();
+                setTimeout(function () { ViewData() }, 100);
+            },
+            error: Forms.AjaxErrorHandler
+        });
     });
 
 </script>

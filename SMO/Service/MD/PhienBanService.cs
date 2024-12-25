@@ -20,6 +20,7 @@ using SMO.Core.Entities.BP.SUA_CHUA_LON;
 using SMO.Core.Entities.BP.SUA_CHUA_THUONG_XUYEN;
 using SMO.Core.Entities.MD;
 using SMO.Models;
+using SMO.Repository.Implement.AD;
 using SMO.Repository.Implement.BP.DAU_TU_NGOAI_DOANH_NGHIEP;
 using SMO.Repository.Implement.BP.DAU_TU_TRANG_THIET_BI;
 using SMO.Repository.Implement.BP.DAU_TU_XAY_DUNG;
@@ -40,11 +41,15 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Configuration;
+using System.Web;
 using System.Web.UI.WebControls;
 using System.Xml.Linq;
 using WebGrease.Css.Ast;
 using static iTextSharp.text.pdf.AcroFields;
 using static ZXing.QrCode.Internal.Mode;
+using ExcelDataReader;
+using NHibernate.Linq;
 
 
 namespace SMO.Service.MD
@@ -6510,6 +6515,79 @@ namespace SMO.Service.MD
                             rowCur.Cells[j].CellStyle = styleBody;
                         }
                     }
+                }
+            }
+        }
+
+
+
+        public void Import02B(HttpRequestBase request, string year)
+        {
+            try
+            {
+                var fileName = Guid.NewGuid().ToString("N");
+                var pathSaveFile = Path.Combine(WebConfigurationManager.AppSettings["PathFileAttach"], DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
+                if (!new DirectoryInfo(pathSaveFile).Exists)
+                {
+                    Directory.CreateDirectory(pathSaveFile);
+                }
+                var pathFile = Path.Combine(pathSaveFile, $"{fileName}.xlsx");
+                request.Files[0].SaveAs(pathFile);
+
+                UnitOfWork.Repository<Bm02bRepo>().Queryable().Where(x => x.YEAR == Convert.ToInt32(year)).Delete();
+
+                UnitOfWork.BeginTransaction();
+                var data = ReadDataFromFile(pathFile, 0);
+                var order = 1;
+                for(var i = 4; i < data.Rows.Count; i++)
+                {
+                    UnitOfWork.Repository<Bm02bRepo>().Create(new T_MD_BM02B
+                    {
+                        ID = Guid.NewGuid(),
+                        C_ORDER = order,
+                        YEAR = Convert.ToInt32(year),
+                        COL1 = data.Rows[i][0].ToString(),
+                        COL2 = data.Rows[i][1].ToString(),
+                        COL3 = string.IsNullOrEmpty(data.Rows[i][2].ToString()) ? 0M : Convert.ToDecimal(data.Rows[i][2].ToString()),
+                        COL4 = string.IsNullOrEmpty(data.Rows[i][3].ToString()) ? 0M : Convert.ToDecimal(data.Rows[i][3].ToString()),
+                        COL5 = string.IsNullOrEmpty(data.Rows[i][4].ToString()) ? 0M : Convert.ToDecimal(data.Rows[i][4].ToString()),
+                        COL6 = string.IsNullOrEmpty(data.Rows[i][5].ToString()) ? 0M : Convert.ToDecimal(data.Rows[i][5].ToString()),
+                        COL7 = string.IsNullOrEmpty(data.Rows[i][6].ToString()) ? 0M : Convert.ToDecimal(data.Rows[i][6].ToString()),
+                        COL8 = string.IsNullOrEmpty(data.Rows[i][7].ToString()) ? 0M : Convert.ToDecimal(data.Rows[i][7].ToString()),
+                        COL9 = data.Rows[i][8].ToString(),
+                    });
+                    order++;
+                }
+
+                UnitOfWork.Commit();
+
+
+            }
+            catch (Exception ex)
+            {
+                UnitOfWork.Rollback();
+                this.State = false;
+                this.Exception = ex;
+            }
+        }
+
+        public static System.Data.DataTable ReadDataFromFile(string filePath, int sheet)
+        {
+            using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+            {
+                try
+                {
+                    IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+                    DataSet dataset = excelReader.AsDataSet();
+                    if (dataset != null && dataset.Tables.Count > 0)
+                    {
+                        return dataset.Tables[sheet];
+                    }
+                    return null;
+                }
+                catch
+                {
+                    return null;
                 }
             }
         }

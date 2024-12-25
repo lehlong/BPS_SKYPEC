@@ -702,5 +702,32 @@ namespace SMO.Areas.BP.Controllers
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_CHI_PHI.xlsx");
         }
         #endregion
+
+        public ActionResult DownloadTemplate02B()
+        {
+            byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/TemplateExcel/TemplateBM02B.xlsx"));
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TemplateBM02B.xlsx");
+        }
+
+        [HttpPost]
+        public ActionResult Import02B()
+        {
+            var result = new TransferObject
+            {
+                Type = TransferType.AlertSuccessAndJsCommand
+            };
+            var year = Request.Form.GetValues("YEAR")[0];
+            _servicePhienBan.Import02B(Request, year);
+            if (_servicePhienBan.State)
+            {
+                SMOUtilities.GetMessage("1002", _servicePhienBan, result);
+            }
+            else
+            {
+                result.Type = TransferType.AlertDanger;
+                SMOUtilities.GetMessage("1005", _servicePhienBan, result);
+            }
+            return result.ToJsonResult();
+        }
     }
 }
