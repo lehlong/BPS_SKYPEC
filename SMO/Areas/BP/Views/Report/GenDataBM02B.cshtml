@@ -31,24 +31,32 @@
 </div>
 <script type="text/javascript">
     var rawData = @Html.Raw(JsonConvert.SerializeObject(Model.BM_02B, jsonSerializeSettings));
+    rawData.forEach((i) => {
+        i.col3 = i.col3 == 0 ? null : i.col3
+        i.col4 = i.col4 == 0 ? null : i.col4
+        i.col5 = i.col5 == 0 ? null : i.col5
+        i.col6 = i.col6 == 0 ? null : i.col6
+        i.col7 = i.col7 == 0 ? null : i.col7
+        i.col8 = i.col8 == 0 ? null : i.col8
+    })
 
     let columns = [
-        { id: "col1", header: [{ text: "STT", align: "center" }], width: 100 },
+        { id: "col1", header: [{ text: "STT", align: "center", rowspan: 2 }], width: 100 },
         { id: "col2", header: [{ text: "CHỈ TIÊU", align: "center" }, { content: "inputFilter" }], minWidth: 500 },
 
-        { id: "col3", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM ĐẦU NĂM", align: "center" }], align: "right", minWidth: 240, type: "number", format:"#.#" },
-        { id: "col4", header: [{ text: "KẾ HOẠCH TĂNG GIẢM TRONG NĂM", align: "center" }], align: "right", minWidth: 240, type: "number", format: "#.#" },
-        { id: "col5", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM CUỐI NĂM", align: "center" }], align: "right", minWidth: 240, type: "number", format: "#.#" },
-        { id: "col6", header: [{ text: "TỶ LỆ VỐN GÓP (%) ĐẾN CUỐI NĂM", align: "center" }], align: "right", minWidth: 240, type: "number", format: "#.#" },
-        { id: "col7", header: [{ text: "KẾ HOẠCH CỔ TỨC/ LỢI NHUẬN ĐƯỢC CHIA", align: "center" }], align: "right", minWidth: 240, type: "number", format: "#.#" },
-        { id: "col8", header: [{ text: "TỶ LỆ LN ĐƯỢC CHIA TRÊN VỐN ĐẦU TƯ BÌNH QUÂN (%)", align: "center" }], align: "right", minWidth: 240, type: "number", format: "#.#" },
-        { id: "col9", header: [{ text: "GHI CHÚ", align: "center" }], align: "right", minWidth: 240 },
+        { id: "col3", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM ĐẦU NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 240, type: "number", format:"#.#,00" },
+        { id: "col4", header: [{ text: "KẾ HOẠCH TĂNG GIẢM TRONG NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 240, type: "number", format: "#.#,00" },
+        { id: "col5", header: [{ text: "GIÁ TRỊ ĐẦU TƯ THỜI ĐIỂM CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 240, type: "number", format: "#.#,00" },
+        { id: "col6", header: [{ text: "TỶ LỆ VỐN GÓP (%) ĐẾN CUỐI NĂM", align: "center", rowspan: 2 }], align: "right", minWidth: 240, type: "number", format: "#.#,00" },
+        { id: "col7", header: [{ text: "KẾ HOẠCH CỔ TỨC/ LỢI NHUẬN ĐƯỢC CHIA", align: "center", rowspan: 2 }], align: "right", minWidth: 240, type: "number", format: "#.#,00" },
+        { id: "col8", header: [{ text: "TỶ LỆ LN ĐƯỢC CHIA TRÊN VỐN ĐẦU TƯ BÌNH QUÂN (%)", align: "center", rowspan: 2 }], align: "right", minWidth: 240, type: "number", format: "#.#,00" },
+        { id: "col9", header: [{ text: "GHI CHÚ", align: "center", rowspan: 2 }], align: "right", minWidth: 240 },
     ];
 
     const treeGrid = new dhx.Grid("@gridId", {
         columns,
         data: rawData,
-        leftSplit: 1,
+        leftSplit: 2,
         resizable: true,
         keyNavigation: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
