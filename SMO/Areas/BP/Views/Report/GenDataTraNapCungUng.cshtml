@@ -50,7 +50,7 @@
 
         {
             id: "value7", header: [{ text: "THUẾ BVMT (TR. VNĐ) ", align: "center", rowspan: 2 }], align: "right", width: 180, template: (value, row, col) => {
-                return row.name == "GIẢM GIÁ" || row.parent == prgg[0] ? `<div>${value}% </div>` : `<div>${value} </div>` 
+                return `<div>${value} </div>` 
             },
             htmlEnable: true
         },

@@ -935,7 +935,7 @@ namespace SMO.Service.MD
                         Name = "Thuế nhập khẩu",
                         DVT = "USD/tấn",
                         TG = value11,
-                        ValueDG = value5,
+                        ValueDG = thue5,
                         Value1 = value5 * SLND.Value1 * value11,
                         Value2 = value5 * SLND.Value2 * value11,
                         Value3 = value5 * SLND.Value3 * value11,

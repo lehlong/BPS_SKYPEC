@@ -1233,6 +1233,7 @@ namespace SMO.Service.MD
                 var sortlist = new List<string> { "VN", "0V", "BL", "VJ", "QH", "VU", "HKTN#", "HKQT" };
                 lstHangHangKhong = lstHangHangKhong.Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)).ToList();
                 var lishhkSort = lstHangHangKhong.OrderBy(x => sortlist.IndexOf(x.GROUP_ITEM) >= 0 ? sortlist.IndexOf(x.GROUP_ITEM) : int.MaxValue).ToList();
+                var hsbvmt = UnitOfWork.Repository<SharedDataRepo>().Get("25");
 
                 var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 if (dataHeaderDoanhThu.Count() == 0)
@@ -1338,6 +1339,7 @@ namespace SMO.Service.MD
                             var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
                             var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
                             var ThueXBQ = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "23").VALUE;
+                            
                             var priceMops = pricePlat * priceTG * priceHSQD;
                             var priceTNK = thueTNK * pricePlat * priceHSQD * priceTG;
 
@@ -1374,6 +1376,7 @@ namespace SMO.Service.MD
                                     Parent = order + 2,
                                     Level = 3
                                 };
+                                item.ValueThue = item.ValueSL * hsbvmt.VALUE;
                                 data.Add(item);
                                 // Giá trị qua xe
                                 valueNDXe.ValueSL = valueNDXe.ValueSL + item.ValueSL;
@@ -1441,6 +1444,7 @@ namespace SMO.Service.MD
                                     Parent = order + 3 + countGroup,
                                     Level = 3
                                 };
+                                item.ValueThue = item.ValueSL * hsbvmt.VALUE;
                                 data.Add(item);
                             }
                             data.Add(valueNDFhs);
@@ -1456,6 +1460,7 @@ namespace SMO.Service.MD
                             var pricePlat = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "1").VALUE;
                             var priceTG = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "2").VALUE;
                             var priceHSQD = UnitOfWork.Repository<SharedDataRepo>().Queryable().FirstOrDefault(x => x.CODE == "3").VALUE;
+                           
                             var priceMops = pricePlat * priceTG * priceHSQD;
                             for (var i = 0; i < sanBayGroup.Count(); i++)
                             {
@@ -1488,6 +1493,7 @@ namespace SMO.Service.MD
                                     Parent = order + 5 + countGroup + countFHS,
                                     Level = 3
                                 };
+                              
                                 data.Add(item);
                                 // Giá trị qua xe
                                 valueQTXe.ValueSL = valueQTXe.ValueSL + item.ValueSL;
@@ -1605,11 +1611,11 @@ namespace SMO.Service.MD
                 }
                 data.Add(valueSum);
 
-                var hsbvmt = UnitOfWork.Repository<SharedDataRepo>().Get("25");
-                foreach (var i in data)
-                {
-                    i.ValueThue = i.ValueSL * hsbvmt.VALUE;
-                }
+                
+                //foreach (var i in data)
+                //{
+                //    i.ValueThue = i.ValueSL * hsbvmt.VALUE;
+                //}
 
                 var headerDT = UnitOfWork.Repository<KeHoachDoanhThuRepo>().Queryable().Where(x => x.TIME_YEAR == year && x.PHIEN_BAN == phienBan && x.KICH_BAN == kichBan && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
                 var dataDT = UnitOfWork.Repository<KeHoachDoanhThuDataRepo>().Queryable().Where(x => headerDT.Contains(x.TEMPLATE_CODE)).ToList();
@@ -1692,7 +1698,13 @@ namespace SMO.Service.MD
                 var data = new SynthesizeThePlanReportModel();
                 var lstSanBay = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.OTHER_PM_CODE != null && x.OTHER_PM_CODE != "").ToList();
                 lstSanBay = !string.IsNullOrEmpty(area) ? lstSanBay.Where(x => x.AREA_CODE == area).ToList() : lstSanBay;
-
+                var sortlist = new List<string> { "HAN", "HPH", "THD", "VII", "VDH", "VDO", "NAF" };
+                var lishhkSort = lstSanBay
+                    .OrderBy(x => sortlist.IndexOf(x.CODE) >= 0
+                            ? sortlist.IndexOf(x.CODE)
+                            : int.MaxValue
+                    )
+                    .ToList();
                 var lstAreas = UnitOfWork.Repository<AreaRepo>().GetAll().ToList();
                 lstAreas = string.IsNullOrEmpty(area) ? lstAreas : lstAreas.Where(x => x.CODE == area).ToList();
 
@@ -1719,7 +1731,8 @@ namespace SMO.Service.MD
                         Value5 = dataArea.Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                     });
                     var orderSL = 1;
-                    foreach (var sb in lstSanBay.Where(x => x.AREA_CODE == a.CODE))
+                   
+                    foreach (var sb in lishhkSort.Where(x => x.AREA_CODE == a.CODE))
                     {
                         var dataSb = dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == sb.CODE);
                         var item = new SanLuong

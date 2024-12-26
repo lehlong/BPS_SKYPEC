@@ -4558,6 +4558,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             var template = UnitOfWork.Repository<TemplateRepo>().Get(ObjDetail.TEMPLATE_CODE);
 
             // gọi dl chung
+            var DM = UnitOfWork.Repository<DataDmRepo>().Queryable().Where(x=>x.YEAR==ObjDetail.TIME_YEAR).ToList();
+            var TN= UnitOfWork.Repository<DataTraNapRepo>().Queryable().Where(x => x.YEAR == ObjDetail.TIME_YEAR).ToList();
             var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == ObjDetail.TIME_YEAR && x.PHIEN_BAN == "PB1" && x.KICH_BAN == "TB" && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
             var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == ObjDetail.TIME_YEAR && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
             var dataDetails = dataInHeader.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020" ).ToList();
@@ -6328,7 +6330,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             switch (elementCode)
                             {
                                 case "B621A001":
-                                    row1["QUANTITY"] = dataDetails.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE=="HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
                                     row1["PRICE"] = 0;
                                     break;
                                 case "B621A002":
@@ -6336,13 +6338,28 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     row1["PRICE"] = 0;
                                     break;
                                 case "B621A003":
-                                    row1["QUANTITY"] =  0;
+                                    row1["QUANTITY"] = TN.Where(x=>x.ID_CENTER=="HAN").Sum(x=>x.VALUE);
                                     row1["PRICE"] = 0;
                                     break;
                                 case "B621A004":
-                                    row1["QUANTITY"] = 0;
+                                    row1["QUANTITY"] = DM.Where(x=>x.ID_CENTER==5).Sum(x=>x.VALUE);
+                                    
                                     row1["PRICE"] = 0;
                                     break;
+                                case "B62101K001":
+                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE);
+                                    row1["PRICE"] =DM.Where(x=>x.ID_CENTER==3).Sum(x=>x.VALUE) ;
+                                    break;
+                                case "B62101K002":
+                                    row1["QUANTITY"] =0;
+                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K003":
+                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE) * DM.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+
+
                                 case "B62711A":
                                     row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
                                     break;
@@ -6397,7 +6414,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             tableKHCP.Rows.Add(row2);
 
 
-                            //VDO
+                            //hph
                             var row3 = tableKHCP.NewRow();
                             row3["PKID"] = Guid.NewGuid().ToString();
                             row3["ORG_CODE"] = orgCode;
@@ -6420,12 +6437,24 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     row1["PRICE"] = 0;
                                     break;
                                 case "B621A003":
-                                    row1["QUANTITY"] = 0;
+                                    row1["QUANTITY"] = TN.Where(x => x.ID_CENTER == "HPH").Sum(x => x.VALUE);
                                     row1["PRICE"] = 0;
                                     break;
                                 case "B621A004":
-                                    row1["QUANTITY"] = 0;
+                                    row1["QUANTITY"] = DM.Where(x=>x.ID_CENTER==5).Sum(x=>x.VALUE);
                                     row1["PRICE"] = 0;
+                                    break;
+                                case "B62101K001":
+                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE);
+                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K002":
+                                    row1["QUANTITY"] = 0;
+                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K003":
+                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE) * DM.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
                                     break;
                                 case "B62711A":
                                     row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
