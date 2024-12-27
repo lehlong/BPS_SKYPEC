@@ -14,6 +14,7 @@ namespace SMO.Repository.Mapping.MD
             Map(x => x.VALUE);
             Map(x => x.YEAR);
             Map(x => x.ID_CENTER);
+            Map(x => x.AREA);
         }
     }
 }

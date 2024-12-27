@@ -58,13 +58,13 @@ namespace SMO.Service.MD
             }
 
         }
-         public IList<T_MD_HEADER_DM> GetdataDm(int year)
+         public IList<T_MD_HEADER_DM> GetdataDm(int year ,string area)
         {
             try
             {
                 var data = new List<T_MD_HEADER_DM>();
                 var listReport = UnitOfWork.Repository<HeaderDmRepo>().Queryable().Select(x=> new {x.NAME,x.STT}).OrderBy(x => x.STT).ToList();
-                var listInput = UnitOfWork.Repository<DataDmRepo>().Queryable().Where(x => x.YEAR == year).ToList();
+                var listInput = UnitOfWork.Repository<DataDmRepo>().Queryable().Where(x => x.YEAR == year && x.AREA== area).ToList();
 
                 var listData = from table1 in listReport
                                join table2 in listInput
@@ -220,11 +220,11 @@ namespace SMO.Service.MD
                 this.Exception = ex;
             }
         }
-        public void UpdateDM(List<T_MD_HEADER_DM> data, int year)
+        public void UpdateDM(List<T_MD_HEADER_DM> data, int year,string area)
         {
             try
             {
-                var databytime = UnitOfWork.Repository<DataDmRepo>().Queryable().Where(x => x.YEAR == year).ToList();
+                var databytime = UnitOfWork.Repository<DataDmRepo>().Queryable().Where(x => x.YEAR == year && x.AREA==area).ToList();
                 UnitOfWork.BeginTransaction();
                 foreach (var item in data)
                 {
@@ -238,7 +238,8 @@ namespace SMO.Service.MD
                             ID_CENTER = item.STT,
                             VALUE = item.VALUE,
                             YEAR = year,
-                            NOTE=item.NOTE,
+                            NOTE = item.NOTE,
+                            AREA = area,
                         };
                       
                         UnitOfWork.Repository<DataDmRepo>().Create(pdata);

@@ -781,7 +781,7 @@ namespace SMO.Service.MD
                         item.Value7 = item.Value9 + item.Value8;
                         if (item.Name == "BÁN VNA TẠI HQ")
                         {
-
+                            item.Value14 = 0;
                             item.Value15 = 0;
                             if (item.Code.Contains("-02") || item.Code.Contains("-03") || item.Code.Contains("-04") || item.Code.Contains("-05") || item.Code.Contains("-06"))
                             {
@@ -831,7 +831,7 @@ namespace SMO.Service.MD
                     var month9 = dataDetails.Sum(x => x.VALUE_SEP) ?? 0;
                     var month10 = dataDetails.Sum(x => x.VALUE_OCT) ?? 0;
                     var month11 = dataDetails.Sum(x => x.VALUE_NOV) ?? 0;
-                    var month12 = dataDetails.Sum(x => x.VALUE_SEP) ?? 0;
+                    var month12 = dataDetails.Sum(x => x.VALUE_DEC) ?? 0;
                     var sum = dataDetails.Sum(x => x.VALUE_SUM_YEAR) ?? 0;
 
                     foreach (var hhk in lstHangHangKhong)
@@ -920,6 +920,7 @@ namespace SMO.Service.MD
                         Value10 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_DEC) ?? 0,
+                        SumGV = dataDetails.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                         Order = 4,
                         Level = 1,
                         desMonth = "Dữ liệu khoản mục theo tháng lấy theo sản lượng nội địa",
@@ -936,19 +937,19 @@ namespace SMO.Service.MD
                         DVT = "USD/tấn",
                         TG = value11,
                         ValueDG = thue5,
-                        Value1 = value5 * SLND.Value1 * value11,
-                        Value2 = value5 * SLND.Value2 * value11,
-                        Value3 = value5 * SLND.Value3 * value11,
-                        Value4 = value5 * SLND.Value4 * value11,
-                        Value5 = value5 * SLND.Value5 * value11,
-                        Value6 = value5 * SLND.Value6 * value11,
-                        Value7 = value5 * SLND.Value7 * value11,
-                        Value8 = value5 * SLND.Value8 * value11,
-                        Value9 = value5 * SLND.Value9 * value11,
-                        Value10 = value5 * SLND.Value10 * value11,
-                        Value11 = value5 * SLND.Value11 * value11,
-                        Value12 = value5 * SLND.Value12 * value11,
-                        SumGV = sumSL * value5 * value11,
+                        Value1 = thue5 * SLND.Value1 * value11,
+                        Value2 = thue5 * SLND.Value2 * value11,
+                        Value3 = thue5 * SLND.Value3 * value11,
+                        Value4 = thue5 * SLND.Value4 * value11,
+                        Value5 = thue5 * SLND.Value5 * value11,
+                        Value6 = thue5 * SLND.Value6 * value11,
+                        Value7 = thue5 * SLND.Value7 * value11,
+                        Value8 = thue5 * SLND.Value8 * value11,
+                        Value9 = thue5 * SLND.Value9 * value11,
+                        Value10 = thue5 * SLND.Value10 * value11,
+                        Value11 = thue5 * SLND.Value11 * value11,
+                        Value12 = thue5 * SLND.Value12 * value11,
+                        SumGV = sumSL * thue5 * value11,
                         desMonth = "Giá Platts (USD/thùng)*Hệ số quy đổi thùng/tấn*Thuế suất thuế nhập khẩu-VN *dữ liệu khoản mục theo tháng lấy theo sản lượng nội địa *Tỷ giá",
                         desDG = "Giá Platts (USD/thùng)*Hệ số quy đổi thùng/tấn*Thuế suất thuế nhập khẩu-VN",
                         destotal = "Giá Platts (USD/thùng)*Hệ số quy đổi thùng/tấn*Thuế suất thuế nhập khẩu-VN * Tổng giá trị sản lượng nội địa theo tháng lấy theo sản lượng nội địa *tỷ giá",
@@ -1005,6 +1006,7 @@ namespace SMO.Service.MD
                         Value10 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE != "NAF" && x.SanLuongProfitCenter.SAN_BAY_CODE != "TAP").Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE != "NAF" && x.SanLuongProfitCenter.SAN_BAY_CODE != "TAP").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE != "NAF" && x.SanLuongProfitCenter.SAN_BAY_CODE != "TAP").Sum(x => x.VALUE_DEC) ?? 0,
+                        SumGV=dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE != "NAF" && x.SanLuongProfitCenter.SAN_BAY_CODE != "TAP").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                         desMonth = "Dữ liệu kế hoạch Sản lượng theo tháng lấy khác tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         destotal = "Tổng dữ liệu kế hoạch Sản lượng theo tháng lấy khác tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
 
@@ -1032,6 +1034,7 @@ namespace SMO.Service.MD
                         Value10 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_OCT) ?? 0,
                         Value11 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_NOV) ?? 0,
                         Value12 = dataInHeader.Where(x=>x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_DEC) ?? 0,
+                        SumGV=dataInHeader.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "NAF" || x.SanLuongProfitCenter.SAN_BAY_CODE == "TAP").Sum(x => x.VALUE_SUM_YEAR) ?? 0,
                         desMonth = "Dữ liệu kế hoạch Sản lượng theo tháng lấy  tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         destotal = "Tổng dữ liệu kế hoạch Sản lượng lấy  tra nạp ngầm nội địa và tra nạp ngầm tân sơn nhất",
                         Order = 10,
@@ -1044,8 +1047,9 @@ namespace SMO.Service.MD
                     //Tính chi phí
                     var TLXe = lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE;
                     var TLNg = lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE;
-                    var valueDGTLXe = value11 *TLXe * (Mops.ValueDG + Pre.ValueDG + thue.ValueDG);
-                    var valueDGTLNg = value11 * TLNg * (Mops.ValueDG + Pre.ValueDG + thue.ValueDG);
+                    //var valueDGTLXe = value11 *TLXe * (Mops.ValueDG + Pre.ValueDG + thue.ValueDG);
+                    var valueDGTLXe = value8 + value9 * lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE;
+                    var valueDGTLNg = value8 + value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE;
 
                     var CPXe = new KeHoachGiaVonTheoThang
                     {
@@ -1053,7 +1057,7 @@ namespace SMO.Service.MD
                         Name = "Chi phí HH qua xe",
                         DVT = "USD/tấn",
                         TG = value11,
-                        ValueDG = value8+value9*lstSharedData.FirstOrDefault(x => x.CODE == "20").VALUE,
+                        ValueDG = valueDGTLXe,
                         Value1 = valueDGTLXe * SLQX.Value1,
                         Value2 = valueDGTLXe * SLQX.Value2,
                         Value3 = valueDGTLXe * SLQX.Value3,
@@ -1082,7 +1086,7 @@ namespace SMO.Service.MD
                         Name = "Chi phí HH qua ngầm",
                         DVT = "USD/tấn",
                         TG = value11,
-                        ValueDG = value8 + value9 * lstSharedData.FirstOrDefault(x => x.CODE == "21").VALUE,
+                        ValueDG = valueDGTLNg,
                         Value1 = valueDGTLNg * SLQN.Value1,
                         Value2 = valueDGTLNg * SLQN.Value2,
                         Value3 = valueDGTLNg * SLQN.Value3,

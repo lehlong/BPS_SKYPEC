@@ -25,6 +25,7 @@ namespace SMO.Areas.MD.Controllers
         public ActionResult GenDataCpTcnl(int year)
         {
             var data = _service.GetdataCpnl(year);
+            ViewBag.year = year;
             return PartialView(data);
         }
         public ActionResult Update(string data, int year, string area)

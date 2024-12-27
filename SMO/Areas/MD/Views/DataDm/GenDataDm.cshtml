@@ -78,14 +78,14 @@
 
        function saveIPutData() {
            var year = $("#time-year").val();
-
+           var area = $("#area").val();
             var ajaxParams = {
          url: "@Url.Action("Update")",
          type: "POST",
          data: {
              data: JSON.stringify(valuechange),
              year: year,
-
+             area: area
          },
          dataType: 'json',
          success: function (response) {

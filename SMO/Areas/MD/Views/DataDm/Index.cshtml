@@ -4,9 +4,15 @@
     Model.ViewId = Guid.NewGuid().ToString();
     Model.FormId = Guid.NewGuid().ToString();
     var lstTimeYear = SelectListUtilities.GetTimeYear(false);
+   
     var yearDefault = Convert.ToString(lstTimeYear.SelectedValue);
     var lstArea = SelectListUtilities.GetAllArea();
 }
+<style>
+    .col-md-2 {
+        z-index: 100;
+    }
+</style>
 <div id='@Model.ViewId' class="container-fluid child-content">
     <div class="card border-grey">
         <div class="body" style="padding-top: 0px;">
@@ -38,7 +44,24 @@
                                     }
                                 }
                             </select>
+                            
                         </div>
+                        <div class="col-md-2">
+                            <select class="form-control selectpicker show-tick" id="area">
+                                @foreach (var temp in lstArea)
+                                {
+                                    if (temp.Text == "Tất cả chi nhánh.")
+                                    {
+                                        continue;
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@temp.Value">@temp.Text</option>
+                                    }
+
+                                }
+                            </select>
 
                     </div>
                 </div>
@@ -57,6 +80,7 @@
         url: "@Url.Action("GenDataDm")",
         data: {
             year: $("#time-year").val(),
+            area: $("#area").val()
 
         },
         htmlTarget: '#divResult',

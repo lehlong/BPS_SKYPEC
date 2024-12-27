@@ -141,7 +141,8 @@
     if (rawData[0].CODE.startsWith("B62")) {
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortquantity[i];
-            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#",  });
+            columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
+            console.log(idCol)
         };
 
     }

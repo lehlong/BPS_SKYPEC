@@ -24,13 +24,13 @@ namespace SMO.Areas.MD.Controllers
         {
             return PartialView(_service);
         }
-        public ActionResult GenDataDm(int year)
+        public ActionResult GenDataDm(int year,string area)
         {
-            var data= _service.GetdataDm(year);
+            var data= _service.GetdataDm(year,area);
 
             return PartialView(data);
         }
-        public ActionResult Update(string data, int year)
+        public ActionResult Update(string data, int year, string area)
         {
             var jsonData = JsonConvert.DeserializeObject<List<T_MD_HEADER_DM>>(data);
 
@@ -40,7 +40,7 @@ namespace SMO.Areas.MD.Controllers
                 Type = TransferType.AlertSuccessAndJsCommand
             };
 
-            _service.UpdateDM(jsonData, year);
+            _service.UpdateDM(jsonData, year,area);
             if (_service.State)
             {
                 SMOUtilities.GetMessage("1002", _service, result);

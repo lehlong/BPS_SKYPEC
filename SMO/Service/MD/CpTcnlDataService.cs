@@ -1,4 +1,6 @@
-﻿using iTextSharp.text;
+﻿using Antlr.Runtime.Misc;
+using iTextSharp.text;
+using NPOI.HSSF.Record.Chart;
 using SMO.Core.Entities;
 using SMO.Core.Entities.MD;
 using SMO.Models;
@@ -14,19 +16,20 @@ namespace SMO.Service.MD
     {
         public CpTcnlDataService() : base()
         {
-
-        }
-        public IList<CpTcnlImport> GetdataCpnl(int year)
+           
+    }
+     
+        public ListTcnl GetdataCpnl(int year)
         {
             try
             {
                 var listDataHeader = UnitOfWork.Repository<CptcnlRepo>().GetAll().OrderBy(x=>x.C_ORDER);
-                var data = new List<CpTcnlImport>();
+                var data = new ListTcnl();
                 var listData = UnitOfWork.Repository<CptcnlDataRepo>().Queryable().Where(x => x.YEAR == year).ToList();
-                var a = UnitOfWork.Repository<CptcnlDataRepo>().GetAll();
+                var listData2 = UnitOfWork.Repository<CptcnlDataRepo>().Queryable().Where(x => x.YEAR == year+1).ToList();
+            
                 foreach (var e in listDataHeader)
                 {
-                   
                     var temp = new CpTcnlImport
                     {
                         ID = e.ID,
@@ -42,9 +45,28 @@ namespace SMO.Service.MD
                         U_VT = listData.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year)?.U_VT,
                         U_MN = listData.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year)?.U_MN,
                         KH_TOTALKH = listData.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year)?.KH_TOTALKH
-
                     };
-                    data.Add(temp);
+                    data.Datainyear.Add(temp);
+                }
+                foreach (var e in listDataHeader)
+                {
+                    var temp = new CpTcnlImport
+                    {
+                        ID = e.ID,
+                        PARENT = e.PARENT,
+                        STT = e.STT,
+                        NAME = e.NAME,
+                        IS_BOLD = e.IS_BOLD,
+                        U_CBQL = listData2.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year+1)?.U_CBQL,
+                        U_CQCT = listData2.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year+1)?.U_CQCT,
+                        U_OIL_SOUCE = listData2.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year+1)?.U_OIL_SOUCE,
+                        U_MB = listData2.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year + 1)?.U_MB,
+                        U_MT = listData2.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year + 1)?.U_MT,
+                        U_VT = listData2.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year + 1)?.U_VT,
+                        U_MN = listData2.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year + 1)?.U_MN,
+                        KH_TOTALKH = listData2.FirstOrDefault(x => x.ID_CENTER == e.ID && x.YEAR == year + 1)?.KH_TOTALKH
+                    };
+                    data.Datanextyear.Add(temp);
                 }
                 return data;
             }
@@ -53,7 +75,7 @@ namespace SMO.Service.MD
                 throw ex;
                 this.State = false;
                 this.Exception = ex;
-                return new List<CpTcnlImport>();
+                return new ListTcnl();
             }
 
         }
@@ -127,6 +149,14 @@ namespace SMO.Service.MD
         public decimal? U_MN { get; set; }
         public decimal? KH_TOTALKH { get; set; }
     }
+    public class ListTcnl
+    {
+        public List<CpTcnlImport> Datainyear { get; set; } = new List<CpTcnlImport> { };
+        public List<CpTcnlImport> Datanextyear { get; set; } = new List<CpTcnlImport> { };
+       
+
+
+    };
 
 }
    

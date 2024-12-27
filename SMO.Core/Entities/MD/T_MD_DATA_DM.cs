@@ -9,5 +9,6 @@ namespace SMO.Core.Entities.MD
         public virtual string NOTE { get; set; }
         public virtual int ID_CENTER { get; set; }
         public virtual int YEAR { get; set; }
+        public virtual string AREA { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 ﻿
-@model List<SMO.Service.MD.CpTcnlImport>
+@model SMO.Service.MD.ListTcnl
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
 @{
-    var data = Model.Select(x => new
+    var data = Model.Datainyear.Select(x => new
     {
         idTH = x.ID,
         Parent = x.PARENT,
@@ -20,18 +20,39 @@
         KH_TOTALKH=x.KH_TOTALKH,
     }
         );
-
-    var gridId = Guid.NewGuid().ToString();
+    var data2 = Model.Datanextyear.Select(x => new
+    {
+        idTH = x.ID,
+        Parent = x.PARENT,
+        Stt = x.STT,
+        Name = x.NAME,
+        U_CBQL = x.U_CBQL,
+        U_CQCT = x.U_CQCT,
+        U_OIL_SOUCE = x.U_OIL_SOUCE,
+        U_MB = x.U_MB,
+        U_MT = x.U_MT,
+        U_VT = x.U_VT,
+        U_MN = x.U_MN,
+        isBold = x.IS_BOLD,
+        KH_TOTALKH = x.KH_TOTALKH,
+    }
+    );
+    var year = ViewBag.year;
+    var title = $"đối chiếu {year + 1}";
+    var gridId = Guid.NewGuid().ToString("N");
+    var gridId2 = Guid.NewGuid().ToString("N");
 
 
 }
 
 <div style="height: calc(100vh - 240px); width: 100%" id="@gridId"></div>
+<h4>@title</h4>
+<div style="height: calc(100vh - 240px); width: 100%" id="@gridId2"></div>
 
 <script>
     const rawData =  @Html.Raw(JsonConvert.SerializeObject(data));
-
-
+    const rawData2 =  @Html.Raw(JsonConvert.SerializeObject(data2));
+    console.log(rawData2)
 
     let columns = [
         { id: "Stt", header: [{ text: "TT", align: "center" }], minWidth: 220,},
@@ -46,6 +67,7 @@
         { id: "U_VT", header: [{ text: "CNVT", align: "center" }], minWidth: 200, type: "number", format: "#.#" },
 
     ];
+   
     const Gird = new dhx.TreeGrid("@gridId", {
         columns,
         data: rawData,
@@ -53,11 +75,19 @@
         resizable: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
+
+    const Gird2 = new dhx.TreeGrid("@gridId2", {
+     columns,
+     data: rawData2,
+     selection: "row",
+     resizable: true,
+     rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+ });
     let valuechange = [];
     Gird.events.on("afterEditEnd", (value, row, column) => {
-       
+
         const index = valuechange.findIndex(item => item.ID == row.idTH);
-        
+
         if (index !== -1) {
             // Nếu hàng đã tồn tại, cập nhật giá trị
             valuechange[index] = {

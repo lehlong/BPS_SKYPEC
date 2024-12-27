@@ -1641,7 +1641,7 @@ namespace SMO.Service.MD
                     Order = pr,
                     Parent = null,
                     Level = 0,
-                    ValueThue = discount.VALUE,
+                    ValueThue = 0,
                     ValueDT = data.FirstOrDefault(x => x.Name == "VN").ValueDTD * discount.VALUE/100 + data.FirstOrDefault(x => x.Name == "0V").ValueDTD  *discount0V.VALUE/100 + data.FirstOrDefault(x => x.Name == "BL").ValueDTD* discountBL.VALUE/100,
                     ValueDTD = data.FirstOrDefault(x => x.Name == "VN").ValueDTD * discount.VALUE/100 + data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount.VALUE/100+ data.FirstOrDefault(x => x.Name == "BL").ValueDTD * discountBL.VALUE / 100,
                 });
@@ -1653,7 +1653,7 @@ namespace SMO.Service.MD
                     Order = data.Count() + 3,
                     Parent = pr,
                     Level = 1,
-                    ValueThue = discount.VALUE ,
+                    ValueThue = 0 ,
                     ValueDT = data.FirstOrDefault(x => x.Name == "VN").ValueDTD * discount.VALUE/100,
                     ValueDTD = data.FirstOrDefault(x => x.Name == "VN").ValueDTD * discount.VALUE/100,
                 });
@@ -1665,7 +1665,7 @@ namespace SMO.Service.MD
                     Order = data.Count() + 4,
                     Parent = pr,
                     Level = 1,
-                    ValueThue = discount0V.VALUE ,
+                    ValueThue = 0 ,
                     ValueDT = data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount0V.VALUE/100,
                     ValueDTD = data.FirstOrDefault(x => x.Name == "0V").ValueDTD * discount0V.VALUE/100,
                 });
@@ -1676,7 +1676,7 @@ namespace SMO.Service.MD
                     Order = data.Count() + 5,
                     Parent = pr,
                     Level = 1,
-                    ValueThue = discountBL.VALUE ,
+                    ValueThue = 0 ,
                     ValueDT = data.FirstOrDefault(x => x.Name == "BL").ValueDTD *discountBL.VALUE/100,
                     ValueDTD = data.FirstOrDefault(x => x.Name == "BL").ValueDTD * discountBL.VALUE / 100,
                 });
