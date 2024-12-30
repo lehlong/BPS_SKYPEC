@@ -4558,13 +4558,17 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             var template = UnitOfWork.Repository<TemplateRepo>().Get(ObjDetail.TEMPLATE_CODE);
 
             // gọi dl chung
-            var DM = UnitOfWork.Repository<DataDmRepo>().Queryable().Where(x=>x.YEAR==ObjDetail.TIME_YEAR).ToList();
-            var TN= UnitOfWork.Repository<DataTraNapRepo>().Queryable().Where(x => x.YEAR == ObjDetail.TIME_YEAR).ToList();
+            var DM = UnitOfWork.Repository<DataDmRepo>().Queryable().Where(x => x.YEAR == ObjDetail.TIME_YEAR).ToList();
+            var DMMB = DM.Where(x => x.AREA == "MB");
+            var DMMT = DM.Where(x => x.AREA == "MT");
+            var DMMN = DM.Where(x => x.AREA == "MN");
+            var DMVT = DM.Where(x => x.AREA == "VT");
+            var TN = UnitOfWork.Repository<DataTraNapRepo>().Queryable().Where(x => x.YEAR == ObjDetail.TIME_YEAR).ToList();
             var dataHeaderDoanhThu = UnitOfWork.Repository<KeHoachSanLuongRepo>().Queryable().Where(x => x.TIME_YEAR == ObjDetail.TIME_YEAR && x.PHIEN_BAN == "PB1" && x.KICH_BAN == "TB" && x.STATUS == "03").Select(x => x.TEMPLATE_CODE).ToList();
             var dataInHeader = UnitOfWork.Repository<KeHoachSanLuongDataRepo>().Queryable().Where(x => x.TIME_YEAR == ObjDetail.TIME_YEAR && dataHeaderDoanhThu.Contains(x.TEMPLATE_CODE)).ToList();
-            var dataDetails = dataInHeader.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020" ).ToList();
+            var dataDetails = dataInHeader.Where(x => x.KHOAN_MUC_SAN_LUONG_CODE == "10010" || x.KHOAN_MUC_SAN_LUONG_CODE == "10020").ToList();
             var DLCHUN = UnitOfWork.Repository<SharedDataRepo>().GetAll().ToList();
-            
+
             var datatcnl = UnitOfWork.Repository<CptcnlDataRepo>().Queryable().Where(x => x.YEAR == ObjDetail.TIME_YEAR).ToList();
             // Xác định version dữ liệu
             var KeHoachChiPhiCurrent = CurrentRepository.Queryable().FirstOrDefault(x => x.ORG_CODE == orgCode
@@ -4587,8 +4591,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
             var dataCurrent = new List<T_BP_KE_HOACH_CHI_PHI_DATA>();
             if (KeHoachChiPhiCurrent != null)
             {
-                //dataCurrent = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode
-                //    && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).ToList();
+                dataCurrent = UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Queryable().Where(x => x.ORG_CODE == orgCode
+                    && x.TIME_YEAR == ObjDetail.TIME_YEAR && x.TEMPLATE_CODE == ObjDetail.TEMPLATE_CODE).ToList();
 
                 var strSQL = "DELETE T_BP_KE_HOACH_CHI_PHI_DATA WHERE ORG_CODE = :ORG_CODE and TIME_YEAR=:TIME_YEAR and TEMPLATE_CODE=:TEMPLATE_CODE ";
                 UnitOfWork.GetSession().CreateSQLQuery(strSQL).SetParameter("ORG_CODE", orgCode)
@@ -4616,14 +4620,14 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 // Cập nhật version
                 if (KeHoachChiPhiCurrent != null)
                 {
-                  
+
                     KeHoachChiPhiCurrent.VERSION = versionNext;
                     KeHoachChiPhiCurrent.IS_DELETED = false;
                     CurrentRepository.Update(KeHoachChiPhiCurrent);
                 }
                 else
                 {
-             
+
                     // Tạo mới bản ghi revenue pl
                     CurrentRepository.Create(new T_BP_KE_HOACH_CHI_PHI()
                     {
@@ -4640,7 +4644,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                         IS_SUMUP = false,
                         CREATE_BY = currentUser
                     });
-                  
+
 
 
                 }
@@ -4675,7 +4679,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     CREATE_BY = currentUser
                 });
 
-              
+
                 //foreach (var item in dataCurrent)
                 //{
                 //    UnitOfWork.Repository<KeHoachChiPhiDataRepo>().Delete(item);
@@ -4687,7 +4691,8 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 objConn.Open();
 
                 string tableNamehistory = "T_BP_KE_HOACH_CHI_PHI_DATA_HISTORY";
-                SqlDataAdapter daAdapterhistory = new SqlDataAdapter("SELECT * FROM " + tableNamehistory, objConn);
+                string condition = $"TEMPLATE_CODE='{ObjDetail.TEMPLATE_CODE}' AND TIME_YEAR={ObjDetail.TIME_YEAR}";
+                SqlDataAdapter daAdapterhistory = new SqlDataAdapter("SELECT * FROM " + tableNamehistory+" WHERE "+condition, objConn);
                 daAdapterhistory.UpdateBatchSize = 500;
                 DataSet dataSethistory = new DataSet(tableNamehistory);
                 daAdapterhistory.FillSchema(dataSethistory, SchemaType.Source, tableNamehistory);
@@ -4705,12 +4710,12 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     newRow["ORG_CODE"] = revenueDataHis.ORG_CODE;
                     newRow["CHI_PHI_PROFIT_CENTER_CODE"] = revenueDataHis.CHI_PHI_PROFIT_CENTER_CODE;
                     newRow["TEMPLATE_CODE"] = revenueDataHis.TEMPLATE_CODE;
-                    newRow["KHOAN_MUC_HANG_HOA_CODE"] = revenueDataHis.KHOAN_MUC_HANG_HOA_CODE; 
+                    newRow["KHOAN_MUC_HANG_HOA_CODE"] = revenueDataHis.KHOAN_MUC_HANG_HOA_CODE;
                     newRow["VERSION"] = revenueDataHis.VERSION;
                     newRow["TIME_YEAR"] = revenueDataHis.TIME_YEAR;
-                    newRow["QUANTITY"] = revenueDataHis.QUANTITY ??  0;
-                    newRow["PRICE"] = revenueDataHis.PRICE?? 0;
-                    newRow["AMOUNT"] = revenueDataHis.AMOUNT?? 0;
+                    newRow["QUANTITY"] = revenueDataHis.QUANTITY ?? 0;
+                    newRow["PRICE"] = revenueDataHis.PRICE ?? 0;
+                    newRow["AMOUNT"] = revenueDataHis.AMOUNT ?? 0;
                     newRow["QUY_MO"] = revenueDataHis.QUY_MO;
                     newRow["STATUS"] = revenueDataHis.STATUS;
 
@@ -4721,16 +4726,16 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                     newRow["DESCRIPTION_TD"] = revenueDataHis.DESCRIPTION_TD;
                     dataTablehistory.Rows.Add(newRow);
 
-               
+
 
                 }
                 SqlCommandBuilder objCommandBuilder = new SqlCommandBuilder(daAdapterhistory);
                 daAdapterhistory.Update(dataSethistory, tableNamehistory);
-           
 
-                
 
-               
+
+
+
                 DataTable tableKHCP = new DataTable();
                 tableKHCP.TableName = "DataInsertChiPhi";
                 tableKHCP.Columns.Add("PKID", typeof(string));
@@ -5785,67 +5790,67 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["VERSION"] = versionNext;
                             row1["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
                             row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString());
-                           
+
                             switch (elementCode)
                             {
                                 case "CQ62711A":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ62711B":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ62711C":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ62711D":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ62711E":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ62711G":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ62711F":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ6272B007A01":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ6278H002A01":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ6278H008A01":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ6278H006A01":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ6278H007AA09":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ6278H018AA01":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ6278H019AD02":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 case "CQ6278H019AD03":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_CQCT);
+                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_CQCT + x.U_OIL_SOUCE + x.U_CBQL);
                                     row1["QUANTITY"] = 1;
                                     break;
                                 default:
@@ -5892,7 +5897,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 case "CQ62711F":
                                     row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_CQCT);
                                     break;
-                               
+
                                 case "CQ6272B007A01":
                                     row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_CQCT);
                                     break;
@@ -5963,7 +5968,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 case "CQ62711F":
                                     row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_CQCT);
                                     break;
-                               
+
                                 case "CQ6272B007A01":
                                     row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_CQCT);
                                     break;
@@ -5998,7 +6003,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             tableKHCP.Rows.Add(row3);
 
 
-                            
+
                             var row4 = tableKHCP.NewRow();
                             row4["PKID"] = Guid.NewGuid().ToString();
                             row4["ORG_CODE"] = orgCode;
@@ -6030,10 +6035,10 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 case "CQ62711G":
                                     row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_CQCT);
                                     break;
-                                   case "CQ62711F":
+                                case "CQ62711F":
                                     row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_CQCT);
                                     break;
-                                
+
                                 case "CQ6272B007A01":
                                     row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_CQCT);
                                     break;
@@ -6132,15 +6137,16 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                     row5["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString());
                                     break;
                             }
-                           
+
                             row5["DESCRIPTION"] = tableData.Rows[i][15].ToString();
                             row5["CREATE_BY"] = currentUser;
                             row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString()));
                             tableKHCP.Rows.Add(row5);
-                            
+
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center?.COST_CENTER_CODE == "100002"))
                         {
+
                             var str1 = tableData.Rows[i][2].ToString();
                             var str2 = tableData.Rows[i][3].ToString();
                             var str3 = tableData.Rows[i][4].ToString();
@@ -6214,87 +6220,116 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
                             //VPCN
                             var row1 = tableKHCP.NewRow();
-                            row1["PKID"] = Guid.NewGuid().ToString();
-                            row1["ORG_CODE"] = orgCode;
-                            row1["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeVPCN.CODE;
-                            row1["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row1["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row1["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row1["VERSION"] = versionNext;
-                            row1["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString());
-                            //row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
-                            switch (elementCode)
-                            {
-                                case "B621A001":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
-                                    break;
-                                case "B621A002":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
-                                    break;
-                                case "B621A003":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
-                                    break;
-                                case "B621A004":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
-                                    break;
-                                case "B62711A":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
-                                    break;
-                                case "B62711B":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MB);
-                                    break;
-                                case "B62711C":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MB);
-                                    break;
-                                case "B62711D":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MB);
-                                    break;
-                                case "B62711E":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MB);
-                                    break;
-                                case "B62711G":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MB);
-                                    break;
-                                case "B62711F":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MB);
-                                    break;
-                                case "B6272B007B1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MB);
-                                    break;
-                                case "B6278H002A1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MB);
-                                    break;
-                               
-                                case "B6278H006A1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MB);
-                                    break;
-                                case "B6278H007A11":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MB);
-                                    break;
-                                case "B6278H008A1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MB);
-                                    break;
-                                case "B6278H018A1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MB);
-                                    break;
-                                case "B6278H019A5":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MB);
-                                    break;
-                                case "B6278H019A6":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MB);
-                                    break;
-                                default:
-                                    row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
-                                    break;
-                            }
-                            row1["DESCRIPTION"] = tableData.Rows[i][19].ToString();
-                            row1["CREATE_BY"] = currentUser;
-                            row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                        
+                                row1["PKID"] = Guid.NewGuid().ToString();
+                                row1["ORG_CODE"] = orgCode;
+                                row1["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeVPCN.CODE;
+                                row1["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row1["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row1["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row1["VERSION"] = versionNext;
+                                row1["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString());
+                                //row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
+                                switch (elementCode)
+                                {
+                                    case "B621A001":
+                                        row1["QUANTITY"] = 0;
+                                        row1["PRICE"] = 0;
+                                        break;
+                                    case "B621A002":
+                                        row1["QUANTITY"] = 0;
+                                        row1["PRICE"] = 0;
+                                        break;
+                                    case "B621A003":
+                                        row1["QUANTITY"] = 0;
+                                        row1["PRICE"] = 0;
+                                        break;
+                                    case "B621A004":
+                                        row1["QUANTITY"] = 0;
+                                        row1["PRICE"] = 0;
+                                        break;
+                                    case "B62101K001":
+                                        row1["QUANTITY"] = 0;
+                                        row1["PRICE"] = 0;
+                                        break;
+                                    case "B62101K002":
+                                        row1["QUANTITY"] = 0;
+                                        row1["PRICE"] = 0;
+                                        break;
+                                    case "B62101K003":
+                                        row1["QUANTITY"] = 0;
+                                        row1["PRICE"] = 0;
+                                        break;
+                                    case "B62711A":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B62711B":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B62711C":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B62711D":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B62711E":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B62711G":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B62711F":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B6272B007B1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B6278H002A1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+
+                                    case "B6278H006A1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B6278H007A11":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B6278H008A1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B6278H018A1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B6278H019A5":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "B6278H019A6":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MB);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    default:
+                                        row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
+                                        break;
+                                }
+                                row1["DESCRIPTION"] = tableData.Rows[i][19].ToString();
+                                row1["CREATE_BY"] = currentUser;
+                                row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                      
                             tableKHCP.Rows.Add(row1);
 
 
@@ -6309,57 +6344,41 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row2["VERSION"] = versionNext;
                             row2["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
                             row2["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString());
-                            //row2["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
+                           
                             row2["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row2["CREATE_BY"] = currentUser;
-                            //if (elementCode == "B621A004")
-                            //{
-                            //    row2["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
-                            //    row2["PRICE"] = 0;
-                            //}
-                            //if (elementCode == "B621A003")
-                            //{
-                            //    row2["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_HAN );
-                            //    row2["PRICE"] = 0;
-                            //}
-                            //if (elementCode == "B621A001")
-                            //{
-                            //    row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                            //    row2["PRICE"] = 0;
-                            //}
+                          
                             switch (elementCode)
                             {
                                 case "B621A001":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                                    row1["PRICE"] = 0;
+                                    row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                    row2["PRICE"] = 0;
                                     break;
                                 case "B621A002":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row2["QUANTITY"] = 0;
+                                    row2["PRICE"] = 0;
                                     break;
                                 case "B621A003":
-                                    row1["QUANTITY"] = TN.Where(x=>x.ID_CENTER=="HAN").Sum(x=>x.VALUE);
-                                    row1["PRICE"] = 0;
+                                    row2["QUANTITY"] = TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE);
+                                    row2["PRICE"] = 0;
                                     break;
                                 case "B621A004":
-                                    row1["QUANTITY"] = DM.Where(x=>x.ID_CENTER==5).Sum(x=>x.VALUE);
-                                    
-                                    row1["PRICE"] = 0;
+                                    row2["QUANTITY"] = DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+
+                                    row2["PRICE"] = 0;
                                     break;
                                 case "B62101K001":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE);
-                                    row1["PRICE"] =DM.Where(x=>x.ID_CENTER==3).Sum(x=>x.VALUE) ;
+                                    row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE);
+                                    row2["PRICE"] = DMMB.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
                                     break;
                                 case "B62101K002":
-                                    row1["QUANTITY"] =0;
-                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = 0;
+                                    row2["PRICE"] = DMMB.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
                                     break;
                                 case "B62101K003":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE) * DM.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
-                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HAN").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE) * DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row2["PRICE"] = DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
                                     break;
-
-
                                 case "B62711A":
                                     row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
                                     break;
@@ -6387,7 +6406,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 case "B6278H002A1":
                                     row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MB);
                                     break;
-
                                 case "B6278H006A1":
                                     row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MB);
                                     break;
@@ -6425,36 +6443,36 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row3["VERSION"] = versionNext;
                             row3["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
                             row3["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString());
-                            //row3["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
+                           
                             switch (elementCode)
                             {
                                 case "B621A001":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                                    row1["PRICE"] = 0;
+                                    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                    row3["PRICE"] = 0;
                                     break;
                                 case "B621A002":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row3["QUANTITY"] = 0;
+                                    row3["PRICE"] = 0;
                                     break;
                                 case "B621A003":
-                                    row1["QUANTITY"] = TN.Where(x => x.ID_CENTER == "HPH").Sum(x => x.VALUE);
-                                    row1["PRICE"] = 0;
+                                    row3["QUANTITY"] = TN.Where(x => x.ID_CENTER == "HPH").Sum(x => x.VALUE);
+                                    row3["PRICE"] = 0;
                                     break;
                                 case "B621A004":
-                                    row1["QUANTITY"] = DM.Where(x=>x.ID_CENTER==5).Sum(x=>x.VALUE);
-                                    row1["PRICE"] = 0;
+                                    row3["QUANTITY"] = DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row3["PRICE"] = 0;
                                     break;
                                 case "B62101K001":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE);
-                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE);
+                                    row3["PRICE"] = DMMB.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
                                     break;
                                 case "B62101K002":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = 0;
+                                    row3["PRICE"] = DMMB.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
                                     break;
                                 case "B62101K003":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE) * DM.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
-                                    row1["PRICE"] = DM.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "HAN").Sum(x => x.VALUE) * DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row3["PRICE"] = DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
                                     break;
                                 case "B62711A":
                                     row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
@@ -6510,21 +6528,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row3["CREATE_BY"] = currentUser;
                             row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
 
-                            //if (elementCode == "B621A004")
-                            //{
-                            //    row3["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
-                            //    row3["PRICE"] = 0;
-                            //}
-                            //if (elementCode == "B621A003")
-                            //{
-                            //    row3["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_HPH);
-                            //    row3["PRICE"] = 0;
-                            //}
-                            //if (elementCode == "B621A001")
-                            //{
-                            //    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HPH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                            //    row3["PRICE"] = 0;
-                            //}
                             tableKHCP.Rows.Add(row3);
 
 
@@ -6539,25 +6542,39 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row4["VERSION"] = versionNext;
                             row4["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
                             row4["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString());
-                            //row4["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
+                          
                             switch (elementCode)
                             {
                                 case "B621A001":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "THD").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                                    row1["PRICE"] = 0;
+                                    row4["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "THD").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                    row4["PRICE"] = 0;
                                     break;
                                 case "B621A002":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row4["QUANTITY"] = 0;
+                                    row4["PRICE"] = 0;
                                     break;
                                 case "B621A003":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row4["QUANTITY"] = TN.Where(x => x.ID_CENTER == "THD").Sum(x => x.VALUE);
+                                    row4["PRICE"] = 0;
                                     break;
-                                //case "B621A004":
-                                //    row1["QUANTITY"] = 0;
-                                //    row1["PRICE"] = 0;
-                              
+                                case "B621A004":
+                                    row4["QUANTITY"] = DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row4["PRICE"] = 0;
+                                    break;
+                                case "B62101K001":
+                                    row4["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "THD").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "THD").Sum(x => x.VALUE);
+                                    row4["PRICE"] = DMMB.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K002":
+                                    row4["QUANTITY"] = 0;
+                                    row4["PRICE"] = DMMB.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K003":
+                                    row4["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "THD").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "THD").Sum(x => x.VALUE) * DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row4["PRICE"] = DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+
+
                                 case "B62711A":
                                     row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
                                     break;
@@ -6611,21 +6628,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row4["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row4["CREATE_BY"] = currentUser;
                             row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
-                            //if (elementCode == "B621A004")
-                            //{
-                            //    row3["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
-                            //    row3["PRICE"] = 0;
-                            //}
-                            //if (elementCode == "B621A003")
-                            //{
-                            //    row3["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_TDH);
-                            //    row3["PRICE"] = 0;
-                            //}
-                            //if (elementCode == "B621A001")
-                            //{
-                            //    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TDH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                            //    row3["PRICE"] = 0;
-                            //}
+                         
                             tableKHCP.Rows.Add(row4);
 
 
@@ -6644,20 +6647,32 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             switch (elementCode)
                             {
                                 case "B621A001":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VII").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                                    row1["PRICE"] = 0;
+                                    row5["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VII").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                    row5["PRICE"] = 0;
                                     break;
                                 case "B621A002":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row5["QUANTITY"] = 0;
+                                    row5["PRICE"] = 0;
                                     break;
                                 case "B621A003":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row5["QUANTITY"] = TN.Where(x => x.ID_CENTER == "VII").Sum(x => x.VALUE);
+                                    row5["PRICE"] = 0;
                                     break;
                                 case "B621A004":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row5["QUANTITY"] = DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row5["PRICE"] = 0;
+                                    break;
+                                case "B62101K001":
+                                    row5["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VII").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "VII").Sum(x => x.VALUE);
+                                    row5["PRICE"] = DMMB.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K002":
+                                    row5["QUANTITY"] = 0;
+                                    row5["PRICE"] = DMMB.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K003":
+                                    row5["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VII").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "VII").Sum(x => x.VALUE) * DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row5["PRICE"] = DMMB.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
                                     break;
                                 case "B62711A":
                                     row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
@@ -6745,20 +6760,32 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             switch (elementCode)
                             {
                                 case "B621A001":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                                    row1["PRICE"] = 0;
+                                    row6["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDH").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                    row6["PRICE"] = 0;
                                     break;
                                 case "B621A002":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row6["QUANTITY"] = 0;
+                                    row6["PRICE"] = 0;
                                     break;
                                 case "B621A003":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row6["QUANTITY"] = TN.Where(x => x.ID_CENTER == "VDH").Sum(x => x.VALUE);
+                                    row6["PRICE"] = 0;
                                     break;
                                 case "B621A004":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row6["QUANTITY"] = DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row6["PRICE"] = 0;
+                                    break;
+                                case "B62101K001":
+                                    row6["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDH").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "VDH").Sum(x => x.VALUE);
+                                    row6["PRICE"] = DMMB.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K002":
+                                    row6["QUANTITY"] = 0;
+                                    row6["PRICE"] = DMMB.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K003":
+                                    row6["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDH").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "VDH").Sum(x => x.VALUE) * DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row6["PRICE"] = DMMB.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
                                     break;
                                 case "B62711A":
                                     row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
@@ -6846,20 +6873,32 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             switch (elementCode)
                             {
                                 case "B621A001":
-                                    row1["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDO").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                                    row1["PRICE"] = 0;
+                                    row7["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDO").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
+                                    row7["PRICE"] = 0;
                                     break;
                                 case "B621A002":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row7["QUANTITY"] = 0;
+                                    row7["PRICE"] = 0;
                                     break;
                                 case "B621A003":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row7["QUANTITY"] = TN.Where(x => x.ID_CENTER == "VDO").Sum(x => x.VALUE);
+                                    row7["PRICE"] = 0;
                                     break;
                                 case "B621A004":
-                                    row1["QUANTITY"] = 0;
-                                    row1["PRICE"] = 0;
+                                    row7["QUANTITY"] = DMMB.Where(x => x.AREA == "MB" && x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row7["PRICE"] = 0;
+                                    break;
+                                case "B62101K001":
+                                    row7["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDO").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "VDO").Sum(x => x.VALUE);
+                                    row7["PRICE"] = DMMB.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K002":
+                                    row7["QUANTITY"] = 0;
+                                    row7["PRICE"] = DMMB.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    break;
+                                case "B62101K003":
+                                    row7["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDO").Sum(x => x.VALUE_SUM_YEAR) ?? 0 * TN.Where(x => x.ID_CENTER == "VDO").Sum(x => x.VALUE) * DMMB.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row7["PRICE"] = DMMB.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
                                     break;
                                 case "B62711A":
                                     row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MB);
@@ -6914,27 +6953,15 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row7["DESCRIPTION"] = tableData.Rows[i][19].ToString();
                             row7["CREATE_BY"] = currentUser;
                             row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
-                            //if (elementCode == "B621A004")
-                            //{
-                            //    row7["QUANTITY"] = Convert.ToDecimal(DMDNMB * 100);
-                            //    row7["PRICE"] = 0;
-                            //}
-                            //if (elementCode == "B621A003")
-                            //{
-                            //    row7["QUANTITY"] = Convert.ToDecimal(DMNAPXA_CNMB_VDO);
-                            //    row7["PRICE"] = 0;
-                            //}
-                            //if (elementCode == "B621A001")
-                            //{
-                            //    row7["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VDO").Sum(x => x.VALUE_SUM_YEAR) ?? 0;
-                            //    row7["PRICE"] = 0;
-                            //}
+
+
                             tableKHCP.Rows.Add(row7);
 
 
                         }
                         else if (template.DetailKeHoachChiPhi.Any(x => x.Center?.COST_CENTER_CODE == "100003"))
                         {
+
                             var str1 = tableData.Rows[i][2].ToString();
                             var str2 = tableData.Rows[i][3].ToString();
                             var str3 = tableData.Rows[i][4].ToString();
@@ -7012,495 +7039,728 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             {
                                 throw new Exception($"Định dạng file không đúng hoặc có lỗi hệ thống xảy ra! Vui lòng liên hệ với quản trị viên!");
                             }
-
-                            //VPCN
                             var row1 = tableKHCP.NewRow();
-                            row1["PKID"] = Guid.NewGuid().ToString();
-                            row1["ORG_CODE"] = orgCode;
-                            row1["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeVPCN.CODE;
-                            row1["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row1["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row1["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row1["VERSION"] = versionNext;
-                            row1["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString());
-                            //row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                            switch (elementCode)
-                            {
-                                case "T62711A0001":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0002":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0003":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0004":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0005":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0007":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0006":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
-                                    break;
-                                case "T6272B007B1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H002A01":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
-                                    break;
-
-                                case "T6278H006A1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H007AB":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H008A1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H018A1":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AF":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AE":
-                                    row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
-                                    break;
-                                default:
-                                    row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                                    break;
-                            };
-                            row1["DESCRIPTION"] = tableData.Rows[i][21].ToString();
-                            row1["CREATE_BY"] = currentUser;
-                            row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
-                            tableKHCP.Rows.Add(row1);
-
-                            //DAD
                             var row2 = tableKHCP.NewRow();
-                            row2["PKID"] = Guid.NewGuid().ToString();
-                            row2["ORG_CODE"] = orgCode;
-                            row2["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeDAD.CODE;
-                            row2["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row2["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row2["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row2["VERSION"] = versionNext;
-                            row2["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row2["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString());
-                            //row2["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                            switch (elementCode)
-                            {
-                                case "T62711A0001":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0002":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0003":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0004":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0005":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0007":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0006":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
-                                    break;
-                                case "T6272B007B1":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H002A01":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
-                                    break;
+                            var row3 = tableKHCP.NewRow();
+                            var row4 = tableKHCP.NewRow();
+                            var row5 = tableKHCP.NewRow();
+                            var row6 = tableKHCP.NewRow();
+                            var row7 = tableKHCP.NewRow();
+                            var row8 = tableKHCP.NewRow();
+                         
 
-                                case "T6278H006A1":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H007AB":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H008A1":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H018A1":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AF":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AE":
-                                    row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
-                                    break;
-                                default:
-                                    row2["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                                    break;
-                            };
-                            row2["DESCRIPTION"] = tableData.Rows[i][21].ToString();
-                            row2["CREATE_BY"] = currentUser;
-                            row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
-                            tableKHCP.Rows.Add(row2);
+                                //VPCN
+
+                                row1["PKID"] = Guid.NewGuid().ToString();
+                                row1["ORG_CODE"] = orgCode;
+                                row1["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeVPCN.CODE;
+                                row1["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row1["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row1["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row1["VERSION"] = versionNext;
+                                row1["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString());
+                                //row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                switch (elementCode)
+                                {
+                                    case "T621A0001":
+                                        row1["PRICE"] = 0;
+                                        row1["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0002":
+                                        row1["PRICE"] = 0;
+                                        row1["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0003":
+                                        row1["PRICE"] = 0;
+                                        row1["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0004":
+                                        row1["PRICE"] = 0;
+                                        row1["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0001":
+                                        row1["PRICE"] = 0;
+                                        row1["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0002":
+                                        row1["PRICE"] = 0;
+                                        row1["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0003":
+                                        row1["PRICE"] = 0;
+                                        row1["QUANTITY"] = 0;
+                                        break;
+
+                                    case "T62711A0001":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T62711A0002":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T62711A0003":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T62711A0004":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T62711A0005":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T62711A0007":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T62711A0006":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T6272B007B1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T6278H002A01":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+
+                                    case "T6278H006A1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T6278H007AB":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T6278H008A1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T6278H018A1":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T6278H019AF":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    case "T6278H019AE":
+                                        row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
+                                        row1["QUANTITY"] = 1;
+                                        break;
+                                    default:
+                                        row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                        break;
+                                };
+                                row1["DESCRIPTION"] = tableData.Rows[i][21].ToString();
+                                row1["CREATE_BY"] = currentUser;
+                                row1["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
+                          
+
+                            
+                                //DAD
+
+                                row2["PKID"] = Guid.NewGuid().ToString();
+                                row2["ORG_CODE"] = orgCode;
+                                row2["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeDAD.CODE;
+                                row2["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row2["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row2["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row2["VERSION"] = versionNext;
+                                row2["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row2["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString());
+                                //row2["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+
+                                switch (elementCode)
+                                {
+                                    case "T621A0001":
+                                        row2["PRICE"] = 0;
+                                        row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "DAD").Sum(x => x.VALUE_SUM_YEAR);
+                                        break;
+                                    case "T621A0002":
+                                        row2["PRICE"] = 0;
+                                        row2["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0003":
+                                        row2["PRICE"] = 0;
+                                        row2["QUANTITY"] = TN.Where(x => x.ID_CENTER == "DAD").Sum(x => x.VALUE);
+                                        break;
+                                    case "T621A0004":
+                                        row2["PRICE"] = 0;
+                                        row2["QUANTITY"] = DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T621011K0001":
+                                        row2["PRICE"] = DMMT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                        row2["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "DAD").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "DAD").Sum(x => x.VALUE));
+                                        break;
+                                    case "T621011K0002":
+                                        row2["PRICE"] = DMMT.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                        row2["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0003":
+                                        row2["PRICE"] = DMMT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                        row2["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "DAD").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "DAD").Sum(x => x.VALUE)) * DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T62711A0001":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0002":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0003":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0004":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0005":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0007":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0006":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6272B007B1":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H002A01":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
+                                        break;
+
+                                    case "T6278H006A1":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H007AB":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H008A1":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H018A1":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AF":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AE":
+                                        row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
+                                        break;
+                                    default:
+                                        row2["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                        break;
+                                };
+                                row2["DESCRIPTION"] = tableData.Rows[i][21].ToString();
+                                row2["CREATE_BY"] = currentUser;
+                                row2["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
+                          
+
 
                             //CXR
-                            var row3 = tableKHCP.NewRow();
-                            row3["PKID"] = Guid.NewGuid().ToString();
-                            row3["ORG_CODE"] = orgCode;
-                            row3["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeCXR.CODE;
-                            row3["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row3["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row3["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row3["VERSION"] = versionNext;
-                            row3["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row3["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString());
-                            //row3["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                             switch (elementCode)
-                            {
-                                case "T62711A0001":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0002":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0003":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0004":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0005":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0007":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0006":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
-                                    break;
-                                case "T6272B007B1":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H002A01":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
-                                    break;
+                         
 
-                                case "T6278H006A1":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H007AB":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H008A1":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H018A1":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AF":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AE":
-                                    row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
-                                    break;
-                                default:
-                                    row3["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                                    break;
-                            };
-                            row3["DESCRIPTION"] = tableData.Rows[i][21].ToString();
-                            row3["CREATE_BY"] = currentUser;
-                            row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
-                            tableKHCP.Rows.Add(row3);
+                                row3["PKID"] = Guid.NewGuid().ToString();
+                                row3["ORG_CODE"] = orgCode;
+                                row3["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeCXR.CODE;
+                                row3["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row3["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row3["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row3["VERSION"] = versionNext;
+                                row3["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row3["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString());
+                                //row3["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                switch (elementCode)
+                                {
+
+                                    case "T621A0001":
+                                        row3["PRICE"] = 0;
+                                        row3["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0002":
+                                        row3["PRICE"] = 0;
+                                        row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "CXR").Sum(x => x.VALUE_SUM_YEAR);
+                                        break;
+                                    case "T621A0003":
+                                        row3["PRICE"] = 0;
+                                        row3["QUANTITY"] = TN.Where(x => x.ID_CENTER == "CXR").Sum(x => x.VALUE);
+                                        break;
+                                    case "T621A0004":
+                                        row3["PRICE"] = 0;
+                                        row3["QUANTITY"] = DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T621011K0001":
+                                        row3["PRICE"] = DMMT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                        row3["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "CXR").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "CXR").Sum(x => x.VALUE));
+                                        break;
+                                    case "T621011K0002":
+                                        row3["PRICE"] = DMMT.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                        row3["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0003":
+                                        row3["PRICE"] = DMMT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                        row3["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "CXR").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "CXR").Sum(x => x.VALUE)) * DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T62711A0001":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0002":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0003":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0004":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0005":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0007":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0006":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6272B007B1":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H002A01":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
+                                        break;
+
+                                    case "T6278H006A1":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H007AB":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H008A1":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H018A1":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AF":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AE":
+                                        row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
+                                        break;
+                                    default:
+                                        row3["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                        break;
+                                };
+                                row3["DESCRIPTION"] = tableData.Rows[i][21].ToString();
+                                row3["CREATE_BY"] = currentUser;
+                                row3["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][4].ToString()) ? "0" : tableData.Rows[i][4].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
+                        
+
 
 
                             //HUI
-                            var row4 = tableKHCP.NewRow();
-                            row4["PKID"] = Guid.NewGuid().ToString();
-                            row4["ORG_CODE"] = orgCode;
-                            row4["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeHUI.CODE;
-                            row4["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row4["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row4["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row4["VERSION"] = versionNext;
-                            row4["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row4["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString());
-                            //row4["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                            switch (elementCode)
-                            {
-                                case "T62711A0001":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0002":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0003":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0004":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0005":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0007":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0006":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
-                                    break;
-                                case "T6272B007B1":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H002A01":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
-                                    break;
+                   
 
-                                case "T6278H006A1":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H007AB":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H008A1":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H018A1":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AF":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AE":
-                                    row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
-                                    break;
-                                default:
-                                    row4["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                                    break;
-                            };
-                            row4["DESCRIPTION"] = tableData.Rows[i][21].ToString();
-                            row4["CREATE_BY"] = currentUser;
-                            row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
-                            tableKHCP.Rows.Add(row4);
+                                row4["PKID"] = Guid.NewGuid().ToString();
+                                row4["ORG_CODE"] = orgCode;
+                                row4["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeHUI.CODE;
+                                row4["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row4["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row4["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row4["VERSION"] = versionNext;
+                                row4["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row4["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString());
+                                //row4["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                switch (elementCode)
+                                {
+                                    case "T621A0001":
+                                        row4["PRICE"] = 0;
+                                        row4["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0002":
+                                        row4["PRICE"] = 0;
+                                        row4["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HUI").Sum(x => x.VALUE_SUM_YEAR);
+                                        break;
+                                    case "T621A0003":
+                                        row4["PRICE"] = 0;
+                                        row4["QUANTITY"] = TN.Where(x => x.ID_CENTER == "HUI").Sum(x => x.VALUE);
+                                        break;
+                                    case "T621A0004":
+                                        row4["PRICE"] = 0;
+                                        row4["QUANTITY"] = DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T621011K0001":
+                                        row4["PRICE"] = DMMT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                        row4["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HUI").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "HUI").Sum(x => x.VALUE));
+                                        break;
+                                    case "T621011K0002":
+                                        row4["PRICE"] = DMMT.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                        row4["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0003":
+                                        row4["PRICE"] = DMMT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                        row4["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "HUI").Sum(x => x.VALUE_SUM_YEAR) + TN.Where(x => x.ID_CENTER == "HUI").Sum(x => x.VALUE)) * DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T62711A0001":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0002":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0003":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0004":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0005":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0007":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0006":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6272B007B1":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H002A01":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
+                                        break;
+
+                                    case "T6278H006A1":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H007AB":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H008A1":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H018A1":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AF":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AE":
+                                        row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
+                                        break;
+                                    default:
+                                        row4["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                        break;
+                                };
+                                row4["DESCRIPTION"] = tableData.Rows[i][21].ToString();
+                                row4["CREATE_BY"] = currentUser;
+                                row4["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][5].ToString()) ? "0" : tableData.Rows[i][5].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
+                           
 
 
-                            //UIH
-                            var row5 = tableKHCP.NewRow();
-                            row5["PKID"] = Guid.NewGuid().ToString();
-                            row5["ORG_CODE"] = orgCode;
-                            row5["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeUIH.CODE;
-                            row5["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row5["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row5["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row5["VERSION"] = versionNext;
-                            row5["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row5["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString());
-                            //row5["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                            switch (elementCode)
-                            {
-                                case "T62711A0001":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0002":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0003":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0004":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0005":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0007":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0006":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
-                                    break;
-                                case "T6272B007B1":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H002A01":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
-                                    break;
+              
+                                //UIH
+                                row5["PKID"] = Guid.NewGuid().ToString();
+                                row5["ORG_CODE"] = orgCode;
+                                row5["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeUIH.CODE;
+                                row5["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row5["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row5["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row5["VERSION"] = versionNext;
+                                row5["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row5["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString());
+                                //row5["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                switch (elementCode)
+                                {
+                                    case "T621A0001":
+                                        row5["PRICE"] = 0;
+                                        row5["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0002":
+                                        row5["PRICE"] = 0;
+                                        row5["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "UIH").Sum(x => x.VALUE_SUM_YEAR);
+                                        break;
+                                    case "T621A0003":
+                                        row5["PRICE"] = 0;
+                                        row5["QUANTITY"] = TN.Where(x => x.ID_CENTER == "UIH").Sum(x => x.VALUE);
+                                        break;
+                                    case "T621A0004":
+                                        row5["PRICE"] = 0;
+                                        row5["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0001":
+                                        row5["PRICE"] = DMMT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                        row5["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "UIH").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "UIH").Sum(x => x.VALUE));
+                                        break;
+                                    case "T621011K0002":
+                                        row5["PRICE"] = DMMT.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                        row5["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0003":
+                                        row5["PRICE"] = DMMT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                        row5["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "UIH").Sum(x => x.VALUE_SUM_YEAR) + TN.Where(x => x.ID_CENTER == "UIH").Sum(x => x.VALUE)) * DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
 
-                                case "T6278H006A1":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H007AB":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H008A1":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H018A1":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AF":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AE":
-                                    row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
-                                    break;
-                                default:
-                                    row5["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                                    break;
-                            };
-                            row5["DESCRIPTION"] = tableData.Rows[i][21].ToString();
-                            row5["CREATE_BY"] = currentUser;
-                            row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
-                            tableKHCP.Rows.Add(row5);
+                                    case "T62711A0001":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0002":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0003":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0004":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0005":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0007":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0006":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6272B007B1":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H002A01":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
+                                        break;
+
+                                    case "T6278H006A1":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H007AB":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H008A1":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H018A1":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AF":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AE":
+                                        row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
+                                        break;
+                                    default:
+                                        row5["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                        break;
+                                };
+                                row5["DESCRIPTION"] = tableData.Rows[i][21].ToString();
+                                row5["CREATE_BY"] = currentUser;
+                                row5["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][6].ToString()) ? "0" : tableData.Rows[i][6].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
+                       
 
 
                             //VCL
-                            var row6 = tableKHCP.NewRow();
-                            row6["PKID"] = Guid.NewGuid().ToString();
-                            row6["ORG_CODE"] = orgCode;
-                            row6["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeVCL.CODE;
-                            row6["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row6["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row6["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row6["VERSION"] = versionNext;
-                            row6["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row6["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString());
-                            //row6["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                            switch (elementCode)
-                            {
-                                case "T62711A0001":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0002":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0003":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0004":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0005":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0007":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0006":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
-                                    break;
-                                case "T6272B007B1":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H002A01":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
-                                    break;
 
-                                case "T6278H006A1":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H007AB":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H008A1":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H018A1":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AF":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AE":
-                                    row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
-                                    break;
-                                default:
-                                    row6["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                                    break;
-                            };
-                            row6["DESCRIPTION"] = tableData.Rows[i][21].ToString();
-                            row6["CREATE_BY"] = currentUser;
-                            row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
-                            tableKHCP.Rows.Add(row6);
+                          
+                                row6["PKID"] = Guid.NewGuid().ToString();
+                                row6["ORG_CODE"] = orgCode;
+                                row6["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeVCL.CODE;
+                                row6["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row6["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row6["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row6["VERSION"] = versionNext;
+                                row6["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row6["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString());
+                                //row6["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                switch (elementCode)
+                                {
+                                    case "T621A0001":
+                                        row6["PRICE"] = 0;
+                                        row6["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0002":
+                                        row6["PRICE"] = 0;
+                                        row6["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VCL").Sum(x => x.VALUE_SUM_YEAR);
+                                        break;
+                                    case "T621A0003":
+                                        row6["PRICE"] = 0;
+                                        row6["QUANTITY"] = TN.Where(x => x.ID_CENTER == "VCL").Sum(x => x.VALUE);
+                                        break;
+                                    case "T621A0004":
+                                        row6["PRICE"] = 0;
+                                        row6["QUANTITY"] = DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T621011K0001":
+                                        row6["PRICE"] = DMMT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                        row6["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VCL").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "VCL").Sum(x => x.VALUE));
+                                        break;
+                                    case "T621011K0002":
+                                        row6["PRICE"] = DMMT.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                        row6["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0003":
+                                        row6["PRICE"] = DMMT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                        row6["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VCL").Sum(x => x.VALUE_SUM_YEAR) + TN.Where(x => x.ID_CENTER == "VCL").Sum(x => x.VALUE)) * DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T62711A0001":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0002":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0003":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0004":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0005":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0007":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0006":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6272B007B1":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H002A01":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
+                                        break;
+
+                                    case "T6278H006A1":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H007AB":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H008A1":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H018A1":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AF":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AE":
+                                        row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
+                                        break;
+                                    default:
+                                        row6["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                        break;
+                                };
+                                row6["DESCRIPTION"] = tableData.Rows[i][21].ToString();
+                                row6["CREATE_BY"] = currentUser;
+                                row6["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
+                      
+
 
 
 
 
                             //PXU
-                            var row7 = tableKHCP.NewRow();
-                            row7["PKID"] = Guid.NewGuid().ToString();
-                            row7["ORG_CODE"] = orgCode;
-                            row7["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodePXU.CODE;
-                            row7["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row7["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row7["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row7["VERSION"] = versionNext;
-                            row7["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row7["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString());
-                            //row7["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                            switch (elementCode)
-                            {
-                                case "T62711A0001":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0002":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0003":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0004":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0005":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0007":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0006":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
-                                    break;
-                                case "T6272B007B1":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H002A01":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
-                                    break;
 
-                                case "T6278H006A1":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H007AB":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H008A1":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H018A1":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AF":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AE":
-                                    row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
-                                    break;
-                                default:
-                                    row7["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                                    break;
-                            };
-                            row7["DESCRIPTION"] = tableData.Rows[i][21].ToString();
-                            row7["CREATE_BY"] = currentUser;
-                            row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
-                            tableKHCP.Rows.Add(row7);
+                        
+                                row7["PKID"] = Guid.NewGuid().ToString();
+                                row7["ORG_CODE"] = orgCode;
+                                row7["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodePXU.CODE;
+                                row7["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row7["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row7["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row7["VERSION"] = versionNext;
+                                row7["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row7["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString());
+                                //row7["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                switch (elementCode)
+                                {
+                                    case "T621A0001":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0002":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "PXU").Sum(x => x.VALUE_SUM_YEAR);
+                                        break;
+                                    case "T621A0003":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = TN.Where(x => x.ID_CENTER == "PXU").Sum(x => x.VALUE);
+                                        break;
+                                    case "T621A0004":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T621011K0001":
+                                        row7["PRICE"] = DMMT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                        row7["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "PXU").Sum(x => x.VALUE_SUM_YEAR) + TN.Where(x => x.ID_CENTER == "PXU").Sum(x => x.VALUE));
+                                        break;
+                                    case "T621011K0002":
+                                        row7["PRICE"] = DMMT.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0003":
+                                        row7["PRICE"] = DMMT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                        row7["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "PXU").Sum(x => x.VALUE_SUM_YEAR) + TN.Where(x => x.ID_CENTER == "PXU").Sum(x => x.VALUE)) * DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T62711A0001":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0002":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0003":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0004":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0005":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0007":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0006":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6272B007B1":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H002A01":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
+                                        break;
+
+                                    case "T6278H006A1":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H007AB":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H008A1":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H018A1":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AF":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AE":
+                                        row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
+                                        break;
+                                    default:
+                                        row7["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                        break;
+                                };
+                                row7["DESCRIPTION"] = tableData.Rows[i][21].ToString();
+                                row7["CREATE_BY"] = currentUser;
+                                row7["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][8].ToString()) ? "0" : tableData.Rows[i][8].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString()));
+                            
+
 
 
 
@@ -7508,72 +7768,111 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
 
 
                             //TBB
-                            var row8 = tableKHCP.NewRow();
-                            row8["PKID"] = Guid.NewGuid().ToString();
-                            row8["ORG_CODE"] = orgCode;
-                            row8["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeTBB.CODE;
-                            row8["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
-                            row8["TIME_YEAR"] = ObjDetail.TIME_YEAR;
-                            row8["STATUS"] = Approve_Status.ChuaTrinhDuyet;
-                            row8["VERSION"] = versionNext;
-                            row8["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
-                            row8["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? "0" : tableData.Rows[i][9].ToString());
-                            //row8["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                            switch (elementCode)
-                            {
-                                case "T62711A0001":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0002":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0003":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0004":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0005":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0007":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
-                                    break;
-                                case "T62711A0006":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
-                                    break;
-                                case "T6272B007B1":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H002A01":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
-                                    break;
 
-                                case "T6278H006A1":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H007AB":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H008A1":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H018A1":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AF":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
-                                    break;
-                                case "T6278H019AE":
-                                    row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
-                                    break;
-                                default:
-                                    row8["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
-                                    break;
-                            };
-                            row8["DESCRIPTION"] = tableData.Rows[i][21].ToString();
-                            row8["CREATE_BY"] = currentUser;
-                            row8["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? "0" : tableData.Rows[i][9].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                                row8["PKID"] = Guid.NewGuid().ToString();
+                                row8["ORG_CODE"] = orgCode;
+                                row8["CHI_PHI_PROFIT_CENTER_CODE"] = centerCodeTBB.CODE;
+                                row8["TEMPLATE_CODE"] = ObjDetail.TEMPLATE_CODE;
+                                row8["TIME_YEAR"] = ObjDetail.TIME_YEAR;
+                                row8["STATUS"] = Approve_Status.ChuaTrinhDuyet;
+                                row8["VERSION"] = versionNext;
+                                row8["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
+                                row8["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? "0" : tableData.Rows[i][9].ToString());
+                                //row8["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                switch (elementCode)
+                                {
+                                    case "T621A0001":
+                                        row8["PRICE"] = 0;
+                                        row8["QUANTITY"] = 0;
+                                        break;
+                                    case "T621A0002":
+                                        row8["PRICE"] = 0;
+                                        row8["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TBB").Sum(x => x.VALUE_SUM_YEAR);
+                                        break;
+                                    case "T621A0003":
+                                        row8["PRICE"] = 0;
+                                        row8["QUANTITY"] = TN.Where(x => x.ID_CENTER == "TBB").Sum(x => x.VALUE);
+                                        break;
+                                    case "T621A0004":
+                                        row8["PRICE"] = 0;
+                                        row8["QUANTITY"] = DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T621011K0001":
+                                        row8["PRICE"] = DMMT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                        row8["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TBB").Sum(x => x.VALUE_SUM_YEAR) + TN.Where(x => x.ID_CENTER == "TBB").Sum(x => x.VALUE));
+                                        break;
+                                    case "T621011K0002":
+                                        row8["PRICE"] = DMMT.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                        row8["QUANTITY"] = 0;
+                                        break;
+                                    case "T621011K0003":
+                                        row8["PRICE"] = DMMT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                        row8["QUANTITY"] = (dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "TBB").Sum(x => x.VALUE_SUM_YEAR) + TN.Where(x => x.ID_CENTER == "TBB").Sum(x => x.VALUE)) * DMMT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                        break;
+                                    case "T62711A0001":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0002":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0003":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0004":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0005":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0007":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MT);
+                                        break;
+                                    case "T62711A0006":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6272B007B1":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H002A01":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MT);
+                                        break;
+
+                                    case "T6278H006A1":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H007AB":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H008A1":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H018A1":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AF":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MT);
+                                        break;
+                                    case "T6278H019AE":
+                                        row8["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MT);
+                                        break;
+                                    default:
+                                        row8["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][11].ToString()) ? "0" : tableData.Rows[i][11].ToString());
+                                        break;
+                                };
+                                row8["DESCRIPTION"] = tableData.Rows[i][21].ToString();
+                                row8["CREATE_BY"] = currentUser;
+                                row8["AMOUNT"] = (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][9].ToString()) ? "0" : tableData.Rows[i][9].ToString())) * (Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString()));
+                       
+                           
+                            tableKHCP.Rows.Add(row1);
+                            tableKHCP.Rows.Add(row2);
+
+                            tableKHCP.Rows.Add(row3);
+                            tableKHCP.Rows.Add(row4);
+                            tableKHCP.Rows.Add(row5);
+                            tableKHCP.Rows.Add(row6);
+                            tableKHCP.Rows.Add(row7);
+
                             tableKHCP.Rows.Add(row8);
 
 
@@ -7652,6 +7951,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             }
 
                             //VPCN
+
                             var row1 = tableKHCP.NewRow();
                             row1["PKID"] = Guid.NewGuid().ToString();
                             row1["ORG_CODE"] = orgCode;
@@ -7665,51 +7965,114 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             //row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
                             switch (elementCode)
                             {
+                                case "N6210A001":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N6210A002":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N6210A003":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N6210A004":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N6210K002":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N6210K003":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N6210K004":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A1":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A2":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A3":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A4":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "N62103":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
                                 case "N62711A1":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N62711A2":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N62711A3":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N62711A4":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N62711A5":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N62711A7":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N62711A6":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N6272B007B1":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N6278H002001":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
 
                                 case "N6278H06A01":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N6278H07A2":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N6278H008A1":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N6278H018A01":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N6278H019A18":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "N6278H019A19":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 default:
                                     row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
@@ -7733,8 +8096,59 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row2["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
                             row2["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][3].ToString()) ? "0" : tableData.Rows[i][3].ToString());
                             //row2["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
+
                             switch (elementCode)
                             {
+                                case "N6210A001":
+                                    row2["PRICE"] = 0;
+                                    row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "SGN").Sum(x => x.VALUE_SUM_YEAR);
+                                    break;
+                                case "N6210A002":
+                                    row2["PRICE"] = 0;
+
+                                    break;
+                                case "N6210A003":
+                                    row2["PRICE"] = 0;
+                                    row2["QUANTITY"] = TN.Where(x => x.ID_CENTER == "SGN").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210A004":
+                                    row2["PRICE"] = 0;
+                                    row2["QUANTITY"] = DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K002":
+                                    row2["PRICE"] = DMMN.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "SGN").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "SGN").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K003":
+                                    row2["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "SGN").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "SGN").Sum(x => x.VALUE) * DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K004":
+                                    row2["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = 0;
+                                    break;
+
+                                case "N62102A1":
+                                    row2["PRICE"] = 0;
+                                    row2["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A2":
+                                    row2["PRICE"] = 0;
+                                    row2["QUANTITY"] = 0;
+                                    break;
+
+                                case "N62102A3":
+                                    row2["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE); ;
+                                    row2["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A4":
+                                    row2["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE); ;
+                                    row2["QUANTITY"] = 0;
+                                    break;
+                                case "N62103":
+                                    row2["PRICE"] = DMMN.Where(x => x.ID_CENTER == 8).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = 0;
+                                    break;
                                 case "N62711A1":
                                     row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MN);
                                     break;
@@ -7805,8 +8219,49 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             //row3["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
                             switch (elementCode)
                             {
+                                case "N6210A001":
+                                    row3["PRICE"] = 0;
+                                    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "PQC").Sum(x => x.VALUE_SUM_YEAR);
+                                    break;
+                                case "N6210A002":
+                                    row3["PRICE"] = 0;
+
+                                    break;
+                                case "N6210A003":
+                                    row3["PRICE"] = 0;
+                                    row3["QUANTITY"] = TN.Where(x => x.ID_CENTER == "PQC").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210A004":
+                                    row3["PRICE"] = 0;
+                                    row3["QUANTITY"] = DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K002":
+                                    row3["PRICE"] = DMMN.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = 0;
+                                    break;
+                                case "N6210K003":
+                                    row3["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+
+                                    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "PQC").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "PQC").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K004":
+                                    row3["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "PQC").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "PQC").Sum(x => x.VALUE) * DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+
+                                case "N62102A1":
+                                    row3["PRICE"] = 0;
+                                    row3["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "PQC").Sum(x => x.VALUE_SUM_YEAR) / 20;
+                                    break;
+
+                                case "N62103":
+                                    row3["PRICE"] = DMMN.Where(x => x.ID_CENTER == 8).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = 0;
+                                    break;
+
                                 case "N62711A1":
                                     row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MN);
+
                                     break;
                                 case "N62711A2":
                                     row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_MN);
@@ -7875,6 +8330,57 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             //row4["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
                             switch (elementCode)
                             {
+                                case "N6210A001":
+                                    row4["PRICE"] = 0;
+                                    row4["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "DLI").Sum(x => x.VALUE_SUM_YEAR);
+                                    break;
+                                case "N6210A002":
+                                    row4["PRICE"] = 0;
+
+                                    break;
+                                case "N6210A003":
+                                    row4["PRICE"] = 0;
+                                    row4["QUANTITY"] = TN.Where(x => x.ID_CENTER == "DLI").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210A004":
+                                    row4["PRICE"] = 0;
+                                    row4["QUANTITY"] = DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K002":
+                                    row4["PRICE"] = DMMN.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "N6210K003":
+                                    row4["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+
+                                    row4["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "DLI").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "DLI").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K004":
+                                    row4["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row4["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "DLI").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "DLI").Sum(x => x.VALUE) * DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+
+                                case "N62102A1":
+                                    row4["PRICE"] = 0;
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A2":
+                                    row4["PRICE"] = 0;
+                                    row4["QUANTITY"] = 0;
+                                    break;
+
+                                case "N62102A3":
+                                    row4["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE); ;
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A4":
+                                    row4["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE); ;
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "N62103":
+                                    row4["PRICE"] = DMMN.Where(x => x.ID_CENTER == 8).Sum(x => x.VALUE);
+                                    row4["QUANTITY"] = 0;
+                                    break;
                                 case "N62711A1":
                                     row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MN);
                                     break;
@@ -7945,6 +8451,57 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             //row5["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][19].ToString()) ? "0" : tableData.Rows[i][10].ToString());
                             switch (elementCode)
                             {
+                                case "N6210A001":
+                                    row5["PRICE"] = 0;
+                                    row5["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VCA").Sum(x => x.VALUE_SUM_YEAR);
+                                    break;
+                                case "N6210A002":
+                                    row5["PRICE"] = 0;
+
+                                    break;
+                                case "N6210A003":
+                                    row5["PRICE"] = 0;
+                                    row5["QUANTITY"] = TN.Where(x => x.ID_CENTER == "VCA").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210A004":
+                                    row5["PRICE"] = 0;
+                                    row5["QUANTITY"] = DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K002":
+                                    row5["PRICE"] = DMMN.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row5["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VCA").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "VCA").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K003":
+                                    row5["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+
+                                    row5["QUANTITY"] = 0;
+                                    break;
+                                case "N6210K004":
+                                    row5["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row5["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "VCA").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "VCA").Sum(x => x.VALUE) * DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+
+                                case "N62102A1":
+                                    row5["PRICE"] = 0;
+                                    row5["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A2":
+                                    row5["PRICE"] = 0;
+                                    row5["QUANTITY"] = 0;
+                                    break;
+
+                                case "N62102A3":
+                                    row5["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE); ;
+                                    row5["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A4":
+                                    row5["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE); ;
+                                    row5["QUANTITY"] = 0;
+                                    break;
+                                case "N62103":
+                                    row5["PRICE"] = DMMN.Where(x => x.ID_CENTER == 8).Sum(x => x.VALUE);
+                                    row5["QUANTITY"] = 0;
+                                    break;
                                 case "N62711A1":
                                     row5["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MN);
                                     break;
@@ -8015,6 +8572,57 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             //row6["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
                             switch (elementCode)
                             {
+                                case "N6210A001":
+                                    row6["PRICE"] = 0;
+                                    row6["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "BMV").Sum(x => x.VALUE_SUM_YEAR);
+                                    break;
+                                case "N6210A002":
+                                    row6["PRICE"] = 0;
+
+                                    break;
+                                case "N6210A003":
+                                    row6["PRICE"] = 0;
+                                    row6["QUANTITY"] = TN.Where(x => x.ID_CENTER == "BMV").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210A004":
+                                    row6["PRICE"] = 0;
+                                    row6["QUANTITY"] = DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K002":
+                                    row6["PRICE"] = DMMN.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row6["QUANTITY"] = 0;
+                                    break;
+                                case "N6210K003":
+                                    row6["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE);
+
+                                    row6["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "BMV").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "BMV").Sum(x => x.VALUE);
+                                    break;
+                                case "N6210K004":
+                                    row6["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row6["QUANTITY"] = dataDetails.Where(x => x.SanLuongProfitCenter.SAN_BAY_CODE == "BMV").Sum(x => x.VALUE_SUM_YEAR) * TN.Where(x => x.ID_CENTER == "BMV").Sum(x => x.VALUE) * DMMN.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    break;
+
+                                case "N62102A1":
+                                    row6["PRICE"] = 0;
+                                    row6["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A2":
+                                    row6["PRICE"] = 0;
+                                    row6["QUANTITY"] = 0;
+                                    break;
+
+                                case "N62102A3":
+                                    row6["PRICE"] = DMMN.Where(x => x.ID_CENTER == 4).Sum(x => x.VALUE); ;
+                                    row6["QUANTITY"] = 0;
+                                    break;
+                                case "N62102A4":
+                                    row6["PRICE"] = DMMN.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE); ;
+                                    row6["QUANTITY"] = 0;
+                                    break;
+                                case "N62103":
+                                    row6["PRICE"] = DMMN.Where(x => x.ID_CENTER == 8).Sum(x => x.VALUE);
+                                    row6["QUANTITY"] = 0;
+                                    break;
                                 case "N62711A1":
                                     row6["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MN);
                                     break;
@@ -8087,6 +8695,54 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                                 //row7["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][10].ToString()) ? "0" : tableData.Rows[i][10].ToString());
                                 switch (elementCode)
                                 {
+                                    case "N6210A001":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N6210A002":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N6210A003":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N6210A004":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N6210K002":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N6210K003":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N6210K004":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N62102A1":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N62102A2":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N62102A3":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N62102A4":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
+                                    case "N62103":
+                                        row7["PRICE"] = 0;
+                                        row7["QUANTITY"] = 0;
+                                        break;
                                     case "N62711A1":
                                         row7["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_MN);
                                         break;
@@ -8206,53 +8862,97 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             row1["KHOAN_MUC_HANG_HOA_CODE"] = elementCode;
                             row1["QUANTITY"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][2].ToString()) ? "0" : tableData.Rows[i][2].ToString());
                             //row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString());
+
                             switch (elementCode)
                             {
+
+                                case "VT62101AK001":
+                                    row1["PRICE"] = DMVT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101AK002":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101BK001":
+                                    row1["PRICE"] = DMVT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101BK002":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "VT621ACK001":
+                                    row1["PRICE"] = DMVT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "VT621ACK002":
+                                    row1["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+
+
+
                                 case "VT62711A001":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT62711A002":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 6).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT62711A003":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 7).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT62711A004":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 8).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT62711A005":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 9).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT62711A007":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 10).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT62711A006":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 11).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT6272B007A":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 13).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT6278H002A1":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 15).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
 
                                 case "VT6278H0062":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 16).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT6278H007A7":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 17).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT6278H008A1":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 18).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT6278H018A1":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 19).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT6278H019A11":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 20).Sum(x => x.U_VT);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 case "VT6278H019A12":
                                     row1["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 21).Sum(x => x.U_MN);
+                                    row1["QUANTITY"] = 1;
                                     break;
                                 default:
                                     row1["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString());
@@ -8278,6 +8978,31 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             //row2["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString());
                             switch (elementCode)
                             {
+                                case "VT62101AK001":
+                                    row2["PRICE"] = DMVT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101AK002":
+                                    row2["PRICE"] = 0;
+                                    row1["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101BK001":
+                                    row2["PRICE"] = DMVT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101BK002":
+                                    row2["PRICE"] = 0;
+                                    row2["QUANTITY"] = 0;
+                                    break;
+                                case "VT621ACK001":
+                                    row2["PRICE"] = DMVT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row2["QUANTITY"] = 0;
+                                    break;
+                                case "VT621ACK002":
+                                    row2["PRICE"] = 0;
+                                    row2["QUANTITY"] = 0;
+                                    break;
+
                                 case "VT62711A001":
                                     row2["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_VT);
                                     break;
@@ -8348,6 +9073,31 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             //row3["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString());
                             switch (elementCode)
                             {
+                                case "VT62101AK001":
+                                    row3["PRICE"] = DMVT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101AK002":
+                                    row3["PRICE"] = 0;
+                                    row3["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101BK001":
+                                    row3["PRICE"] = DMVT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101BK002":
+                                    row3["PRICE"] = 0;
+                                    row3["QUANTITY"] = 0;
+                                    break;
+                                case "VT621ACK001":
+                                    row3["PRICE"] = DMVT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row3["QUANTITY"] = 0;
+                                    break;
+                                case "VT621ACK002":
+                                    row3["PRICE"] = 0;
+                                    row3["QUANTITY"] = 0;
+                                    break;
+
                                 case "VT62711A001":
                                     row3["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_VT);
                                     break;
@@ -8418,6 +9168,31 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                             //row4["PRICE"] = Convert.ToDecimal(string.IsNullOrEmpty(tableData.Rows[i][7].ToString()) ? "0" : tableData.Rows[i][7].ToString());
                             switch (elementCode)
                             {
+                                case "VT62101AK001":
+                                    row4["PRICE"] = DMVT.Where(x => x.ID_CENTER == 3).Sum(x => x.VALUE);
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101AK002":
+                                    row4["PRICE"] = 0;
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101BK001":
+                                    row4["PRICE"] = DMVT.Where(x => x.ID_CENTER == 5).Sum(x => x.VALUE);
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "VT62101BK002":
+                                    row4["PRICE"] = 0;
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "VT621ACK001":
+                                    row4["PRICE"] = DMVT.Where(x => x.ID_CENTER == 6).Sum(x => x.VALUE);
+                                    row4["QUANTITY"] = 0;
+                                    break;
+                                case "VT621ACK002":
+                                    row4["PRICE"] = 0;
+                                    row4["QUANTITY"] = 0;
+                                    break;
+
                                 case "VT62711A001":
                                     row4["PRICE"] = datatcnl.Where(x => x.idcenter.C_ORDER == 4).Sum(x => x.U_VT);
                                     break;
@@ -8484,7 +9259,7 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 #endregion
 
 
-    
+
                 using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["SMO_MSSQL_Connection"].ConnectionString))
                 {
                     using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(connection))
