@@ -36,14 +36,9 @@
     const dataCenterModel = @Html.Raw(JsonConvert.SerializeObject(dataCenterModel));
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
     var CN =@Html.Raw(JsonConvert.SerializeObject(Chinhanh));
-     console.log(rawData)
+    
 
-    var ParentDVMNArray = ["N6277G002AB", "N6277G00B02", "N6277G005AB", "N6277G006AB", "N6277G007AB", "T6277G002AB", "T6277G003AB", "T6277G004AB", "T6277G005AB", "T6277G006AB", "T6277G007AB", "VT6277G0023", "VT6277G0033", "VT6277G0043", "VT6277G0053", "VT6277G0063", "VT6277G007D", "CQ6277G007002AB", "CQ6277G007003AB", "CQ6277G007004AB", "CQ6277G007005AB", "CQ6277G007006AB", "CQ6277G007AB", "B6277G002B"
-,"B6277G003AB",
-"B6277G004AB",
-"B6277G005AB",
-"B6277G006AB",
-"B6277G007AB"
+    var ParentDVMNArray = ["N6277G002AB", "N6277G00B02", "N6277G005AB", "N6277G006AB", "N6277G007AB", "T6277G002AB", "T6277G003AB", "T6277G004AB", "T6277G005AB", "T6277G006AB", "T6277G007AB", "VT6277G0023", "VT6277G0033", "VT6277G0043", "VT6277G0053", "VT6277G0063", "VT6277G007D", "CQ6277G007002AB", "CQ6277G007003AB", "CQ6277G007004AB", "CQ6277G007005AB", "CQ6277G007006AB", "CQ6277G007AB", "B6277G002B","B6277G003AB","B6277G004AB","B6277G005AB","B6277G006AB","B6277G007AB"
 ]
     var ChildDVMNArray = ["N6277G002AB01", "N6277G002AB02", "N6277G00B03", "N6277G005AB01", "N6277G005AB02", "N6277G006AB01", "N6277G006AB02", "N6277G007AB01", "N6277G007AB02",
         "T6277G002AB1", "T6277G002AB2", "T6277G003AB1", "T6277G003AB2", "T6277G004AB1", "T6277G004AB2", "T6277G005AB1", "T6277G005AB2", "T6277G006AB1", "T6277G006AB2", "T6277G007AB1", "T6277G007AB2",
@@ -142,7 +137,7 @@
         for (var i = 1; i < rawData[0].lstCenter.length; i++) {
             var idCol = sortquantity[i];
             columns.push({ id: `quantity_${idCol}`, header: ["", "", { text: idCol, align: "center" }], align: "right", width: 150, type: "number", format: "#.#", });
-            console.log(idCol)
+          
         };
 
     }
@@ -266,7 +261,6 @@
         ListCodeKhoanMucB.push(filterlstB[i].CODE)
     }
 
-
     rawData.forEach((item) => {
         let valuePrice
         for (let i = 0; i < item.valueSb.length; i++) {
@@ -314,19 +308,17 @@
                     childB = childB.concat(rawData.filter(x => x.CODE == codechild[i]))
                 }
             }
-
-
-            var sumchild = 0;
+            console.log(childB)
             for (var i = 0; i < item.lstCenter.length; i++) {
                 if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
 
                     obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
-                    var sum = childB.map(x => x.valueSb[0][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => {return a+b},0)
+                    var sum = childB.map(x => x.valueSb[i][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => {return a+b},0)
 
                     obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = sum;
 
                 } else {
-                    var sum = childB.map(x => x.valueSb[0][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => { return a + b }, 0)
+                    var sum = childB.map(x => x.valueSb[i][1] > 10000000 ? x.valueSb[i][2] / 2 : x.valueSb[i][2]).reduce((a, b) => { return a + b }, 0)
 
                     obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
                     obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = sum;
@@ -338,9 +330,13 @@
             }
             obj[`sumQuantity`] = sumQuantity;
             obj[`sumTotal`] = sumTotal;
+            
 
         } else
         {
+            if (item.CODE == "CQ6272B002A") {
+                console.log(item)
+            }
             for (var i = 0; i < item.lstCenter.length; i++) {
                 if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
                     obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
@@ -356,11 +352,13 @@
             }
             obj[`sumQuantity`] = sumQuantity;
             obj[`sumTotal`] = sumTotal;
+            if (obj.id == "CQ6272B002A") {
+                console.log(obj)
+            }
         }
-
-
         jsonData.push(obj);
     });
+    console.log(jsonData)
 
     jsonData.forEach((item) => {
         if (item.parent == 'CQCT' || item.parent == 'DVT' || item.parent == 'CPMB' || item.parent == 'CPMT' || item.parent == 'CPMN') delete item.parent
@@ -372,6 +370,7 @@ Object.keys(jsonData[0]).forEach(key => {
                 totalKeys.push(key);
     }
 });
+ 
 
     // tổng con của dụng cụ công cụ
     jsonData.forEach(x => {
@@ -408,6 +407,23 @@ Object.keys(jsonData[0]).forEach(key => {
                 var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
                 x[totalKeys[i]] = sum
                 
+            }
+            var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
+            x['sumTotal'] = sumtotal
+
+
+        }
+    })
+    jsonData.forEach(x => {
+        if (x.name.includes("Kế hoạch đầu năm") && x.code.includes("6277")) {
+          
+            var listchild = jsonData.filter(y => y.parent == x.code);
+            console.log(listchild)
+            for (let i = 0; i < totalKeys.length; i++) {
+                let total = 0
+                var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
+                x[totalKeys[i]] = sum
+
             }
             var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal

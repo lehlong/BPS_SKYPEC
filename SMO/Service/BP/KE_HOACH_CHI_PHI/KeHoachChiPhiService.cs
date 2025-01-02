@@ -1572,7 +1572,6 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 List<T_MD_KHOAN_MUC_HANG_HOA> data3 = new List<T_MD_KHOAN_MUC_HANG_HOA>();
                 List<T_MD_KHOAN_MUC_HANG_HOA> data4 = new List<T_MD_KHOAN_MUC_HANG_HOA>();
 
-             
                 Task task1 = Task.Run(() =>
                 {
                     
@@ -1755,7 +1754,27 @@ namespace SMO.Service.BP.KE_HOACH_CHI_PHI
                 data.AddRange(data2);
                 data.AddRange(data3);
                 data.AddRange(data4);
+                string[] array = { "CQ6272B002001A01", "CQ6272B002001A02", "CQ6272B002001A03", "CQ6272B002001B" };
 
+                data.ForEach(y =>
+                {
+                    if (y.CODE == "CQ6272B002")
+                    {
+                        y.valueSb = new List<decimal[]>();
+                        foreach (var sb in lstSanBay)
+                        {
+                            var query = detail.Where(x => x.KHOAN_MUC_HANG_HOA_CODE.Contains("CQ6272B002") && x.ChiPhiProfitCenter.SAN_BAY_CODE == sb && !array.Contains(x.KHOAN_MUC_HANG_HOA_CODE)).ToList();
+
+                            var value = new decimal[3]
+                            {
+                            query.Sum(x => x.QUANTITY) ?? 0,
+                            query.Sum(x => x.PRICE) ?? 0,
+                            query.Sum(x => x.AMOUNT) ?? 0,
+                            };
+                            y.valueSb.Add(value);
+                        }
+                    }
+                });
                 return data;
             }
             catch (Exception ex)
