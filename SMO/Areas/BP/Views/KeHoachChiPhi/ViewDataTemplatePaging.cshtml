@@ -308,7 +308,8 @@
                     childB = childB.concat(rawData.filter(x => x.CODE == codechild[i]))
                 }
             }
-            console.log(childB)
+
+
             for (var i = 0; i < item.lstCenter.length; i++) {
                 if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
 
@@ -335,7 +336,7 @@
         } else
         {
             if (item.CODE == "CQ6272B002A") {
-                console.log(item)
+               
             }
             for (var i = 0; i < item.lstCenter.length; i++) {
                 if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
@@ -353,23 +354,29 @@
             obj[`sumQuantity`] = sumQuantity;
             obj[`sumTotal`] = sumTotal;
             if (obj.id == "CQ6272B002A") {
-                console.log(obj)
+              
             }
         }
         jsonData.push(obj);
     });
-    console.log(jsonData)
+  
 
     jsonData.forEach((item) => {
         if (item.parent == 'CQCT' || item.parent == 'DVT' || item.parent == 'CPMB' || item.parent == 'CPMT' || item.parent == 'CPMN') delete item.parent
     });
     let totalKeys = [];
+    let quanttykeys = [];
 
 Object.keys(jsonData[0]).forEach(key => {
             if (key.startsWith('total_')) {
                 totalKeys.push(key);
     }
 });
+    Object.keys(jsonData[0]).forEach(key => {
+        if (key.startsWith('quantity_')) {
+            quanttykeys.push(key);
+        }
+    });
  
 
     // tổng con của dụng cụ công cụ
@@ -414,21 +421,53 @@ Object.keys(jsonData[0]).forEach(key => {
 
         }
     })
+ 
+    var childdvmn = jsonData.filter(x => x.parent != null).filter(x => x.parent.endsWith("6277")).map(x => x.code);
+   
+     jsonData.forEach(x => {
+     if (x.name.includes("Kế hoạch đầu năm") && x.code.includes("6277")) {
+       
+         var listchild = jsonData.filter(y => y.parent == x.code);
+   
+         for (let i = 0; i < totalKeys.length; i++) {
+             let total = 0
+             var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
+             x[totalKeys[i]] = sum
+
+         }
+         var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
+         x['sumTotal'] = sumtotal
+
+
+     }
+     })
     jsonData.forEach(x => {
-        if (x.name.includes("Kế hoạch đầu năm") && x.code.includes("6277")) {
-          
+        if (childdvmn.includes(x.code)) {
             var listchild = jsonData.filter(y => y.parent == x.code);
-            console.log(listchild)
+      
             for (let i = 0; i < totalKeys.length; i++) {
                 let total = 0
                 var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
                 x[totalKeys[i]] = sum
-
+                var quantitysum = listchild.map(e => e[quanttykeys[i]]).reduce((a, b) => a + b, 0)
+                x[quanttykeys[i]] = quantitysum
             }
             var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
-
-
+        }
+    })
+    jsonData.forEach(x => {
+        if (x.code.endsWith("6277")) {
+         
+            var listchild = jsonData.filter(y => y.parent == x.code);
+            
+            for (let i = 0; i < totalKeys.length; i++) {
+                let total = 0
+                var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
+                x[totalKeys[i]] = sum
+            }
+            var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
+            x['sumTotal'] = sumtotal
         }
     })
     jsonData.unshift({ name: `${TenCN}`, isChecked: false, title: true, isBold: true })

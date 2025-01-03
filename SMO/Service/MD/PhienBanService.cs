@@ -1227,7 +1227,7 @@ namespace SMO.Service.MD
                 var data = new List<SupplyReportModel>();
                 var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).ToList();
                 var sanBayGroup = UnitOfWork.Repository<NhomSanBayRepo>().GetAll().ToList();
-                sanBayGroup.RemoveAll(sanBay => sanBay.CODE == "NI-N");
+                //sanBayGroup.RemoveAll(sanBay => sanBay.CODE == "NI-N");
                 var sanBayFHS = UnitOfWork.Repository<SanBayRepo>().Queryable().Where(x => x.NHOM_SAN_BAY_CODE == "NI-N").ToList();
                 lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
                 var sortlist = new List<string> { "VN", "0V", "BL", "VJ", "QH", "VU", "HKTN#", "HKQT" };
@@ -3492,6 +3492,10 @@ namespace SMO.Service.MD
                 var lstHangHangKhong = UnitOfWork.Repository<HangHangKhongRepo>().GetAll().GroupBy(x => x.GROUP_ITEM).Select(x => x.First()).ToList();
                 lstHangHangKhong = string.IsNullOrEmpty(hangHangKhong) ? lstHangHangKhong : lstHangHangKhong.Where(x => x.CODE == hangHangKhong).ToList();
                 lstHangHangKhong = lstHangHangKhong.Where(x => !string.IsNullOrEmpty(x.GROUP_ITEM)).ToList();
+                var sortlist = new List<string> { "VN", "0V", "BL", "VJ", "QH", "VU", "HKTN#", "HKQT" };
+
+                var lishhkSort = lstHangHangKhong.OrderBy(x => sortlist.IndexOf(x.GROUP_ITEM) >= 0 ? sortlist.IndexOf(x.GROUP_ITEM) : int.MaxValue).ToList();
+                lstHangHangKhong = lishhkSort;
 
                 var s1 = UnitOfWork.Repository<SharedDataRepo>().Get("1").VALUE;
                 var s2 = UnitOfWork.Repository<SharedDataRepo>().Get("2").VALUE;
