@@ -37,7 +37,7 @@
     const rawData = @Html.Raw(JsonConvert.SerializeObject(Model.OrderBy(x => x.CODE)));
     var CN =@Html.Raw(JsonConvert.SerializeObject(Chinhanh));
     
-
+    
     var ParentDVMNArray = ["N6277G002AB", "N6277G00B02", "N6277G005AB", "N6277G006AB", "N6277G007AB", "T6277G002AB", "T6277G003AB", "T6277G004AB", "T6277G005AB", "T6277G006AB", "T6277G007AB", "VT6277G0023", "VT6277G0033", "VT6277G0043", "VT6277G0053", "VT6277G0063", "VT6277G007D", "CQ6277G007002AB", "CQ6277G007003AB", "CQ6277G007004AB", "CQ6277G007005AB", "CQ6277G007006AB", "CQ6277G007AB", "B6277G002B","B6277G003AB","B6277G004AB","B6277G005AB","B6277G006AB","B6277G007AB"
 ]
     var ChildDVMNArray = ["N6277G002AB01", "N6277G002AB02", "N6277G00B03", "N6277G005AB01", "N6277G005AB02", "N6277G006AB01", "N6277G006AB02", "N6277G007AB01", "N6277G007AB02",
@@ -260,6 +260,7 @@
     for (var i = 0; i < filterlstB.length; i++) {
         ListCodeKhoanMucB.push(filterlstB[i].CODE)
     }
+    
 
     rawData.forEach((item) => {
         let valuePrice
@@ -284,6 +285,7 @@
 
         if (ListCodeKhoanMucB.includes(item.CODE))
         {
+           
             var codechild = rawData.filter(x => x.PARENT_CODE == item.CODE).map(x => x.CODE)
             let childB = []
 
@@ -335,29 +337,30 @@
 
         } else
         {
-            if (item.CODE == "CQ6272B002A") {
-               
-            }
+           
             for (var i = 0; i < item.lstCenter.length; i++) {
                 if (item.lstCenter[i].hasOwnProperty("SAN_BAY_CODE")) {
+                   
                     obj[`quantity_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][0];
                     obj[`total_${item.lstCenter[i].SAN_BAY_CODE}`] = item.valueSb[i][2];
+                    if (item.CODE == "CQ6277G007001A") { console.log(`total_${item.lstCenter[i].SAN_BAY_CODE}`, item.valueSb[i][2]) }
                 } else {
-
+                 
                     obj[`quantity_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][0];
                     obj[`total_${item.lstCenter[i]._implementation.SAN_BAY_CODE}`] = item.valueSb[i][2];
+                   
                 }
 
                 sumQuantity += item.valueSb[i][0];
+                if (item.CODE == "CQ6277G007001A") { console.log(item.valueSb[i][2]) }
                 sumTotal += item.valueSb[i][2];
             }
             obj[`sumQuantity`] = sumQuantity;
             obj[`sumTotal`] = sumTotal;
-            if (obj.id == "CQ6272B002A") {
-              
-            }
+           
         }
-        jsonData.push(obj);
+       
+               jsonData.push(obj);
     });
   
 
@@ -377,7 +380,6 @@ Object.keys(jsonData[0]).forEach(key => {
             quanttykeys.push(key);
         }
     });
- 
 
     // tổng con của dụng cụ công cụ
     jsonData.forEach(x => {
@@ -385,10 +387,17 @@ Object.keys(jsonData[0]).forEach(key => {
             for (let i = 0; i < totalKeys.length; i++) {
                 let total = 0;
                 var sum = jsonData.filter(y => x.code == y.parent).map(e => e[totalKeys[i]]).reduce((a,b)=>a+b,0)
-                x[totalKeys[i]]=sum
+                x[totalKeys[i]] = sum
+                var sumgt = jsonData.filter(y => x.code == y.parent).map(e => e[quanttykeys[i]]).reduce((a, b) => a + b, 0)
+                x[quanttykeys[i]] = sumgt
+                
             }
             var sumtotal = jsonData.filter(y => x.code == y.parent).map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
+            var sumqt = jsonData.filter(y => x.code == y.parent).map(e => e['sumQuantity']).reduce((a, b) => a + b, 0)
+            x['sumQuantity'] = sumqt
+            var price = jsonData.filter(y => x.code == y.parent).map(e => e['price']).reduce((a, b) => a + b, 0)
+            x['price'] = price
         }
         }
     )
@@ -398,10 +407,17 @@ Object.keys(jsonData[0]).forEach(key => {
                 let total = 0;
                 var sum = jsonData.filter(y => x.code == y.parent).map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
                 x[totalKeys[i]] = sum
+                var sumqt = jsonData.filter(y => x.code == y.parent).map(e => e[quanttykeys[i]]).reduce((a, b) => a + b, 0)
+                x[quanttykeys[i]] = sumqt
+
 
             }
             var sumtotal = jsonData.filter(y => x.code == y.parent).map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
+            var sumqt = jsonData.filter(y => x.code == y.parent).map(e => e['sumQuantity']).reduce((a, b) => a + b, 0)
+            x['sumQuantity'] = sumqt
+            var price = jsonData.filter(y => x.code == y.parent).map(e => e['price']).reduce((a, b) => a + b, 0)
+            x['price'] = price
         }
     })
     // tính lại mục b khoan mục dịch vụ
@@ -413,32 +429,45 @@ Object.keys(jsonData[0]).forEach(key => {
                 let total = 0
                 var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
                 x[totalKeys[i]] = sum
+                var sumqt = listchild.map(e => e[quanttykeys[i]]).reduce((a, b) => a + b, 0)
+                x[totalKeys[i]] = sumqt
                 
             }
             var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
+            var sumqt = listchild.map(e => e['sumQuantity']).reduce((a, b) => a + b, 0)
+            x['sumQuantity'] = sumqt
+            var price = listchild.map(e => e['price']).reduce((a, b) => a + b, 0)
+            x['price'] = price
+            
 
 
         }
     })
+    
  
     var childdvmn = jsonData.filter(x => x.parent != null).filter(x => x.parent.endsWith("6277")).map(x => x.code);
-   
+
      jsonData.forEach(x => {
      if (x.name.includes("Kế hoạch đầu năm") && x.code.includes("6277")) {
        
          var listchild = jsonData.filter(y => y.parent == x.code);
-   
-         for (let i = 0; i < totalKeys.length; i++) {
-             let total = 0
-             var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
-             x[totalKeys[i]] = sum
+         if (listchild.length >0) {
+             for (let i = 0; i < totalKeys.length; i++) {
 
-         }
-         var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
-         x['sumTotal'] = sumtotal
+                 var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
+                 x[totalKeys[i]] = sum
+                 var sumqt = listchild.map(e => e[quanttykeys[i]]).reduce((a, b) => a + b, 0)
+                 x[totalKeys[i]] = sumqt
 
-
+             }
+             var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
+             var sumqt = listchild.map(e => e['sumQuantity']).reduce((a, b) => a + b, 0)
+             var price = listchild.map(e => e['price']).reduce((a, b) => a + b, 0)
+             x['price'] = price
+            x['sumQuantity'] = sumqt
+             x['sumTotal'] = sumtotal
+         } 
      }
      })
     jsonData.forEach(x => {
@@ -452,8 +481,13 @@ Object.keys(jsonData[0]).forEach(key => {
                 var quantitysum = listchild.map(e => e[quanttykeys[i]]).reduce((a, b) => a + b, 0)
                 x[quanttykeys[i]] = quantitysum
             }
+            var price = listchild.map(e => e['price']).reduce((a, b) => a + b, 0)
+            x['price'] = price
+            var sumqt = listchild.map(e => e['sumQuantity']).reduce((a, b) => a + b, 0)
+            x['sumQuantity'] = sumqt
             var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
+
         }
     })
     jsonData.forEach(x => {
@@ -466,9 +500,14 @@ Object.keys(jsonData[0]).forEach(key => {
                 var sum = listchild.map(e => e[totalKeys[i]]).reduce((a, b) => a + b, 0)
                 x[totalKeys[i]] = sum
             }
+            var sumqt = listchild.map(e => e['sumQuantity']).reduce((a, b) => a + b, 0)
+            x['sumQuantity'] = sumqt
             var sumtotal = listchild.map(e => e['sumTotal']).reduce((a, b) => a + b, 0)
             x['sumTotal'] = sumtotal
+            var price = listchild.map(e => e['price']).reduce((a, b) => a + b, 0)
+            x['price'] = price
         }
+
     })
     jsonData.unshift({ name: `${TenCN}`, isChecked: false, title: true, isBold: true })
     const treeGrid = new dhx.TreeGrid("@gridId", {
