@@ -1,5 +1,4 @@
 ﻿@model SMO.Models.SynthesizeThePlanReportModel
-@using System.Text;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Serialization;
 @{
@@ -9,9 +8,6 @@
     var gridTab3 = Guid.NewGuid().ToString("N");
     var gridTab4 = Guid.NewGuid().ToString("N");
     var gridTab5 = Guid.NewGuid().ToString("N");
-
-    var data = ReportUtilities.ProcessData(Model);
-
     var jsonSerializeSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 }
 <style>
@@ -22,7 +18,6 @@
         word-wrap: break-word;
         hyphens: auto;
     }
-    
 </style>
 <ul class="nav nav-tabs" role="tablist" style="width: 100%; display: flex;">
     <li role="presentation" class="active" style="cursor: pointer;">
@@ -55,7 +50,9 @@
     </div>
 
     <div role="tabpanel" class="tab-pane fade" id="tab4">
-        <div style="height: calc(100vh - 262px); width: 100%" id="@gridTab4"></div>
+        <div style="height: calc(100vh - 262px); width: 100%" id="@gridTab4">
+            <h4>Đang tính toán dữ liệu! Vui lòng chờ trong giây lát!</h4>
+        </div>
     </div>
     <div role="tabpanel" class="tab-pane fade" id="tab5">
         <div style="height: calc(100vh - 262px); width: 100%" id="@gridTab5"></div>
@@ -63,7 +60,7 @@
 </div>
 <script type="text/javascript">
     var spans = [];
-    var dataSL = @Html.Raw(JsonConvert.SerializeObject(data.SanLuong, jsonSerializeSettings));
+    var dataSL = @Html.Raw(JsonConvert.SerializeObject(Model.SanLuong, jsonSerializeSettings));
     dataSL.forEach((item) => {
         if (item.isBold == true) {
             spans.push({
@@ -71,7 +68,7 @@
             })
         }
     });
-   
+
    /* _.sumBy(objects, 'n');*/
     const gridTab1 = new dhx.Grid("@gridTab1", {
         columns: [
@@ -96,7 +93,7 @@
         adjust: true,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
-    let dataDT = @Html.Raw(JsonConvert.SerializeObject(data.DauTu, jsonSerializeSettings))
+    let dataDT = @Html.Raw(JsonConvert.SerializeObject(Model.DauTu, jsonSerializeSettings))
 
     const gridTab2 = new dhx.Grid("@gridTab2", {
         columns: [
@@ -123,47 +120,14 @@
             { id: "valueQM", header: [{ text: "Quy mô s/c", align: "center" }], htmlEnable: true, width: 500, css: "wrap-text" },
             { id: "des", header: [{ text: "Ghi chú", align: "center" }], adjust: true },
         ],
-        data: @Html.Raw(JsonConvert.SerializeObject(data.SuaChuaLon, jsonSerializeSettings)),
+        data: @Html.Raw(JsonConvert.SerializeObject(Model.SuaChuaLon, jsonSerializeSettings)),
         resizable: true,
         selection: "row",
         rowHeight: 30,
         rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
     });
 
-    var dataCP = @Html.Raw(JsonConvert.SerializeObject(data.ChiPhi, jsonSerializeSettings));
-    var parentData = dataCP.filter(x => x.isBold == true);
 
-    Number.prototype.format = function (n, x, s, c) {
-        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
-            num = this.toFixed(Math.max(0, ~~n));
-
-        return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
-    };
-    var data = @Html.Raw(JsonConvert.SerializeObject(data.ChiPhi, jsonSerializeSettings));
-    var ParentArray = ["6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB"]
-    data.forEach(x => {
-
-        if (ParentArray.includes(x.code)) {
-            var sum = data.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCP).reduce((a, b) => a + b, 0)
-            x.valueCP=sum
-        }
-    })
-    console.log('datachiphi', data)
-    const gridTab4 = new dhx.Grid("@gridTab4", {
-        columns: [
-            { id: "stt", header: [{ text: "STT", align: "center", rowspan: 2 }, { text: "" }], align: "center", minWidth: 100 },
-            { id: "name", header: [{ text: "Danh mục chi phí", align: "center", rowspan: 2 }, "", { text: "TỔNG CỘNG" }] },
-            { id: "valueCP", header: [{ text: "Kế hoạch", align: "center", colspan: 2 }, { text: "Chi phí", align: "center" }, { text: _.sumBy(parentData, "valueCP").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }, ""], minWidth: 160, align: "right", type: "number", format: "#.#" },
-            { id: "notes", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }, ""], minWidth: 160 },
-        ],
-        data: data,
-        resizable: true,
-        selection: "row",
-        adjust: true,
-        rowHeight: 30,
-        rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
-    });
 
     const gridTab5 = new dhx.Grid("@gridTab5", {
       columns : [
@@ -173,12 +137,67 @@
          { id: "valueQM", header: [{ text: "", align: "center" }, { text: "QUY MÔ", align: "center" }], align: "right", width: 180 },
          { id: "des", header: [{ text: "", align: "center" }, { text: "GHI CHÚ", align: "center" }], align: "right", width: 180 },
         ],
-     data: @Html.Raw(JsonConvert.SerializeObject(data.SuaChuaThuongXuyen, jsonSerializeSettings)),
+     data: @Html.Raw(JsonConvert.SerializeObject(Model.SuaChuaThuongXuyen, jsonSerializeSettings)),
      resizable: true,
      selection: "row",
    /*  keyNavigation: true,*/
      rowHeight: 30,
      rowCss: function ({ isBold }) { return isBold == true ? "row-bold" : "" },
+    });
+
+    function GetDataCP() {
+        var model =  @Html.Raw(JsonConvert.SerializeObject(Model));
+        var ajaxParams = {
+            type: 'POST',
+            url: "@Url.Action("GetDataCP")",
+            data: {
+                model: JSON.stringify(model, null, 2),
+                year: $("#time-year").val(),
+                phienBan: $("#phien-ban").val(),
+                kichBan: $("#kich-ban").val(),
+                area: $("#area").val(),
+            },
+            success: function (res) {
+                $("#@gridTab4").empty();
+                var dataCP = res;
+                var parentData = dataCP.filter(x => x.IsBold == true);
+
+                Number.prototype.format = function (n, x, s, c) {
+                    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+                        num = this.toFixed(Math.max(0, ~~n));
+
+                    return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+                };
+                var data = res;
+                var ParentArray = ["6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB"]
+                data.forEach(x => {
+
+                    if (ParentArray.includes(x.code)) {
+                        var sum = data.filter(y => y.code == `${x.code}1` || y.code == `${x.code}2`).map(z => z.valueCP).reduce((a, b) => a + b, 0)
+                        x.valueCP = sum
+                    }
+                })
+                const gridTab4 = new dhx.Grid("@gridTab4", {
+                    columns: [
+                        { id: "Stt", header: [{ text: "STT", align: "center", rowspan: 2 }, { text: "" }], align: "center", minWidth: 100 },
+                        { id: "name", header: [{ text: "Danh mục chi phí", align: "center", rowspan: 2 }, "", { text: "TỔNG CỘNG" }] },
+                        { id: "valueCP", header: [{ text: "Kế hoạch", align: "center", colspan: 2 }, { text: "Chi phí", align: "center" }, { text: _.sumBy(parentData, "valueCP").format(0, 3, '.', ','), align: "right" }], minWidth: 160, align: "right", type: "number", format: "#.#" },
+                        { id: "price", header: ["", { text: "ĐG chi phí / 1 tấn nhiên liệu", align: "center" }, ""], minWidth: 160, align: "right", type: "number", format: "#.#" },
+                        { id: "description", header: [{ text: "Ghi chú", align: "center", rowspan: 2 }, ""], minWidth: 160 },
+                    ],
+                    data: data,
+                    resizable: true,
+                    selection: "row",
+                    adjust: true,
+                    rowHeight: 30,
+                    rowCss: function ({ IsBold }) { return IsBold == true ? "row-bold" : "" },
+                });
+            }
+        };
+        $.ajax(ajaxParams);
+    }
+    $(function () {
+        GetDataCP();
     });
 
 </script>

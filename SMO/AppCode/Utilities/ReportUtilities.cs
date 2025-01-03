@@ -1,5 +1,6 @@
 ﻿using NPOI.SS.UserModel;
 using SMO.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SMO
@@ -132,8 +133,37 @@ namespace SMO
         }
         public static SynthesizeThePlanReportModel ProcessData(SynthesizeThePlanReportModel Model)
         {
+            List<string> ListchildCode = new List<string> { "G001", "G002", "G003", "G004", "G005", "G006", "G007", "G008", "G009", "G010", "G011", "G012", "G019" };
+            List<string> CodePB = new List<string> { "6277G002B", "6277G003AB", "6277G004AB", "6277G005AB", "6277G006AB", "6277G007AB" };
+            List<string> CodeB2 = new List<string> { "6277G002B2", "6277G003AB2", "6277G004AB2", "6277G005AB2", "6277G006AB2", "6277G007AB2" };
+            List<string> ParrentPB = new List<string> { "6277G003", "6277G004", "6277G005", "6277G006", "6277G007" };
+
+
             foreach (var c in Model.ChiPhi)
             {
+                if (CodeB2.Contains(c.code))
+                {
+                    var lencode = c.code.Length - 1;
+                    c.valueCP = Model.ChiPhi.Where(y => y.code == c.code.Substring(0, lencode) + "3").Sum(z => z.valueCP / 2);
+                }
+                if (CodePB.Contains(c.code))
+                {
+                    c.valueCP = Model.ChiPhi.Where(y => y.code == $"{c.code}1" || y.code == $"{c.code}2").Sum(z => z.valueCP);
+                }
+
+                if (c.code == "6277G002")
+                {
+                    c.valueCP = Model.ChiPhi.Where(y => y.code == $"{c.code}A" || y.code == $"{c.code}B").Sum(z => z.valueCP);
+                }
+                if (ParrentPB.Contains(c.code))
+                {
+                    c.valueCP = Model.ChiPhi.Where(y => y.code == $"{c.code}AA" || y.code == $"{c.code}AB").Sum(z => z.valueCP);
+                }
+                var a = Model.ChiPhi.Where(y => ListchildCode.Contains(y.parentCode2));
+                if (c.code == "6277")
+                {
+                    c.valueCP = Model.ChiPhi.Where(y => ListchildCode.Contains(y.parentCode2)).Sum(z => z.valueCP);
+                }
                 if (c.name == "Thuê s/c thường xuyên nhà cửa vật kiến trúc" && c.Stt == "2.1")
                 {
                     c.valueCP = Model.SuaChuaThuongXuyen.Where(x => x.Stt == "I").Sum(x => x.valueGT);

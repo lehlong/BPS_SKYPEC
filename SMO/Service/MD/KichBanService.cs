@@ -99,35 +99,12 @@ namespace SMO.Service.MD
             return data;
         }
         private readonly object lockObject = new object();
-        public  async Task<IList<SynthesisReportModel>> GetDataTH(int year, string kichBan, int yearTH)
+        public IList<SynthesisReportModel> GetDataTH(int year, string kichBan, int yearTH)
         {
-            var phienBan = "PB1";
-            var hhk = "";
-            var doanhthudata = await PhienBanService.GetDataTraNapCungUng(year, phienBan, kichBan, hhk);
             var data = new List<SynthesisReportModel>();
             var elements = UnitOfWork.Repository<ReportSXKDElementRepo>().GetAll().OrderBy(x => x.C_ORDER).ToList();
-            string area = "";
-            var dataGV = new DataCenterModel();
-            var kehoachTC =new DataCenterModel();
-        
-            var CKGG = new RevenueByFeeReportModel();
-            var data02A = new ReportDataCenter();
-
-            Task task1=Task.Run(() => {
-                lock ((lockObject))
-               
-                { dataGV = elementService.GetDataKeHoachGiaVon(year, area); } });
-            Task task2 = Task.Run(() => { lock (lockObject) { kehoachTC = elementService.GetDataKeHoachTaiChinh(year); } });
-            Task task3 = Task.Run(() => { lock (lockObject) { CKGG = PhienBanService.GetDataDoanhThuTheoPhiBM01(year, phienBan, kichBan, hhk);} });
-            Task task4 = Task.Run(() => { lock (lockObject) { data02A = reportService.GenDataBM02A(year); } });
-            await Task.WhenAll(task1, task2, task3, task4);
-            var sumGVElement = dataGV?.KeHoachGiaVonTheoThang.FirstOrDefault(x => x.Name == "Tổng cộng");
-            var Sumgv = sumGVElement?.SumGV ?? 0;
-            
-
             foreach (var e in elements)
             {
-
                 var i = new SynthesisReportModel
                 {
                     PId = e.ID,
@@ -144,84 +121,7 @@ namespace SMO.Service.MD
                     Value3 = string.IsNullOrEmpty(e.TDN_1) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.TDN_1.Replace("[YEAR]", (year - 1).ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                     Value6 = string.IsNullOrEmpty(e.KH_V2) ? 0 : Convert.ToDecimal(UnitOfWork.GetSession().CreateSQLQuery($"{e.KH_V2.Replace("[YEAR]", year.ToString()).Replace("[KICH_BAN]", kichBan)}").List()[0]),
                 };
-                switch (e.C_ORDER)
-                {
-                    case 15:
-                        i.Value5 = doanhthudata.Where(x => x.Name == "VN" || x.Name == "BL" || x.Name == "0V").Sum(x => x.ValueDT);
-                        break;
-                    case 16:
-                        i.Value5 = doanhthudata.Where(x => x.Name == "VN").Sum(x => x.ValueDT);
-                        break;
-                    case 17:
-                        i.Value5 = CKGG.Tab1.Where(x => x.Name == "GIẢM GIÁ").Sum(x => x.ValueSumYear);
-                        break;
-                    case 28:
-                        i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu chênh lệch tỷ giá").Sum(x => x.Value) ?? 0;
-                        break;
-                    case 29:
-                        i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu HĐTC khác").Sum(x => x.Value) ?? 0;
-                        break;
-                    case 22:
-                        i.Value5 = doanhthudata.Where(x => x.Name != "VN" && x.Name != "BL" && x.Name != "0V" && x.Name != "DOANH THU BÁN TẠI HÀN QUỐC" && x.Name != "GIẢM GIÁ" && x.IsBold==true && x.Name != "Qua xe" && x.Name != "Qua FHS" && x.Name!= "Quốc tế" && x.Name!= "Nội địa" && x.Name != "DOANH THU JET HK").Sum(x => x.ValueDT);
-                        break;
-                    case 40:
-                        i.Value5 = Sumgv;
-                        break;
-                    case 51:
-                        i.Value5 = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "4.2. Chi hoạt động tài chính").Sum(x => x.Value) ?? 0;
-                        break;
-                    case 19:
-                        i.Value5 = doanhthudata.Where(x => x.Name == "DOANH THU BÁN TẠI HÀN QUỐC").Sum(x => x.ValueDT);
-                        break;
-                    case 68:
-                        i.Value5=data02A.BM02B.Where(x => x.Name == "Tổng cộng").Sum(x => x.Col1) ??0;
-                        break;
-                    case 69:
-                        i.Value5 = data02A.BM02B.Where(x => x.Name == "Tổng cộng").Sum(x => x.Col5) ?? 0;
-                        break;
-                }
-
                 data.Add(i);
-            }
-            foreach (var d in data)
-            {
-                if (d.Order == 54)
-                {
-                    d.Value5 = data.Where(x => x.Order == 13).Sum(x => x.Value5) - data.Where(x => x.Order == 31).Sum(x => x.Value5);
-                }
-                if (d.Order == 55)
-                {
-                    d.Value5 = data.Where(x => x.Order == 20).Sum(x => x.Value5) - data.Where(x => x.Order == 38).Sum(x => x.Value5);
-                }
-
-            }
-            foreach (var d in data)
-            {
-                if (d.Order == 54)
-                {
-                    d.Value5 = data.Where(x => x.Order == 19).Sum(x => x.Value5) - data.Where(x => x.Order == 37).Sum(x => x.Value5);
-                }
-                if (d.Order == 55)
-                {
-                    d.Value5 = data.Where(x => x.Order == 20).Sum(x => x.Value5) - data.Where(x => x.Order == 38).Sum(x => x.Value5);
-                }
-
-            }
-            var data54 = data.Where(x => x.Order == 54).Sum(x => x.Value5);
-            var data64 = data.Where(x => x.Order == 64).Sum(x => x.Value5);
-            var ct = kehoachTC.KeHoachTaiChinhData.Where(x => x.ElementName == "- Thu HĐTC khác").Sum(x => x.Value) ??0;
-            foreach (var d in data)
-            {
-                if (d.Order == 55)
-                {
-                    d.Value5 = data54 - (data54 - ct * 20 / 100);
-                }
-                if (d.Order== 65 )
-                {
-                    d.Value5 = data64 == 0 ? 0 : data54 / data64;
-                }
-                
-
             }
             foreach (var d in data.OrderByDescending(x => x.Order))
             {
@@ -239,12 +139,10 @@ namespace SMO.Service.MD
                 d.Value8 = d.Value5 == 0 || d.Value4 == 0 ? 0 : d.Value5 / d.Value4;
                 d.Value9 = d.Value2 == 0 || d.Value4 == 0 ? 0 : d.Value4 / d.Value2;
             }
-           
-
             return data;
         }
 
-        internal async Task ExportExcel( MemoryStream outFileStream, string path, int year, string kichBan, int yearTH)
+        internal void ExportExcel( MemoryStream outFileStream, string path, int year, string kichBan, int yearTH)
         {
             try
             {
@@ -267,7 +165,7 @@ namespace SMO.Service.MD
                 CellKHTH.SetCellValue($"KH{year}/TH{yearTH}(%)");
                 ICell CellKHUTH = rowHeader.GetCell(11);
                 CellKHUTH.SetCellValue($"KH{year}/UTH{year - 1}%");
-                var data = await GetDataTH(year, kichBan, yearTH);
+                var data = GetDataTH(year, kichBan, yearTH);
                 if (data.Count <= 1)
                 {
                     this.State = false;

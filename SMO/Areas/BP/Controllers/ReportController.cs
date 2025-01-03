@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using NHibernate.SqlCommand;
+using SMO.Models;
 using SMO.Repository.Implement.MD;
 using SMO.Service.AD;
 using SMO.Service.BP;
@@ -52,20 +53,20 @@ namespace SMO.Areas.BP.Controllers
             }
             return result.ToJsonResult();
         }
-        public async Task <ActionResult> ExportExcelDataKichBan(int year, string kichBan,int yearTH)
+        public ActionResult ExportExcelDataKichBan(int year, string kichBan,int yearTH)
         {
             MemoryStream outFileStream = new MemoryStream();
             var path = Server.MapPath("~/TemplateExcel/TONG_HOP_KE_HOACH_KICH_BAN.xlsx");
-             await _serviceKichBan.ExportExcel(  outFileStream, path, year, kichBan, yearTH);
+             _serviceKichBan.ExportExcel(  outFileStream, path, year, kichBan, yearTH);
             if (!_serviceKichBan.State)
             {
                 return Content(_serviceKichBan.ErrorMessage);
             }
             return File(outFileStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "TONG_HOP_KE_HOACH_KICH_BAN.xlsx");
         }
-        public async Task<ActionResult> GenDataKichBan(int year, string kichBan, int yearTH)
+        public ActionResult GenDataKichBan(int year, string kichBan, int yearTH)
         {
-            var data = await _serviceKichBan.GetDataTH(year, kichBan, yearTH);
+            var data = _serviceKichBan.GetDataTH(year, kichBan, yearTH);
             ViewBag.KichBan = kichBan;
             ViewBag.Year = year;
             ViewBag.Yth = yearTH;
@@ -125,10 +126,17 @@ namespace SMO.Areas.BP.Controllers
         }
         public ActionResult GenDataKeHoachTongHop(int year, string phienBan, string kichBan, string area)
         {
-            var data = _servicePhienBan.GetDataKeHoachTongHop(year, phienBan, kichBan, area);
+            var data = _servicePhienBan.GetDataKeHoachTongHopNonCP(year, phienBan, kichBan, area);
             ViewBag.PhienBan = phienBan;
             ViewBag.Year = year;
             return PartialView(data);
+        }
+        [HttpPost]
+        public ActionResult GetDataCP(string model, int year, string phienBan, string kichBan, string area)
+        {
+            SynthesizeThePlanReportModel data = JsonConvert.DeserializeObject<SynthesizeThePlanReportModel>(model);
+            var r = _servicePhienBan.GetDataKeHoachTongHopCP(data, year, phienBan, kichBan, area);
+            return Json(r.ChiPhi);
         }
 
         public async Task<ActionResult> ExportExcelDataTongHop(int year, string phienBan, string kichBan, string area)
